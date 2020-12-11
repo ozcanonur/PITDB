@@ -1,0 +1,48 @@
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
+export const useStyles = makeStyles((theme) => ({
+  heroContainer: {
+    marginTop: '5rem',
+    paddingLeft: '5rem',
+  },
+  heading: {
+    color: 'white',
+    fontSize: '4.5rem',
+  },
+  secondaryHeading: {
+    color: 'white',
+    fontWeight: 500,
+    fontSize: '2rem',
+    maxWidth: '40rem',
+    lineHeight: 1.5,
+    marginTop: '4rem',
+  },
+  browseButton: {
+    color: theme.palette.primary.main,
+    backgroundColor: theme.palette.secondary.main,
+    padding: '1.3rem 5.5rem',
+    borderRadius: '0.8rem',
+    fontSize: '1.8rem',
+    fontWeight: 500,
+    marginTop: '5rem',
+    width: 'max-content',
+    cursor: 'pointer',
+    transition: 'padding 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    '&:hover': {
+      padding: '1.5rem 7rem',
+    },
+  },
+  heroBg: {
+    backgroundColor: theme.palette.primary.main,
+    height: '53rem',
+    width: '100%',
+    position: 'absolute',
+    zIndex: -1,
+  },
+  heroImg: {
+    position: 'absolute',
+    top: '10rem',
+    right: '20rem',
+    height: '60rem',
+  },
+}));
