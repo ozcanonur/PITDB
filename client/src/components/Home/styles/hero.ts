@@ -2,7 +2,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   heroContainer: {
-    marginTop: '5rem',
+    marginTop: '7rem',
     paddingLeft: '5rem',
   },
   heading: {
@@ -42,7 +42,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   heroImg: {
     position: 'absolute',
-    top: '10rem',
+    top: '7rem',
     right: '25rem',
     height: '57rem',
   },

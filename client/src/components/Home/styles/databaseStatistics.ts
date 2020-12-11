@@ -3,10 +3,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     background: 'linear-gradient(to bottom, #ECF4FD 32%, white 68%)',
-    marginTop: '25rem',
+    marginTop: '24rem',
     maxWidth: '1000px',
     margin: '0 auto',
     position: 'relative',
+    // zIndex: -2,
   },
   cardClip: {
     position: 'absolute',

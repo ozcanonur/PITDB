@@ -2,6 +2,7 @@ import Header from 'components/Header/Header';
 import Hero, { HeroBg } from './Hero';
 import DatabaseStatistics from './DatabaseStatistics';
 import Flow from './Flow';
+import Publish from './Publish';
 
 import { useStyles } from './styles/home';
 
@@ -16,6 +17,7 @@ const Home = () => {
         <Hero />
         <DatabaseStatistics />
         <Flow />
+        <Publish />
       </div>
     </div>
   );

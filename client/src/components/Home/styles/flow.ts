@@ -3,9 +3,10 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    marginTop: '8rem',
+    marginTop: '10rem',
     alignItems: 'center',
     justifyContent: 'center',
+    transform: 'translateX(-3.8rem)',
 
     '& > div:nth-child(1)': {
       zIndex: 4,
@@ -34,7 +35,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   flowSquare: {
     height: '15rem',
-    width: '24rem',
+    width: '26rem',
     display: 'inline-block',
     padding: '2rem 3rem',
   },
@@ -50,7 +51,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   flowContentHeading: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     color: 'white',
     fontSize: '1.8rem',
   },
@@ -80,7 +81,7 @@ export const useStyles = makeStyles((theme) => ({
     height: 'max-content',
     width: '23rem',
     display: 'inline-block',
-    padding: '2rem 3rem',
+    padding: '2.5rem 3rem',
     backgroundColor: theme.palette.primary.dark,
   },
   flowTriangleVertical: {
