@@ -1,5 +1,6 @@
 import Header from 'components/Header/Header';
 import Hero, { HeroBg } from './Hero';
+import DatabaseStatistics from './DatabaseStatistics';
 
 import { useStyles } from './styles/home';
 
@@ -12,6 +13,7 @@ const Home = () => {
       <div className={classes.home}>
         <Header />
         <Hero />
+        <DatabaseStatistics />
       </div>
     </div>
   );

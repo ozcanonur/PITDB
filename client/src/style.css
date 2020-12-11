@@ -17,7 +17,6 @@ html {
   --scrollbarBG: rgb(32, 34, 37);
   --thumbBG: rgb(99, 102, 105);
   height: 100%;
-  overflow: hidden;
 }
 
 *::-webkit-scrollbar {
@@ -36,4 +35,5 @@ html {
 
 #root {
   min-height: 100vh;
+  overflow: auto;
 }

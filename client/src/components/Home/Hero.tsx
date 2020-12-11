@@ -7,9 +7,9 @@ const Hero = () => {
   return (
     <section className={classes.heroContainer}>
       <h1 className={classes.heading}>PIT Experiments Database</h1>
-      <h2 className={classes.secondaryHeading}>
+      <p className={classes.secondaryHeading}>
         PITDB is a platform for sharing of results from PIT (proteomics informed by transcriptomics) experiments.
-      </h2>
+      </p>
       <div className={classes.browseButton}>Browse</div>
     </section>
   );

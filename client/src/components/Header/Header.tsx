@@ -16,7 +16,9 @@ const Header = () => {
       <nav className={classes.navContainer}>
         <ul className={classes.nav}>
           {navItems.map((item) => (
-            <li className={classes.navItem}>{item}</li>
+            <li key={item} className={classes.navItem}>
+              {item}
+            </li>
           ))}
           <li>
             <div className={classes.getPitButton}>Get PITGUI</div>

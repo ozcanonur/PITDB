@@ -16,6 +16,7 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: '40rem',
     lineHeight: 1.5,
     marginTop: '4rem',
+    wordBreak: 'break-all',
   },
   browseButton: {
     color: theme.palette.primary.main,
@@ -27,9 +28,9 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '5rem',
     width: 'max-content',
     cursor: 'pointer',
-    transition: 'padding 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     '&:hover': {
-      padding: '1.5rem 7rem',
+      transform: 'scale(1.05)',
     },
   },
   heroBg: {
@@ -42,7 +43,7 @@ export const useStyles = makeStyles((theme) => ({
   heroImg: {
     position: 'absolute',
     top: '10rem',
-    right: '20rem',
+    right: '18rem',
     height: '60rem',
   },
 }));
