@@ -1,4 +1,5 @@
 import Header from 'components/Header/Header';
+import Footer from 'components/Footer/Footer';
 import Hero, { HeroBg } from './Hero';
 import DatabaseStatistics from './DatabaseStatistics';
 import Flow from './Flow';
@@ -18,6 +19,7 @@ const Home = () => {
         <DatabaseStatistics />
         <Flow />
         <Publish />
+        <Footer />
       </div>
     </div>
   );

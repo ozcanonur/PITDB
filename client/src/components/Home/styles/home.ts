@@ -8,6 +8,5 @@ export const useStyles = makeStyles((theme) => ({
   home: {
     maxWidth: '1200px',
     margin: '0 auto',
-    paddingBottom: '10rem',
   },
 }));
