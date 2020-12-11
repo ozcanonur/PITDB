@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   heroContainer: {
     marginTop: '7rem',
-    paddingLeft: '5rem',
+    paddingLeft: '10rem',
   },
   heading: {
     color: 'white',

@@ -38,6 +38,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '26rem',
     display: 'inline-block',
     padding: '2rem 3rem',
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
   },
   flowTriangle: {
     height: '15rem',

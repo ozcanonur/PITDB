@@ -69,7 +69,7 @@ export const useStyles = makeStyles((theme) => ({
   buttons: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '2rem',
+    marginTop: '4rem',
 
     '& div': {
       borderRadius: '0.8rem',
