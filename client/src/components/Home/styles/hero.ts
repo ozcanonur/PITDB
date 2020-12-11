@@ -43,7 +43,7 @@ export const useStyles = makeStyles((theme) => ({
   heroImg: {
     position: 'absolute',
     top: '10rem',
-    right: '18rem',
-    height: '60rem',
+    right: '25rem',
+    height: '57rem',
   },
 }));

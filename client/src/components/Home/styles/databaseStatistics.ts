@@ -3,8 +3,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     background: 'linear-gradient(to bottom, #ECF4FD 32%, white 68%)',
-    marginTop: '20rem',
-    maxWidth: '1100px',
+    marginTop: '25rem',
+    maxWidth: '1000px',
     margin: '0 auto',
     position: 'relative',
   },
@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
     gridTemplateRows: '1fr 1fr 1fr',
     marginTop: '3rem',
     gridGap: '6rem',
-    gridColumnGap: '10rem',
+    gridColumnGap: '8rem',
     padding: '0 4rem',
     paddingLeft: '8rem',
   },
@@ -47,14 +47,14 @@ export const useStyles = makeStyles((theme) => ({
   },
   square: {
     height: '3rem',
-    width: '7rem',
+    width: '9rem',
     backgroundColor: theme.palette.primary.light,
   },
   statisticTextContainer: {
     marginLeft: '2.5rem',
   },
   statisticTitle: {
-    fontSize: '2.3rem',
+    fontSize: '2rem',
     color: theme.palette.primary.main,
   },
   statisticDescription: {

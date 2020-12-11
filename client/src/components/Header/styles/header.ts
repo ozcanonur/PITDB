@@ -2,7 +2,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   headerContainer: {
-    padding: '2rem 0',
+    padding: '1rem 0',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -28,6 +28,15 @@ export const useStyles = makeStyles((theme) => ({
     '& li': {
       listStyle: 'none',
       cursor: 'pointer',
+      paddingBottom: '0.5rem',
+      borderBottom: '1px solid transparent',
+      transition: 'all .2s',
+      '&:hover': {
+        borderBottom: '1px solid white',
+      },
+      '&:last-child:hover': {
+        borderBottom: 0,
+      },
     },
   },
   navItem: {
