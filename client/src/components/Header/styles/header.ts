@@ -9,6 +9,7 @@ export const useStyles = makeStyles((theme) => ({
   logoContainer: {
     display: 'flex',
     alignItems: 'center',
+    cursor: 'pointer',
   },
   logoImg: {
     height: '2rem',
@@ -30,7 +31,7 @@ export const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       paddingBottom: '0.5rem',
       borderBottom: '1px solid transparent',
-      transition: 'all .2s',
+      transition: 'border-bottom .2s',
       '&:hover': {
         borderBottom: '1px solid white',
       },

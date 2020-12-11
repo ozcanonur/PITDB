@@ -72,9 +72,8 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '2rem',
 
     '& div': {
-      padding: '1.3rem 5.5rem',
       borderRadius: '0.8rem',
-      fontSize: '1.8rem',
+      fontSize: '1.6rem',
       fontWeight: 500,
       marginTop: '5rem',
       width: 'max-content',
@@ -88,10 +87,12 @@ export const useStyles = makeStyles((theme) => ({
   downloadButton: {
     color: 'white',
     backgroundColor: theme.palette.primary.light,
+    padding: '1.3rem 2.4rem',
   },
   browseButton: {
     color: theme.palette.primary.main,
     backgroundColor: theme.palette.secondary.main,
     marginLeft: '6rem',
+    padding: '1.3rem 5.5rem',
   },
 }));

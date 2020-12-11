@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
   subHeading: {
     fontSize: '1.8rem',
     color: '#5E709D',
-    marginTop: '2.7rem',
+    marginTop: '3rem',
     fontWeight: 300,
   },
   statisticsContainer: {

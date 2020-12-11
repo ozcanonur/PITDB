@@ -11,16 +11,16 @@ const Home = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.homeContainer}>
+    <div className={classes.container}>
       <HeroBg />
-      <div className={classes.home}>
+      <main className={classes.home}>
         <Header />
         <Hero />
         <DatabaseStatistics />
         <Flow />
         <Publish />
         <Footer />
-      </div>
+      </main>
     </div>
   );
 };

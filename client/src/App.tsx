@@ -1,17 +1,16 @@
-import { Router, Route, Switch } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import Home from 'components/Home/Home';
-
-const hist = createBrowserHistory();
+import Browse from 'components/Browse/Browse';
 
 const App = () => {
   return (
-    <Router history={hist}>
+    <BrowserRouter>
       <Switch>
-        <Route path='/' component={Home} />
+        <Route exact path='/' component={Home} />
+        <Route path='/browse' component={Browse} />
       </Switch>
-    </Router>
+    </BrowserRouter>
   );
 };
 

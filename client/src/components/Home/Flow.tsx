@@ -65,7 +65,9 @@ const Flow = () => {
             </div>
             <ul className={classes.flowContentList}>
               {texts.map((text) => (
-                <li className={classes.flowText}>{text}</li>
+                <li key={text} className={classes.flowText}>
+                  {text}
+                </li>
               ))}
             </ul>
           </>
@@ -78,7 +80,9 @@ const Flow = () => {
           </div>
           <ul className={classes.flowContentList}>
             {finalFlowItem.texts.map((text) => (
-              <li className={classes.flowText}>{text}</li>
+              <li key={text} className={classes.flowText}>
+                {text}
+              </li>
             ))}
           </ul>
         </>

@@ -1,8 +1,16 @@
+import { useHistory } from 'react-router-dom';
+
 import HeroImg from 'assets/hero_dna.svg';
 import { useStyles } from './styles/hero';
 
 const Hero = () => {
   const classes = useStyles();
+
+  const history = useHistory();
+
+  const navToBrowse = () => {
+    history.push('/browse');
+  };
 
   return (
     <section className={classes.heroContainer}>
@@ -10,7 +18,9 @@ const Hero = () => {
       <p className={classes.secondaryHeading}>
         PITDB is a platform for sharing of results from PIT (proteomics informed by transcriptomics) experiments.
       </p>
-      <div className={classes.browseButton}>Browse</div>
+      <div className={classes.browseButton} onClick={navToBrowse}>
+        Browse
+      </div>
     </section>
   );
 };

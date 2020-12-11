@@ -36,7 +36,7 @@ const Publish = () => {
       </div>
       <div className={classes.bulletPointsTextContainer}>
         {bulletPoints.map(({ title, text }) => (
-          <div className={classes.bulletPoint}>
+          <div key={title} className={classes.bulletPoint}>
             <div className={classes.bulletPointTitle}>{title}</div>
             <div className={classes.bulletPointText}>{text}</div>
           </div>
