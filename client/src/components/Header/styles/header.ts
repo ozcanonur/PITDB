@@ -20,11 +20,14 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     marginLeft: '1rem',
   },
-  navContainer: {},
+  navContainer: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   nav: {
     display: 'flex',
     alignItems: 'center',
-    width: '65rem',
+    width: '50rem',
     justifyContent: 'space-between',
     '& li': {
       listStyle: 'none',
@@ -48,15 +51,16 @@ export const useStyles = makeStyles((theme) => ({
   },
   getPitButton: {
     color: theme.palette.primary.main,
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
     backgroundColor: 'white',
     padding: '1.3rem 4rem',
     borderRadius: '0.8rem',
     fontSize: '1.5rem',
+    cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     '&:hover': {
       transform: 'scale(1.05)  translateY(-2px)',
       boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
     },
-    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
   },
 }));

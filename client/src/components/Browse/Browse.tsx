@@ -1,6 +1,7 @@
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 import Examples from './Examples';
+import ExperimentsTable from './ExperimentsTable';
 
 import { useStyles } from './styles/browse';
 
@@ -17,6 +18,7 @@ const Browse = () => {
           <p className={classes.subHeading}>Check out the examples or search for a specific experiment below.</p>
         </div>
         <Examples />
+        <ExperimentsTable />
         <Footer />
       </main>
     </div>

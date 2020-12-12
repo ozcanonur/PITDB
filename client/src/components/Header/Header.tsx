@@ -55,10 +55,9 @@ const Header = () => {
               {name}
             </li>
           ))}
-          <li>
-            <div className={classes.getPitButton}>Get PITGUI</div>
-          </li>
+          <li></li>
         </ul>
+        <div className={classes.getPitButton}>Get PITGUI</div>
       </nav>
     </header>
   );

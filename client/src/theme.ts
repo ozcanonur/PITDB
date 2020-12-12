@@ -10,4 +10,13 @@ export const theme = createMuiTheme({
       main: '#FFDE4D',
     },
   },
+  overrides: {
+    MuiSelect: {
+      select: {
+        '&:focus': {
+          backgroundColor: 'transparent',
+        },
+      },
+    },
+  },
 });
