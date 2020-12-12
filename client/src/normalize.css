@@ -395,3 +395,7 @@ html {
   overflow: auto;
   min-width: 1200px;
 }
+
+#react-select-2-input + div {
+  position: relative;
+}

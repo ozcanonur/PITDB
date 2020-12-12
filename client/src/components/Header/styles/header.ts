@@ -47,7 +47,7 @@ export const useStyles = makeStyles((theme) => ({
   navItem: {
     color: 'white',
     fontSize: '1.5rem',
-    fontWeight: 300,
+    fontWeight: 400,
   },
   getPitButton: {
     color: theme.palette.primary.main,

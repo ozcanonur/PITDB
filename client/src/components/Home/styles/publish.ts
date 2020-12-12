@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.8rem',
     color: '#5E709D',
     marginTop: '2.7rem',
-    fontWeight: 300,
+    fontWeight: 400,
   },
   bulletPointsContainer: {
     padding: '0 7rem',
@@ -62,7 +62,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   bulletPointText: {
     marginTop: '1.2rem',
-    fontWeight: 300,
+    fontWeight: 400,
     fontSize: '1.5rem',
     color: '#5E709D',
   },

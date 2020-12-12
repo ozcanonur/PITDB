@@ -14,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     color: '#5E709D',
     fontSize: '1.5rem',
-    fontWeight: 300,
+    fontWeight: 400,
     paddingTop: '1rem',
   },
   copyrightText: {

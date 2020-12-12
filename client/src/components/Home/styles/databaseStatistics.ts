@@ -30,7 +30,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.8rem',
     color: '#5E709D',
     marginTop: '3rem',
-    fontWeight: 300,
+    fontWeight: 400,
   },
   statisticsContainer: {
     display: 'grid',
@@ -61,7 +61,7 @@ export const useStyles = makeStyles((theme) => ({
   statisticDescription: {
     fontSize: '1.75rem',
     color: '#5E709D',
-    fontWeight: 300,
+    fontWeight: 400,
     marginTop: '2rem',
   },
 }));

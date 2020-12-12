@@ -40,7 +40,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '1.5rem 1.8rem',
   },
   cardBottomTextsContainer: {
-    fontWeight: 300,
+    fontWeight: 400,
     fontSize: '1.4rem',
 
     '& > div:first-child': {
@@ -58,7 +58,7 @@ export const useStyles = makeStyles((theme) => ({
   cardBottomFooterTextsContainer: {
     color: theme.palette.primary.main,
     marginLeft: '1rem',
-    fontWeight: 300,
+    fontWeight: 400,
     fontSize: '1.2rem',
   },
   cardBottomTextsUsername: {},

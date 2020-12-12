@@ -1,90 +1,65 @@
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
+import { ActionMeta } from 'react-select';
+
+import MultiSelect from './MultiSelect';
+import { updateBrowseFilterOptions } from 'actions';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: '10rem',
+    marginTop: '12rem',
   },
-  filtersContainer: {},
-  formControl: {
-    minWidth: 170,
-    maxWidth: 300,
-    backgroundColor: 'white',
-    boxShadow: '0 5px 10px rgba(154,160,185,.12), 0 15px 40px rgba(166,173,201,.22)',
-    borderRadius: '1.2rem',
-    padding: '0.6rem 1rem',
-    '& > div': {
-      margin: '0 !important',
+  filtersContainer: {
+    position: 'relative',
+    display: 'flex',
+
+    '& > div:not(:last-child)': {
+      marginRight: '5rem',
     },
-  },
-  inputLabelText: {
-    fontFamily: 'Poppins, sans-serif',
-    fontSize: '1.4rem',
-    fontWeight: 500,
-    transform: 'translate(1.8rem, 1.2rem)',
-    color: theme.palette.primary.main,
-  },
-  selectIcon: {
-    fontSize: '2.8rem',
-    transform: 'translate(1rem, -0.2rem)',
-    color: theme.palette.primary.main,
   },
 }));
 
-const names = ['Human', 'Mouse', 'Rat', 'Bovin'];
+const options = [
+  { value: 'Human', label: 'Human' },
+  { value: 'Rat', label: 'Rat' },
+  { value: 'Mouse', label: 'Mouse' },
+  { value: 'Bovin', label: 'Bovin' },
+];
 
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 48 * 4.5 + 8,
-      width: 250,
-    },
-  },
-};
+const options2 = [
+  { value: 'MCF-7', label: 'MCF-7' },
+  { value: 'HL-60', label: 'HL-60' },
+  { value: 'NTERA2', label: 'NTERA2' },
+];
+
+const options3 = [
+  { value: 'Property', label: 'Property' },
+  { value: 'Another property', label: 'Another property' },
+  { value: 'Yet another property', label: 'Yet another property' },
+];
 
 const ExperimentsTable = () => {
   const classes = useStyles();
 
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const selectedBrowseFilterOptions = useSelector((state: RootState) => state.browseFilterOptions);
 
-  const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedNames(e.target.value as string[]);
+  console.log(selectedBrowseFilterOptions);
+
+  const dispatch = useDispatch();
+
+  const selectOnChange = (selectedOptions: MultiSelectOption[], actionMeta: ActionMeta<any>) => {
+    if (!selectedOptions) return;
+
+    const currentlySelectedValues = selectedOptions.map((option) => option.value);
+    dispatch(updateBrowseFilterOptions(actionMeta.name as string, currentlySelectedValues));
   };
 
   return (
     <section className={classes.container}>
       <div className={classes.filtersContainer}>
-        <FormControl className={classes.formControl}>
-          <InputLabel id='species-checkbox-label' className={classes.inputLabelText}>
-            Species
-          </InputLabel>
-          <Select
-            disableUnderline
-            variant='filled'
-            labelId='species-checkbox-label'
-            value={selectedNames}
-            onChange={handleChange}
-            input={<Input />}
-            multiline
-            renderValue={(selected) => (selected as string[]).join(', ')}
-            MenuProps={MenuProps}
-            classes={{ icon: classes.selectIcon }}
-          >
-            {names.map((name) => (
-              <MenuItem key={name} value={name}>
-                <Checkbox checked={selectedNames.indexOf(name) > -1} />
-                <ListItemText primary={name} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <MultiSelect options={options} name='Species' onChange={selectOnChange} />
+        <MultiSelect options={options2} name='Cell Line' onChange={selectOnChange} />
+        <MultiSelect options={options3} name='Another filter' onChange={selectOnChange} />
       </div>
     </section>
   );
