@@ -32,11 +32,12 @@ export const useStyles = makeStyles((theme) => ({
       paddingBottom: '0.5rem',
       borderBottom: '1px solid transparent',
       transition: 'border-bottom .2s',
+
       '&:hover': {
-        borderBottom: '1px solid white',
+        borderBottom: '1px solid white !important',
       },
       '&:last-child:hover': {
-        borderBottom: 0,
+        borderBottom: '0 !important',
       },
     },
   },
@@ -53,7 +54,9 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.5rem',
     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     '&:hover': {
-      transform: 'scale(1.05)',
+      transform: 'scale(1.05)  translateY(-2px)',
+      boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
     },
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
   },
 }));

@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router-dom';
+
 import CardClip from 'assets/card_clip_2.svg';
 import BulletPoints from 'assets/publish_steps.svg';
 
@@ -5,6 +7,12 @@ import { useStyles } from './styles/publish';
 
 const Publish = () => {
   const classes = useStyles();
+
+  const history = useHistory();
+
+  const navToBrowse = () => {
+    history.push('/browse');
+  };
 
   const bulletPoints = [
     {
@@ -44,7 +52,9 @@ const Publish = () => {
       </div>
       <div className={classes.buttons}>
         <div className={classes.downloadButton}>Download PITGUI</div>
-        <div className={classes.browseButton}>Browse</div>
+        <div className={classes.browseButton} onClick={navToBrowse}>
+          Browse
+        </div>
       </div>
     </section>
   );

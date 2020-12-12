@@ -8,6 +8,8 @@ const Header = () => {
 
   const history = useHistory();
 
+  const checkIfCurrentRoute = (route: string) => !!(history.location.pathname === route);
+
   const navigate = (route: string) => {
     if (history.location.pathname !== route) history.push(route);
   };
@@ -44,7 +46,12 @@ const Header = () => {
       <nav className={classes.navContainer}>
         <ul className={classes.nav}>
           {navItems.map(({ name, navTo }) => (
-            <li key={name} className={classes.navItem} onClick={() => navigate(navTo)}>
+            <li
+              key={name}
+              className={classes.navItem}
+              onClick={() => navigate(navTo)}
+              style={{ borderBottom: checkIfCurrentRoute(navTo) ? '1px solid white' : '1px solid transparent' }}
+            >
               {name}
             </li>
           ))}

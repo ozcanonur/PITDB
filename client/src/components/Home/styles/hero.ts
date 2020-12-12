@@ -30,20 +30,9 @@ export const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     '&:hover': {
-      transform: 'scale(1.05)',
+      transform: 'scale(1.05) translateY(-2px)',
+      boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
     },
-  },
-  heroBg: {
-    backgroundColor: theme.palette.primary.main,
-    height: '53rem',
-    width: '100%',
-    position: 'absolute',
-    zIndex: -1,
-  },
-  heroImg: {
-    position: 'absolute',
-    top: '7rem',
-    right: '25rem',
-    height: '57rem',
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
   },
 }));

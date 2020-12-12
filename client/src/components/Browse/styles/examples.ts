@@ -15,7 +15,8 @@ export const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     transition: 'transform .2s',
     '&:hover': {
-      transform: 'scale(1.05)',
+      transform: 'scale(1.05)  translateY(-2px)',
+      boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
     },
   },
   cardTop: {

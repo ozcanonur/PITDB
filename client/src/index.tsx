@@ -5,7 +5,6 @@ import App from 'App';
 
 import { theme } from 'theme';
 import 'normalize.css';
-import 'style.css';
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

@@ -5,3 +5,4 @@ node_modules/
 client/build/
 server/build/
 deployment/
+.env

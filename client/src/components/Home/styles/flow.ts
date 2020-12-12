@@ -12,21 +12,21 @@ export const useStyles = makeStyles((theme) => ({
       zIndex: 4,
       transform: 'translateX(8.1rem)',
       '& div': {
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: '#8A8E9B',
       },
     },
     '& > div:nth-child(2)': {
       zIndex: 3,
       transform: 'translateX(5.4rem)',
       '& div': {
-        backgroundColor: '#8A8E9B',
+        backgroundColor: '#9999FF',
       },
     },
     '& > div:nth-child(3)': {
       zIndex: 2,
       transform: 'translateX(2.7rem)',
       '& div': {
-        backgroundColor: '#9999FF',
+        backgroundColor: theme.palette.primary.light,
       },
     },
   },

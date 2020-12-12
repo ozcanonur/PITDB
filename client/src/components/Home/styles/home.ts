@@ -8,5 +8,20 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: '1200px',
     margin: '0 auto',
     paddingTop: '1rem',
+    position: 'relative',
+  },
+  heroBg: {
+    backgroundColor: theme.palette.primary.main,
+    height: '53rem',
+    width: '100%',
+    position: 'absolute',
+    zIndex: -1,
+  },
+  heroImg: {
+    position: 'absolute',
+    top: '12rem',
+    right: '-4rem',
+    height: '57rem',
+    zIndex: 999,
   },
 }));
