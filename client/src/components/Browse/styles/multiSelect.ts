@@ -6,7 +6,7 @@ export const selectStyles: Styles = {
       ...styles,
       fontFamily: 'Poppins, sans-serif',
       fontSize: '1.4rem',
-      fontWeight: 500,
+      fontWeight: 600,
       color: '#333366',
     };
   },
@@ -19,12 +19,41 @@ export const selectStyles: Styles = {
       border: 'none',
       minHeight: '4rem',
       width: '17rem',
+      marginBottom: '1rem',
+      cursor: 'pointer',
     };
   },
   multiValue: (styles) => {
     return {
       ...styles,
-      display: 'none',
+      backgroundColor: '#333366',
+      marginTop: '0.5rem',
+      borderRadius: '0.7rem',
+      padding: '0.5rem 1.2rem',
+      paddingRight: '0.6rem',
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontSize: '1.4rem',
+      pointerEvents: 'none',
+    };
+  },
+  multiValueLabel: (styles) => {
+    return {
+      ...styles,
+      color: 'white',
+      fontSize: '1.4rem',
+    };
+  },
+  multiValueRemove: (styles) => {
+    return {
+      ...styles,
+      color: 'white',
+      fontSize: '2rem',
+      '&:hover': {
+        backgroundColor: 'white',
+        color: '#333366',
+      },
+      pointerEvents: 'all',
     };
   },
   menuList: (styles) => {
@@ -34,6 +63,17 @@ export const selectStyles: Styles = {
       fontSize: '1.4rem',
       fontWeight: 400,
       color: '#333366',
+      padding: 0,
+
+      '& > div:first-of-type': {
+        borderTopLeftRadius: '0.8rem',
+        borderTopRightRadius: '0.8rem',
+      },
+
+      '& > div:last-child': {
+        borderBottomLeftRadius: '0.8rem',
+        borderBottomRightRadius: '0.8rem',
+      },
     };
   },
   menu: (styles) => {
@@ -68,7 +108,7 @@ export const selectStyles: Styles = {
       ...styles,
       fontFamily: 'Poppins, sans-serif',
       fontSize: '1.4rem',
-      fontWeight: 500,
+      fontWeight: 600,
       color: '#333366',
       width: '100%',
     };
@@ -77,6 +117,11 @@ export const selectStyles: Styles = {
     return {
       ...styles,
       backgroundColor: isSelected ? '#333366' : isFocused ? 'rgba(51, 51, 102, 0.1)' : 'none',
+      cursor: 'pointer',
+
+      '&:active': {
+        backgroundColor: 'rgba(51, 51, 102, 0.4)',
+      },
     };
   },
   valueContainer: (styles) => {

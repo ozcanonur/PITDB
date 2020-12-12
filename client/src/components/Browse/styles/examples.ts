@@ -65,4 +65,7 @@ export const useStyles = makeStyles((theme) => ({
   cardBottomTextsDate: {
     marginTop: '0.2rem',
   },
+  cardBottomTextIdentifier: {
+    fontWeight: 600,
+  },
 }));

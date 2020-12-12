@@ -28,11 +28,11 @@ const ExampleCard = ({ exampleProps }: ExampleProps) => {
       <div className={classes.cardBottom}>
         <div className={classes.cardBottomTextsContainer}>
           <div>
-            <strong>Species: </strong>
+            <span className={classes.cardBottomTextIdentifier}>Species: </span>
             {species}
           </div>
           <div>
-            <strong>TGEs: </strong>
+            <span className={classes.cardBottomTextIdentifier}>TGEs: </span>
             {TGEs}
           </div>
         </div>

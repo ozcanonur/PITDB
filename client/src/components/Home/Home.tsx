@@ -14,8 +14,8 @@ const Home = () => {
   return (
     <div className={classes.container}>
       <div className={classes.heroBg} />
+      <Header />
       <main className={classes.home}>
-        <Header />
         <img className={classes.heroImg} src={HeroImg} alt='dna' />
         <Hero />
         <DatabaseStatistics />

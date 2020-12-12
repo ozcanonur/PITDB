@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Select, { OptionsType, ValueType, components, ActionMeta } from 'react-select';
+import usePortal from 'react-useportal';
 
 import { selectStyles } from './styles/multiSelect';
 
-const { ValueContainer, Placeholder } = components;
+const { ValueContainer, Placeholder, MultiValueContainer } = components;
 
 interface Props {
   name: string;
   options: OptionsType<any>;
   onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
+  containerProps?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+  selectProps?: any;
 }
 
 const CustomValueContainer = ({ children, ...props }: any) => {
@@ -20,20 +23,43 @@ const CustomValueContainer = ({ children, ...props }: any) => {
   );
 };
 
-const MultiSelect = ({ name, options, onChange }: Props) => {
+const CustomMultiValueContainer = (renderOn: React.MutableRefObject<HTMLElement | null>) => {
+  return ({ children, ...props }: any) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { Portal } = usePortal({
+      bindTo: renderOn.current || undefined,
+    });
+
+    if (!renderOn.current) return null;
+
+    return (
+      <Portal>
+        <MultiValueContainer {...props}>{React.Children.map(children, (child) => child)}</MultiValueContainer>
+      </Portal>
+    );
+  };
+};
+
+const MultiSelect = ({ containerProps, selectProps, name, options, onChange }: Props) => {
+  const ref = useRef(null);
+
   return (
-    <Select
-      name={name}
-      components={{ ValueContainer: CustomValueContainer }}
-      closeMenuOnSelect={false}
-      isMulti
-      hideSelectedOptions={false}
-      options={options}
-      styles={selectStyles}
-      onChange={onChange}
-      placeholder={name}
-      isClearable
-    />
+    <div {...containerProps}>
+      <Select
+        name={name}
+        components={{ ValueContainer: CustomValueContainer, MultiValueContainer: CustomMultiValueContainer(ref) }}
+        closeMenuOnSelect={false}
+        isMulti
+        hideSelectedOptions={false}
+        options={options}
+        styles={selectStyles}
+        onChange={onChange}
+        placeholder={name}
+        isClearable
+        {...selectProps}
+      />
+      <div ref={ref} />
+    </div>
   );
 };
 

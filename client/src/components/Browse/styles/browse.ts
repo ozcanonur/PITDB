@@ -1,11 +1,12 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  container: {},
+  container: {
+    background: 'linear-gradient(to bottom, white 25% , #F2F4FF )',
+  },
   browse: {
     maxWidth: '1200px',
     margin: '0 auto',
-    paddingTop: '1rem',
   },
   heroBg: {
     backgroundColor: theme.palette.primary.main,

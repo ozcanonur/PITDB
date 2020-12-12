@@ -2,9 +2,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   headerContainer: {
-    padding: '1rem 3rem',
+    padding: '2rem 3rem',
     display: 'flex',
     justifyContent: 'space-between',
+    maxWidth: '1200px',
+    margin: '0 auto',
   },
   logoContainer: {
     display: 'flex',
