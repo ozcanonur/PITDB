@@ -15,13 +15,13 @@ interface ExampleProps {
   };
 }
 
-const ExampleCard = ({ exampleProps }: ExampleProps) => {
+const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
   const classes = useStyles();
 
   const { id, species, TGEs, username, date, color } = exampleProps;
 
   return (
-    <div className={classes.cardContainer}>
+    <div className={classes.cardContainer} {...props}>
       <div className={classes.cardTop} style={{ backgroundColor: color }}>
         <DnaImg className={classes.cardImg} />
         <div className={classes.cardTopText}>{id}</div>
@@ -49,11 +49,11 @@ const ExampleCard = ({ exampleProps }: ExampleProps) => {
   );
 };
 
-const Examples = () => {
+const Examples = ({ ...props }) => {
   const classes = useStyles();
 
   return (
-    <section className={classes.container}>
+    <section className={classes.container} {...props}>
       {examples.map((example) => (
         <ExampleCard key={example.id} exampleProps={example} />
       ))}

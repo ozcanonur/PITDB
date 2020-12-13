@@ -26,7 +26,7 @@ const FlowShapeVertical = ({ children }: { children?: JSX.Element | string }) =>
   );
 };
 
-const Flow = () => {
+const Flow = ({ ...props }: any) => {
   const classes = useStyles();
 
   const flowItems = [
@@ -47,14 +47,14 @@ const Flow = () => {
     },
   ];
 
-  const finalFlowItem = {
+  const verticalFlowItem = {
     title: 'PITDB',
     FlowImg: <PITDBCylinder className={classes.flowContentImg} />,
     texts: ['Transcripts', 'Genome annotation', 'ORF sequences', 'Peptide evidence', 'Annotated TGEs'],
   };
 
   return (
-    <section className={classes.container}>
+    <section className={classes.container} {...props}>
       {flowItems.map(({ title, FlowImg, texts }) => (
         <FlowShape key={title}>
           <>
@@ -75,10 +75,10 @@ const Flow = () => {
       <FlowShapeVertical>
         <>
           <div className={classes.flowContentHeading}>
-            {finalFlowItem.FlowImg} {finalFlowItem.title}
+            {verticalFlowItem.FlowImg} {verticalFlowItem.title}
           </div>
           <ul className={classes.flowContentList}>
-            {finalFlowItem.texts.map((text) => (
+            {verticalFlowItem.texts.map((text) => (
               <li key={text} className={classes.flowText}>
                 {text}
               </li>

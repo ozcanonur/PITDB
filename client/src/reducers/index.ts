@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { ACTION, UpdateBrowseFilterOptionAction } from 'actions/types';
+// import { ACTION, UpdateBrowseFilterOptionAction } from 'actions/types';
 
 // const browseFilterOptions = (state: BrowseFilterOptions = {}, action: UpdateBrowseFilterOptionAction) => {
 //   switch (action.type) {
@@ -15,5 +15,5 @@ import { ACTION, UpdateBrowseFilterOptionAction } from 'actions/types';
 // };
 
 export default combineReducers({
-  // browseFilterOptions,
+  placeholder: (state = '') => state,
 });

@@ -6,4 +6,4 @@ client/build/
 server/build/
 deployment/
 .env
-.eslintcache
+client/.eslintcache

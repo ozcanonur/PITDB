@@ -9,7 +9,7 @@ import { useStyles } from './styles/experiments';
 import { options, options2, options3, searchOptions } from 'variables/browseFilterOptions';
 import { sampleTableData } from 'variables/browseTableData';
 
-const Experiments = () => {
+const Experiments = ({ ...props }) => {
   const classes = useStyles();
 
   const [filterTableBy, setFilterTableBy] = useState<GenericObject>({ Species: ['Human'] });
@@ -38,7 +38,7 @@ const Experiments = () => {
   };
 
   return (
-    <section className={classes.container}>
+    <section className={classes.container} {...props}>
       <div className={classes.filtersContainer}>
         <MultiSelect options={options} name='Species' defaultValueIndex={0} onChange={multiSelectOnChange} />
         <MultiSelect options={options2} name='Some filter' onChange={multiSelectOnChange} />

@@ -2,7 +2,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useStyles } from './styles/hero';
 
-const Hero = () => {
+const Hero = ({ ...props }) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -12,7 +12,7 @@ const Hero = () => {
   };
 
   return (
-    <section className={classes.heroContainer}>
+    <section className={classes.heroContainer} {...props}>
       <h1 className={classes.heading}>PIT Experiments Database</h1>
       <p className={classes.secondaryHeading}>
         PITDB is a platform for sharing of results from PIT (proteomics informed by transcriptomics) experiments.

@@ -5,7 +5,7 @@ import CardClip from 'assets/card_clip_2.svg';
 import BulletPoints from 'assets/publish_steps.svg';
 import { useStyles } from './styles/publish';
 
-const Publish = () => {
+const Publish = ({ ...props }) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -15,7 +15,7 @@ const Publish = () => {
   };
 
   return (
-    <section className={classes.container}>
+    <section className={classes.container} {...props}>
       <img className={classes.cardClip} src={CardClip} alt='dna' />
       <div className={classes.headingContainer}>
         <h2 className={classes.heading}>How to run and publish your results</h2>

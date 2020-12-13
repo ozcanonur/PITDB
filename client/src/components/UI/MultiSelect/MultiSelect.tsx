@@ -53,7 +53,7 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
 };
 
 const MultiSelect = ({ containerProps, multiSelectProps, name, options, onChange, defaultValueIndex }: Props) => {
-  const [ref, setRef] = useState<HTMLElement | null>(null);
+  const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   return (
     <div {...containerProps}>
@@ -62,8 +62,8 @@ const MultiSelect = ({ containerProps, multiSelectProps, name, options, onChange
         components={{
           ValueContainer: CustomValueContainer,
           MultiValueContainer: CustomMultiValueContainer(ref),
-          Menu: CustomMenu,
           DropdownIndicator: CustomDropdownIndicator,
+          Menu: CustomMenu,
         }}
         closeMenuOnSelect={false}
         isMulti

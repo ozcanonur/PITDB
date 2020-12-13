@@ -4,7 +4,7 @@ import { navItems } from 'variables/headerNavItems';
 import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
 import { useStyles } from './styles/header';
 
-const Header = () => {
+const Header = ({ ...props }) => {
   const classes = useStyles();
 
   const history = useHistory();
@@ -16,7 +16,7 @@ const Header = () => {
   };
 
   return (
-    <header className={classes.headerContainer}>
+    <header className={classes.headerContainer} {...props}>
       <div className={classes.logoContainer} onClick={() => navigate('/')}>
         <LogoImg className={classes.logoImg} />
         <div className={classes.logoText}>PITDB</div>

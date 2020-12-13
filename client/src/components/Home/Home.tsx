@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 import Hero from './Hero';
@@ -11,16 +15,22 @@ import { useStyles } from './styles/home';
 const Home = () => {
   const classes = useStyles();
 
+  useEffect(() => {
+    AOS.init({
+      duration: 500,
+    });
+  }, []);
+
   return (
     <div className={classes.container}>
       <div className={classes.heroBg} />
       <Header />
       <main className={classes.home}>
-        <img className={classes.heroImg} src={HeroImg} alt='dna' />
-        <Hero />
-        <DatabaseStatistics />
-        <Flow />
-        <Publish />
+        <img className={classes.heroImg} src={HeroImg} alt='dna' data-aos='fade-left' data-aos-duration='1200' />
+        <Hero data-aos='fade-right' data-aos-duration='1200' />
+        <DatabaseStatistics data-aos='fade-up' data-aos-duration='1200' />
+        <Flow data-aos='fade-up' />
+        <Publish data-aos='fade-up' />
         <Footer />
       </main>
     </div>
