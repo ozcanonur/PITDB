@@ -57,6 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: 'white',
     padding: '1.3rem 4rem',
     borderRadius: '0.8rem',
+    fontWeight: 500,
     fontSize: '1.5rem',
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',

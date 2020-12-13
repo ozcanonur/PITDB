@@ -7,7 +7,6 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: '1000px',
     margin: '0 auto',
     position: 'relative',
-    // zIndex: -2,
   },
   cardClip: {
     position: 'absolute',
@@ -48,8 +47,9 @@ export const useStyles = makeStyles((theme) => ({
   },
   square: {
     height: '3rem',
-    width: '9rem',
+    width: '8rem',
     backgroundColor: theme.palette.primary.light,
+    boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },
   statisticTextContainer: {
     marginLeft: '2.5rem',

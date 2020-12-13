@@ -19,7 +19,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   heroImg: {
     position: 'absolute',
-    top: '7.2rem',
+    top: '4rem',
     right: '-4rem',
     height: '57rem',
     zIndex: 999,

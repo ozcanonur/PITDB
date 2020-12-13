@@ -38,7 +38,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '26rem',
     display: 'inline-block',
     padding: '2rem 3rem',
-    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
+    boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },
   flowTriangle: {
     height: '15rem',
@@ -84,6 +84,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     padding: '2.5rem 3rem',
     backgroundColor: theme.palette.primary.dark,
+    boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },
   flowTriangleVertical: {
     height: '12rem',

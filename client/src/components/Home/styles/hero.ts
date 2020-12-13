@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '1.3rem 5.5rem',
     borderRadius: '0.8rem',
     fontSize: '1.8rem',
-    fontWeight: 500,
+    fontWeight: 600,
     marginTop: '5rem',
     width: 'max-content',
     cursor: 'pointer',

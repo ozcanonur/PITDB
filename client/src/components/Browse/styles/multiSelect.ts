@@ -35,6 +35,7 @@ export const selectStyles: Styles = {
       justifyContent: 'space-between',
       fontSize: '1.4rem',
       pointerEvents: 'none',
+      margin: 0,
     };
   },
   multiValueLabel: (styles) => {

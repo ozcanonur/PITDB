@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import Select, { OptionsType, ValueType, components, ActionMeta } from 'react-select';
 import usePortal from 'react-useportal';
 
@@ -23,14 +23,14 @@ const CustomValueContainer = ({ children, ...props }: any) => {
   );
 };
 
-const CustomMultiValueContainer = (renderOn: React.MutableRefObject<HTMLElement | null>) => {
+const CustomMultiValueContainer = (renderOn: HTMLElement | null) => {
   return ({ children, ...props }: any) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { Portal } = usePortal({
-      bindTo: renderOn.current || undefined,
+      bindTo: renderOn || undefined,
     });
 
-    if (!renderOn.current) return null;
+    if (!renderOn) return null;
 
     return (
       <Portal>
@@ -41,13 +41,16 @@ const CustomMultiValueContainer = (renderOn: React.MutableRefObject<HTMLElement 
 };
 
 const MultiSelect = ({ containerProps, selectProps, name, options, onChange }: Props) => {
-  const ref = useRef(null);
+  const [ref, setRef] = useState<HTMLElement | null>(null);
 
   return (
     <div {...containerProps}>
       <Select
         name={name}
-        components={{ ValueContainer: CustomValueContainer, MultiValueContainer: CustomMultiValueContainer(ref) }}
+        components={{
+          ValueContainer: CustomValueContainer,
+          MultiValueContainer: CustomMultiValueContainer(ref),
+        }}
         closeMenuOnSelect={false}
         isMulti
         hideSelectedOptions={false}
@@ -55,10 +58,12 @@ const MultiSelect = ({ containerProps, selectProps, name, options, onChange }: P
         styles={selectStyles}
         onChange={onChange}
         placeholder={name}
+        defaultValue={options[0]}
         isClearable
+        controlShouldRenderValue
         {...selectProps}
       />
-      <div ref={ref} />
+      <div ref={(node) => setRef(node)} />
     </div>
   );
 };

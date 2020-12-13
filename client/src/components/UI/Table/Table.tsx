@@ -102,7 +102,7 @@ const CustomTable = (props: Props) => {
           menuItem: classes.tablePagination,
         }}
         className={classes.tablePagination}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50]}
         component='div'
         count={filteredList.length}
         rowsPerPage={rowsPerPage}
