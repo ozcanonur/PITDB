@@ -23,7 +23,9 @@ export const selectStyles: Styles = {
       cursor: 'pointer',
 
       '& div[class$="placeholder"]': {
-        display: isFocused ? 'none' : 'inherit',
+        transition: 'all .15s',
+        transform: isFocused ? 'translateY(-1.4rem)' : 'translateY(-50%)',
+        fontSize: isFocused ? '0.8rem' : '1.4rem',
       },
     };
   },
@@ -140,6 +142,36 @@ export const selectStyles: Styles = {
     return {
       ...styles,
       paddingLeft: '1.5rem',
+    };
+  },
+};
+
+export const searchStyles: Styles = {
+  ...selectStyles,
+  control: (styles, { isFocused }) => {
+    return {
+      ...styles,
+      borderRadius: '0.8rem',
+      justifyContent: 'flex-end',
+      boxShadow: '0 5px 10px rgba(154,160,185,.18), 0 15px 40px rgba(166,173,201,.25)',
+      border: 'none',
+      minHeight: '4rem',
+      width: '25rem',
+      marginBottom: '1rem',
+      cursor: 'pointer',
+
+      '& div[class$="placeholder"]': {
+        transition: 'all .15s',
+        transform: isFocused ? 'translateY(-1.4rem)' : 'translateY(-50%)',
+        fontSize: isFocused ? '0.8rem' : '1.4rem',
+      },
+    };
+  },
+  singleValue: (styles) => {
+    return {
+      ...styles,
+      fontSize: '1.4rem',
+      fontWeight: 500,
     };
   },
 };

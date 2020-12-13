@@ -45,17 +45,22 @@ const Header = () => {
       </div>
       <nav className={classes.navContainer}>
         <ul className={classes.nav}>
-          {navItems.map(({ name, navTo }) => (
-            <li
-              key={name}
-              className={classes.navItem}
-              onClick={() => navigate(navTo)}
-              style={{ borderBottom: checkIfCurrentRoute(navTo) ? '1px solid white' : '1px solid transparent' }}
-            >
-              {name}
-            </li>
-          ))}
-          <li></li>
+          {navItems.map(({ name, navTo }) => {
+            const isCurrentRoute = checkIfCurrentRoute(navTo);
+            return (
+              <li
+                key={name}
+                className={classes.navItem}
+                onClick={() => navigate(navTo)}
+                style={{
+                  borderBottom: isCurrentRoute ? '1px solid white' : '1px solid transparent',
+                  color: isCurrentRoute ? 'white' : '#E0E0E0',
+                }}
+              >
+                {name}
+              </li>
+            );
+          })}
         </ul>
         <div className={classes.getPitButton}>Get PITGUI</div>
       </nav>

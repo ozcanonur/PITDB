@@ -10,7 +10,7 @@ const Footer = () => {
         <div className={classes.copyrightText}>&copy; 2020, PITDB</div>
         <div className={classes.privacyButton}>Privacy</div>
       </div>
-      <img src={BessantLab} className={classes.bessantLab} alt='bessant lab' />
+      <img src={BessantLab} className={classes.bessantLab} alt='Bessant Lab' />
     </footer>
   );
 };

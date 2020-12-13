@@ -29,20 +29,18 @@ export const useStyles = makeStyles((theme) => ({
   nav: {
     display: 'flex',
     alignItems: 'center',
-    width: '50rem',
+    width: '40rem',
     justifyContent: 'space-between',
     '& li': {
       listStyle: 'none',
       cursor: 'pointer',
       paddingBottom: '0.5rem',
       borderBottom: '1px solid transparent',
-      transition: 'border-bottom .2s',
+      transition: 'all .2s',
 
       '&:hover': {
         borderBottom: '1px solid white !important',
-      },
-      '&:last-child:hover': {
-        borderBottom: '0 !important',
+        color: 'white !important',
       },
     },
   },
@@ -56,6 +54,7 @@ export const useStyles = makeStyles((theme) => ({
     boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
     backgroundColor: 'white',
     padding: '1.3rem 4rem',
+    marginLeft: '5rem',
     borderRadius: '0.8rem',
     fontWeight: 500,
     fontSize: '1.5rem',

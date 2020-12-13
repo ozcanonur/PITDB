@@ -59,6 +59,7 @@ export const useStyles = makeStyles((theme) => ({
   bulletPointTitle: {
     fontSize: '1.8rem',
     color: theme.palette.primary.main,
+    fontWeight: 500,
   },
   bulletPointText: {
     marginTop: '1.2rem',

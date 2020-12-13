@@ -373,23 +373,3 @@ html {
   border-collapse: collapse;
   height: 100%;
 }
-
-*::-webkit-scrollbar {
-  width: 11px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #f9faff;
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #333366;
-  border-radius: 6px;
-  border: 3px solid #f9faff;
-}
-
-#root {
-  min-height: 100vh;
-  overflow: auto;
-  min-width: 1200px;
-}

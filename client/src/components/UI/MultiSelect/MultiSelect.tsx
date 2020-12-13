@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import Select, { OptionsType, ValueType, components, ActionMeta } from 'react-select';
 import usePortal from 'react-useportal';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import { selectStyles } from './styles/multiSelect';
 
-const { ValueContainer, Placeholder, MultiValueContainer, DropdownIndicator } = components;
+const { ValueContainer, Placeholder, MultiValueContainer, Menu, DropdownIndicator } = components;
 
 interface Props {
   name: string;
   options: OptionsType<any>;
-  onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
+  onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   containerProps?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-  selectProps?: any;
+  multiSelectProps?: any;
   defaultValueIndex?: number;
 }
 
@@ -41,7 +42,17 @@ const CustomMultiValueContainer = (renderOn: HTMLElement | null) => {
   };
 };
 
-const MultiSelect = ({ containerProps, selectProps, name, options, onChange, defaultValueIndex }: Props) => {
+const CustomMenu = ({ ...props }: any) => <Menu {...props} className='multiSelectMenu' />;
+
+const CustomDropdownIndicator = ({ ...props }: any) => {
+  return (
+    <DropdownIndicator {...props}>
+      <ArrowDropDownIcon style={{ fontSize: '2.4rem' }} />
+    </DropdownIndicator>
+  );
+};
+
+const MultiSelect = ({ containerProps, multiSelectProps, name, options, onChange, defaultValueIndex }: Props) => {
   const [ref, setRef] = useState<HTMLElement | null>(null);
 
   return (
@@ -51,6 +62,8 @@ const MultiSelect = ({ containerProps, selectProps, name, options, onChange, def
         components={{
           ValueContainer: CustomValueContainer,
           MultiValueContainer: CustomMultiValueContainer(ref),
+          Menu: CustomMenu,
+          DropdownIndicator: CustomDropdownIndicator,
         }}
         closeMenuOnSelect={false}
         isMulti
@@ -62,7 +75,7 @@ const MultiSelect = ({ containerProps, selectProps, name, options, onChange, def
         defaultValue={defaultValueIndex !== undefined ? options[defaultValueIndex] : undefined}
         isClearable
         controlShouldRenderValue
-        {...selectProps}
+        {...multiSelectProps}
       />
       <div ref={(node) => setRef(node)} />
     </div>
