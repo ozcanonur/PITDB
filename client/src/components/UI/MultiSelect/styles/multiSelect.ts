@@ -56,6 +56,7 @@ export const selectStyles: Styles = {
       ...styles,
       color: 'white',
       fontSize: '2rem',
+      borderRadius: '0.3rem',
       '&:hover': {
         backgroundColor: 'white',
         color: '#333366',

@@ -45,6 +45,7 @@ const SingleSelect = ({ containerProps, singleSelectProps, name, options, onChan
         loadOptions={promiseOptions}
         styles={searchStyles}
         placeholder={name}
+        closeMenuOnSelect={false}
         {...singleSelectProps}
       />
     </div>

@@ -1,8 +1,8 @@
 import { useHistory } from 'react-router-dom';
 
+import { bulletPoints } from 'variables/publishBulletPoints';
 import CardClip from 'assets/card_clip_2.svg';
 import BulletPoints from 'assets/publish_steps.svg';
-
 import { useStyles } from './styles/publish';
 
 const Publish = () => {
@@ -13,24 +13,6 @@ const Publish = () => {
   const navToBrowse = () => {
     history.push('/browse');
   };
-
-  const bulletPoints = [
-    {
-      title: 'Download PITGUI',
-      text: 'PITGUI is a desktop application which you can download here.',
-    },
-    {
-      title: 'Upload your dataset',
-      text: 'You should have both RNA-seq and LC-MS/MS data.',
-    },
-    {
-      title: 'Run the analysis',
-      text: 'This might take a while...Meanwhile, you can browse previous experiments.',
-    },
-    {
-      title: 'Publish',
-    },
-  ];
 
   return (
     <section className={classes.container}>

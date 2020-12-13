@@ -4,8 +4,8 @@ import Hero from './Hero';
 import DatabaseStatistics from './DatabaseStatistics';
 import Flow from './Flow';
 import Publish from './Publish';
-import HeroImg from 'assets/hero_dna.svg';
 
+import HeroImg from 'assets/hero_dna.svg';
 import { useStyles } from './styles/home';
 
 const Home = () => {

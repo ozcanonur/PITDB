@@ -1,6 +1,7 @@
-import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
 import { useHistory } from 'react-router-dom';
 
+import { navItems } from 'variables/headerNavItems';
+import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
 import { useStyles } from './styles/header';
 
 const Header = () => {
@@ -13,29 +14,6 @@ const Header = () => {
   const navigate = (route: string) => {
     if (history.location.pathname !== route) history.push(route);
   };
-
-  const navItems = [
-    {
-      name: 'Browse',
-      navTo: '/browse',
-    },
-    {
-      name: 'Search',
-      navTo: '/search',
-    },
-    {
-      name: 'API',
-      navTo: '/api',
-    },
-    {
-      name: 'About',
-      navTo: '/about',
-    },
-    {
-      name: 'Help',
-      navTo: '/help',
-    },
-  ];
 
   return (
     <header className={classes.headerContainer}>
