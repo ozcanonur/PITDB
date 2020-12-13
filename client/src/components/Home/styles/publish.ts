@@ -2,7 +2,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    background: 'linear-gradient(to bottom, #ECF4FD 32%, white 68%)',
+    background: 'linear-gradient(190deg,#ebf4fd,hsla(0,0%,100%,0) 75%)',
     marginTop: '10rem',
     maxWidth: '1000px',
     margin: '0 auto',

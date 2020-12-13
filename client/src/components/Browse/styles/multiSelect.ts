@@ -10,7 +10,7 @@ export const selectStyles: Styles = {
       color: '#333366',
     };
   },
-  control: (styles) => {
+  control: (styles, { isFocused }) => {
     return {
       ...styles,
       borderRadius: '0.8rem',
@@ -21,6 +21,10 @@ export const selectStyles: Styles = {
       width: '17rem',
       marginBottom: '1rem',
       cursor: 'pointer',
+
+      '& div[class$="placeholder"]': {
+        display: isFocused ? 'none' : 'inherit',
+      },
     };
   },
   multiValue: (styles) => {
@@ -112,6 +116,13 @@ export const selectStyles: Styles = {
       fontWeight: 600,
       color: '#333366',
       width: '100%',
+
+      '& input:active': {
+        backgroundColor: 'red',
+      },
+      '&:focus': {
+        backgroundColor: 'red',
+      },
     };
   },
   option: (styles, { isSelected, isFocused }) => {

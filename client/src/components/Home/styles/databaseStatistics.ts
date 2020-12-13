@@ -2,7 +2,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    background: 'linear-gradient(to bottom, #ECF4FD 32%, white 68%)',
+    background: 'linear-gradient(-190deg,#ebf4fd,hsla(0,0%,100%,0) 75%)',
     marginTop: '24rem',
     maxWidth: '1000px',
     margin: '0 auto',
@@ -46,13 +46,13 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   square: {
-    height: '3rem',
-    width: '8rem',
+    height: '2.6rem',
+    width: '7.2rem',
     backgroundColor: theme.palette.primary.light,
     boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },
   statisticTextContainer: {
-    marginLeft: '2.5rem',
+    marginLeft: '2rem',
   },
   statisticTitle: {
     fontSize: '2rem',

@@ -371,8 +371,6 @@ html {
   font-size: 62.5%;
   box-sizing: border-box;
   border-collapse: collapse;
-  --scrollbarBG: rgb(32, 34, 37);
-  --thumbBG: rgb(99, 102, 105);
   height: 100%;
 }
 
@@ -381,21 +379,17 @@ html {
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--scrollbarBG);
+  background: #f9faff;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--thumbBG);
+  background-color: #333366;
   border-radius: 6px;
-  border: 3px solid var(--scrollbarBG);
+  border: 3px solid #f9faff;
 }
 
 #root {
   min-height: 100vh;
   overflow: auto;
   min-width: 1200px;
-}
-
-#react-select-2-input + div {
-  position: relative;
 }

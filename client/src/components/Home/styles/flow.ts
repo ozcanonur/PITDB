@@ -80,15 +80,15 @@ export const useStyles = makeStyles((theme) => ({
   },
   flowSquareVertical: {
     height: 'max-content',
-    width: '23rem',
+    width: '22rem',
     display: 'inline-block',
-    padding: '2.5rem 3rem',
+    padding: '2.5rem',
     backgroundColor: theme.palette.primary.dark,
     boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },
   flowTriangleVertical: {
     height: '12rem',
-    width: '23rem',
+    width: '22rem',
     display: 'inline-block',
     clipPath: 'polygon(50% 30%, 0 0, 100% 0)',
     backgroundColor: theme.palette.primary.dark,

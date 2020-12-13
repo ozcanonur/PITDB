@@ -4,7 +4,7 @@ import usePortal from 'react-useportal';
 
 import { selectStyles } from './styles/multiSelect';
 
-const { ValueContainer, Placeholder, MultiValueContainer } = components;
+const { ValueContainer, Placeholder, MultiValueContainer, DropdownIndicator } = components;
 
 interface Props {
   name: string;
@@ -12,6 +12,7 @@ interface Props {
   onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   containerProps?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
   selectProps?: any;
+  defaultValueIndex?: number;
 }
 
 const CustomValueContainer = ({ children, ...props }: any) => {
@@ -40,7 +41,7 @@ const CustomMultiValueContainer = (renderOn: HTMLElement | null) => {
   };
 };
 
-const MultiSelect = ({ containerProps, selectProps, name, options, onChange }: Props) => {
+const MultiSelect = ({ containerProps, selectProps, name, options, onChange, defaultValueIndex }: Props) => {
   const [ref, setRef] = useState<HTMLElement | null>(null);
 
   return (
@@ -58,7 +59,7 @@ const MultiSelect = ({ containerProps, selectProps, name, options, onChange }: P
         styles={selectStyles}
         onChange={onChange}
         placeholder={name}
-        defaultValue={options[0]}
+        defaultValue={defaultValueIndex !== undefined ? options[defaultValueIndex] : undefined}
         isClearable
         controlShouldRenderValue
         {...selectProps}
