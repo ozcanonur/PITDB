@@ -29,6 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: 'Poppins, sans-serif !important',
     borderColor: 'rgba(94, 112, 157, 0.25)',
     maxWidth: '10rem',
+    position: 'relative',
   },
   tableResponsive: {
     width: '100%',
@@ -63,5 +64,15 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: 'Poppins, sans-serif !important',
     fontWeight: 600,
     color: theme.palette.primary.main,
+  },
+  tablePaginationSelectIcon: {
+    fontSize: '2rem',
+    color: theme.palette.primary.main,
+  },
+  sortDropdown: {
+    position: 'absolute',
+    fontSize: '2rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
   },
 }));

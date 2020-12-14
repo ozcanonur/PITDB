@@ -37,7 +37,7 @@ const Experiments = ({ ...props }) => {
           type: 'RangeSlider',
           name: 'Peptides',
           min: 0,
-          max: 80000,
+          max: 74400,
         },
         {
           type: 'SingleSelect',

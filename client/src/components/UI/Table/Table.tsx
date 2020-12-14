@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import range from 'lodash/range';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
-
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 import { useStyles } from './styles/table';
 import Row from './TableRow';
-import Head from './TableHead';
 
 interface Props {
   tableHead: string[];
@@ -40,43 +42,42 @@ const CustomTable = (props: Props) => {
     setCurrentPage(page);
   };
 
-  /*-------------------------*/
-  // Sorting, WOOP, sort state
   // Currently displayed values, filtered by the search field
   const createSortState = () => {
-    let { length } = tableHead;
-
-    const obj = {};
-    range(0, length).forEach((x) => {
-      // @ts-ignore
-      if (x === 0) obj[x] = true;
-      // @ts-ignore
-      else obj[x] = false;
+    const newSortState: { [key: string]: -1 | 0 | 1 } = {};
+    range(0, tableHead.length).forEach((e) => {
+      newSortState[e] = 0;
     });
 
-    return obj;
+    return newSortState;
   };
 
   // Sort state
-  const [sortedAsc, setSortedAsc] = useState<{ [key: string]: boolean }>(createSortState());
+  const [sortState, setSortState] = useState<{ [key: string]: -1 | 0 | 1 }>(createSortState());
 
   const handleSort = (key: number) => {
     // Check which order we need to sort
-    const sortingOrder = sortedAsc[key] ? 1 : -1;
+    const sortingOrder = sortState[key] < 1 ? -1 : 1;
     let sortedList = [];
     sortedList = filteredList.sort((x, y) => {
       // Check if the column values are number or string
-      // @ts-ignore
-      const first = isNaN(x[key]) ? x[key] : parseFloat(x[key]);
-      // @ts-ignore
-      const second = isNaN(y[key]) ? y[key] : parseFloat(y[key]);
+      const first = isNaN(x[key] as any) ? x[key] : parseFloat(x[key]);
+      const second = isNaN(y[key] as any) ? y[key] : parseFloat(y[key]);
       if (first < second) return sortingOrder;
       if (first > second) return -1 * sortingOrder;
       return 0;
     });
 
     setFilteredList([...sortedList]);
-    setSortedAsc({ ...sortedAsc, [key]: !sortedAsc[key] });
+
+    Object.keys(sortState).forEach((e) => {
+      if (parseInt(e) === key) {
+        if (sortState[key] === 0) sortState[key] = 1;
+        else sortState[key] = (sortState[key] * -1) as -1 | 0 | 1;
+      } else sortState[e] = 0;
+    });
+
+    setSortState({ ...sortState });
   };
 
   const slicedTableData = filteredList.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
@@ -85,7 +86,22 @@ const CustomTable = (props: Props) => {
     <div className={classes.tableResponsive}>
       <Table className={classes.table}>
         <TableHead>
-          <Head content={tableHead} handleSort={handleSort} />
+          <TableRow className={classes.tableHeadRow}>
+            {tableHead.map((e, key) => (
+              <TableCell
+                key={e}
+                className={`${classes.tableCell} ${classes.tableHeadCell}`}
+                onClick={() => handleSort(key)}
+              >
+                {e}
+                {sortState[key] === 1 ? (
+                  <ArrowDropDownIcon className={classes.sortDropdown} />
+                ) : sortState[key] === -1 ? (
+                  <ArrowDropUpIcon className={classes.sortDropdown} />
+                ) : null}
+              </TableCell>
+            ))}
+          </TableRow>
         </TableHead>
         <TableBody>
           {slicedTableData.map((row, key) => (
@@ -100,6 +116,7 @@ const CustomTable = (props: Props) => {
           caption: classes.tablePagination,
           select: classes.tablePagination,
           menuItem: classes.tablePagination,
+          selectIcon: classes.tablePaginationSelectIcon,
         }}
         className={classes.tablePagination}
         rowsPerPageOptions={[5, 10, 25, 50]}

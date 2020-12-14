@@ -18,7 +18,7 @@ export const useStyles = makeStyles((theme) => ({
   valueLabel: {
     fontFamily: 'Poppins, sans-serif',
     fontSize: '1.4rem',
-    fontWeight: 400,
+    fontWeight: 500,
     letterSpacing: 0,
     color: theme.palette.primary.main,
     top: '2rem',

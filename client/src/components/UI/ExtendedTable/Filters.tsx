@@ -20,9 +20,14 @@ interface FiltersProps {
   filters?: Filter[];
   multiSelectOnChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   onSliderChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
+  initialFilterValues: FilterTableBy;
 }
 
-const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited }: FiltersProps) => {
+interface FilterTableBy {
+  [filterName: string]: string[] | [number, number];
+}
+
+const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited, initialFilterValues }: FiltersProps) => {
   const classes = useStyles();
 
   if (!filters) return null;
@@ -47,8 +52,8 @@ const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited }: Filte
             name={name}
             min={min as any}
             max={max as any}
-            initialMin={10000}
-            initialMax={55000}
+            initialSmallNum={initialFilterValues[name][0] as number}
+            initialLargeNum={initialFilterValues[name][1] as number}
             onChangeCommited={onSliderChangeCommited}
             className={classes.rangeSlider}
           />

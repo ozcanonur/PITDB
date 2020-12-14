@@ -24,7 +24,7 @@ interface Props {
     [key: string]: (name: string) => void;
   };
   filters?: Filter[];
-  initialFilterValues?: FilterTableBy;
+  initialFilterValues: FilterTableBy;
 }
 
 interface FilterTableBy {
@@ -91,6 +91,7 @@ const ExtendedTable = ({
           filters={filters}
           multiSelectOnChange={multiSelectOnChange}
           onSliderChangeCommited={onSliderChangeCommited}
+          initialFilterValues={initialFilterValues}
         />
       </div>
       <div className={classes.tableContainer}>

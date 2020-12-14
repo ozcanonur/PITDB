@@ -8,15 +8,24 @@ interface Props {
   name: string;
   min: number;
   max: number;
-  initialMin?: number;
-  initialMax: number;
+  initialSmallNum: number;
+  initialLargeNum: number;
   onChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
   className?: string;
 }
 
-const RangeSlider = ({ name, min, max, initialMin = 0, initialMax, onChangeCommited, className, ...props }: Props) => {
+const RangeSlider = ({
+  name,
+  min,
+  max,
+  initialSmallNum,
+  initialLargeNum,
+  onChangeCommited,
+  className,
+  ...props
+}: Props) => {
   const classes = useStyles();
-  const [values, setValues] = useState<number[]>([initialMin, initialMax]);
+  const [values, setValues] = useState<number[]>([initialSmallNum, initialLargeNum]);
 
   const handleChange = (_event: ChangeEvent<{}>, values: number | number[]) => {
     setValues(values as number[]);

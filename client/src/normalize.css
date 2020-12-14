@@ -365,11 +365,3 @@ template {
   box-sizing: inherit;
   scrollbar-width: thin;
 }
-
-html {
-  font-family: Poppins, sans-serif;
-  font-size: 62.5%;
-  box-sizing: border-box;
-  border-collapse: collapse;
-  height: 100%;
-}
