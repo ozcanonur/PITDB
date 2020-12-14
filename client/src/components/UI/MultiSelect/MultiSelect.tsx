@@ -11,9 +11,9 @@ interface Props {
   name: string;
   options: OptionsType<any>;
   onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  containerProps?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
   multiSelectProps?: any;
   defaultValueIndex?: number;
+  className?: string;
 }
 
 const CustomValueContainer = ({ children, ...props }: any) => {
@@ -42,7 +42,7 @@ const CustomMultiValueContainer = (renderOn: HTMLElement | null) => {
   };
 };
 
-const CustomMenu = ({ ...props }: any) => <Menu {...props} className='multiSelectMenu' />;
+const CustomMenu = ({ ...props }: any) => <Menu {...props} className='menu' />;
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
   return (
@@ -52,11 +52,29 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   );
 };
 
-const MultiSelect = ({ containerProps, multiSelectProps, name, options, onChange, defaultValueIndex }: Props) => {
+const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValueIndex, ...props }: Props) => {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
+  // For menu close animation
+  const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
+  const onMenuClose = () => {
+    const menuEl = document.querySelector(`#${uniqueId} .menu`);
+    const containerEl = menuEl?.parentElement;
+    const clonedMenuEl = menuEl?.cloneNode(true);
+
+    if (!clonedMenuEl) return;
+
+    // @ts-ignore
+    clonedMenuEl.classList.add('menu--close');
+    clonedMenuEl.addEventListener('animationend', () => {
+      containerEl?.removeChild(clonedMenuEl);
+    });
+
+    containerEl?.appendChild(clonedMenuEl!);
+  };
+
   return (
-    <div {...containerProps}>
+    <div {...props}>
       <Select
         name={name}
         components={{
@@ -75,6 +93,10 @@ const MultiSelect = ({ containerProps, multiSelectProps, name, options, onChange
         defaultValue={defaultValueIndex !== undefined ? options[defaultValueIndex] : undefined}
         isClearable
         controlShouldRenderValue
+        blurOnRemove
+        // For menu close animation
+        id={uniqueId}
+        onMenuClose={onMenuClose}
         {...multiSelectProps}
       />
       <div ref={(node) => setRef(node)} />

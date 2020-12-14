@@ -12,6 +12,11 @@ export const useStyles = makeStyles((theme) => ({
       marginRight: '5rem',
     },
   },
+  multiSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   searchMultiSelect: {
     display: 'flex',
     flexDirection: 'column',

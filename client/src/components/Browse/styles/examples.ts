@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: '1rem',
     boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
     cursor: 'pointer',
-    transition: 'transform .2s',
+    transition: 'all .2s',
     '&:hover': {
       transform: 'scale(1.05)  translateY(-2px)',
       boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',

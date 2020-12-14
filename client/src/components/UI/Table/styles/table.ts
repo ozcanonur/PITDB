@@ -10,12 +10,13 @@ export const useStyles = makeStyles((theme) => ({
     borderCollapse: 'collapse',
   },
   tableHeadCell: {
-    color: 'inherit',
+    // color: theme.palette.primary.main,
     cursor: 'pointer',
     paddingRight: '0.5rem !important',
     '&, &$tableCell': {
       fontSize: '1.4rem',
       fontWeight: 600,
+      color: theme.palette.primary.main,
     },
   },
   tableCell: {

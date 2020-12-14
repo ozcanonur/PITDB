@@ -6,7 +6,7 @@ export const selectStyles: Styles = {
       ...styles,
       fontFamily: 'Poppins, sans-serif',
       fontSize: '1.4rem',
-      fontWeight: 600,
+      fontWeight: 500,
       color: '#333366',
     };
   },
@@ -29,6 +29,11 @@ export const selectStyles: Styles = {
       },
     };
   },
+  container: (styles) => {
+    return {
+      ...styles,
+    };
+  },
   multiValue: (styles) => {
     return {
       ...styles,
@@ -42,6 +47,8 @@ export const selectStyles: Styles = {
       fontSize: '1.4rem',
       pointerEvents: 'none',
       margin: 0,
+      width: '16rem',
+      overflow: 'hidden',
     };
   },
   multiValueLabel: (styles) => {
@@ -91,6 +98,7 @@ export const selectStyles: Styles = {
       justifyContent: 'flex-end',
       boxShadow: '0 5px 10px rgba(154,160,185,.18), 0 15px 40px rgba(166,173,201,.25)',
       border: 'none',
+      marginTop: 0,
     };
   },
   indicatorSeparator: (styles) => {
@@ -116,22 +124,15 @@ export const selectStyles: Styles = {
       ...styles,
       fontFamily: 'Poppins, sans-serif',
       fontSize: '1.4rem',
-      fontWeight: 600,
+      fontWeight: 500,
       color: '#333366',
       width: '100%',
-
-      '& input:active': {
-        backgroundColor: 'red',
-      },
-      '&:focus': {
-        backgroundColor: 'red',
-      },
     };
   },
   option: (styles, { isSelected, isFocused }) => {
     return {
       ...styles,
-      backgroundColor: isSelected ? '#333366' : isFocused ? 'rgba(51, 51, 102, 0.1)' : 'none',
+      backgroundColor: isSelected ? '#333366 !important' : isFocused ? 'rgba(107, 107, 179, 0.15)' : 'none',
       cursor: 'pointer',
 
       '&:active': {
@@ -143,6 +144,9 @@ export const selectStyles: Styles = {
     return {
       ...styles,
       paddingLeft: '1.5rem',
+      // display: 'flex',
+      // flexDirection: 'column',
+      // alignItems: 'flex-start',
     };
   },
 };

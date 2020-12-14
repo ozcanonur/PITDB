@@ -21,10 +21,12 @@ const Row = (props: Props) => {
         <TableCell className={classes.tableCell} key={key}>
           {clickableCells && clickableCells[key] ? (
             <div onClick={() => clickableCells[key](prop)} className={classes.tableCellClickableContent}>
-              {prop}
+              {isNaN(prop as any) ? prop : parseInt(prop).toLocaleString()}
             </div>
-          ) : (
+          ) : isNaN(prop as any) ? (
             prop
+          ) : (
+            parseInt(prop).toLocaleString()
           )}
         </TableCell>
       ))}

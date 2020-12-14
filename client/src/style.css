@@ -29,6 +29,21 @@
   }
 }
 
-.multiSelectMenu {
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+.menu {
   animation: fadeIn 0.15s ease-in-out;
+}
+
+.menu--close {
+  animation: fadeOut 0.15s ease-in-out;
 }

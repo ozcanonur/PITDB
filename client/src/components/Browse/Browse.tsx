@@ -28,7 +28,7 @@ const Browse = () => {
             <h2 className={classes.heading}>Browse</h2>
             <p className={classes.subHeading}>Check out the examples or search for a specific experiment below.</p>
           </div>
-          <Examples data-aos='zoom-in' data-aos-duration='300' />
+          <Examples />
           <Experiments />
           <Footer />
         </main>

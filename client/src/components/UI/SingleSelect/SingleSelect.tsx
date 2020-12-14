@@ -10,9 +10,8 @@ interface Props {
   name: string;
   options: OptionsType<any>;
   onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  containerProps?: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
   singleSelectProps?: any;
-  defaultValueIndex?: number;
+  className?: string;
 }
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
@@ -23,7 +22,7 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   );
 };
 
-const SingleSelect = ({ containerProps, singleSelectProps, name, options, onChange, defaultValueIndex }: Props) => {
+const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: Props) => {
   const filterValues = (inputValue: string) => {
     return options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
   };
@@ -36,7 +35,7 @@ const SingleSelect = ({ containerProps, singleSelectProps, name, options, onChan
     });
 
   return (
-    <div {...containerProps}>
+    <div {...props}>
       <AsyncSelect
         name={name}
         components={{ DropdownIndicator: CustomDropdownIndicator }}

@@ -6,12 +6,6 @@ export const options = [
 ];
 
 export const options2 = [
-  { value: 'MCF-7', label: 'MCF-7' },
-  { value: 'HL-60', label: 'HL-60' },
-  { value: 'NTERA2', label: 'NTERA2' },
-];
-
-export const options3 = [
   { value: 'Property', label: 'Property' },
   { value: 'Some property', label: 'Some property' },
   { value: 'Another property', label: 'Another property' },
