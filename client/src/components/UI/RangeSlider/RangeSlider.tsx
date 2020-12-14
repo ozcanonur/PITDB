@@ -10,10 +10,11 @@ interface Props {
   max: number;
   initialMin?: number;
   initialMax: number;
-  onChangeCommited: (_event: ChangeEvent<{}>, values: number | number[], sliderName: string) => void;
+  onChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
+  className?: string;
 }
 
-const RangeSlider = ({ name, min, max, initialMin = 0, initialMax, onChangeCommited }: Props) => {
+const RangeSlider = ({ name, min, max, initialMin = 0, initialMax, onChangeCommited, className, ...props }: Props) => {
   const classes = useStyles();
   const [values, setValues] = useState<number[]>([initialMin, initialMax]);
 
@@ -22,13 +23,13 @@ const RangeSlider = ({ name, min, max, initialMin = 0, initialMax, onChangeCommi
   };
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${className}`} {...props}>
       <Typography id='range-slider' className={classes.sliderLabel}>
         {name}
       </Typography>
       <Slider
         value={values}
-        onChangeCommitted={(event, number) => onChangeCommited(event, number, name)}
+        onChangeCommitted={(event, values) => onChangeCommited(event, values as [number, number], name)}
         onChange={handleChange}
         valueLabelDisplay='on'
         aria-labelledby='range-slider'

@@ -10,7 +10,7 @@ const { ValueContainer, Placeholder, MultiValueContainer, Menu, DropdownIndicato
 interface Props {
   name: string;
   options: OptionsType<any>;
-  onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
+  onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   multiSelectProps?: any;
   defaultValueIndex?: number;
   className?: string;
