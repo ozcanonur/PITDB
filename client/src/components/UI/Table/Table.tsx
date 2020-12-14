@@ -9,6 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
+import CustomPaginationActions from './CustomPaginationActions';
 import { useStyles } from './styles/table';
 import Row from './TableRow';
 
@@ -57,7 +58,7 @@ const CustomTable = (props: Props) => {
 
   const handleSort = (key: number) => {
     // Check which order we need to sort
-    const sortingOrder = sortState[key] < 1 ? -1 : 1;
+    const sortingOrder = sortState[key] < 1 ? 1 : -1;
     let sortedList = [];
     sortedList = filteredList.sort((x, y) => {
       // Check if the column values are number or string
@@ -119,13 +120,14 @@ const CustomTable = (props: Props) => {
           selectIcon: classes.tablePaginationSelectIcon,
         }}
         className={classes.tablePagination}
-        rowsPerPageOptions={[5, 10, 25, 50]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
         component='div'
         count={filteredList.length}
         rowsPerPage={rowsPerPage}
         page={filteredList.length > 0 ? currentPage : 0}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleChangeRowsPerPage}
+        ActionsComponent={CustomPaginationActions}
       />
     </div>
   );

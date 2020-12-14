@@ -65,14 +65,23 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     color: theme.palette.primary.main,
   },
-  tablePaginationSelectIcon: {
-    fontSize: '2rem',
-    color: theme.palette.primary.main,
-  },
   sortDropdown: {
     position: 'absolute',
     fontSize: '2rem',
     top: '50%',
     transform: 'translateY(-50%)',
+  },
+  paginationActionsContainer: {
+    flexShrink: 0,
+    marginLeft: '2rem',
+  },
+  tablePaginationSelectIcon: {
+    fontSize: '2rem',
+    color: theme.palette.primary.main,
+    top: 'calc(50% - 1rem)',
+
+    '& svg': {
+      fontSize: '2rem',
+    },
   },
 }));
