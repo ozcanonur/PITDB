@@ -28,7 +28,7 @@ interface Props {
 }
 
 export interface FilterTableBy {
-  [filterName: string]: string[] | [number, number];
+  [filterName: string]: string | string[] | [number, number] | null;
 }
 
 const ExtendedTable = ({
@@ -41,17 +41,26 @@ const ExtendedTable = ({
 }: Props) => {
   const classes = useStyles();
 
-  const [tableData, setTableData] = useState(initialTableData);
-  const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);
+  // const initialFilterState: GenericObject = {};
+  // tableHead.forEach((value) => {
+  //   initialFilterState[value] = [];
+  // });
 
+  const [tableData, setTableData] = useState(initialTableData);
+  const [filterTableBy, setFilterTableBy] = useState({ ...initialFilterValues });
+
+  // Apply filters on change
   useEffect(() => {
-    // Sample table data is the actual data
-    if (filterTableBy) setTableData(filterTable(sampleTableData, filterTableBy));
+    // if (JSON.stringify(filterTableBy) === JSON.stringify({ ...initialFilterState, ...initialFilterValues })) return;
+    if (filterTableBy)
+      // Sample table data is the actual data
+      setTableData(filterTable(sampleTableData, filterTableBy));
   }, [filterTableBy]);
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], actionMeta: ActionMeta<any>) => {
     if (!selectedOptions) {
-      setTableData([]);
+      // @ts-ignore
+      setFilterTableBy({ ...filterTableBy, [actionMeta.name]: [] });
       return;
     }
 
@@ -63,14 +72,8 @@ const ExtendedTable = ({
   };
 
   const onSingleSelectChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    if (!selectedOption) {
-      delete filterTableBy['Experiment Accession'];
-      setFilterTableBy({ ...filterTableBy });
-      return;
-    }
-
     const filterName = 'Experiment Accession';
-    const newFilters = { ...filterTableBy, [filterName]: [selectedOption.value] };
+    const newFilters = { ...filterTableBy, [filterName]: selectedOption?.value || null };
 
     setFilterTableBy(newFilters);
   };

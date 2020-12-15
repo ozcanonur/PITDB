@@ -25,7 +25,7 @@ interface FiltersProps {
 }
 
 interface FilterTableBy {
-  [filterName: string]: string[] | [number, number];
+  [filterName: string]: string | string[] | [number, number] | null;
 }
 
 const Filters = ({
@@ -65,7 +65,9 @@ const Filters = ({
             name={name}
             min={min as any}
             max={max as any}
+            // @ts-ignore
             initialSmallNum={initialFilterValues[name][0] as number}
+            // @ts-ignore
             initialLargeNum={initialFilterValues[name][1] as number}
             onChangeCommited={onSliderChangeCommited}
             className={classes.rangeSlider}

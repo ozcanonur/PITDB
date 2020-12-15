@@ -1,23 +1,22 @@
 import { FilterTableBy } from './ExtendedTable';
-import { isStringArray } from 'utils';
+import { isStringArray, isNumberTuple } from 'utils';
 
-export const filterTable = (tableData: string[][], filterTableBy: FilterTableBy) => {
-  let filteredTableData = tableData;
-  Object.keys(filterTableBy).forEach((filterName) => {
-    const currentFilters = filterTableBy[filterName];
-    // If it's a ordinal string filter for multi select
-    if (isStringArray(currentFilters) && filterName === 'Experiment Accession') {
+export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
+  for (const [, value] of Object.entries(filterTableBy)) {
+    if (value === null) return data;
+    if (typeof value === 'string') {
+      // Filter was a single select
+      data = [data.find((e) => value.includes(e[2])) || []];
+    } else if (isStringArray(value)) {
+      // multi select
       // @ts-ignore
-      filteredTableData = [filteredTableData.find((e) => currentFilters.includes(e[2])) || []];
-    } else if (isStringArray(currentFilters)) {
-      // @ts-ignore
-      filteredTableData = filteredTableData.filter((e) => currentFilters.includes(e[0]));
-    } else {
-      // If it's a number slider filter
-      const [min, max] = currentFilters;
-      filteredTableData = filteredTableData.filter((e) => parseInt(e[5]) > min && parseInt(e[5]) < max);
+      data = data.filter((e) => value.includes(e[0]));
+    } else if (isNumberTuple(value)) {
+      // slider
+      const [min, max] = value;
+      data = data.filter((e) => parseInt(e[5]) > min && parseInt(e[5]) < max);
     }
-  });
+  }
 
-  return filteredTableData;
+  return data;
 };

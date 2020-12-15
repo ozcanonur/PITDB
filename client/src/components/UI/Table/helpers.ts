@@ -1,6 +1,7 @@
 import range from 'lodash/range';
 
 export const sortTableData = (data: string[][], sortByIndex: number = 0, sortingOrder: 1 | -1 = -1) => {
+  if (!data) return [];
   // Sort by first column on load
   const sortedData = data.sort((x, y) => {
     const firstValue = x[sortByIndex];
