@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme) => ({
   tableResponsive: {
     width: '100%',
     marginTop: '2px',
-    overflowX: 'auto',
+    overflowX: 'visible',
   },
   tableHeadRow: {
     height: '4rem',

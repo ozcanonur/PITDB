@@ -10,6 +10,7 @@ import { useStyles } from './styles/extendedTable';
 interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
   name: string;
+  onIndex: number;
   defaultValueIndexes?: number[];
   options?: OptionsType<any>;
   min?: number;
@@ -18,9 +19,9 @@ interface Filter {
 
 interface FiltersProps {
   filters?: Filter[];
-  onSingleSelectChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  multiSelectOnChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  onSliderChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
+  onSingleSelectChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>, onIndex: number) => void;
+  multiSelectOnChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>, onIndex: number) => void;
+  onSliderChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], onIndex: number) => void;
   initialFilterValues: FilterTableBy;
 }
 
@@ -41,13 +42,13 @@ const Filters = ({
 
   return (
     <>
-      {filters.map(({ type, name, defaultValueIndexes, options, min, max }) =>
+      {filters.map(({ type, name, onIndex, defaultValueIndexes, options, min, max }) =>
         type === 'SingleSelect' ? (
           <SingleSelect
             key={name}
             name={name}
             options={options as any}
-            onChange={onSingleSelectChange}
+            onChange={(values, actionMeta) => onSingleSelectChange(values, actionMeta, onIndex)}
             className={classes.searchMultiSelect}
           />
         ) : type === 'MultiSelect' ? (
@@ -56,7 +57,7 @@ const Filters = ({
             name={name}
             options={options as any}
             defaultValueIndexes={defaultValueIndexes}
-            onChange={multiSelectOnChange}
+            onChange={(values, actionMeta) => multiSelectOnChange(values, actionMeta, onIndex)}
             className={classes.multiSelect}
           />
         ) : type === 'RangeSlider' ? (
@@ -66,10 +67,10 @@ const Filters = ({
             min={min as any}
             max={max as any}
             // @ts-ignore
-            initialSmallNum={initialFilterValues[name][0] as number}
+            initialSmallNum={initialFilterValues[onIndex][0] as number}
             // @ts-ignore
-            initialLargeNum={initialFilterValues[name][1] as number}
-            onChangeCommited={onSliderChangeCommited}
+            initialLargeNum={initialFilterValues[onIndex][1] as number}
+            onChangeCommited={(event, values) => onSliderChangeCommited(event, values, onIndex)}
             className={classes.rangeSlider}
           />
         ) : null

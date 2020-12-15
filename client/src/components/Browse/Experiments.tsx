@@ -4,7 +4,7 @@ import AOS from 'aos';
 import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
 
 import { sampleTableData } from 'variables/browseTableData';
-import { options, options2, searchOptions } from 'variables/browseFilterOptions';
+import { options, searchOptions } from 'variables/browseFilterOptions';
 
 const Experiments = ({ ...props }) => {
   useEffect(() => {
@@ -30,28 +30,26 @@ const Experiments = ({ ...props }) => {
         'Variations',
       ]}
       clickableCells={clickableCells}
-      initialFilterValues={{ Species: ['Human', 'Rat'], Peptides: [10000, 55000] }}
+      initialFilterValues={{ 0: ['Human', 'Rat'], 5: [10000, 55000] }}
       filters={[
         {
           type: 'MultiSelect',
           name: 'Species',
           defaultValueIndexes: [0, 1],
+          onIndex: 0,
           options,
-        },
-        {
-          type: 'MultiSelect',
-          name: 'Some Filter',
-          options: options2,
         },
         {
           type: 'RangeSlider',
           name: 'Peptides',
+          onIndex: 5,
           min: 0,
           max: 74400,
         },
         {
           type: 'SingleSelect',
           name: 'Search',
+          onIndex: 2,
           options: searchOptions,
         },
       ]}

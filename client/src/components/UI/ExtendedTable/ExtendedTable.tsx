@@ -12,6 +12,7 @@ interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
   name: string;
   defaultValueIndexes?: number[];
+  onIndex: number;
   options?: OptionsType<any>;
   min?: number;
   max?: number;
@@ -41,45 +42,36 @@ const ExtendedTable = ({
 }: Props) => {
   const classes = useStyles();
 
-  // const initialFilterState: GenericObject = {};
-  // tableHead.forEach((value) => {
-  //   initialFilterState[value] = [];
-  // });
-
   const [tableData, setTableData] = useState(initialTableData);
-  const [filterTableBy, setFilterTableBy] = useState({ ...initialFilterValues });
+  const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);
 
   // Apply filters on change
   useEffect(() => {
-    // if (JSON.stringify(filterTableBy) === JSON.stringify({ ...initialFilterState, ...initialFilterValues })) return;
-    if (filterTableBy)
-      // Sample table data is the actual data
-      setTableData(filterTable(sampleTableData, filterTableBy));
+    // Sample table data is the actual data
+    if (filterTableBy) setTableData(filterTable(sampleTableData, filterTableBy));
   }, [filterTableBy]);
 
-  const multiSelectOnChange = (selectedOptions: SelectOption[], actionMeta: ActionMeta<any>) => {
+  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, onIndex: number) => {
     if (!selectedOptions) {
       // @ts-ignore
-      setFilterTableBy({ ...filterTableBy, [actionMeta.name]: [] });
+      setFilterTableBy({ ...filterTableBy, [onIndex]: [] });
       return;
     }
 
     const currentlySelectedValues = selectedOptions.map((option) => option.value);
-    const filterName = actionMeta.name as string;
-    const newFilters = { ...filterTableBy, [filterName]: currentlySelectedValues };
+    const newFilters = { ...filterTableBy, [onIndex]: currentlySelectedValues };
 
     setFilterTableBy(newFilters);
   };
 
-  const onSingleSelectChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    const filterName = 'Experiment Accession';
-    const newFilters = { ...filterTableBy, [filterName]: selectedOption?.value || null };
+  const onSingleSelectChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>, onIndex: number) => {
+    const newFilters = { ...filterTableBy, [onIndex]: selectedOption?.value || null };
 
     setFilterTableBy(newFilters);
   };
 
-  const onSliderChangeCommited = (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => {
-    const newFilters = { ...filterTableBy, [sliderName]: values };
+  const onSliderChangeCommited = (_event: ChangeEvent<{}>, values: [number, number], onIndex: number) => {
+    const newFilters = { ...filterTableBy, [onIndex]: values };
     setFilterTableBy(newFilters);
   };
 
