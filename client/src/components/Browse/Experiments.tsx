@@ -30,12 +30,12 @@ const Experiments = ({ ...props }) => {
         'Variations',
       ]}
       clickableCells={clickableCells}
-      initialFilterValues={{ Species: ['Human'], Peptides: [10000, 55000] }}
+      initialFilterValues={{ Species: ['Human', 'Rat'], Peptides: [10000, 55000] }}
       filters={[
         {
           type: 'MultiSelect',
           name: 'Species',
-          defaultValueIndex: 0,
+          defaultValueIndexes: [0, 1],
           options,
         },
         {

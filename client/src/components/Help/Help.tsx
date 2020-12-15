@@ -1,7 +1,4 @@
-import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
 
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
@@ -28,12 +25,6 @@ const QuestionCard = ({ questionTitle, questionAnswer }: { questionTitle: string
 
 const Help = () => {
   const classes = useStyles();
-
-  useEffect(() => {
-    AOS.init({
-      duration: 500,
-    });
-  }, []);
 
   const history = useHistory();
 

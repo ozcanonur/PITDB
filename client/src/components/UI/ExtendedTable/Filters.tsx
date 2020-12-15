@@ -10,7 +10,7 @@ import { useStyles } from './styles/extendedTable';
 interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
   name: string;
-  defaultValueIndex?: number;
+  defaultValueIndexes?: number[];
   options?: OptionsType<any>;
   min?: number;
   max?: number;
@@ -34,7 +34,7 @@ const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited, initial
 
   return (
     <>
-      {filters.map(({ type, name, defaultValueIndex, options, min, max }) =>
+      {filters.map(({ type, name, defaultValueIndexes, options, min, max }) =>
         type === 'SingleSelect' ? (
           <SingleSelect key={name} name={name} options={options as any} className={classes.searchMultiSelect} />
         ) : type === 'MultiSelect' ? (
@@ -42,7 +42,7 @@ const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited, initial
             key={name}
             name={name}
             options={options as any}
-            defaultValueIndex={defaultValueIndex}
+            defaultValueIndexes={defaultValueIndexes}
             onChange={multiSelectOnChange}
             className={classes.multiSelect}
           />

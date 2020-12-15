@@ -12,7 +12,7 @@ interface Props {
   options: OptionsType<any>;
   onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   multiSelectProps?: any;
-  defaultValueIndex?: number;
+  defaultValueIndexes?: number[];
   className?: string;
 }
 
@@ -52,7 +52,7 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   );
 };
 
-const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValueIndex, ...props }: Props) => {
+const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValueIndexes, ...props }: Props) => {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   // For menu close animation
@@ -90,7 +90,9 @@ const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValueIn
         styles={selectStyles}
         onChange={onChange}
         placeholder={name}
-        defaultValue={defaultValueIndex !== undefined ? options[defaultValueIndex] : undefined}
+        defaultValue={
+          defaultValueIndexes !== undefined ? defaultValueIndexes.map((index) => options[index]) : undefined
+        }
         isClearable
         controlShouldRenderValue
         blurOnRemove

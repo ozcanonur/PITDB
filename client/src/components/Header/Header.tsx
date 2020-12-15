@@ -32,7 +32,6 @@ const Header = ({ ...props }) => {
                 onClick={() => navigate(navTo)}
                 style={{
                   borderBottom: isCurrentRoute ? '1px solid white' : '1px solid transparent',
-                  color: isCurrentRoute ? 'white' : '#E0E0E0',
                 }}
               >
                 {name}

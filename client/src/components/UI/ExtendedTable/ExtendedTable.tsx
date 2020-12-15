@@ -11,7 +11,7 @@ import { sampleTableData } from 'variables/browseTableData';
 interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
   name: string;
-  defaultValueIndex?: number;
+  defaultValueIndexes?: number[];
   options?: OptionsType<any>;
   min?: number;
   max?: number;

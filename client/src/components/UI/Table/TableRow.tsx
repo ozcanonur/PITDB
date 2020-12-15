@@ -10,9 +10,7 @@ interface Props {
   };
 }
 
-const Row = (props: Props) => {
-  const { row, clickableCells } = props;
-
+const Row = ({ row, clickableCells }: Props) => {
   const classes = useStyles();
 
   return (

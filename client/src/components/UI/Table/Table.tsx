@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import range from 'lodash/range';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -9,9 +8,10 @@ import TablePagination from '@material-ui/core/TablePagination';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
+import Row from './TableRow';
 import CustomPaginationActions from './CustomPaginationActions';
 import { useStyles } from './styles/table';
-import Row from './TableRow';
+import { sortTableData, createSortState } from './helpers';
 
 interface Props {
   tableHead: string[];
@@ -21,63 +21,41 @@ interface Props {
   };
 }
 
-const CustomTable = (props: Props) => {
+const CustomTable = ({ tableHead, tableData, clickableCells }: Props) => {
   const classes = useStyles();
-
-  const { tableHead, tableData, clickableCells } = props;
 
   const [filteredList, setFilteredList] = useState<string[][]>([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
-    setFilteredList(tableData);
+    setFilteredList(sortTableData(tableData, 0));
   }, [tableData]);
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  // On page change
   const handlePageChange = (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
   };
 
-  // Currently displayed values, filtered by the search field
-  const createSortState = () => {
-    const newSortState: { [key: string]: -1 | 0 | 1 } = {};
-    range(0, tableHead.length).forEach((e) => {
-      newSortState[e] = 0;
-    });
-
-    return newSortState;
-  };
-
   // Sort state
-  const [sortState, setSortState] = useState<{ [key: string]: -1 | 0 | 1 }>(createSortState());
+  const [sortState, setSortState] = useState<{ [columnName: string]: -1 | 0 | 1 }>(createSortState(tableHead));
 
   const handleSort = (key: number) => {
     // Check which order we need to sort
     const sortingOrder = sortState[key] < 1 ? 1 : -1;
-    let sortedList = [];
-    sortedList = filteredList.sort((x, y) => {
-      // Check if the column values are number or string
-      const first = isNaN(x[key] as any) ? x[key] : parseFloat(x[key]);
-      const second = isNaN(y[key] as any) ? y[key] : parseFloat(y[key]);
-      if (first < second) return sortingOrder;
-      if (first > second) return -1 * sortingOrder;
-      return 0;
-    });
+    setFilteredList([...sortTableData(filteredList, key, sortingOrder)]);
 
-    setFilteredList([...sortedList]);
-
+    // Update the sort state of other columns
+    // 0 if it's not sorted, -1 if ascending, 1 if ascending
     Object.keys(sortState).forEach((e) => {
       if (parseInt(e) === key) {
         if (sortState[key] === 0) sortState[key] = 1;
         else sortState[key] = (sortState[key] * -1) as -1 | 0 | 1;
       } else sortState[e] = 0;
     });
-
     setSortState({ ...sortState });
   };
 
