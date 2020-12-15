@@ -47,7 +47,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   square: {
     height: '2.6rem',
-    width: '7.2rem',
+    width: '6.7rem',
     backgroundColor: theme.palette.primary.light,
     boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
   },

@@ -28,7 +28,7 @@ const Home = () => {
         <img className={classes.heroImg} src={HeroImg} alt='dna' data-aos='fade-left' data-aos-duration='1200' />
         <Hero data-aos='fade-right' data-aos-duration='1200' />
         <DatabaseStatistics data-aos='fade-up' data-aos-duration='1200' />
-        <Flow data-aos='fade-up' />
+        <Flow data-aos='fade-right' />
         <Publish data-aos='fade-up' />
         <Footer />
       </main>

@@ -18,6 +18,7 @@ interface Filter {
 
 interface FiltersProps {
   filters?: Filter[];
+  onSingleSelectChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   multiSelectOnChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   onSliderChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
   initialFilterValues: FilterTableBy;
@@ -27,7 +28,13 @@ interface FilterTableBy {
   [filterName: string]: string[] | [number, number];
 }
 
-const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited, initialFilterValues }: FiltersProps) => {
+const Filters = ({
+  filters,
+  onSingleSelectChange,
+  multiSelectOnChange,
+  onSliderChangeCommited,
+  initialFilterValues,
+}: FiltersProps) => {
   const classes = useStyles();
 
   if (!filters) return null;
@@ -36,7 +43,13 @@ const Filters = ({ filters, multiSelectOnChange, onSliderChangeCommited, initial
     <>
       {filters.map(({ type, name, defaultValueIndexes, options, min, max }) =>
         type === 'SingleSelect' ? (
-          <SingleSelect key={name} name={name} options={options as any} className={classes.searchMultiSelect} />
+          <SingleSelect
+            key={name}
+            name={name}
+            options={options as any}
+            onChange={onSingleSelectChange}
+            className={classes.searchMultiSelect}
+          />
         ) : type === 'MultiSelect' ? (
           <MultiSelect
             key={name}

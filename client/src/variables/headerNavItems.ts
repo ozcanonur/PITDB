@@ -4,10 +4,6 @@ export const navItems = [
     navTo: '/browse',
   },
   {
-    name: 'Search',
-    navTo: '/search',
-  },
-  {
     name: 'API',
     navTo: '/api',
   },

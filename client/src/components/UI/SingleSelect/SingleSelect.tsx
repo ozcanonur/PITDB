@@ -1,6 +1,7 @@
 import { OptionsType, ValueType, components, ActionMeta } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import SearchIcon from '@material-ui/icons/Search';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import { searchStyles } from 'components/UI/MultiSelect/styles/multiSelect';
 
@@ -15,17 +16,26 @@ interface Props {
 }
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
+  const clearValue = () => {
+    props.clearValue();
+  };
+
   return (
-    <DropdownIndicator {...props}>
-      <SearchIcon style={{ fontSize: '1.8rem' }} />
-    </DropdownIndicator>
+    <>
+      <ClearIcon
+        style={{ fontSize: '1.8rem', color: 'rgba(51, 51, 102, 0.5)', marginRight: '0.5rem' }}
+        onClick={clearValue}
+      />
+      <DropdownIndicator {...props}>
+        <SearchIcon style={{ fontSize: '1.8rem' }} />
+      </DropdownIndicator>
+    </>
   );
 };
 
 const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: Props) => {
-  const filterValues = (inputValue: string) => {
-    return options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
-  };
+  const filterValues = (inputValue: string) =>
+    options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
 
   const promiseOptions = (inputValue: string) =>
     new Promise((resolve) => {
@@ -45,6 +55,9 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
         styles={searchStyles}
         placeholder={name}
         closeMenuOnSelect={false}
+        onChange={onChange}
+        escapeClearsValue
+        isClearable
         {...singleSelectProps}
       />
     </div>

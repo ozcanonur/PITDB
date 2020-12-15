@@ -4,9 +4,9 @@ import { ActionMeta, OptionsType } from 'react-select';
 import Table from 'components/UI/Table/Table';
 import Filters from './Filters';
 
-import { isStringArray } from 'utils';
 import { useStyles } from './styles/extendedTable';
 import { sampleTableData } from 'variables/browseTableData';
+import { filterTable } from './helpers';
 
 interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
@@ -18,7 +18,7 @@ interface Filter {
 }
 
 interface Props {
-  initialtableData: string[][];
+  initialTableData: string[][];
   tableHead: string[];
   clickableCells?: {
     [key: string]: (name: string) => void;
@@ -27,30 +27,12 @@ interface Props {
   initialFilterValues: FilterTableBy;
 }
 
-interface FilterTableBy {
+export interface FilterTableBy {
   [filterName: string]: string[] | [number, number];
 }
 
-const filterTable = (tableData: string[][], filterTableBy: FilterTableBy) => {
-  let filteredTableData = tableData;
-  Object.keys(filterTableBy).forEach((filterName) => {
-    const currentFilters = filterTableBy[filterName];
-    // If it's a ordinal string filter
-    if (isStringArray(currentFilters))
-      // @ts-ignore
-      filteredTableData = filteredTableData.filter((e) => currentFilters.includes(e[0]));
-    else {
-      // If it's a number slider filter
-      const [min, max] = currentFilters;
-      filteredTableData = filteredTableData.filter((e) => parseInt(e[5]) > min && parseInt(e[5]) < max);
-    }
-  });
-
-  return filteredTableData;
-};
-
 const ExtendedTable = ({
-  initialtableData,
+  initialTableData,
   tableHead,
   clickableCells,
   filters,
@@ -59,10 +41,11 @@ const ExtendedTable = ({
 }: Props) => {
   const classes = useStyles();
 
-  const [tableData, setTableData] = useState(initialtableData);
+  const [tableData, setTableData] = useState(initialTableData);
   const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);
 
   useEffect(() => {
+    // Sample table data is the actual data
     if (filterTableBy) setTableData(filterTable(sampleTableData, filterTableBy));
   }, [filterTableBy]);
 
@@ -79,6 +62,19 @@ const ExtendedTable = ({
     setFilterTableBy(newFilters);
   };
 
+  const onSingleSelectChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    if (!selectedOption) {
+      delete filterTableBy['Experiment Accession'];
+      setFilterTableBy({ ...filterTableBy });
+      return;
+    }
+
+    const filterName = 'Experiment Accession';
+    const newFilters = { ...filterTableBy, [filterName]: [selectedOption.value] };
+
+    setFilterTableBy(newFilters);
+  };
+
   const onSliderChangeCommited = (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => {
     const newFilters = { ...filterTableBy, [sliderName]: values };
     setFilterTableBy(newFilters);
@@ -89,6 +85,7 @@ const ExtendedTable = ({
       <div className={classes.filtersContainer}>
         <Filters
           filters={filters}
+          onSingleSelectChange={onSingleSelectChange}
           multiSelectOnChange={multiSelectOnChange}
           onSliderChangeCommited={onSliderChangeCommited}
           initialFilterValues={initialFilterValues}
