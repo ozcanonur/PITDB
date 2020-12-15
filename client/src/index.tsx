@@ -8,6 +8,7 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 import 'normalize.css';
 import 'style.css';
+import 'aos/dist/aos.css';
 import App from 'App';
 import { theme } from 'theme';
 import reducers from 'reducers';

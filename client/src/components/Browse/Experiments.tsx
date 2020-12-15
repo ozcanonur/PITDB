@@ -1,13 +1,23 @@
+import { useEffect } from 'react';
+import AOS from 'aos';
+
 import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
 
 import { sampleTableData } from 'variables/browseTableData';
 import { options, options2, searchOptions } from 'variables/browseFilterOptions';
 
 const Experiments = ({ ...props }) => {
+  useEffect(() => {
+    AOS.init({
+      duration: 500,
+    });
+  }, []);
+
   const clickableCells = { '1': () => {}, '2': () => {} };
 
   return (
     <ExtendedTable
+      data-aos='fade-in'
       initialtableData={sampleTableData}
       tableHead={[
         'Species',

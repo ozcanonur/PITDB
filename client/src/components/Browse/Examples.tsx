@@ -68,8 +68,8 @@ const Examples = ({ ...props }) => {
           key={example.id}
           exampleProps={example}
           data-aos='zoom-in'
-          data-aos-delay={String(index * 50)}
-          data-aos-duration='300'
+          data-aos-delay={String(250 + index * 200)}
+          data-aos-duration='500'
           data-aos-easing='ease-in-out'
         />
       ))}
