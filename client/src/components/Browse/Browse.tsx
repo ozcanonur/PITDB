@@ -19,7 +19,6 @@ const Browse = () => {
 
   return (
     <>
-      <div className={classes.heroBg} />
       <Header />
       <div className={classes.container}>
         <main className={classes.browse}>

@@ -1,4 +1,6 @@
-import { FilterTableBy } from './ExtendedTable';
+import { at } from 'lodash';
+
+import { FilterTableBy, Filter } from './ExtendedTable';
 import { isStringArray, isNumberTuple } from 'utils';
 
 export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
@@ -22,4 +24,20 @@ export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
   }
 
   return data;
+};
+
+export const getInitialFilterValues = (filters?: Filter[]) => {
+  const initialFilterValues: GenericObject = {};
+
+  if (!filters) return initialFilterValues;
+
+  for (const { options, onIndex, defaultValueIndexes, defaultValues } of filters) {
+    // It's a multi select
+    if (options && defaultValueIndexes)
+      initialFilterValues[onIndex] = at(options, defaultValueIndexes).map((e) => e.value);
+    // Slider
+    else if (defaultValues) initialFilterValues[onIndex] = defaultValues;
+  }
+
+  return initialFilterValues;
 };

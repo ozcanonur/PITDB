@@ -4,9 +4,15 @@ export const useStyles = makeStyles((theme) => ({
   container: {
     background: 'linear-gradient(to bottom, white 25% , #F2F4FF )',
   },
-  browse: {
+  api: {
     maxWidth: '1200px',
     margin: '0 auto',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  placeholder: {
+    flexGrow: 1,
   },
   headingContainer: {
     display: 'flex',

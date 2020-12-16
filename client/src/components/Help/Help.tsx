@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import AOS from 'aos';
 import { useHistory } from 'react-router-dom';
 
 import Header from 'components/Header/Header';
@@ -7,11 +9,18 @@ import TriangleClip from 'assets/double_triangle.svg';
 import { useStyles } from './styles/help';
 import { questions } from 'variables/helpQuestionTexts';
 
-const QuestionCard = ({ questionTitle, questionAnswer }: { questionTitle: string; questionAnswer: string }) => {
+const QuestionCard = ({
+  questionTitle,
+  questionAnswer,
+  ...props
+}: {
+  questionTitle: string;
+  questionAnswer: string;
+}) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.questionCard}>
+    <div className={classes.questionCard} {...props}>
       <div className={classes.questionHeadingContainer}>
         <div className={classes.questionIcon}>
           <p>?</p>
@@ -32,12 +41,20 @@ const Help = () => {
     history.push('/browse');
   };
 
+  useEffect(() => {
+    AOS.init({
+      duration: 500,
+      easing: 'ease-in-out',
+      once: true,
+    });
+  }, []);
+
   return (
     <div className={classes.container}>
       <div className={classes.heroBg} />
       <Header />
       <main className={classes.home}>
-        <section className={classes.heroContainer}>
+        <section className={classes.heroContainer} data-aos='fade-right'>
           <h1 className={classes.heading}>What is PITDB ?</h1>
           <p className={classes.secondaryHeading}>
             The PIT approach involves the analysis of a given sample by both RNA-seq and proteomic mass spectrometry
@@ -49,10 +66,10 @@ const Help = () => {
           </div>
         </section>
         <section className={classes.helpContentContainer}>
-          <img className={classes.topTriangleClip} src={TriangleClip} alt='triangle' />
+          <img className={classes.topTriangleClip} src={TriangleClip} alt='triangle' data-aos='fade-right' />
           <div className={classes.questionsContainer}>
             {questions.map(({ question, answer }) => (
-              <QuestionCard key={question} questionTitle={question} questionAnswer={answer} />
+              <QuestionCard key={question} questionTitle={question} questionAnswer={answer} data-aos='fade-up' />
             ))}
           </div>
           <img className={classes.bottomTriangleClip} src={TriangleClip} alt='triangle' />

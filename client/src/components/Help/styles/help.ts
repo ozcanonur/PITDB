@@ -52,7 +52,7 @@ export const useStyles = makeStyles((theme) => ({
     zIndex: -1,
   },
   helpContentContainer: {
-    marginTop: '15rem',
+    marginTop: '20rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -73,7 +73,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     padding: '4rem 4rem',
     maxWidth: '70rem',
-    boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
     borderRadius: '1rem',
   },
   questionHeadingContainer: {

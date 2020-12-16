@@ -23,7 +23,7 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   return (
     <>
       <ClearIcon
-        style={{ fontSize: '1.8rem', color: 'rgba(51, 51, 102, 0.5)', marginRight: '0.5rem' }}
+        style={{ fontSize: '1.8rem', color: 'rgba(51, 51, 102, 0.85)', marginRight: '0.5rem' }}
         onClick={clearValue}
       />
       <DropdownIndicator {...props}>

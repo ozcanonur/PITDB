@@ -57,7 +57,10 @@ const Examples = ({ ...props }) => {
   const classes = useStyles();
 
   useEffect(() => {
-    AOS.init();
+    AOS.init({
+      duration: 500,
+      easing: 'ease-in-out',
+    });
   }, []);
 
   return (
@@ -68,8 +71,6 @@ const Examples = ({ ...props }) => {
           exampleProps={example}
           data-aos='zoom-in'
           data-aos-delay={String(250 + index * 200)}
-          data-aos-duration='500'
-          data-aos-easing='ease-in-out'
         />
       ))}
     </section>

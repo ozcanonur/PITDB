@@ -22,3 +22,9 @@ export const searchOptions = [
   { value: 'EXP80009', label: 'EXP80009' },
   { value: 'EXP90009', label: 'EXP90009' },
 ];
+
+export const options3 = [
+  { value: 'Low', label: 'Low' },
+  { value: 'Medium', label: 'Medium' },
+  { value: 'High', label: 'High' },
+];

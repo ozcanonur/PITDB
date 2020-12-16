@@ -6,12 +6,13 @@ import Filters from './Filters';
 
 import { useStyles } from './styles/extendedTable';
 import { sampleTableData } from 'variables/browseTableData';
-import { filterTable } from './helpers';
+import { filterTable, getInitialFilterValues } from './helpers';
 
-interface Filter {
+export interface Filter {
   type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
   name: string;
   defaultValueIndexes?: number[];
+  defaultValues?: [number, number];
   onIndex: number;
   options?: OptionsType<any>;
   min?: number;
@@ -25,22 +26,16 @@ interface Props {
     [key: string]: (name: string) => void;
   };
   filters?: Filter[];
-  initialFilterValues: FilterTableBy;
 }
 
 export interface FilterTableBy {
   [filterName: string]: string | string[] | [number, number] | null;
 }
 
-const ExtendedTable = ({
-  initialTableData,
-  tableHead,
-  clickableCells,
-  filters,
-  initialFilterValues,
-  ...props
-}: Props) => {
+const ExtendedTable = ({ initialTableData, tableHead, clickableCells, filters, ...props }: Props) => {
   const classes = useStyles();
+
+  const initialFilterValues = getInitialFilterValues(filters);
 
   const [tableData, setTableData] = useState(initialTableData);
   const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);

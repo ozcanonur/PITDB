@@ -4,7 +4,7 @@ import AOS from 'aos';
 import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
 
 import { sampleTableData } from 'variables/browseTableData';
-import { options, searchOptions } from 'variables/browseFilterOptions';
+import { options, searchOptions, options3 } from 'variables/browseFilterOptions';
 
 const Experiments = ({ ...props }) => {
   useEffect(() => {
@@ -13,7 +13,7 @@ const Experiments = ({ ...props }) => {
     });
   }, []);
 
-  const clickableCells = { '1': () => {}, '2': () => {} };
+  const clickableCells = { '2': () => {}, '3': () => {} };
 
   return (
     <ExtendedTable
@@ -21,6 +21,7 @@ const Experiments = ({ ...props }) => {
       initialTableData={sampleTableData}
       tableHead={[
         'Species',
+        'Quality',
         'Sample Accession',
         'Experiment Accession',
         'TGEs',
@@ -29,30 +30,37 @@ const Experiments = ({ ...props }) => {
         'PSMs',
         'Variations',
       ]}
-      clickableCells={clickableCells}
-      initialFilterValues={{ 0: ['Human', 'Rat'], 5: [10000, 55000] }}
       filters={[
         {
           type: 'MultiSelect',
+          onIndex: 0,
           name: 'Species',
           defaultValueIndexes: [0, 1],
-          onIndex: 0,
           options,
         },
         {
+          type: 'MultiSelect',
+          onIndex: 1,
+          name: 'Quality',
+          defaultValueIndexes: [1],
+          options: options3,
+        },
+        {
           type: 'RangeSlider',
+          onIndex: 6,
           name: 'Peptides',
-          onIndex: 5,
           min: 0,
           max: 74400,
+          defaultValues: [10000, 55000],
         },
         {
           type: 'SingleSelect',
+          onIndex: 3,
           name: 'Search',
-          onIndex: 2,
           options: searchOptions,
         },
       ]}
+      clickableCells={clickableCells}
       {...props}
     />
   );

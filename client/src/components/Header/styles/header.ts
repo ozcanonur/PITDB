@@ -2,6 +2,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   headerContainer: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  header: {
     padding: '2rem 3rem',
     display: 'flex',
     justifyContent: 'space-between',
