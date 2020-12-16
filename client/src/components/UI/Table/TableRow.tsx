@@ -1,16 +1,10 @@
 import TableCell from '@material-ui/core/TableCell/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
+import { TableRowProps } from './types';
 import { useStyles } from './styles/table';
 
-interface Props {
-  row: string[];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
-}
-
-const Row = ({ row, clickableCells }: Props) => {
+const Row = ({ row, clickableCells }: TableRowProps) => {
   const classes = useStyles();
 
   return (

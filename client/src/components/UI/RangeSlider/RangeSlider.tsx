@@ -2,17 +2,8 @@ import React, { ChangeEvent, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
+import { RangeSliderProps } from './types';
 import { useStyles } from './styles/rangeSlider';
-
-interface Props {
-  name: string;
-  min: number;
-  max: number;
-  initialSmallNum: number;
-  initialLargeNum: number;
-  onChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], sliderName: string) => void;
-  className?: string;
-}
 
 const RangeSlider = ({
   name,
@@ -23,7 +14,7 @@ const RangeSlider = ({
   onChangeCommited,
   className,
   ...props
-}: Props) => {
+}: RangeSliderProps) => {
   const classes = useStyles();
   const [values, setValues] = useState<number[]>([initialSmallNum, initialLargeNum]);
 

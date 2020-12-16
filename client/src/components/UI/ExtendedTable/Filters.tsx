@@ -1,33 +1,9 @@
-import { ChangeEvent } from 'react';
-import { ActionMeta, OptionsType, ValueType } from 'react-select';
-
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import RangeSlider from 'components/UI/RangeSlider/RangeSlider';
 
+import { FiltersProps } from './types';
 import { useStyles } from './styles/extendedTable';
-
-interface Filter {
-  type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
-  name: string;
-  onIndex: number;
-  defaultValueIndexes?: number[];
-  options?: OptionsType<any>;
-  min?: number;
-  max?: number;
-}
-
-interface FiltersProps {
-  filters?: Filter[];
-  onSingleSelectChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>, onIndex: number) => void;
-  multiSelectOnChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>, onIndex: number) => void;
-  onSliderChangeCommited: (_event: ChangeEvent<{}>, values: [number, number], onIndex: number) => void;
-  initialFilterValues: FilterTableBy;
-}
-
-interface FilterTableBy {
-  [filterName: string]: string | string[] | [number, number] | null;
-}
 
 const Filters = ({
   filters,

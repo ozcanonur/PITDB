@@ -1,26 +1,18 @@
-import React, { useState } from 'react';
-import Select, { OptionsType, ValueType, components, ActionMeta } from 'react-select';
+import React, { useState, Children } from 'react';
+import Select, { components } from 'react-select';
 import usePortal from 'react-useportal';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
+import { MultiSelectProps } from './types';
 import { selectStyles } from './styles/multiSelect';
 
 const { ValueContainer, Placeholder, MultiValueContainer, Menu, DropdownIndicator } = components;
-
-interface Props {
-  name: string;
-  options: OptionsType<any>;
-  onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  multiSelectProps?: any;
-  defaultValueIndexes?: number[];
-  className?: string;
-}
 
 const CustomValueContainer = ({ children, ...props }: any) => {
   return (
     <ValueContainer {...props}>
       <Placeholder {...props}>{props.selectProps.placeholder}</Placeholder>
-      {React.Children.map(children, (child) => (child && child.type !== Placeholder ? child : null))}
+      {Children.map(children, (child) => (child && child.type !== Placeholder ? child : null))}
     </ValueContainer>
   );
 };
@@ -52,7 +44,14 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   );
 };
 
-const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValueIndexes, ...props }: Props) => {
+const MultiSelect = ({
+  multiSelectProps,
+  name,
+  options,
+  onChange,
+  defaultValueIndexes,
+  ...props
+}: MultiSelectProps) => {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   // For menu close animation

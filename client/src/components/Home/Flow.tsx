@@ -1,10 +1,11 @@
+import { FlowShapeProps } from './types';
 import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
 import { ReactComponent as LCMS } from 'assets/lcms_icon.svg';
 import { ReactComponent as UniProt } from 'assets/uniprot_icon.svg';
 import { ReactComponent as PITDBCylinder } from 'assets/cylinder.svg';
 import { useStyles } from './styles/flow';
 
-const FlowShape = ({ children }: { children?: JSX.Element | string }) => {
+const FlowShape = ({ children }: FlowShapeProps) => {
   const classes = useStyles();
 
   return (
@@ -15,7 +16,7 @@ const FlowShape = ({ children }: { children?: JSX.Element | string }) => {
   );
 };
 
-const FlowShapeVertical = ({ children }: { children?: JSX.Element | string }) => {
+const FlowShapeVertical = ({ children }: FlowShapeProps) => {
   const classes = useStyles();
 
   return (

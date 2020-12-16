@@ -1,19 +1,12 @@
-import { OptionsType, ValueType, components, ActionMeta } from 'react-select';
+import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
+import { SingleSelectProps } from './types';
 import { searchStyles } from 'components/UI/MultiSelect/styles/multiSelect';
 
 const { DropdownIndicator } = components;
-
-interface Props {
-  name: string;
-  options: OptionsType<any>;
-  onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
-  singleSelectProps?: any;
-  className?: string;
-}
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
   const clearValue = () => {
@@ -33,7 +26,7 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
   );
 };
 
-const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: Props) => {
+const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
   const filterValues = (inputValue: string) =>
     options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
 

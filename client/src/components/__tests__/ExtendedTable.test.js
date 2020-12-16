@@ -1,32 +1,29 @@
-import { useEffect } from 'react';
-import AOS from 'aos';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ExtendedTable from '../UI/ExtendedTable/ExtendedTable';
 
-import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
-
-import { Filter } from 'components/UI/ExtendedTable/types';
 import { sampleTableData } from 'variables/browseTableData';
+import { options, searchOptions, options3 } from 'variables/browseFilterOptions';
 
-const Experiments = ({ ...props }) => {
-  useEffect(() => {
-    AOS.init({
-      duration: 500,
-    });
-  }, []);
+it('renders ExtendedTable without crashing', () => {
+  const div = document.createElement('div');
 
-  const clickableCells = { '2': () => {}, '3': () => {} };
+  const clickableCells = { 2: () => {}, 3: () => {} };
 
-  const filters: Filter[] = [
+  const filters = [
     {
       type: 'MultiSelect',
       onIndex: 0,
       name: 'Species',
       defaultValueIndexes: [0, 1],
+      options,
     },
     {
       type: 'MultiSelect',
       onIndex: 1,
       name: 'Quality',
       defaultValueIndexes: [1],
+      options: options3,
     },
     {
       type: 'RangeSlider',
@@ -40,12 +37,12 @@ const Experiments = ({ ...props }) => {
       type: 'SingleSelect',
       onIndex: 3,
       name: 'Search',
+      options: searchOptions,
     },
   ];
 
-  return (
+  ReactDOM.render(
     <ExtendedTable
-      data-aos='fade-in'
       initialTableData={sampleTableData}
       tableHead={[
         'Species',
@@ -60,9 +57,11 @@ const Experiments = ({ ...props }) => {
       ]}
       filters={filters}
       clickableCells={clickableCells}
-      {...props}
-    />
+    />,
+    div
   );
-};
 
-export default Experiments;
+  console.log(div.innerHTML);
+
+  ReactDOM.unmountComponentAtNode(div);
+});

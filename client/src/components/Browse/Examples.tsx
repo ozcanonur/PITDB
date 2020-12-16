@@ -1,21 +1,11 @@
 import { useEffect } from 'react';
 import AOS from 'aos';
 
+import { ExampleProps } from './types';
 import { examples } from 'variables/browseExamples';
 import { ReactComponent as DnaImg } from 'assets/dna_2.svg';
 import UserImg from 'assets/user.svg';
 import { useStyles } from './styles/examples';
-
-interface ExampleProps {
-  exampleProps: {
-    id: string;
-    species: string;
-    TGEs: string;
-    username: string;
-    date: string;
-    color: string;
-  };
-}
 
 const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
   const classes = useStyles();

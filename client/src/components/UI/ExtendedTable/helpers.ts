@@ -1,6 +1,6 @@
-import { at } from 'lodash';
+import { at, uniqBy } from 'lodash';
 
-import { FilterTableBy, Filter } from './ExtendedTable';
+import { FilterTableBy, Filter } from './types';
 import { isStringArray, isNumberTuple } from 'utils';
 
 export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
@@ -26,17 +26,25 @@ export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
   return data;
 };
 
-export const getInitialFilterValues = (filters?: Filter[]) => {
+export const getInitialFilterValues = (initialTableData: string[][], filters?: Filter[]) => {
+  if (!filters) return {};
+
   const initialFilterValues: GenericObject = {};
 
-  if (!filters) return initialFilterValues;
+  for (const filter of filters) {
+    const { type, onIndex, defaultValueIndexes, defaultValues } = filter;
 
-  for (const { options, onIndex, defaultValueIndexes, defaultValues } of filters) {
-    // It's a multi select
-    if (options && defaultValueIndexes)
+    if (type === 'SingleSelect') {
+      const options = initialTableData.map((row) => ({ value: row[onIndex], label: row[onIndex] }));
+      filter.options = options;
+    } else if (type === 'MultiSelect') {
+      if (!defaultValueIndexes) continue;
+      // Add ordinal options
+      const options = initialTableData.map((row) => ({ value: row[filter.onIndex], label: row[filter.onIndex] }));
+      filter.options = uniqBy(options, 'value');
+
       initialFilterValues[onIndex] = at(options, defaultValueIndexes).map((e) => e.value);
-    // Slider
-    else if (defaultValues) initialFilterValues[onIndex] = defaultValues;
+    } else if (type === 'RangeSlider') initialFilterValues[onIndex] = defaultValues;
   }
 
   return initialFilterValues;

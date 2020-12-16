@@ -1,54 +1,29 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import { ActionMeta, OptionsType } from 'react-select';
+import { ActionMeta } from 'react-select';
 
 import Table from 'components/UI/Table/Table';
 import Filters from './Filters';
 
+import { ExtendedTableProps } from './types';
 import { useStyles } from './styles/extendedTable';
 import { sampleTableData } from 'variables/browseTableData';
 import { filterTable, getInitialFilterValues } from './helpers';
 
-export interface Filter {
-  type: 'SingleSelect' | 'MultiSelect' | 'RangeSlider';
-  name: string;
-  defaultValueIndexes?: number[];
-  defaultValues?: [number, number];
-  onIndex: number;
-  options?: OptionsType<any>;
-  min?: number;
-  max?: number;
-}
-
-interface Props {
-  initialTableData: string[][];
-  tableHead: string[];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
-  filters?: Filter[];
-}
-
-export interface FilterTableBy {
-  [filterName: string]: string | string[] | [number, number] | null;
-}
-
-const ExtendedTable = ({ initialTableData, tableHead, clickableCells, filters, ...props }: Props) => {
+const ExtendedTable = ({ initialTableData, tableHead, clickableCells, filters, ...props }: ExtendedTableProps) => {
   const classes = useStyles();
 
-  const initialFilterValues = getInitialFilterValues(filters);
+  const initialFilterValues = getInitialFilterValues(initialTableData, filters);
 
   const [tableData, setTableData] = useState(initialTableData);
   const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);
 
   // Apply filters on change
   useEffect(() => {
-    // Sample table data is the actual data
     if (filterTableBy) setTableData(filterTable(sampleTableData, filterTableBy));
   }, [filterTableBy]);
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, onIndex: number) => {
     if (!selectedOptions) {
-      // @ts-ignore
       setFilterTableBy({ ...filterTableBy, [onIndex]: [] });
       return;
     }

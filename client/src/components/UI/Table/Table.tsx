@@ -8,20 +8,13 @@ import TablePagination from '@material-ui/core/TablePagination';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
+import { TableProps } from './types';
 import Row from './TableRow';
 import CustomPaginationActions from './CustomPaginationActions';
 import { useStyles } from './styles/table';
 import { sortTableData, createSortState } from './helpers';
 
-interface Props {
-  tableHead: string[];
-  tableData: string[][];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
-}
-
-const CustomTable = ({ tableHead, tableData, clickableCells }: Props) => {
+const CustomTable = ({ tableHead, tableData, clickableCells }: TableProps) => {
   const classes = useStyles();
 
   const [filteredList, setFilteredList] = useState<string[][]>([]);

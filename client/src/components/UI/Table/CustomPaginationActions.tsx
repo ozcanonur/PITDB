@@ -4,12 +4,11 @@ import LastPageIcon from '@material-ui/icons/LastPage';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 
+import { CustomPaginationActionsProps } from './types';
 import { useStyles } from './styles/table';
 
-const CustomPaginationActions = (props: any) => {
+const CustomPaginationActions = ({ count, page, rowsPerPage, onChangePage }: CustomPaginationActionsProps) => {
   const classes = useStyles();
-
-  const { count, page, rowsPerPage, onChangePage } = props;
 
   const handleFirstPageButtonClick = (event: any) => {
     onChangePage(event, 0);
