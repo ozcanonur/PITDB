@@ -1,4 +1,4 @@
-import { at, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 import { FilterTableBy, Filter } from './types';
 import { isStringArray, isNumberTuple } from 'utils';
@@ -9,15 +9,12 @@ export const filterTable = (data: string[][], filterTableBy: FilterTableBy) => {
 
     if (value === null) continue;
 
-    if (typeof value === 'string') {
-      // Filter was a single select
-      data = [data.find((e) => value.includes(e[parsedOnIndex])) || []];
-    } else if (isStringArray(value)) {
-      // multi select
+    if (isStringArray(value)) {
+      // is multi select
       // @ts-ignore
       data = data.filter((e) => value.includes(e[parsedOnIndex]));
     } else if (isNumberTuple(value)) {
-      // slider
+      // is slider
       const [min, max] = value;
       data = data.filter((e) => parseInt(e[parsedOnIndex]) > min && parseInt(e[parsedOnIndex]) < max);
     }
@@ -32,18 +29,19 @@ export const getInitialFilterValues = (initialTableData: string[][], filters?: F
   const initialFilterValues: GenericObject = {};
 
   for (const filter of filters) {
-    const { type, onIndex, defaultValueIndexes, defaultValues } = filter;
+    const { type, onIndex, defaultValues } = filter;
 
     if (type === 'SingleSelect') {
       const options = initialTableData.map((row) => ({ value: row[onIndex], label: row[onIndex] }));
       filter.options = uniqBy(options, 'value');
     } else if (type === 'MultiSelect') {
-      if (!defaultValueIndexes) continue;
+      if (!defaultValues) continue;
       // Add ordinal options
       const options = initialTableData.map((row) => ({ value: row[filter.onIndex], label: row[filter.onIndex] }));
       filter.options = uniqBy(options, 'value');
 
-      initialFilterValues[onIndex] = at(options, defaultValueIndexes).map((e) => e.value);
+      initialFilterValues[onIndex] = defaultValues;
+      // at(options, defaultValueIndexes).map((e) => e.value);
     } else if (type === 'RangeSlider') initialFilterValues[onIndex] = defaultValues;
   }
 

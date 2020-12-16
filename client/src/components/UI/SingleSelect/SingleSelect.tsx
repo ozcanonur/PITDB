@@ -6,7 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { SingleSelectProps } from './types';
 import { searchStyles } from 'components/UI/MultiSelect/styles/multiSelect';
 
-const { DropdownIndicator } = components;
+const { DropdownIndicator, MenuList } = components;
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
   const clearValue = () => {
@@ -19,12 +19,18 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
         style={{ fontSize: '1.8rem', color: 'rgba(51, 51, 102, 0.85)', marginRight: '0.5rem' }}
         onClick={clearValue}
       />
-      <DropdownIndicator {...props}>
+      <DropdownIndicator {...props} data-test='singleSelect-dropdown'>
         <SearchIcon style={{ fontSize: '1.8rem' }} />
       </DropdownIndicator>
     </>
   );
 };
+
+const CustomMenuList = (props: any) => (
+  <MenuList {...props} data-test='singleSelect-menuList'>
+    {props.children}
+  </MenuList>
+);
 
 const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
   const filterValues = (inputValue: string) =>
@@ -41,7 +47,7 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
     <div {...props}>
       <AsyncSelect
         name={name}
-        components={{ DropdownIndicator: CustomDropdownIndicator }}
+        components={{ DropdownIndicator: CustomDropdownIndicator, MenuList: CustomMenuList }}
         cacheOptions
         defaultOptions
         loadOptions={promiseOptions}
@@ -51,6 +57,7 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
         onChange={onChange}
         escapeClearsValue
         isClearable
+        // menuIsOpen
         {...singleSelectProps}
       />
     </div>

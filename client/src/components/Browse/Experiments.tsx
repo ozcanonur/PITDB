@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import AOS from 'aos';
 
 import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
-
 import { Filter } from 'components/UI/ExtendedTable/types';
+
 import { sampleTableData } from 'variables/browseTableData';
 
 const Experiments = ({ ...props }) => {
@@ -20,13 +20,13 @@ const Experiments = ({ ...props }) => {
       type: 'MultiSelect',
       onIndex: 0,
       name: 'Species',
-      defaultValueIndexes: [0, 1],
+      defaultValues: ['Human', 'Rat'],
     },
     {
       type: 'MultiSelect',
       onIndex: 1,
       name: 'Quality',
-      defaultValueIndexes: [1],
+      defaultValues: ['Medium'],
     },
     {
       type: 'RangeSlider',

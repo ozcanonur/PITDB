@@ -5,6 +5,6 @@ export interface MultiSelectProps {
   options: OptionsType<any>;
   onChange: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   multiSelectProps?: any;
-  defaultValueIndexes?: number[];
+  defaultValues?: string[];
   className?: string;
 }

@@ -18,13 +18,13 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
   const [filteredTableData, setFilteredTableData] = useState(tableData);
   const [filterTableBy, setFilterTableBy] = useState(initialFilterValues);
 
-  // Apply filters on change
+  // Apply filters on any filter update
   useEffect(() => {
     if (filterTableBy) setFilteredTableData(filterTable(tableData, filterTableBy));
   }, [filterTableBy, tableData]);
 
   const onSingleSelectChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>, onIndex: number) => {
-    //console.log(selectedOption);
+    // On clear
     if (!selectedOption) {
       setFilteredTableData(tableData);
       // Trigger a rerender via useEffect
@@ -32,8 +32,8 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
       return;
     }
 
-    const selectedRowIndex = tableData.findIndex((row) => row[onIndex] === selectedOption.value);
-    setFilteredTableData([tableData[selectedRowIndex]]);
+    const selectedRow = tableData.find((row) => row[onIndex] === selectedOption.value) || [];
+    setFilteredTableData([selectedRow]);
   };
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, onIndex: number) => {
@@ -57,7 +57,7 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
     <section className={classes.container} {...props}>
       <div className={classes.filtersContainer}>
         {filters
-          ? filters.map(({ type, name, onIndex, defaultValueIndexes, options, min, max }) =>
+          ? filters.map(({ type, name, onIndex, defaultValues, options, min, max }) =>
               type === 'SingleSelect' ? (
                 <SingleSelect
                   key={onIndex}
@@ -71,7 +71,8 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
                   key={onIndex}
                   name={name}
                   options={options as any}
-                  defaultValueIndexes={defaultValueIndexes}
+                  // @ts-ignore
+                  defaultValues={defaultValues}
                   onChange={(values, actionMeta) => multiSelectOnChange(values, actionMeta, onIndex)}
                   className={classes.multiSelect}
                 />
@@ -81,9 +82,7 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
                   name={name}
                   min={min as any}
                   max={max as any}
-                  // @ts-ignore
                   initialSmallNum={initialFilterValues[onIndex][0] as number}
-                  // @ts-ignore
                   initialLargeNum={initialFilterValues[onIndex][1] as number}
                   onChangeCommited={(event, values) => onSliderChangeCommited(event, values, onIndex)}
                   className={classes.rangeSlider}
