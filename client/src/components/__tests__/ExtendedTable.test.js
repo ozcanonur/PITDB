@@ -16,14 +16,12 @@ it('renders ExtendedTable without crashing', () => {
       onIndex: 0,
       name: 'Species',
       defaultValueIndexes: [0, 1],
-      options,
     },
     {
       type: 'MultiSelect',
       onIndex: 1,
       name: 'Quality',
       defaultValueIndexes: [1],
-      options: options3,
     },
     {
       type: 'RangeSlider',
@@ -37,13 +35,12 @@ it('renders ExtendedTable without crashing', () => {
       type: 'SingleSelect',
       onIndex: 3,
       name: 'Search',
-      options: searchOptions,
     },
   ];
 
   ReactDOM.render(
     <ExtendedTable
-      initialTableData={sampleTableData}
+      tableData={sampleTableData}
       tableHead={[
         'Species',
         'Quality',

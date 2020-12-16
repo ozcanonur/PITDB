@@ -46,7 +46,7 @@ const Experiments = ({ ...props }) => {
   return (
     <ExtendedTable
       data-aos='fade-in'
-      initialTableData={sampleTableData}
+      tableData={sampleTableData}
       tableHead={[
         'Species',
         'Quality',

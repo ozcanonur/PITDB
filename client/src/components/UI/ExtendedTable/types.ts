@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react';
 import { ActionMeta, OptionsType, ValueType } from 'react-select';
 
 export interface ExtendedTableProps {
-  initialTableData: string[][];
+  tableData: string[][];
   tableHead: string[];
   clickableCells?: {
     [key: string]: (name: string) => void;

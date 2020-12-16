@@ -36,7 +36,7 @@ export const getInitialFilterValues = (initialTableData: string[][], filters?: F
 
     if (type === 'SingleSelect') {
       const options = initialTableData.map((row) => ({ value: row[onIndex], label: row[onIndex] }));
-      filter.options = options;
+      filter.options = uniqBy(options, 'value');
     } else if (type === 'MultiSelect') {
       if (!defaultValueIndexes) continue;
       // Add ordinal options
