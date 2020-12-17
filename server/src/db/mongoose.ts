@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
 mongoose.set('useUnifiedTopology', true);
-mongoose.connect(process.env.DB, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-});
+
+if (process.env.DB) {
+  mongoose.connect(process.env.DB, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+  });
+}

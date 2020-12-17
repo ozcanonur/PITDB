@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { Mutation } from '../db/models/mutations';
+import { Mutation } from '../db/models/mutation';
 
 const router = express.Router();
 

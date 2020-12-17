@@ -24,7 +24,4 @@ export const useStyles = makeStyles((theme) => ({
     height: '57rem',
     zIndex: 999,
   },
-  parallaxContainer: {
-    zIndex: 99999,
-  },
 }));

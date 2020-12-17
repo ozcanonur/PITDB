@@ -1,1 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.14 24.24"><defs><style>.cls-1{fill:#fff;}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Flow"><ellipse class="cls-1" cx="7.57" cy="2.5" rx="7.57" ry="2.5"/><path class="cls-1" d="M15,21.45c0,1.54-3.33,2.79-7.45,2.79S.12,23,.12,21.45Z"/><path class="cls-1" d="M15,3.75V21.29c0,1.12-3.33,2-7.45,2s-7.45-.9-7.45-2V3.75c0,1.12,3.33,2,7.45,2S15,4.87,15,3.75Z"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.14 24.24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Flow">
+      <ellipse class="cls-1" cx="7.57" cy="2.5" rx="7.57" ry="2.5" />
+      <path class="cls-1" d="M15,21.45c0,1.54-3.33,2.79-7.45,2.79S.12,23,.12,21.45Z" />
+      <path
+        class="cls-1"
+        d="M15,3.75V21.29c0,1.12-3.33,2-7.45,2s-7.45-.9-7.45-2V3.75c0,1.12,3.33,2,7.45,2S15,4.87,15,3.75Z"
+      />
+    </g>
+  </g>
+</svg>

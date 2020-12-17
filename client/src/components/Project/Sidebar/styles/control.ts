@@ -11,17 +11,13 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   category: {
+    fontWeight: 500,
     '&:not(:first-of-type)': {
-      marginTop: '2.6rem',
+      marginTop: '0.5rem',
     },
   },
   items: {
     marginLeft: '3rem',
-    marginTop: '1.2rem',
-
-    '& > div:not(:last-child)': {
-      marginBottom: '.7rem',
-    },
   },
   item: {
     fontSize: '1.4rem',

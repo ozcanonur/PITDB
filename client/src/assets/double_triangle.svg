@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 374 374"><defs><style>.cls-1{fill:#99f;opacity:0.49;}.cls-2{fill:#336;opacity:0.82;}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><polyline class="cls-1" points="0 374 0 0 374 0"/><polyline class="cls-2" points="141.44 277.93 141.44 133 286.37 133"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 374 374">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #99f;
+        opacity: 0.49;
+      }
+      .cls-2 {
+        fill: #336;
+        opacity: 0.82;
+      }
+    </style>
+  </defs>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Layer_1-2" data-name="Layer 1">
+      <polyline class="cls-1" points="0 374 0 0 374 0" />
+      <polyline class="cls-2" points="141.44 277.93 141.44 133 286.37 133" />
+    </g>
+  </g>
+</svg>

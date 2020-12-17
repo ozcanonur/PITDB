@@ -23,12 +23,13 @@ const Checkbox = ({ label, parentLabel, onChange, iconProps, labelProps, classNa
     labelProps && labelProps.className ? `${classes.checkboxLabel} ${labelProps.className}` : classes.checkboxLabel;
 
   return (
-    <div className={`${classes.checkboxContainer} ${className}`} {...props}>
-      <div
-        className={iconClassName}
-        onClick={toggleCheckbox}
-        style={{ backgroundColor: checked ? '#333366' : 'transparent' }}
-      />
+    <div
+      className={`${classes.checkboxContainer} ${className}`}
+      style={{ backgroundColor: checked ? 'rgba(28, 27, 126, 0.1)' : 'transparent' }}
+      onClick={toggleCheckbox}
+      {...props}
+    >
+      <div className={iconClassName} style={{ backgroundColor: checked ? '#333366' : 'transparent' }} />
       <div className={labelClassName}>{label}</div>
     </div>
   );

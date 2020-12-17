@@ -20,7 +20,7 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
   projectInfoTextIdentifier: {
-    fontWeight: 600,
+    fontWeight: 500,
     marginRight: '0.5rem',
   },
 }));
