@@ -42,6 +42,7 @@ export const useStyles = makeStyles((theme) => ({
   cardBottomTextsContainer: {
     fontWeight: 400,
     fontSize: '1.4rem',
+    color: theme.palette.primary.main,
 
     '& > div:first-child': {
       marginBottom: '0.8rem',

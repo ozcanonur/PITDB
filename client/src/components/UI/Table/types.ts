@@ -13,6 +13,7 @@ export interface TableProps {
   clickableCells?: {
     [key: string]: (name: string) => void;
   };
+  isSortable?: Boolean;
 }
 
 export interface TableRowProps {

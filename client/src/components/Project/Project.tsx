@@ -7,7 +7,7 @@ import Content from './Content';
 export const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    background: 'linear-gradient(to bottom, #fff, #f2f4ff)',
+    background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff',
   },
 }));
 

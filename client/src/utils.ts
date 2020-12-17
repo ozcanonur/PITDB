@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const isStringArray = (test: any): boolean => {
   return Array.isArray(test) && !test.some((value) => typeof value !== 'string');
 };
@@ -16,4 +18,17 @@ export const isNumberTuple = (test: any[]): boolean => {
   }
 
   return false;
+};
+
+interface Params {
+  [key: string]: string | number | boolean;
+}
+
+export const fetchFromApi = async (route: string, params?: Params) => {
+  try {
+    const response = await axios.get(route, { params });
+    return response.data;
+  } catch (err) {
+    return console.error(err);
+  }
 };

@@ -29,17 +29,20 @@ export const getInitialFilterValues = (initialTableData: string[][], filters?: F
   const initialFilterValues: GenericObject = {};
 
   for (const filter of filters) {
-    const { type, onIndex, defaultValues } = filter;
+    const { type, onIndex, defaultValues, options } = filter;
 
     if (type === 'SingleSelect') {
-      const options = initialTableData.map((row) => ({ value: row[onIndex], label: row[onIndex] }));
-      filter.options = uniqBy(options, 'value');
+      if (!options) {
+        const options = initialTableData.map((row) => ({ value: row[onIndex], label: row[onIndex] }));
+        filter.options = uniqBy(options, 'value');
+      }
     } else if (type === 'MultiSelect') {
       if (!defaultValues) continue;
-      // Add ordinal options
-      const options = initialTableData.map((row) => ({ value: row[filter.onIndex], label: row[filter.onIndex] }));
-      filter.options = uniqBy(options, 'value');
-
+      if (!options) {
+        // Add ordinal options
+        const options = initialTableData.map((row) => ({ value: row[filter.onIndex], label: row[filter.onIndex] }));
+        filter.options = uniqBy(options, 'value');
+      }
       initialFilterValues[onIndex] = defaultValues;
       // at(options, defaultValueIndexes).map((e) => e.value);
     } else if (type === 'RangeSlider') initialFilterValues[onIndex] = defaultValues;

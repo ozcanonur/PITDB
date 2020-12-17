@@ -10,7 +10,15 @@ import { ExtendedTableProps } from './types';
 import { useStyles } from './styles/extendedTable';
 import { filterTable, getInitialFilterValues } from './helpers';
 
-const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props }: ExtendedTableProps) => {
+const ExtendedTable = ({
+  tableData,
+  tableHead,
+  clickableCells,
+  filters,
+  options,
+  isSortable = true,
+  ...props
+}: ExtendedTableProps) => {
   const classes = useStyles();
 
   const initialFilterValues = getInitialFilterValues(tableData, filters);
@@ -54,7 +62,7 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
   };
 
   return (
-    <section className={classes.container} {...props}>
+    <section {...props}>
       <div className={classes.filtersContainer}>
         {filters
           ? filters.map(({ type, name, onIndex, defaultValues, options, min, max }) =>
@@ -92,7 +100,12 @@ const ExtendedTable = ({ tableData, tableHead, clickableCells, filters, ...props
           : null}
       </div>
       <div className={classes.tableContainer}>
-        <Table tableHead={tableHead} tableData={filteredTableData} clickableCells={clickableCells} />
+        <Table
+          tableHead={tableHead}
+          tableData={filteredTableData}
+          clickableCells={clickableCells}
+          isSortable={isSortable}
+        />
       </div>
     </section>
   );

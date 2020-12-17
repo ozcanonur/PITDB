@@ -13,12 +13,14 @@ const Row = ({ row, clickableCells }: TableRowProps) => {
         <TableCell className={classes.tableCell} key={key}>
           {clickableCells && clickableCells[key] ? (
             <div onClick={() => clickableCells[key](prop)} className={classes.tableCellClickableContent}>
-              {isNaN(prop as any) ? prop : parseInt(prop).toLocaleString()}
+              {prop === '' ? '' : isNaN(prop as any) ? String(prop) : parseInt(String(prop)).toLocaleString()}
             </div>
-          ) : isNaN(prop as any) ? (
-            prop
+          ) : prop === '' ? (
+            ''
+          ) : isNaN(prop as any) || typeof prop === 'boolean' ? (
+            String(prop)
           ) : (
-            parseInt(prop).toLocaleString()
+            parseInt(String(prop)).toLocaleString()
           )}
         </TableCell>
       ))}

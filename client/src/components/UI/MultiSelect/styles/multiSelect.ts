@@ -10,7 +10,7 @@ export const selectStyles: Styles = {
       color: '#333366',
     };
   },
-  control: (styles, { isFocused }) => {
+  control: (styles, { selectProps, isFocused }) => {
     return {
       ...styles,
       borderRadius: '0.8rem',
@@ -18,9 +18,10 @@ export const selectStyles: Styles = {
       boxShadow: '0 5px 10px rgba(154,160,185,.18), 0 15px 40px rgba(166,173,201,.25)',
       border: 'none',
       minHeight: '4rem',
-      width: '17rem',
+      width: '18rem',
       marginBottom: '1rem',
       cursor: 'pointer',
+      backgroundColor: !selectProps.value ? 'rgba(255, 0, 0, 0.1)' : 'transparent',
 
       '& div[class$="placeholder"]': {
         transition: 'all .15s',
@@ -42,7 +43,7 @@ export const selectStyles: Styles = {
       fontSize: '1.4rem',
       pointerEvents: 'none',
       margin: 0,
-      width: '16rem',
+      width: '17rem',
       overflow: 'hidden',
     };
   },

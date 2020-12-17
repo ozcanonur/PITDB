@@ -1,7 +1,7 @@
 export const projectSidebarControls = [
   {
     category: 'Mutations',
-    items: ['Table', 'Sample quality', 'Allele frequency', 'Variant distribution'],
+    items: ['Mutations table', 'Sample quality', 'Allele frequency', 'Variant distribution'],
   },
   {
     category: 'Browser',
@@ -13,14 +13,14 @@ export const projectSidebarControls = [
   },
   {
     category: 'Splicing events',
-    items: ['Table', 'Type distribution', 'Domains', 'Representation'],
+    items: ['Splicing events table', 'Type distribution', 'Domains', 'Representation'],
   },
   {
     category: 'Transcript usage',
-    items: ['Table', 'Plot 1', 'Line plot'],
+    items: ['Transcript usage table', 'Plot 1', 'Line plot'],
   },
   {
     category: 'Peptide maps',
-    items: ['Table', 'Something', 'Something else', 'Something else', 'Something else'],
+    items: ['Peptide maps table', 'Something', 'Something else', 'Something else', 'Something else'],
   },
 ];

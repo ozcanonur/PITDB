@@ -31,7 +31,7 @@ app.use(cors());
 import './db/mongoose';
 
 // Routes
-app.use('/', router);
+app.use('/api', router);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

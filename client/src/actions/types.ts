@@ -1,13 +1,10 @@
-// export enum ACTION {
-//   UPDATE_BROWSE_FILTER_OPTIONS,
-// }
+export enum ACTION {
+  UPDATE_BROWSE_PROJECT_CONTROL,
+}
 
-// export type UpdateBrowseFilterOptionAction = {
-//   type: ACTION.UPDATE_BROWSE_FILTER_OPTIONS;
-//   payload: {
-//     filterName: string;
-//     selectedFilterOptions: string[];
-//   };
-// };
-
-export {};
+export type UpdateBrowseProjectControl = {
+  type: ACTION.UPDATE_BROWSE_PROJECT_CONTROL;
+  payload: {
+    controlName: string;
+  };
+};

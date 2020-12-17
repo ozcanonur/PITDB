@@ -1,13 +1,36 @@
-import express from 'express';
+import express, { Request } from 'express';
 
 import { Mutation } from '../db/models/mutation';
 
 const router = express.Router();
 
-router.get('/mutations', async (req, res) => {
+interface ExtendedRequest extends Request {
+  query: { [key: string]: string | undefined };
+}
+
+router.get('/mutations', async (req: ExtendedRequest, res) => {
+  const { projectId } = req.query;
+
   try {
-    const someMutations = await Mutation.findOne({ chr: 'chr1' });
-    if (someMutations) return res.send(someMutations);
+    const mutations = await Mutation.find({ project: projectId }).limit(50);
+    if (mutations) {
+      const parsedMutations = mutations.map((mutation) => {
+        const { ref, gene, refPos, inCDS, alt, hasPeptideEvidence } = mutation;
+
+        const type = !ref ? 'INS' : !alt ? 'DEL' : 'SNP';
+
+        return {
+          gene,
+          refPos,
+          type,
+          ref,
+          alt,
+          inCDS: inCDS.toString(),
+          hasPeptideEvidence: hasPeptideEvidence.toString(),
+        };
+      });
+      return res.send(parsedMutations);
+    }
     res.sendStatus(404);
   } catch (err) {
     res.status(500).send(err);

@@ -7,6 +7,8 @@ export interface ExtendedTableProps {
     [key: string]: (name: string) => void;
   };
   filters?: Filter[];
+  isSortable?: Boolean;
+  options?: OptionsType<any>;
 }
 
 export interface FilterTableBy {

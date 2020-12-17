@@ -60,6 +60,8 @@ const Experiments = ({ ...props }) => {
       ]}
       filters={filters}
       clickableCells={clickableCells}
+      // @ts-ignore
+      style={{ marginTop: '12rem' }}
       {...props}
     />
   );

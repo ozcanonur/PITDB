@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { CheckboxProps } from './types';
 import { useStyles } from './styles/checkbox';
@@ -8,7 +8,12 @@ const Checkbox = ({ label, parentLabel, onChange, iconProps, labelProps, classNa
 
   const [checked, setChecked] = useState(false);
 
+  const isFirstRun = useRef(true);
   useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
     if (parentLabel) onChange(checked, label, parentLabel);
     else onChange(checked, label);
   }, [label, parentLabel, checked, onChange]);

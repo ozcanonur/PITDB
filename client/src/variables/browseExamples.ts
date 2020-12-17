@@ -1,6 +1,6 @@
 export const examples = [
   {
-    id: 'EXP00008',
+    id: 'a53',
     species: 'Human',
     TGEs: '5,488',
     username: 'Esteban Gea',
@@ -8,7 +8,7 @@ export const examples = [
     color: '#9999FF',
   },
   {
-    id: 'EXP00013',
+    id: 'a54',
     species: 'Mouse',
     TGEs: '3,121',
     username: 'Conrad Bessant',
@@ -16,7 +16,7 @@ export const examples = [
     color: '#6B6BB3',
   },
   {
-    id: 'EXP01952',
+    id: 'a55',
     species: 'Rat',
     TGEs: '12,862',
     username: 'Onur Ozcan',

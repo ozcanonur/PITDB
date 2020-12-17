@@ -14,7 +14,7 @@ import CustomPaginationActions from './CustomPaginationActions';
 import { useStyles } from './styles/table';
 import { sortTableData, createSortState } from './helpers';
 
-const CustomTable = ({ tableHead, tableData, clickableCells }: TableProps) => {
+const CustomTable = ({ tableHead, tableData, clickableCells, isSortable = true }: TableProps) => {
   const classes = useStyles();
 
   const [filteredList, setFilteredList] = useState<string[][]>([]);
@@ -63,13 +63,16 @@ const CustomTable = ({ tableHead, tableData, clickableCells }: TableProps) => {
               <TableCell
                 key={e}
                 className={`${classes.tableCell} ${classes.tableHeadCell}`}
-                onClick={() => handleSort(key)}
+                style={{ cursor: isSortable ? 'pointer' : 'inherit' }}
+                onClick={isSortable ? () => handleSort(key) : undefined}
               >
                 {e}
-                {sortState[key] === 1 ? (
-                  <ArrowDropDownIcon className={classes.sortDropdown} />
-                ) : sortState[key] === -1 ? (
-                  <ArrowDropUpIcon className={classes.sortDropdown} />
+                {isSortable ? (
+                  sortState[key] === 1 ? (
+                    <ArrowDropDownIcon className={classes.sortDropdown} />
+                  ) : sortState[key] === -1 ? (
+                    <ArrowDropUpIcon className={classes.sortDropdown} />
+                  ) : null
                 ) : null}
               </TableCell>
             ))}

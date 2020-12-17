@@ -1,16 +1,19 @@
 /// <reference types="react-scripts" />
 
+interface BrowseProjectControl {
+  'Mutations table': Boolean;
+  'Sample quality': Boolean;
+  'Allele frequency': Boolean;
+  'Variant distribution': Boolean;
+}
+
 interface RootState {
-  browseFilterOptions: BrowseFilterOption[];
+  browseProjectControl: BrowseProjectControl;
 }
 
 interface SelectOption {
   value: string;
   label: string;
-}
-
-interface BrowseFilterOptions {
-  [filterName: string]: string[];
 }
 
 interface GenericObject {

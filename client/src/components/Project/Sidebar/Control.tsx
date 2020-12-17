@@ -1,15 +1,20 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { projectSidebarControls } from 'variables/projectSidebarControls';
 import Checkbox from 'components/UI/Checkbox/Checkbox';
 
 import { useStyles } from './styles/control';
+import { updateBrowseProjectControl } from 'actions/index';
 
 const Control = () => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const onChange = (checked: boolean, label: string, parentLabel?: string) => {
-    console.log(label, parentLabel, checked);
+    // console.log(label, parentLabel, checked);
+    dispatch(updateBrowseProjectControl(label));
   };
 
   return (

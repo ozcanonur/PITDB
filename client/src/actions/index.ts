@@ -1,16 +1,10 @@
-// import { ACTION, UpdateBrowseFilterOptionAction } from './types';
+import { ACTION, UpdateBrowseProjectControl } from './types';
 
-// export const updateBrowseFilterOptions = (
-//   filterName: string,
-//   selectedFilterOptions: string[]
-// ): UpdateBrowseFilterOptionAction => {
-//   return {
-//     type: ACTION.UPDATE_BROWSE_FILTER_OPTIONS,
-//     payload: {
-//       filterName,
-//       selectedFilterOptions,
-//     },
-//   };
-// };
-
-export {};
+export const updateBrowseProjectControl = (controlName: string): UpdateBrowseProjectControl => {
+  return {
+    type: ACTION.UPDATE_BROWSE_PROJECT_CONTROL,
+    payload: {
+      controlName,
+    },
+  };
+};

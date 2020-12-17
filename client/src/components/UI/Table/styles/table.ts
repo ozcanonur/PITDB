@@ -11,7 +11,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   tableHeadCell: {
     // color: theme.palette.primary.main,
-    cursor: 'pointer',
     paddingRight: '0.5rem !important',
     '&, &$tableCell': {
       fontSize: '1.4rem',
@@ -30,6 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     borderColor: 'rgba(94, 112, 157, 0.25)',
     maxWidth: '10rem',
     position: 'relative',
+    transform: 'translateZ(0)',
   },
   tableResponsive: {
     width: '100%',
@@ -43,9 +43,9 @@ export const useStyles = makeStyles((theme) => ({
     outline: 'none',
     verticalAlign: 'middle',
 
-    '& > th:last-child': {
-      width: '2rem',
-    },
+    // '& > th:last-child': {
+    //   width: '2rem',
+    // },
   },
   tableBodyRow: {
     height: '4rem',

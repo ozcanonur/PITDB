@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 
 const MutationSchema = new Schema({
   ref: String,
@@ -43,4 +43,47 @@ const MutationSchema = new Schema({
   },
 });
 
-export const Mutation = model('Mutation', MutationSchema);
+interface IMutation extends Document {
+  ref: string;
+  silent: boolean;
+  gene: string;
+  refPos: number;
+  inCDS: boolean;
+  alt: string;
+  hasPeptideEvidence: boolean;
+  transcriptsPos: any;
+  chr: string;
+  project: string;
+  conditions: {
+    Nsi: {
+      '1': {
+        AF: number;
+        qual: number;
+      };
+      '2': {
+        AF: number;
+        qual: number;
+      };
+      '3': {
+        AF: number;
+        qual: number;
+      };
+    };
+    si: {
+      '1': {
+        AF: number;
+        qual: number;
+      };
+      '2': {
+        AF: number;
+        qual: number;
+      };
+      '3': {
+        AF: number;
+        qual: number;
+      };
+    };
+  };
+}
+
+export const Mutation: Model<IMutation> = model<IMutation>('Mutation', MutationSchema);
