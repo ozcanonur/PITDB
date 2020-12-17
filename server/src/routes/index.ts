@@ -9,10 +9,10 @@ interface ExtendedRequest extends Request {
 }
 
 router.get('/mutations', async (req: ExtendedRequest, res) => {
-  const { projectId } = req.query;
+  const { projectId, skip } = req.query;
 
   try {
-    const mutations = await Mutation.find({ project: projectId }).limit(50);
+    const mutations = await Mutation.find({ project: projectId }).skip(parseInt(skip)).limit(50);
     if (mutations) {
       const parsedMutations = mutations.map((mutation) => {
         const { ref, gene, refPos, inCDS, alt, hasPeptideEvidence } = mutation;
@@ -33,7 +33,20 @@ router.get('/mutations', async (req: ExtendedRequest, res) => {
     }
     res.sendStatus(404);
   } catch (err) {
-    res.status(500).send(err);
+    res.sendStatus(500);
+  }
+});
+
+router.get('/mutationsCount', async (req: ExtendedRequest, res) => {
+  const { projectId } = req.query;
+
+  try {
+    const mutationsCount = await Mutation.countDocuments({ project: projectId });
+    if (mutationsCount) return res.send(mutationsCount.toString());
+
+    res.sendStatus(404);
+  } catch (err) {
+    res.sendStatus(500);
   }
 });
 

@@ -30,6 +30,7 @@ export const useStyles = makeStyles((theme) => ({
     maxWidth: '10rem',
     position: 'relative',
     transform: 'translateZ(0)',
+    overflow: 'auto',
   },
   tableResponsive: {
     width: '100%',

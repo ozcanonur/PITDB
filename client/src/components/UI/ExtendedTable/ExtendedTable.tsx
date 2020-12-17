@@ -104,7 +104,9 @@ const ExtendedTable = ({
           tableHead={tableHead}
           tableData={filteredTableData}
           clickableCells={clickableCells}
-          isSortable={isSortable}
+          currentPage={0}
+          handlePageChange={() => {}}
+          rowCount={5}
         />
       </div>
     </section>

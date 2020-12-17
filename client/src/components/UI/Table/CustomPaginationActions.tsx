@@ -28,14 +28,14 @@ const CustomPaginationActions = ({ count, page, rowsPerPage, onChangePage }: Cus
 
   return (
     <div className={classes.paginationActionsContainer}>
-      <IconButton
+      {/* <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
         aria-label='first page'
         className={classes.tablePaginationSelectIcon}
       >
         <FirstPageIcon />
-      </IconButton>
+      </IconButton> */}
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
@@ -52,14 +52,14 @@ const CustomPaginationActions = ({ count, page, rowsPerPage, onChangePage }: Cus
       >
         <ArrowRightIcon />
       </IconButton>
-      <IconButton
+      {/* <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label='last page'
         className={classes.tablePaginationSelectIcon}
       >
         <LastPageIcon />
-      </IconButton>
+      </IconButton> */}
     </div>
   );
 };

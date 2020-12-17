@@ -6,66 +6,12 @@ const ConfigSchema = new Schema({
   threads: Number,
   reference_fasta: String,
   project: String,
-  conditions: {
-    Nsi: {
-      samples: {
-        '1': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-        '2': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-        '3': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-      },
-    },
-    si: {
-      samples: {
-        '1': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-        '2': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-        '3': {
-          processed: Boolean,
-          left: String,
-          lastStepDone: Number,
-          right: String,
-          mzml: [String],
-        },
-      },
-    },
-  },
+  conditions: Object,
   mzml: {
     runs: {
       forward: {
         files: String,
-        SILAC: {
-          Nsi: [String],
-          si: [String],
-        },
+        SILAC: Object,
         modifications: {
           variable: [],
           fixed: [],

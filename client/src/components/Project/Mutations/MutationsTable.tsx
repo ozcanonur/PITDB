@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import ExtendedTable from 'components/UI/ExtendedTable/ExtendedTable';
-import { Filter } from 'components/UI/ExtendedTable/types';
+import Table from 'components/UI/Table/Table';
 
 import { fetchFromApi } from 'utils';
 
@@ -21,11 +20,32 @@ const MutationsTable = () => {
   const { projectId } = useParams<{ projectId: string }>();
 
   const [tableData, setTableData] = useState<string[][]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [rowCount, setRowCount] = useState(0);
+
+  const handlePageChange = async (_event: any, page: number) => {
+    setCurrentPage(page);
+
+    const skip = 50 + (currentPage / 4) * 50;
+    const fetchMore = currentPage % 4 === 0 && currentPage !== 0;
+
+    if (fetchMore) {
+      const newMutations = await fetchFromApi('/api/mutations', { projectId, skip });
+      setTableData([...tableData, ...newMutations.map(Object.values)]);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
-    fetchFromApi('/api/mutations', { projectId }).then((res) => {
-      if (mounted && res) setTableData(res.map(Object.values));
+    Promise.all([
+      fetchFromApi('/api/mutationsCount', { projectId }),
+      fetchFromApi('/api/mutations', { projectId, skip: 50 }),
+      // @ts-ignore
+    ]).then(([resCount, resMutations]) => {
+      if (mounted && resCount && resMutations) {
+        setRowCount(parseInt(resCount));
+        setTableData(resMutations.map(Object.values));
+      }
     });
 
     return () => {
@@ -33,73 +53,72 @@ const MutationsTable = () => {
     };
   }, [projectId]);
 
-  // console.log(tableData);
-
-  const filters: Filter[] = [
-    {
-      type: 'MultiSelect',
-      onIndex: 2,
-      name: 'Type',
-      options: [
-        {
-          value: 'SNP',
-          label: 'SNP',
-        },
-        {
-          value: 'INS',
-          label: 'INS',
-        },
-        {
-          value: 'DEL',
-          label: 'DEL',
-        },
-      ],
-      defaultValues: ['SNP', 'INS'],
-    },
-    {
-      type: 'MultiSelect',
-      onIndex: 5,
-      name: 'In CDS',
-      options: [
-        {
-          value: 'false',
-          label: 'false',
-        },
-        {
-          value: 'true',
-          label: 'true',
-        },
-      ],
-      defaultValues: ['false'],
-    },
-    {
-      type: 'MultiSelect',
-      onIndex: 6,
-      name: 'Peptide Evidence',
-      options: [
-        {
-          value: 'false',
-          label: 'false',
-        },
-        {
-          value: 'true',
-          label: 'true',
-        },
-      ],
-      defaultValues: ['false'],
-    },
-  ];
-
   return (
     <div className={classes.container}>
-      <ExtendedTable
+      <Table
         tableData={tableData}
         tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
-        isSortable={false}
-        filters={filters}
+        currentPage={currentPage}
+        rowCount={rowCount}
+        handlePageChange={handlePageChange}
       />
     </div>
   );
 };
 
 export default MutationsTable;
+
+// const filters: Filter[] = [
+//   {
+//     type: 'MultiSelect',
+//     onIndex: 2,
+//     name: 'Type',
+//     options: [
+//       {
+//         value: 'SNP',
+//         label: 'SNP',
+//       },
+//       {
+//         value: 'INS',
+//         label: 'INS',
+//       },
+//       {
+//         value: 'DEL',
+//         label: 'DEL',
+//       },
+//     ],
+//     defaultValues: ['SNP', 'INS'],
+//   },
+//   {
+//     type: 'MultiSelect',
+//     onIndex: 5,
+//     name: 'In CDS',
+//     options: [
+//       {
+//         value: 'false',
+//         label: 'false',
+//       },
+//       {
+//         value: 'true',
+//         label: 'true',
+//       },
+//     ],
+//     defaultValues: ['false'],
+//   },
+//   {
+//     type: 'MultiSelect',
+//     onIndex: 6,
+//     name: 'Peptide Evidence',
+//     options: [
+//       {
+//         value: 'false',
+//         label: 'false',
+//       },
+//       {
+//         value: 'true',
+//         label: 'true',
+//       },
+//     ],
+//     defaultValues: ['false'],
+//   },
+// ];

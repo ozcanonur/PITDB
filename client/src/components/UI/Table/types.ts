@@ -13,7 +13,9 @@ export interface TableProps {
   clickableCells?: {
     [key: string]: (name: string) => void;
   };
-  isSortable?: Boolean;
+  currentPage: number;
+  rowCount: number;
+  handlePageChange: (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
 }
 
 export interface TableRowProps {
