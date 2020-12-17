@@ -1,7 +1,7 @@
 import { ReactWrapper } from 'enzyme';
-
 import { uniq, isEqual } from 'lodash';
 
+import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import { mountExtendedTable, getColumnValues, replaceAll, getTableRows } from './helpers';
 
 let wrapped: ReactWrapper;
@@ -9,10 +9,8 @@ beforeEach(() => {
   wrapped = mountExtendedTable();
 });
 
-describe('Init', () => {
-  // const wrapped = mountExtendedTable();
-
-  it('applies filters correctly', () => {
+describe('Extended table', () => {
+  it('applies filters correctly on load', () => {
     // Index 0 = 'Human', 'Rat'
     let columnValues: string[] | number[] = getColumnValues(wrapped, 0);
     expect(isEqual(uniq(columnValues), ['Human', 'Rat'])).toBeTruthy();
@@ -28,14 +26,14 @@ describe('Init', () => {
     expect(isBetweenSliderValues).toBeTruthy();
   });
 
-  it('renders multiSelect options correctly', () => {
+  it('renders multiSelect menu options correctly', () => {
     const human = wrapped.find('[data-test="Human-removeButton"]');
     expect(human).toHaveLength(1);
 
-    const rat = wrapped.find('[data-test="Rat-multiValue"]');
+    const rat = wrapped.find('[data-test="Rat-removeButton"]');
     expect(rat).toHaveLength(1);
 
-    const medium = wrapped.find('[data-test="Medium-multiValue"]');
+    const medium = wrapped.find('[data-test="Medium-removeButton"]');
     expect(medium).toHaveLength(1);
   });
 });
@@ -52,20 +50,19 @@ describe('Multi select', () => {
   });
 
   // Menu is open is needed, click doesn't render the menu for some reason
-  // it('filters correctly on multiselect option add', () => {
-  //   const dropdown = wrapped.find('[data-test="Species-dropdown"]');
-  //   dropdown.simulate('click');
-  //   wrapped.update();
+  it('filters correctly on multiselect option add', () => {
+    wrapped.find(MultiSelect).at(0).find('StateManager').instance().setState({ menuIsOpen: true });
+    wrapped.update();
 
-  //   const menu = wrapped.find('[data-test="menu"]');
-  //   const bovinOption = menu.childAt(0).childAt(0);
+    const menu = wrapped.find('[data-test="Species-menu"]');
+    const bovinOption = menu.findWhere((node) => node.type() === 'div' && node.text() === 'Bovin');
 
-  //   bovinOption.simulate('click');
-  //   wrapped.update();
+    bovinOption.simulate('click');
+    wrapped.update();
 
-  //   const columnValues = getColumnValues(wrapped, 0);
-  //   expect(columnValues.includes('Bovin')).toBeTruthy();
-  // });
+    const columnValues = getColumnValues(wrapped, 0);
+    expect(columnValues.includes('Bovin')).toBeTruthy();
+  });
 
   it('renders empty table on all multiselect in one filter removed', () => {
     const humanOption = wrapped.find('[data-test="Human-removeButton"]');
@@ -73,7 +70,6 @@ describe('Multi select', () => {
 
     const ratOption = wrapped.find('[data-test="Rat-removeButton"]');
     ratOption.simulate('click');
-
     wrapped.update();
 
     const rows = getTableRows(wrapped);
@@ -84,20 +80,28 @@ describe('Multi select', () => {
 
 // describe('Range slider', () => {
 //   it('filters correctly on change', () => {
+//     const slider = wrapped.find(Slider);
+//     slider.simulate('change', { values: [20000, 46000] });
+//     wrapped.update();
 
-//   })
-// })
+//     let columnValues: string[] | number[] = getColumnValues(wrapped, 6);
+//     columnValues = columnValues.map((value) => parseInt(replaceAll(value, ',', '')));
+
+//     console.log(columnValues);
+
+//     expect(columnValues.every((value) => value >= 20000 && value <= 46000)).toBeTruthy();
+//   });
+// });
 
 // describe('Single select', () => {
-//   // Same issue as above
-//   // it('displays all available values as options', () => {
-//   //   const dropdownButton = wrapped.find('[data-test="singleSelect-dropdown"]');
-//   //   dropdownButton.simulate('click');
+//   it('displays all available values as options', async () => {
+//     wrapped.find(SingleSelect).find('StateManager').instance().setState({ menuIsOpen: true });
+//     wrapped.update();
 
-//   //   wrapped.update();
+//     await wait(() => expect(getByText('EXP10008')).toBeInTheDocument());
 
-//   //   const menuList = wrapped.find('[data-test="singleSelect-menuList"]');
+//     const menuList = wrapped.find('[data-test="singleSelect-menuList"]');
 
-//   //   console.log(menuList.debug());
-//   // });
+//     console.log(menuList.debug());
+//   });
 // });

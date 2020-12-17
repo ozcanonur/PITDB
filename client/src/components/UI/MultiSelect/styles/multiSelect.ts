@@ -29,11 +29,6 @@ export const selectStyles: Styles = {
       },
     };
   },
-  container: (styles) => {
-    return {
-      ...styles,
-    };
-  },
   multiValue: (styles) => {
     return {
       ...styles,

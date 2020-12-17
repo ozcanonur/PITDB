@@ -6,6 +6,8 @@ import path from 'path';
 import dotenv from 'dotenv';
 import compression from 'compression';
 
+import router from './routes/index';
+
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
@@ -24,6 +26,12 @@ app.use(
 app.use(compression());
 // @ts-ignore
 app.use(cors());
+
+// Setup Mongo
+import './db/mongoose';
+
+// Routes
+app.use('/', router);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

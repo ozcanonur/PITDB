@@ -2,7 +2,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 import { sampleTableData } from 'variables/browseTableData';
-
 import { mountTable, applyThousandsSeperator, getTableCells, getTableRows } from './helpers';
 
 const wrapped = mountTable();

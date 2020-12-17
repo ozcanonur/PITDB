@@ -6,7 +6,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { SingleSelectProps } from './types';
 import { searchStyles } from 'components/UI/MultiSelect/styles/multiSelect';
 
-const { DropdownIndicator, MenuList } = components;
+const { DropdownIndicator, MenuList, Menu } = components;
 
 const CustomDropdownIndicator = ({ ...props }: any) => {
   const clearValue = () => {
@@ -32,6 +32,8 @@ const CustomMenuList = (props: any) => (
   </MenuList>
 );
 
+const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
+
 const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
   const filterValues = (inputValue: string) =>
     options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
@@ -43,11 +45,29 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
       }, 1000);
     });
 
+  // For menu close animation
+  const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
+  const onMenuClose = () => {
+    const menuEl = document.querySelector(`#${uniqueId} .menu`);
+    const containerEl = menuEl?.parentElement;
+    const clonedMenuEl = menuEl?.cloneNode(true);
+
+    if (!clonedMenuEl) return;
+
+    // @ts-ignore
+    clonedMenuEl.classList.add('menu--close');
+    clonedMenuEl.addEventListener('animationend', () => {
+      containerEl?.removeChild(clonedMenuEl);
+    });
+
+    containerEl?.appendChild(clonedMenuEl!);
+  };
+
   return (
     <div {...props}>
       <AsyncSelect
         name={name}
-        components={{ DropdownIndicator: CustomDropdownIndicator, MenuList: CustomMenuList }}
+        components={{ DropdownIndicator: CustomDropdownIndicator, MenuList: CustomMenuList, Menu: CustomMenu }}
         cacheOptions
         defaultOptions
         loadOptions={promiseOptions}
@@ -58,6 +78,9 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
         escapeClearsValue
         isClearable
         // menuIsOpen
+        // For menu close animation
+        id={uniqueId}
+        onMenuClose={onMenuClose}
         {...singleSelectProps}
       />
     </div>

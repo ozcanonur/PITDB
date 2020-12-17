@@ -16,6 +16,7 @@ const {
   MultiValueRemove,
   MultiValue,
   Option,
+  Control,
 } = components;
 
 const CustomValueContainer = ({ children, ...props }: any) => (
@@ -44,7 +45,9 @@ const CustomMultiValueContainer = (renderOn: HTMLElement | null) => {
   };
 };
 
-const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
+const CustomMenu = ({ ...props }: any) => (
+  <Menu {...props} data-test={`${props.selectProps.name}-menu`} className='menu' />
+);
 
 const CustomDropdownIndicator = (props: any) => (
   <DropdownIndicator {...props} data-test={`${props.selectProps.name}-dropdown`}>
@@ -68,6 +71,12 @@ const CustomOption = (props: any) => (
   <Option {...props} data-test={`${props.children}-option`}>
     {props.children}
   </Option>
+);
+
+const CustomControl = (props: any) => (
+  <Control {...props} data-test={`${props.selectProps.name}-multiSelectControl`}>
+    {props.children}
+  </Control>
 );
 
 const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValues, ...props }: MultiSelectProps) => {
@@ -103,6 +112,7 @@ const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValues,
           MultiValueRemove: CustomMultiValueRemove,
           MultiValue: CustomMultiValue,
           Option: CustomOption,
+          Control: CustomControl,
         }}
         closeMenuOnSelect={false}
         isMulti
@@ -115,7 +125,6 @@ const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValues,
         isClearable
         controlShouldRenderValue
         blurOnRemove
-        // menuIsOpen
         // For menu close animation
         id={uniqueId}
         onMenuClose={onMenuClose}

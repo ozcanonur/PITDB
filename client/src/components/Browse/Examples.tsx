@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import AOS from 'aos';
 
 import { ExampleProps } from './types';
@@ -12,8 +13,13 @@ const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
 
   const { id, species, TGEs, username, date, color } = exampleProps;
 
+  const history = useHistory();
+  const navToProject = () => {
+    history.push(`/browse/${id}`);
+  };
+
   return (
-    <div {...props}>
+    <div {...props} onClick={navToProject}>
       <div className={classes.cardContainer}>
         <div className={classes.cardTop} style={{ backgroundColor: color }}>
           <DnaImg className={classes.cardImg} />
