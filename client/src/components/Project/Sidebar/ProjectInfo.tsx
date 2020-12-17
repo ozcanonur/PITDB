@@ -24,17 +24,17 @@ const ProjectInfo = ({ projectId }: { projectId: string }) => {
   ];
 
   return (
-    <div className={classes.projectInfoContainer}>
+    <section className={classes.projectInfoContainer}>
       <DnaImg className={classes.infoImage} />
       <div className={classes.projectInfo}>
         {infoItems.map(({ identifier, value }) => (
-          <div>
+          <div key={identifier}>
             <span className={classes.projectInfoTextIdentifier}>{identifier}</span>
             {value}
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

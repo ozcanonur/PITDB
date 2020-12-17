@@ -1,13 +1,7 @@
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
 import ProjectInfo from './ProjectInfo';
+import Control from './Control';
 
-export const useStyles = makeStyles((theme) => ({
-  sidebarContainer: {
-    minHeight: '100vh',
-    borderRight: `1.3px solid rgba(51, 51, 102, 0.3)`,
-  },
-}));
+import { useStyles } from './styles/sidebar';
 
 const Sidebar = ({ projectId }: { projectId: string }) => {
   const classes = useStyles();
@@ -15,6 +9,7 @@ const Sidebar = ({ projectId }: { projectId: string }) => {
   return (
     <div className={classes.sidebarContainer}>
       <ProjectInfo projectId={projectId} />
+      <Control />
     </div>
   );
 };
