@@ -9,4 +9,24 @@ export const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     transform: 'translateZ(0)',
   },
+  routesContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  route: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '1.4rem 3rem',
+    cursor: 'pointer',
+  },
+  routeImg: {
+    height: '3.2rem',
+    width: '3.2rem',
+  },
+  routeText: {
+    fontSize: '1.4rem',
+    fontWeight: 400,
+    color: theme.palette.primary.main,
+    marginLeft: '3.4rem',
+  },
 }));

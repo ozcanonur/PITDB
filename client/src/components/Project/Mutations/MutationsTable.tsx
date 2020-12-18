@@ -8,7 +8,7 @@ import { fetchFromApi } from 'utils';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    padding: '2rem',
+    padding: '1rem 2rem',
     minWidth: '76rem',
     maxWidth: '76rem',
   },

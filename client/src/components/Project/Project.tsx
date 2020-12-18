@@ -1,8 +1,9 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Sidebar from './Sidebar/Sidebar';
-import Content from './Content';
+import Mutations from './Mutations/Mutations';
+import DifferentialGeneExpression from './DifferentialGeneExpression/DifferentialGeneExpression';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -14,12 +15,20 @@ export const useStyles = makeStyles((theme) => ({
 const Project = () => {
   const classes = useStyles();
 
+  const match = useRouteMatch();
   const { projectId } = useParams<{ projectId: string }>();
 
   return (
     <div className={classes.container}>
       <Sidebar projectId={projectId} />
-      <Content />
+      <Switch>
+        <Route path={`${match.path}/mutations`}>
+          <Mutations />
+        </Route>
+        <Route path={`${match.path}/differentialGeneExpression`}>
+          <DifferentialGeneExpression />
+        </Route>
+      </Switch>
     </div>
   );
 };

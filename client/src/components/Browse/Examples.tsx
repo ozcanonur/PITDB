@@ -15,7 +15,7 @@ const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
 
   const history = useHistory();
   const navToProject = () => {
-    history.push(`/browse/${id}`);
+    history.push(`/browse/${id}/mutations`);
   };
 
   return (

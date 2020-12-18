@@ -14,7 +14,7 @@ import { useStyles } from './styles/browse';
 const Browse = () => {
   const classes = useStyles();
 
-  let match = useRouteMatch();
+  const match = useRouteMatch();
 
   useEffect(() => {
     AOS.init({
