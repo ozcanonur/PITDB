@@ -1,4 +1,4 @@
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation, useHistory, useParams } from 'react-router-dom';
 
 import ProjectInfo from './ProjectInfo';
 import Category1 from 'assets/category1.svg';
@@ -9,7 +9,7 @@ import Category5 from 'assets/category5.svg';
 
 import { useStyles } from './styles/sidebar';
 
-const Sidebar = ({ projectId }: { projectId: string }) => {
+const Sidebar = () => {
   const classes = useStyles();
 
   const routes = [
@@ -25,7 +25,12 @@ const Sidebar = ({ projectId }: { projectId: string }) => {
       imgSrc: Category2,
       route: 'differentialGeneExpression',
     },
-    { name: 'Mutations', alt: 'browser route', imgSrc: Category3, route: 'browser' },
+    {
+      name: 'Browser',
+      alt: 'browser route',
+      imgSrc: Category3,
+      route: 'browser',
+    },
     {
       name: 'Splicing events',
       alt: 'splicing events route',
@@ -40,6 +45,7 @@ const Sidebar = ({ projectId }: { projectId: string }) => {
     },
   ];
 
+  const { projectId } = useParams<{ projectId: string }>();
   const currentRoute = useLocation().pathname.split('/')[3];
 
   const history = useHistory();
@@ -54,6 +60,7 @@ const Sidebar = ({ projectId }: { projectId: string }) => {
       <div className={classes.routesContainer}>
         {routes.map(({ name, route, alt, imgSrc }) => (
           <div
+            key={name}
             className={classes.route}
             style={{ backgroundColor: currentRoute === route ? 'rgba(51, 51, 102, 0.1)' : 'transparent' }}
             onClick={() => navToRoute(route)}

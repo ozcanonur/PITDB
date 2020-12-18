@@ -24,9 +24,9 @@ interface Params {
   [key: string]: string | number | boolean;
 }
 
-export const fetchFromApi = async (route: string, params?: Params) => {
+export const fetchFromApi = async (route: string, params?: Params, paramsSerializer?: any) => {
   try {
-    const response = await axios.get(route, { params });
+    const response = await axios.get(route, { params, paramsSerializer });
     return response.data;
   } catch (err) {
     return console.error(err);

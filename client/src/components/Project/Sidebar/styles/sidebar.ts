@@ -4,10 +4,11 @@ export const useStyles = makeStyles((theme) => ({
   sidebarContainer: {
     minHeight: '100vh',
     maxHeight: '100vh',
-    borderRight: `1.3px solid rgba(51, 51, 102, 0.3)`,
+    borderRight: `1.5px solid rgba(51, 51, 102, 0.2)`,
     maxWidth: '35rem',
     overflow: 'auto',
     transform: 'translateZ(0)',
+    background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff)',
   },
   routesContainer: {
     display: 'flex',

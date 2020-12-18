@@ -18,7 +18,7 @@ export const selectStyles: Styles = {
       boxShadow: '0 5px 10px rgba(154,160,185,.18), 0 15px 40px rgba(166,173,201,.25)',
       border: 'none',
       minHeight: '4rem',
-      width: '18rem',
+      width: '19rem',
       marginBottom: '1rem',
       cursor: 'pointer',
       backgroundColor: !selectProps.value ? 'rgba(255, 0, 0, 0.1)' : 'transparent',
@@ -43,7 +43,7 @@ export const selectStyles: Styles = {
       fontSize: '1.4rem',
       pointerEvents: 'none',
       margin: 0,
-      width: '17rem',
+      width: '18rem',
       overflow: 'hidden',
     };
   },

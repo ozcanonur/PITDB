@@ -8,10 +8,8 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
     borderSpacing: '0',
     borderCollapse: 'collapse',
-    //minHeight: '49rem',
   },
   tableHeadCell: {
-    // color: theme.palette.primary.main,
     paddingRight: '0.5rem !important',
     '&, &$tableCell': {
       fontSize: '1.4rem',

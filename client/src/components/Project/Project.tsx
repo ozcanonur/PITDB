@@ -1,4 +1,4 @@
-import { useParams, Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Sidebar from './Sidebar/Sidebar';
@@ -16,11 +16,10 @@ const Project = () => {
   const classes = useStyles();
 
   const match = useRouteMatch();
-  const { projectId } = useParams<{ projectId: string }>();
 
   return (
     <div className={classes.container}>
-      <Sidebar projectId={projectId} />
+      <Sidebar />
       <Switch>
         <Route path={`${match.path}/mutations`}>
           <Mutations />

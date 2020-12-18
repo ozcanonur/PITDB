@@ -1,10 +1,10 @@
-import React from 'react';
+import { MouseEvent, ChangeEvent } from 'react';
 
 export interface CustomPaginationActionsProps {
   count: number;
   page: number;
   rowsPerPage: number;
-  onChangePage: (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  onChangePage: (_event: MouseEvent<HTMLButtonElement> | null, page: number) => void;
 }
 
 export interface TableProps {
@@ -13,11 +13,14 @@ export interface TableProps {
   clickableCells?: {
     [key: string]: (name: string) => void;
   };
-  currentPage: number;
+  currentPage?: number;
+  rowsPerPage?: number;
+  handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   rowCount: number;
-  handlePageChange: (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  handlePageChange: (event: MouseEvent<HTMLButtonElement> | null, page: number) => void;
   loading?: boolean;
   tableProps?: any;
+  className?: string;
 }
 
 export interface TableRowProps {

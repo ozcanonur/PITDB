@@ -4,8 +4,8 @@ export const useStyles = makeStyles((theme) => ({
   projectInfoContainer: {
     display: 'flex',
     alignItems: 'center',
-    padding: '2.5rem 3rem',
-    borderBottom: `1.3px solid rgba(51, 51, 102, 0.2)`,
+    padding: '2rem 3rem',
+    borderBottom: `1.5px solid rgba(51, 51, 102, 0.2)`,
   },
   infoImage: {
     height: '10.6rem',

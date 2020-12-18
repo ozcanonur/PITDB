@@ -16,7 +16,9 @@ const CustomTable = ({
   tableData,
   clickableCells,
   rowCount,
-  currentPage,
+  rowsPerPage = 10,
+  currentPage = 0,
+  handleRowsPerPageChange,
   handlePageChange,
   loading,
   tableProps,
@@ -24,7 +26,7 @@ const CustomTable = ({
 }: TableProps) => {
   const classes = useStyles();
 
-  const slicedTableData = tableData.slice(currentPage * 10, currentPage * 10 + 10);
+  const slicedTableData = tableData.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
 
   return (
     <div className={classes.tableResponsive} {...props}>
@@ -64,13 +66,13 @@ const CustomTable = ({
           selectIcon: classes.tablePaginationSelectIcon,
         }}
         className={classes.tablePagination}
-        rowsPerPageOptions={[5, 10, 25, 50, 100]}
+        rowsPerPageOptions={[10, 25, 50]}
         component='div'
         count={rowCount}
-        rowsPerPage={10}
+        rowsPerPage={rowsPerPage}
         page={currentPage}
         onChangePage={handlePageChange}
-        // onChangeRowsPerPage={handleChangeRowsPerPage}
+        onChangeRowsPerPage={handleRowsPerPageChange}
         ActionsComponent={CustomPaginationActions}
       />
     </div>
