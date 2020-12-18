@@ -12,6 +12,9 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: '76rem',
     maxWidth: '76rem',
   },
+  table: {
+    minHeight: '49rem',
+  },
 }));
 
 const MutationsTable = () => {
@@ -19,6 +22,7 @@ const MutationsTable = () => {
 
   const { projectId } = useParams<{ projectId: string }>();
 
+  const [loading, setLoading] = useState(true);
   const [tableData, setTableData] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [rowCount, setRowCount] = useState(0);
@@ -26,17 +30,24 @@ const MutationsTable = () => {
   const handlePageChange = async (_event: any, page: number) => {
     setCurrentPage(page);
 
-    const skip = 50 + (currentPage / 4) * 50;
-    const fetchMore = currentPage % 4 === 0 && currentPage !== 0;
+    const skip = page * 10;
+    const haveToFetchMore = tableData.length <= skip;
 
-    if (fetchMore) {
+    if (haveToFetchMore) {
+      setLoading(true);
+
       const newMutations = await fetchFromApi('/api/mutations', { projectId, skip });
       setTableData([...tableData, ...newMutations.map(Object.values)]);
+
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     let mounted = true;
+
+    setLoading(true);
+
     Promise.all([
       fetchFromApi('/api/mutationsCount', { projectId }),
       fetchFromApi('/api/mutations', { projectId, skip: 50 }),
@@ -45,6 +56,7 @@ const MutationsTable = () => {
       if (mounted && resCount && resMutations) {
         setRowCount(parseInt(resCount));
         setTableData(resMutations.map(Object.values));
+        setLoading(false);
       }
     });
 
@@ -61,6 +73,8 @@ const MutationsTable = () => {
         currentPage={currentPage}
         rowCount={rowCount}
         handlePageChange={handlePageChange}
+        loading={loading}
+        tableProps={{ className: classes.table }}
       />
     </div>
   );

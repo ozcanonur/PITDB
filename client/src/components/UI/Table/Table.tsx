@@ -5,19 +5,30 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import Loading from 'components/UI/Loading/Loading';
 import { TableProps } from './types';
 import Row from './TableRow';
 import CustomPaginationActions from './CustomPaginationActions';
 import { useStyles } from './styles/table';
 
-const CustomTable = ({ tableHead, tableData, clickableCells, rowCount, currentPage, handlePageChange }: TableProps) => {
+const CustomTable = ({
+  tableHead,
+  tableData,
+  clickableCells,
+  rowCount,
+  currentPage,
+  handlePageChange,
+  loading,
+  tableProps,
+  ...props
+}: TableProps) => {
   const classes = useStyles();
 
   const slicedTableData = tableData.slice(currentPage * 10, currentPage * 10 + 10);
 
   return (
-    <div className={classes.tableResponsive}>
-      <Table className={classes.table}>
+    <div className={classes.tableResponsive} {...props}>
+      <Table className={classes.table} {...tableProps}>
         <TableHead>
           <TableRow className={classes.tableHeadRow}>
             {tableHead.map((e) => (
@@ -27,11 +38,21 @@ const CustomTable = ({ tableHead, tableData, clickableCells, rowCount, currentPa
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {slicedTableData.map((row, key) => (
-            <Row key={key} row={row} clickableCells={clickableCells} />
-          ))}
-        </TableBody>
+        {loading ? (
+          <TableBody>
+            <TableRow>
+              <td className={classes.loadingContainer}>
+                <Loading />
+              </td>
+            </TableRow>
+          </TableBody>
+        ) : (
+          <TableBody>
+            {slicedTableData.map((row, key) => (
+              <Row key={key} row={row} clickableCells={clickableCells} />
+            ))}
+          </TableBody>
+        )}
       </Table>
       <TablePagination
         classes={{

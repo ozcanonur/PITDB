@@ -107,6 +107,7 @@ const ExtendedTable = ({
           currentPage={0}
           handlePageChange={() => {}}
           rowCount={5}
+          loading={false}
         />
       </div>
     </section>

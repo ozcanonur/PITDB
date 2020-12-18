@@ -16,6 +16,8 @@ export interface TableProps {
   currentPage: number;
   rowCount: number;
   handlePageChange: (_event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  loading?: boolean;
+  tableProps?: any;
 }
 
 export interface TableRowProps {

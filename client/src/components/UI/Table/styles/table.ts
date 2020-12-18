@@ -8,6 +8,7 @@ export const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
     borderSpacing: '0',
     borderCollapse: 'collapse',
+    //minHeight: '49rem',
   },
   tableHeadCell: {
     // color: theme.palette.primary.main,
@@ -36,6 +37,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: '2px',
     overflowX: 'visible',
+    position: 'relative',
   },
   tableHeadRow: {
     height: '4rem',
@@ -84,5 +86,11 @@ export const useStyles = makeStyles((theme) => ({
     '& svg': {
       fontSize: '2rem',
     },
+  },
+  loadingContainer: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
   },
 }));
