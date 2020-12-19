@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     maxHeight: '100vh',
     borderRight: `1.5px solid rgba(51, 51, 102, 0.2)`,
-    maxWidth: '35rem',
+    minWidth: '32rem',
     overflow: 'auto',
     transform: 'translateZ(0)',
     background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff)',
@@ -21,8 +21,8 @@ export const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   routeImg: {
-    height: '3.2rem',
-    width: '3.2rem',
+    height: '2.5rem',
+    width: '2.5rem',
   },
   routeText: {
     fontSize: '1.4rem',

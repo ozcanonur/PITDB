@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, ChangeEvent } from 'react';
 import { ActionMeta } from 'react-select';
 

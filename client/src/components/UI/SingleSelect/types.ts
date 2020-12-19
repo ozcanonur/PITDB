@@ -1,8 +1,8 @@
-import { ActionMeta, OptionsType, ValueType } from 'react-select';
+import { ActionMeta, ValueType } from 'react-select';
 
 export interface SingleSelectProps {
   name: string;
-  options: OptionsType<any>;
+  promiseOptions: any;
   onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   singleSelectProps?: any;
   className?: string;

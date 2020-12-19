@@ -11,10 +11,12 @@ export const useStyles = makeStyles((theme) => ({
   },
   tableHeadCell: {
     paddingRight: '0.5rem !important',
+
     '&, &$tableCell': {
       fontSize: '1.4rem',
       fontWeight: 600,
       color: theme.palette.primary.main,
+      maxWidth: '6rem',
     },
   },
   tableCell: {

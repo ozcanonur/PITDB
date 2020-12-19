@@ -6,7 +6,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import compression from 'compression';
 
-import router from './routes/index';
+import mutationsRouter from './routes/mutations/mutations';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -31,7 +31,7 @@ app.use(cors());
 import './db/mongoose';
 
 // Routes
-app.use('/api', router);
+app.use('/api', mutationsRouter);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

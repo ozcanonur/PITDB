@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import { SingleSelectProps } from './types';
-import { searchStyles } from 'components/UI/MultiSelect/styles/multiSelect';
+import { singleSelectStyles } from './styles/singleSelect';
 
 const { DropdownIndicator, MenuList, Menu } = components;
 
@@ -34,16 +34,9 @@ const CustomMenuList = (props: any) => (
 
 const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
 
-const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
-  const filterValues = (inputValue: string) =>
-    options.filter((e) => e.label.toLowerCase().includes(inputValue.toLowerCase()));
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(filterValues(inputValue));
-      }, 1000);
-    });
+const SingleSelect = ({ singleSelectProps, name, promiseOptions, onChange, ...props }: SingleSelectProps) => {
+  // const filterValues = (inputValue: string) =>
+  //   options.filter((e) => e.label.toLowerCase().startsWith(inputValue.toLowerCase()));
 
   // For menu close animation
   const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
@@ -71,12 +64,13 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
         cacheOptions
         defaultOptions
         loadOptions={promiseOptions}
-        styles={searchStyles}
+        styles={singleSelectStyles}
         placeholder={name}
         closeMenuOnSelect={false}
         onChange={onChange}
         escapeClearsValue
         isClearable
+        blurInputOnSelect
         // menuIsOpen
         // For menu close animation
         id={uniqueId}

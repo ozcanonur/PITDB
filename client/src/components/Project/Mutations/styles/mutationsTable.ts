@@ -2,7 +2,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
-    width: '100%',
     height: 'max-content',
   },
   table: {
@@ -17,16 +16,25 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '1rem',
   },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
     flexWrap: 'wrap',
     padding: '1rem 2rem',
+    paddingTop: '2rem',
+    justifyContent: 'space-between',
+  },
+  singleSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginRight: '2rem',
+  },
+  multiSelectContainer: {
+    display: 'flex',
 
     '& > div:not(:last-child)': {
-      marginRight: '5rem',
+      marginRight: '2rem',
     },
   },
 }));

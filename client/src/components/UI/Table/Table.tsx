@@ -22,6 +22,8 @@ const CustomTable = ({
   handlePageChange,
   loading,
   tableProps,
+  rowOnClick,
+  selectedRow,
   ...props
 }: TableProps) => {
   const classes = useStyles();
@@ -51,7 +53,13 @@ const CustomTable = ({
         ) : (
           <TableBody>
             {slicedTableData.map((row, key) => (
-              <Row key={key} row={row} clickableCells={clickableCells} />
+              <Row
+                key={key}
+                row={row}
+                clickableCells={clickableCells}
+                rowOnClick={rowOnClick}
+                selectedRow={selectedRow}
+              />
             ))}
           </TableBody>
         )}

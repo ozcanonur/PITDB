@@ -21,6 +21,8 @@ export interface TableProps {
   loading?: boolean;
   tableProps?: any;
   className?: string;
+  rowOnClick?: (row: string[]) => void;
+  selectedRow?: string[];
 }
 
 export interface TableRowProps {
@@ -28,4 +30,6 @@ export interface TableRowProps {
   clickableCells?: {
     [key: string]: (name: string) => void;
   };
+  rowOnClick?: (row: string[]) => void;
+  selectedRow?: string[];
 }

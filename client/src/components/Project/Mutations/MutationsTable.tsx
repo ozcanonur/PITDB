@@ -5,7 +5,9 @@ import { ActionMeta } from 'react-select';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
+import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
+import { MutationTableFilters } from './types';
 import { useStyles } from './styles/mutationsTable';
 import { fetchFromApi } from 'utils';
 
@@ -19,11 +21,38 @@ const MutationsTable = () => {
   const [rowCount, setRowCount] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
-  const [filters, setFilters] = useState<{ type: string[]; inCDS: boolean[]; hasPeptideEvidence: boolean[] }>({
+  const [selectedRow, setSelectedRow] = useState<string[]>([]);
+  const [filters, setFilters] = useState<MutationTableFilters>({
     type: ['SNP'],
-    inCDS: [true],
-    hasPeptideEvidence: [false],
+    inCDS: ['true'],
+    hasPeptideEvidence: ['false'],
   });
+
+  useEffect(() => {
+    let mounted = true;
+
+    setLoading(true);
+
+    Promise.all([
+      fetchFromApi('/api/mutations/count', { projectId, filters: filters as any }),
+      fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }),
+    ]).then(([resCount, resMutations]) => {
+      if (!mounted || !resCount || !resMutations) return;
+
+      const newRowCount = parseInt(resCount);
+      setRowCount(newRowCount);
+
+      const newTableData = resMutations.map(Object.values);
+      setTableData(newTableData);
+      setSelectedRow(newTableData[0]);
+
+      setLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [projectId, filters]);
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -46,83 +75,97 @@ const MutationsTable = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  useEffect(() => {
-    let mounted = true;
+  const selectGeneOnClick = (row: string[]) => {
+    setSelectedRow(row);
+  };
+
+  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+
+    setFilters({ ...filters, [name]: newSelectedValues });
+  };
+
+  const fetchSingleSelectOptions = (inputValue: string) => {
+    return new Promise((resolve) => {
+      resolve(fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue }));
+    });
+  };
+
+  const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    // Just to trigger rerender with the actual set filters via useEffect
+    if (!selectedOption) {
+      setFilters({ ...filters });
+      return;
+    }
 
     setLoading(true);
 
+    // WOOP, should we apply filters on search or not?
     Promise.all([
-      fetchFromApi('/api/mutations', { projectId, onlyCount: true, filters: filters as any }),
-      fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }),
+      fetchFromApi('/api/mutations/byGeneName/count', { projectId, geneName: selectedOption.value }),
+      fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }),
     ]).then(([resCount, resMutations]) => {
-      if (!mounted || !resCount || !resMutations) return;
+      if (!resCount || !resMutations) return;
 
-      setRowCount(parseInt(resCount));
-      setTableData(resMutations.map(Object.values));
+      const newRowCount = parseInt(resCount);
+      setRowCount(newRowCount);
+
+      const newTableData = resMutations.map(Object.values);
+      setTableData(newTableData);
+      setSelectedRow(newTableData[0]);
+
       setLoading(false);
     });
-
-    return () => {
-      mounted = false;
-    };
-  }, [projectId, filters]);
-
-  const multiSelectChange = (selectedOptions: SelectOption[], actionMeta: ActionMeta<any>) => {
-    const multiSelectName = actionMeta.name as string;
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value).map((option) => option.toString());
-
-    setFilters({ ...filters, [multiSelectName]: newSelectedValues });
   };
 
   return (
     <ProjectItemCard className={classes.container} name='Mutations Table'>
       <div className={classes.filtersContainer}>
-        <MultiSelect
-          name='Type'
-          options={[
-            { value: 'SNP', label: 'SNP' },
-            { value: 'DEL', label: 'DEL' },
-            { value: 'INS', label: 'INS' },
-          ]}
-          defaultValues={['SNP']}
-          onChange={multiSelectChange}
-          className={classes.multiSelect}
+        <SingleSelect
+          name='Search gene'
+          promiseOptions={fetchSingleSelectOptions}
+          onChange={singleSelectOnChange}
+          className={classes.singleSelect}
         />
-        <MultiSelect
-          name='In CDS'
-          options={[
-            { value: 'true', label: 'true' },
-            { value: 'false', label: 'false' },
-          ]}
-          defaultValues={['true']}
-          onChange={multiSelectChange}
-          className={classes.multiSelect}
-        />
-        <MultiSelect
-          name='Peptide evidence'
-          options={[
-            { value: 'true', label: 'true' },
-            { value: 'false', label: 'false' },
-          ]}
-          defaultValues={['false']}
-          onChange={multiSelectChange}
-          className={classes.multiSelect}
-        />
+        <div className={classes.multiSelectContainer}>
+          <MultiSelect
+            name='Type'
+            options={[
+              { value: 'SNP', label: 'SNP' },
+              { value: 'DEL', label: 'DEL' },
+              { value: 'INS', label: 'INS' },
+            ]}
+            defaultValues={['SNP']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'type')}
+            className={classes.multiSelect}
+          />
+          <MultiSelect
+            name='In CDS'
+            options={[
+              { value: 'true', label: 'true' },
+              { value: 'false', label: 'false' },
+            ]}
+            defaultValues={['true']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            className={classes.multiSelect}
+          />
+          <MultiSelect
+            name='Peptide evidence'
+            options={[
+              { value: 'true', label: 'true' },
+              { value: 'false', label: 'false' },
+            ]}
+            defaultValues={['false']}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
+            }
+            className={classes.multiSelect}
+          />
+        </div>
       </div>
       <Table
         tableData={tableData}
-        tableHead={[
-          'Gene',
-          'Position',
-          'Type',
-          'Ref',
-          'Alt',
-          // 'Prot ref',
-          // 'Prot alt',
-          // 'Synonymous',
-          'In CDS',
-          'Peptide Evidence',
-        ]}
+        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -131,64 +174,11 @@ const MutationsTable = () => {
         loading={loading}
         tableProps={{ className: classes.table }}
         className={classes.tableContainer}
+        rowOnClick={selectGeneOnClick}
+        selectedRow={selectedRow}
       />
     </ProjectItemCard>
   );
 };
 
 export default MutationsTable;
-
-// const filters: Filter[] = [
-//   {
-//     type: 'MultiSelect',
-//     onIndex: 2,
-//     name: 'Type',
-//     options: [
-//       {
-//         value: 'SNP',
-//         label: 'SNP',
-//       },
-//       {
-//         value: 'INS',
-//         label: 'INS',
-//       },
-//       {
-//         value: 'DEL',
-//         label: 'DEL',
-//       },
-//     ],
-//     defaultValues: ['SNP', 'INS'],
-//   },
-//   {
-//     type: 'MultiSelect',
-//     onIndex: 5,
-//     name: 'In CDS',
-//     options: [
-//       {
-//         value: 'false',
-//         label: 'false',
-//       },
-//       {
-//         value: 'true',
-//         label: 'true',
-//       },
-//     ],
-//     defaultValues: ['false'],
-//   },
-//   {
-//     type: 'MultiSelect',
-//     onIndex: 6,
-//     name: 'Peptide Evidence',
-//     options: [
-//       {
-//         value: 'false',
-//         label: 'false',
-//       },
-//       {
-//         value: 'true',
-//         label: 'true',
-//       },
-//     ],
-//     defaultValues: ['false'],
-//   },
-// ];
