@@ -1,10 +1,10 @@
 export enum ACTION {
-  UPDATE_BROWSE_PROJECT_CONTROL,
+  SELECT_MUTATION,
 }
-
-export type UpdateBrowseProjectControl = {
-  type: ACTION.UPDATE_BROWSE_PROJECT_CONTROL;
+export type SelectMutationAction = {
+  type: ACTION.SELECT_MUTATION;
   payload: {
-    controlName: string;
+    gene: string;
+    position: string;
   };
 };

@@ -1,5 +1,7 @@
-import MutationsTable from './MutationsTable';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
+import MutationsTable from './MutationsTable';
+import MutationsFigures from './MutationsFigures';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -16,6 +18,7 @@ const Mutations = () => {
   return (
     <div className={classes.container}>
       <MutationsTable />
+      <MutationsFigures />
     </div>
   );
 };

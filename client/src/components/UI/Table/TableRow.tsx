@@ -15,7 +15,7 @@ const Row = ({ row, clickableCells, rowOnClick, selectedRow }: TableRowProps) =>
       onClick={rowOnClick ? () => rowOnClick(row) : undefined}
       style={{
         cursor: rowOnClick ? 'pointer' : 'inherit',
-        backgroundColor: isSelectedRow ? 'rgba(51, 51, 102, 0.2)' : 'transparent',
+        backgroundColor: isSelectedRow ? 'rgba(51, 51, 102, 0.1)' : 'transparent',
       }}
     >
       {row.map((prop, key) => (

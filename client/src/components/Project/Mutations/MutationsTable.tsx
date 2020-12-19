@@ -1,4 +1,5 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
@@ -6,10 +7,12 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import NoResults from 'components/UI/NoResults/NoResults';
 
 import { MutationTableFilters } from './types';
 import { useStyles } from './styles/mutationsTable';
 import { fetchFromApi } from 'utils';
+import { selectMutation } from 'actions';
 
 const MutationsTable = () => {
   const classes = useStyles();
@@ -28,23 +31,39 @@ const MutationsTable = () => {
     hasPeptideEvidence: ['false'],
   });
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     let mounted = true;
 
     setLoading(true);
 
-    Promise.all([
-      fetchFromApi('/api/mutations/count', { projectId, filters: filters as any }),
-      fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }),
-    ]).then(([resCount, resMutations]) => {
-      if (!mounted || !resCount || !resMutations) return;
+    fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }).then((res) => {
+      if (!mounted || !res) return;
 
-      const newRowCount = parseInt(resCount);
+      const { mutations, mutationsCount } = res;
+
+      if (mutations.length === 0) {
+        setTableData([]);
+        setRowCount(0);
+        setCurrentPage(0);
+        setLoading(false);
+        return;
+      }
+
+      const newRowCount = parseInt(mutationsCount);
       setRowCount(newRowCount);
 
-      const newTableData = resMutations.map(Object.values);
+      const newTableData = mutations.map(Object.values);
       setTableData(newTableData);
-      setSelectedRow(newTableData[0]);
+
+      const firstRow = newTableData[0];
+      setSelectedRow(firstRow);
+
+      const [gene, position] = firstRow;
+      dispatch(selectMutation(gene, position));
+
+      setCurrentPage(0);
 
       setLoading(false);
     });
@@ -52,7 +71,7 @@ const MutationsTable = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, filters]);
+  }, [projectId, filters, dispatch]);
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -64,8 +83,8 @@ const MutationsTable = () => {
 
     setLoading(true);
 
-    const newMutations = await fetchFromApi('/api/mutations', { projectId, skip, filters: filters as any });
-    setTableData([...tableData, ...newMutations.map(Object.values)]);
+    const { mutations } = await fetchFromApi('/api/mutations', { projectId, skip, filters: filters as any });
+    setTableData([...tableData, ...mutations.map(Object.values)]);
 
     setLoading(false);
   };
@@ -77,6 +96,7 @@ const MutationsTable = () => {
 
   const selectGeneOnClick = (row: string[]) => {
     setSelectedRow(row);
+    dispatch(selectMutation(row[0], row[1]));
   };
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
@@ -85,11 +105,8 @@ const MutationsTable = () => {
     setFilters({ ...filters, [name]: newSelectedValues });
   };
 
-  const fetchSingleSelectOptions = (inputValue: string) => {
-    return new Promise((resolve) => {
-      resolve(fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue }));
-    });
-  };
+  const fetchSingleSelectOptions = async (inputValue: string) =>
+    await fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
@@ -101,16 +118,13 @@ const MutationsTable = () => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    Promise.all([
-      fetchFromApi('/api/mutations/byGeneName/count', { projectId, geneName: selectedOption.value }),
-      fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }),
-    ]).then(([resCount, resMutations]) => {
-      if (!resCount || !resMutations) return;
+    fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
+      if (!res) return;
 
-      const newRowCount = parseInt(resCount);
+      const newRowCount = res.length;
       setRowCount(newRowCount);
 
-      const newTableData = resMutations.map(Object.values);
+      const newTableData = res.map(Object.values);
       setTableData(newTableData);
       setSelectedRow(newTableData[0]);
 
@@ -163,20 +177,23 @@ const MutationsTable = () => {
           />
         </div>
       </div>
-      <Table
-        tableData={tableData}
-        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
-        currentPage={currentPage}
-        rowCount={rowCount}
-        rowsPerPage={rowsPerPage}
-        handleRowsPerPageChange={handleRowsPerPageChange}
-        handlePageChange={handlePageChange}
-        loading={loading}
-        tableProps={{ className: classes.table }}
-        className={classes.tableContainer}
-        rowOnClick={selectGeneOnClick}
-        selectedRow={selectedRow}
-      />
+      {tableData.length === 0 ? (
+        <NoResults />
+      ) : (
+        <Table
+          tableData={tableData}
+          tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
+          currentPage={currentPage}
+          rowCount={rowCount}
+          rowsPerPage={rowsPerPage}
+          handleRowsPerPageChange={handleRowsPerPageChange}
+          handlePageChange={handlePageChange}
+          loading={loading}
+          className={classes.tableContainer}
+          rowOnClick={selectGeneOnClick}
+          selectedRow={selectedRow}
+        />
+      )}
     </ProjectItemCard>
   );
 };

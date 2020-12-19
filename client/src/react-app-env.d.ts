@@ -8,7 +8,10 @@ interface BrowseProjectControl {
 }
 
 interface RootState {
-  browseProjectControl: BrowseProjectControl;
+  selectedMutation: {
+    gene: string;
+    position: string;
+  };
 }
 
 interface SelectOption {

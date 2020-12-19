@@ -1,10 +1,11 @@
-import { ACTION, UpdateBrowseProjectControl } from './types';
+import { ACTION, SelectMutationAction } from './types';
 
-export const updateBrowseProjectControl = (controlName: string): UpdateBrowseProjectControl => {
+export const selectMutation = (gene: string, position: string): SelectMutationAction => {
   return {
-    type: ACTION.UPDATE_BROWSE_PROJECT_CONTROL,
+    type: ACTION.SELECT_MUTATION,
     payload: {
-      controlName,
+      gene,
+      position,
     },
   };
 };
