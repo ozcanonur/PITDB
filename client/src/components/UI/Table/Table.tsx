@@ -5,6 +5,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import { TableProps } from './types';
 import Row from './TableRow';
@@ -47,6 +48,14 @@ const CustomTable = ({
             <TableRow>
               <td className={classes.loadingContainer}>
                 <Loading />
+              </td>
+            </TableRow>
+          </TableBody>
+        ) : tableData.length === 0 ? (
+          <TableBody>
+            <TableRow>
+              <td className={classes.noResultsContainer}>
+                <NoResults />
               </td>
             </TableRow>
           </TableBody>

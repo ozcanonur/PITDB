@@ -90,7 +90,13 @@ export const useStyles = makeStyles((theme) => ({
   loadingContainer: {
     position: 'absolute',
     left: '50%',
-    top: '50%',
+    top: '166%',
+    transform: 'translate(-50%, -50%)',
+  },
+  noResultsContainer: {
+    position: 'absolute',
+    left: '50%',
+    top: '146%',
     transform: 'translate(-50%, -50%)',
   },
 }));

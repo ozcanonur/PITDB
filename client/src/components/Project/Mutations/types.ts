@@ -4,9 +4,16 @@ export interface MutationTableFilters {
   hasPeptideEvidence: [string?, string?];
 }
 
-export type ConditionsData = {
-  [conditionName: string]: {
-    AF: number;
-    qual: number;
+export type FiguresData = {
+  conditions: {
+    [conditionName: string]: {
+      AF: number;
+      qual: number;
+    };
+  };
+  types: {
+    SNP: number;
+    DEL: number;
+    INS: number;
   };
 };

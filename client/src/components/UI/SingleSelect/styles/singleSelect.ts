@@ -11,8 +11,8 @@ export const singleSelectStyles: Styles = {
       boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
       border: 'none',
       minHeight: '4rem',
-      width: '19rem',
-      marginBottom: '1rem',
+      width: '22rem',
+      marginBottom: '2rem',
       cursor: 'pointer',
 
       '& div[class$="placeholder"]': {

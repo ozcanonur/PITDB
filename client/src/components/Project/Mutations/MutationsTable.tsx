@@ -7,7 +7,6 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
-import NoResults from 'components/UI/NoResults/NoResults';
 
 import { MutationTableFilters } from './types';
 import { useStyles } from './styles/mutationsTable';
@@ -177,23 +176,19 @@ const MutationsTable = () => {
           />
         </div>
       </div>
-      {tableData.length === 0 ? (
-        <NoResults />
-      ) : (
-        <Table
-          tableData={tableData}
-          tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
-          currentPage={currentPage}
-          rowCount={rowCount}
-          rowsPerPage={rowsPerPage}
-          handleRowsPerPageChange={handleRowsPerPageChange}
-          handlePageChange={handlePageChange}
-          loading={loading}
-          className={classes.tableContainer}
-          rowOnClick={selectGeneOnClick}
-          selectedRow={selectedRow}
-        />
-      )}
+      <Table
+        tableData={tableData}
+        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide Evidence']}
+        currentPage={currentPage}
+        rowCount={rowCount}
+        rowsPerPage={rowsPerPage}
+        handleRowsPerPageChange={handleRowsPerPageChange}
+        handlePageChange={handlePageChange}
+        loading={loading}
+        className={classes.tableContainer}
+        rowOnClick={selectGeneOnClick}
+        selectedRow={selectedRow}
+      />
     </ProjectItemCard>
   );
 };

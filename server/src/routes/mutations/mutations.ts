@@ -127,7 +127,7 @@ const parseConditions = (conditions: any) => {
   return result;
 };
 
-router.get('/mutations/quality', async (req: ExtendedRequest, res) => {
+router.get('/mutations/figures', async (req: ExtendedRequest, res) => {
   const { projectId, gene, position } = req.query;
 
   try {
@@ -138,7 +138,20 @@ router.get('/mutations/quality', async (req: ExtendedRequest, res) => {
     const conditions = mutation.conditions.toJSON();
     const parsedConditions = parseConditions(conditions);
 
-    res.send(parsedConditions);
+    const snps = await Mutation.countDocuments({
+      project: projectId,
+      $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }],
+    });
+    const dels = await Mutation.countDocuments({
+      project: projectId,
+      alt: { $eq: '' },
+    });
+    const inss = await Mutation.countDocuments({
+      project: projectId,
+      ref: { $eq: '' },
+    });
+
+    res.send({ conditions: parsedConditions, types: { SNP: snps, DEL: dels, INS: inss } });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

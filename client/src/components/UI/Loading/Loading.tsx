@@ -1,8 +1,8 @@
 import { ReactComponent as LoadingSVG } from 'assets/loading.svg';
 
-const Loading = ({ containerProps, svgProps }: any) => {
+const Loading = ({ className, svgProps, ...props }: any) => {
   return (
-    <div {...containerProps}>
+    <div {...props} className={className}>
       <LoadingSVG {...svgProps} />
     </div>
   );
