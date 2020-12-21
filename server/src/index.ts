@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import compression from 'compression';
 
 import mutationsRouter from './routes/mutations/mutations';
+import dgesRouter from './routes/dge/dge';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -32,6 +33,7 @@ import './db/mongoose';
 
 // Routes
 app.use('/api/mutations', mutationsRouter);
+app.use('/api/dges', dgesRouter);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

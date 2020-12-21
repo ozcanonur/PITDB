@@ -1,11 +1,15 @@
 /// <reference types="react-scripts" />
 
 interface RootState {
+  mutationFilters: import('components/Project/Mutations/types').MutationTableFilters;
   selectedMutation: {
     gene: string;
     position: string;
   };
-  mutationFilters: import('components/Project/Mutations/types').MutationTableFilters;
+  DGEFilters: import('components/Project/DGE/types').DGETableFilters;
+  selectedDGE: {
+    symbol: string;
+  };
 }
 
 interface SelectOption {

@@ -1,22 +1,23 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { ActionMeta } from 'react-select';
+import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
-import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
-import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
 import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
-import { selectMutation, setMutationFilters } from 'actions';
+import { parseDiscreteSliderMarks } from './helpers';
+import { setDGEFilters, selectDGE } from 'actions';
+import { ActionMeta } from 'react-select';
 
-const MutationsTable = () => {
+const DGETable = () => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
-  const filters = useSelector((state: RootState) => state.mutationFilters);
+  const filters = useSelector((state: RootState) => state.DGEFilters);
 
   const [tableData, setTableData] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -32,12 +33,12 @@ const MutationsTable = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }).then((res) => {
+    fetchFromApi('/api/dges', { projectId, skip: 0, filters: filters as any }).then((res) => {
       if (!mounted || !res) return;
 
-      const { mutations, mutationsCount } = res;
+      const { dges, dgesCount } = res;
 
-      if (mutations.length === 0) {
+      if (dgesCount.length === 0) {
         setTableData([]);
         setRowCount(0);
         setCurrentPage(0);
@@ -45,17 +46,17 @@ const MutationsTable = () => {
         return;
       }
 
-      const newRowCount = parseInt(mutationsCount);
+      const newRowCount = parseInt(dgesCount);
       setRowCount(newRowCount);
 
-      const newTableData = mutations.map(Object.values);
+      const newTableData = dges.map(Object.values);
       setTableData(newTableData);
 
       const firstRow = newTableData[0];
       setSelectedRow(firstRow);
 
-      const [gene, position] = firstRow;
-      dispatch(selectMutation(gene, position));
+      // const [gene, position] = firstRow;
+      // dispatch(selectMutation(gene, position));
 
       setCurrentPage(0);
 
@@ -65,7 +66,7 @@ const MutationsTable = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, filters, dispatch]);
+  }, [projectId, filters]);
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -77,8 +78,8 @@ const MutationsTable = () => {
 
     setLoading(true);
 
-    const { mutations } = await fetchFromApi('/api/mutations', { projectId, skip, filters: filters as any });
-    setTableData([...tableData, ...mutations.map(Object.values)]);
+    const { dges } = await fetchFromApi('/api/dges', { projectId, skip, filters: filters as any });
+    setTableData([...tableData, ...dges.map(Object.values)]);
 
     setLoading(false);
   };
@@ -88,31 +89,39 @@ const MutationsTable = () => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  const selectGeneOnClick = (row: string[]) => {
+  const selectDGEOnClick = (row: string[]) => {
     setSelectedRow(row);
-    dispatch(selectMutation(row[0], row[1]));
+    dispatch(selectDGE(row[0]));
   };
 
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+  const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
 
-    dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
+  const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+    const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
+    dispatch(setDGEFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
+  };
+
+  const foldChangeMarks = ['0', '0.5', '1', '5', '10'];
+
+  const onFoldChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+    const newMinFoldChangeFilterValue = parseFloat(foldChangeMarks[value]);
+    dispatch(setDGEFilters({ ...filters, minAbsFoldChange: newMinFoldChangeFilterValue }));
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue });
+    await fetchFromApi('/api/dges/symbolNames', { projectId, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
     if (!selectedOption) {
-      dispatch(setMutationFilters({ ...filters }));
+      dispatch(setDGEFilters({ ...filters }));
       return;
     }
 
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/dges/bySymbolName', { projectId, symbol: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;
@@ -131,50 +140,29 @@ const MutationsTable = () => {
     <ProjectItemCard className={classes.container} name='Mutations Table'>
       <div className={classes.filtersContainer}>
         <SingleSelect
-          name='Search gene'
+          name='Search symbol'
           promiseOptions={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.multiSelectContainer}>
-          <MultiSelect
-            name='Type'
-            options={[
-              { value: 'SNP', label: 'SNP' },
-              { value: 'DEL', label: 'DEL' },
-              { value: 'INS', label: 'INS' },
-            ]}
-            defaultValues={['SNP', 'DEL', 'INS']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'type')}
-            className={classes.multiSelect}
+        <div className={classes.slidersContainer}>
+          <DiscreteSlider
+            name='Max p value'
+            defaultValue={0.05}
+            marks={parseDiscreteSliderMarks(pValueMarks)}
+            onChangeCommited={onPValueChangeCommited}
           />
-          <MultiSelect
-            name='In CDS'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['true']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
-            className={classes.multiSelect}
-          />
-          <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['false']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
-            }
-            className={classes.multiSelect}
+          <DiscreteSlider
+            name='Min abs fold change'
+            defaultValue={5}
+            marks={parseDiscreteSliderMarks(foldChangeMarks)}
+            onChangeCommited={onFoldChangeCommited}
           />
         </div>
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide evidence']}
+        tableHead={['Symbol', 'Log2 fold change', 'P value']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -182,11 +170,11 @@ const MutationsTable = () => {
         handlePageChange={handlePageChange}
         loading={loading}
         className={classes.tableContainer}
-        rowOnClick={selectGeneOnClick}
+        rowOnClick={selectDGEOnClick}
         selectedRow={selectedRow}
       />
     </ProjectItemCard>
   );
 };
 
-export default MutationsTable;
+export default DGETable;

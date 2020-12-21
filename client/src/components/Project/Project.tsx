@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Sidebar from './Sidebar/Sidebar';
 import Mutations from './Mutations/Mutations';
-import DifferentialGeneExpression from './DifferentialGeneExpression/DifferentialGeneExpression';
+import DGE from './DGE/DGE';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -25,7 +25,7 @@ const Project = () => {
           <Mutations />
         </Route>
         <Route path={`${match.path}/differentialGeneExpression`}>
-          <DifferentialGeneExpression />
+          <DGE />
         </Route>
       </Switch>
     </div>

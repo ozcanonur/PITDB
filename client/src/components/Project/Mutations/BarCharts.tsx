@@ -16,7 +16,6 @@ const MutationsFigures = () => {
   const { gene, position } = useSelector((state: RootState) => state.selectedMutation);
 
   const [conditionsData, setConditionsData] = useState<ConditionsData>({});
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ const MutationsFigures = () => {
             margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
             padding={0.1}
             layout='horizontal'
-            colors={['rgba(107, 107, 179, 0.65)', '#410F5E', '#4C6587', '#2C557A']}
+            colors={['rgba(107, 107, 179, 0.65)', '#410F5E', 'rgba(44, 85, 122, 0.7)', '#2C557A']}
             borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
             axisTop={null}
             axisRight={null}

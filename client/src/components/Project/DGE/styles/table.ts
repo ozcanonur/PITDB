@@ -29,11 +29,12 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     marginRight: '2rem',
   },
-  multiSelectContainer: {
+  slidersContainer: {
     display: 'flex',
+    padding: '0 2rem',
 
     '& > div:not(:last-child)': {
-      marginRight: '2rem',
+      marginRight: '4rem',
     },
   },
 }));

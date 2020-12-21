@@ -16,7 +16,6 @@ const PieChart = () => {
   const filters = useSelector((state: RootState) => state.mutationFilters);
 
   const [data, setData] = useState<TypesData>({ SNP: 0, DEL: 0, INS: 0 });
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,15 +37,21 @@ const PieChart = () => {
     };
   }, [projectId, filters]);
 
-  const typeDistributionData = Object.keys(data).map((type) => ({
-    id: type,
-    label: type,
+  const typeDistributionData = [];
+  for (const type of Object.keys(data)) {
     // @ts-ignore
-    value: data[type],
-  }));
+    const value = data[type];
+    if (value === 0) continue;
+
+    typeDistributionData.push({
+      id: type,
+      label: type,
+      value,
+    });
+  }
 
   return (
-    <ProjectItemCard name='Variant type distribution' className={classes.projectItemCard}>
+    <ProjectItemCard name='Variant type distribution for selected filters' className={classes.projectItemCard}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsivePie
@@ -55,7 +60,7 @@ const PieChart = () => {
           innerRadius={0.4}
           padAngle={3}
           cornerRadius={0}
-          colors={['rgba(107, 107, 179, 0.65)', 'rgba(65, 15, 94, 0.8)', '#2C557A']}
+          colors={['rgba(107, 107, 179, 0.65)', 'rgba(65, 15, 94, 0.8)', 'rgba(44, 85, 122, 0.7)']}
           borderWidth={0}
           borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
           radialLabelsSkipAngle={0}

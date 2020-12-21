@@ -24,12 +24,12 @@ const Row = ({ row, clickableCells, rowOnClick, selectedRow }: TableRowProps) =>
             <div onClick={() => clickableCells[key](prop)} className={classes.tableCellClickableContent}>
               {prop === '' ? prop : isNaN(prop as any) ? String(prop) : parseInt(String(prop)).toLocaleString()}
             </div>
-          ) : prop === '' ? (
-            ''
-          ) : isNaN(prop as any) || typeof prop === 'boolean' ? (
+          ) : prop === '' || isNaN(prop as any) || typeof prop === 'boolean' ? (
             String(prop)
+          ) : parseFloat(prop) % 1 !== 0 ? (
+            prop
           ) : (
-            parseInt(String(prop)).toLocaleString()
+            parseFloat(String(prop)).toLocaleString()
           )}
         </TableCell>
       ))}

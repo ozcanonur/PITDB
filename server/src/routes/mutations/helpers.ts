@@ -9,3 +9,11 @@ export const parseConditions = (conditions: any) => {
 
   return result;
 };
+
+export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {
+  return typeFilters.map((typeFilter) => {
+    if (typeFilter === 'INS') return { ref: '' };
+    if (typeFilter === 'DEL') return { alt: '' };
+    if (typeFilter === 'SNP') return { $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }] };
+  });
+};
