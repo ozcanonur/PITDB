@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     minHeight: '100vh',
     maxHeight: '100vh',
     borderRight: `1.5px solid rgba(51, 51, 102, 0.2)`,
-    minWidth: '32rem',
+    minWidth: '28rem',
     overflow: 'auto',
     transform: 'translateZ(0)',
     background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff)',

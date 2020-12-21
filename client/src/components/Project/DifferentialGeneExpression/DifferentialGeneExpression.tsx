@@ -1,5 +1,15 @@
+import DifferentialGeneExpressionTable from './Table';
+
+import { useStyles } from './styles/differentialGeneExpression';
+
 const DifferentialGeneExpression = () => {
-  return <div>DifferentialGeneExpression</div>;
+  const classes = useStyles();
+
+  return (
+    <div className={classes.container}>
+      <DifferentialGeneExpressionTable />
+    </div>
+  );
 };
 
 export default DifferentialGeneExpression;

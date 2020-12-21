@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
-import { ACTION, SelectMutationAction } from 'actions/types';
+import { ACTION, SelectMutationAction, SetMutationFiltersAction } from 'actions/types';
+import { MutationTableFilters } from 'components/Project/Mutations/types';
 
 const selectedMutation = (
   state: { gene: string; position: string } = { gene: '', position: '' },
@@ -14,6 +15,24 @@ const selectedMutation = (
   }
 };
 
+const mutationFilters = (
+  state: MutationTableFilters = {
+    type: ['SNP'],
+    inCDS: ['true'],
+    hasPeptideEvidence: ['false'],
+  },
+  action: SetMutationFiltersAction
+) => {
+  switch (action.type) {
+    case ACTION.SET_MUTATION_FILTERS_ACTION:
+      const newFilters = action.payload;
+      return { ...newFilters };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   selectedMutation,
+  mutationFilters,
 });

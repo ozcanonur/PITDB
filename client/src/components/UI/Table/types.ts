@@ -1,4 +1,4 @@
-import { MouseEvent, ChangeEvent } from 'react';
+import { MouseEvent, ChangeEvent, CSSProperties } from 'react';
 
 export interface CustomPaginationActionsProps {
   count: number;
@@ -32,4 +32,5 @@ export interface TableRowProps {
   };
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
+  style?: CSSProperties;
 }

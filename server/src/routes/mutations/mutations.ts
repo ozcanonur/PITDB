@@ -2,6 +2,7 @@ import express from 'express';
 import { uniq } from 'lodash';
 
 import { Mutation } from '../../db/models/mutation';
+import { parseConditions } from './helpers';
 import { ExtendedRequest, MutationFilters } from './types';
 
 const router = express.Router();
@@ -14,7 +15,7 @@ const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) =
   });
 };
 
-router.get('/mutations', async (req: ExtendedRequest, res) => {
+router.get('/', async (req: ExtendedRequest, res) => {
   const { projectId, skip, filters } = req.query;
 
   try {
@@ -69,7 +70,7 @@ router.get('/mutations', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/mutations/geneNames', async (req: ExtendedRequest, res) => {
+router.get('/geneNames', async (req: ExtendedRequest, res) => {
   const { projectId, searchInput } = req.query;
 
   try {
@@ -86,7 +87,7 @@ router.get('/mutations/geneNames', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/mutations/byGeneName', async (req: ExtendedRequest, res) => {
+router.get('/byGeneName', async (req: ExtendedRequest, res) => {
   const { projectId, geneName } = req.query;
 
   try {
@@ -115,19 +116,7 @@ router.get('/mutations/byGeneName', async (req: ExtendedRequest, res) => {
   }
 });
 
-const parseConditions = (conditions: any) => {
-  const result: { [sample: string]: { AF: number; qual: number } } = {};
-  Object.keys(conditions).forEach((conditionName) => {
-    const numbers = conditions[conditionName];
-    Object.keys(numbers).forEach((number) => {
-      result[conditionName + number] = conditions[conditionName][number];
-    });
-  });
-
-  return result;
-};
-
-router.get('/mutations/figures', async (req: ExtendedRequest, res) => {
+router.get('/conditions', async (req: ExtendedRequest, res) => {
   const { projectId, gene, position } = req.query;
 
   try {
@@ -138,20 +127,43 @@ router.get('/mutations/figures', async (req: ExtendedRequest, res) => {
     const conditions = mutation.conditions.toJSON();
     const parsedConditions = parseConditions(conditions);
 
+    res.send(parsedConditions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get('/types', async (req: ExtendedRequest, res) => {
+  const { projectId, filters } = req.query;
+
+  try {
+    const parsedFilters = JSON.parse(filters) as MutationFilters;
+
+    const { inCDS, hasPeptideEvidence } = parsedFilters;
+
     const snps = await Mutation.countDocuments({
       project: projectId,
+      hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
+      inCDS: { $in: inCDS.map((e) => e === 'true') },
       $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }],
     });
+
     const dels = await Mutation.countDocuments({
       project: projectId,
+      hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
+      inCDS: { $in: inCDS.map((e) => e === 'true') },
       alt: { $eq: '' },
     });
+
     const inss = await Mutation.countDocuments({
       project: projectId,
+      hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
+      inCDS: { $in: inCDS.map((e) => e === 'true') },
       ref: { $eq: '' },
     });
 
-    res.send({ conditions: parsedConditions, types: { SNP: snps, DEL: dels, INS: inss } });
+    res.send({ SNP: snps, DEL: dels, INS: inss });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
@@ -159,3 +171,5 @@ router.get('/mutations/figures', async (req: ExtendedRequest, res) => {
 });
 
 export default router;
+
+// types: { SNP: snps, DEL: dels, INS: inss }

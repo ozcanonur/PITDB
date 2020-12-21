@@ -20,7 +20,7 @@ const Sidebar = () => {
       route: 'mutations',
     },
     {
-      name: 'Differential gene expression',
+      name: 'Diff. gene expression',
       alt: 'differential gene expression route',
       imgSrc: Category2,
       route: 'differentialGeneExpression',

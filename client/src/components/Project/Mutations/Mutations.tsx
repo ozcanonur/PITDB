@@ -1,17 +1,8 @@
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import MutationsTable from './Table';
+import BarCharts from './BarCharts';
+import PieChart from './PieChart';
 
-import MutationsTable from './MutationsTable';
-import MutationsFigures from './MutationsFigures';
-
-export const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff)',
-    flexGrow: 1,
-    padding: '2rem',
-    paddingBottom: '4rem',
-  },
-}));
+import { useStyles } from './styles/mutations';
 
 const Mutations = () => {
   const classes = useStyles();
@@ -19,7 +10,10 @@ const Mutations = () => {
   return (
     <div className={classes.container}>
       <MutationsTable />
-      <MutationsFigures />
+      <div className={classes.figuresContainer}>
+        <PieChart />
+        <BarCharts />
+      </div>
     </div>
   );
 };

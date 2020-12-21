@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
@@ -8,10 +8,9 @@ import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
-import { MutationTableFilters } from './types';
-import { useStyles } from './styles/mutationsTable';
+import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
-import { selectMutation } from 'actions';
+import { selectMutation, setMutationFilters } from 'actions';
 
 const MutationsTable = () => {
   const classes = useStyles();
@@ -24,11 +23,7 @@ const MutationsTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState<string[]>([]);
-  const [filters, setFilters] = useState<MutationTableFilters>({
-    type: ['SNP'],
-    inCDS: ['true'],
-    hasPeptideEvidence: ['false'],
-  });
+  const filters = useSelector((state: RootState) => state.mutationFilters);
 
   const dispatch = useDispatch();
 
@@ -101,7 +96,7 @@ const MutationsTable = () => {
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
 
-    setFilters({ ...filters, [name]: newSelectedValues });
+    dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
@@ -110,7 +105,7 @@ const MutationsTable = () => {
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
     if (!selectedOption) {
-      setFilters({ ...filters });
+      dispatch(setMutationFilters({ ...filters }));
       return;
     }
 
@@ -126,6 +121,7 @@ const MutationsTable = () => {
       const newTableData = res.map(Object.values);
       setTableData(newTableData);
       setSelectedRow(newTableData[0]);
+      setCurrentPage(0);
 
       setLoading(false);
     });

@@ -31,7 +31,7 @@ app.use(cors());
 import './db/mongoose';
 
 // Routes
-app.use('/api', mutationsRouter);
+app.use('/api/mutations', mutationsRouter);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {
