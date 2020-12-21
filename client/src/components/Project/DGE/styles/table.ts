@@ -32,4 +32,9 @@ export const useStyles = makeStyles((theme) => ({
       marginRight: '6rem',
     },
   },
+  multiSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
 }));

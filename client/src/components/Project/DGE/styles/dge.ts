@@ -8,4 +8,15 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem',
     paddingBottom: '4rem',
   },
+  figuresContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '30%',
+    minWidth: '32rem',
+
+    '& > div:not(:last-child)': {
+      marginBottom: '2rem',
+    },
+  },
 }));

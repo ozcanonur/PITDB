@@ -4,10 +4,9 @@ export interface DGETableFilters {
   // hasPeptideEvidence: [string?, string?];
 }
 
-export type ConditionsData = {
+export type ReadCountsData = {
   [conditionName: string]: {
-    AF: number;
-    qual: number;
+    [sample: string]: number;
   };
 };
 

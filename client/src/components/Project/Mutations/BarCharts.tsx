@@ -9,7 +9,7 @@ import { ConditionsData } from './types';
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles/figures';
 
-const MutationsFigures = () => {
+const BarCharts = () => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
@@ -61,7 +61,7 @@ const MutationsFigures = () => {
             margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
             padding={0.1}
             layout='horizontal'
-            colors={['rgba(107, 107, 179, 0.65)', '#410F5E', 'rgba(44, 85, 122, 0.7)', '#2C557A']}
+            colors={['rgba(107, 107, 179, 0.65)', 'rgba(65, 15, 94, 0.8)', 'rgba(44, 85, 122, 0.7)', '#2C557A']}
             borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
             axisTop={null}
             axisRight={null}
@@ -72,6 +72,7 @@ const MutationsFigures = () => {
               legend: 'Quality',
               legendPosition: 'middle',
               legendOffset: 40,
+              tickValues: 5,
             }}
             axisLeft={{
               tickSize: 5,
@@ -122,6 +123,7 @@ const MutationsFigures = () => {
               legend: 'Allele Frequency',
               legendPosition: 'middle',
               legendOffset: 40,
+              tickValues: 5,
             }}
             axisLeft={{
               tickSize: 5,
@@ -148,4 +150,4 @@ const MutationsFigures = () => {
   );
 };
 
-export default MutationsFigures;
+export default BarCharts;

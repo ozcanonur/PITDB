@@ -6,6 +6,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
+import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 
 import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
@@ -137,6 +138,13 @@ const DGETable = () => {
     });
   };
 
+  // WOOP, Hard coded peptide evidence
+  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+
+    dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
+  };
+
   return (
     <ProjectItemCard className={classes.container} name='Differential Gene Expressions'>
       <div className={classes.filtersContainer}>
@@ -159,11 +167,21 @@ const DGETable = () => {
             marks={parseDiscreteSliderMarks(foldChangeMarks)}
             onChangeCommited={onFoldChangeCommited}
           />
+          <MultiSelect
+            name='Peptide evidence'
+            options={[
+              { value: 'true', label: 'true' },
+              { value: 'false', label: 'false' },
+            ]}
+            defaultValues={['false']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            className={classes.multiSelect}
+          />
         </div>
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Symbol', 'Log2 fold change', 'P value']}
+        tableHead={['Symbol', 'Log2 fold change', 'P value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

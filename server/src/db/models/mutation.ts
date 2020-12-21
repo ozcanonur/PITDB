@@ -11,9 +11,7 @@ const MutationSchema = new Schema({
   transcriptsPos: Object,
   chr: String,
   project: String,
-  conditions: {
-    Object,
-  },
+  conditions: Object,
 });
 
 interface IMutation extends Document {
@@ -30,4 +28,4 @@ interface IMutation extends Document {
   conditions: Object;
 }
 
-export const Mutation: Model<IMutation> = model<IMutation>('Mutation', MutationSchema);
+export const Mutation: Model<IMutation> = model<IMutation>('Mutation', MutationSchema, 'mutations');

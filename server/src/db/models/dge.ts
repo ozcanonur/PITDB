@@ -12,4 +12,4 @@ interface IDGE extends Document {
   padj: number;
 }
 
-export const DGE: Model<IDGE> = model<IDGE>('DGE', DGESchema);
+export const DGE: Model<IDGE> = model<IDGE>('DGE', DGESchema, 'dges');
