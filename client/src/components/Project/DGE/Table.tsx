@@ -55,8 +55,8 @@ const DGETable = () => {
       const firstRow = newTableData[0];
       setSelectedRow(firstRow);
 
-      // const [gene, position] = firstRow;
-      // dispatch(selectMutation(gene, position));
+      const [symbol] = firstRow;
+      dispatch(selectDGE(symbol));
 
       setCurrentPage(0);
 
@@ -66,7 +66,7 @@ const DGETable = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, filters]);
+  }, [projectId, filters, dispatch]);
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -91,7 +91,8 @@ const DGETable = () => {
 
   const selectDGEOnClick = (row: string[]) => {
     setSelectedRow(row);
-    dispatch(selectDGE(row[0]));
+    const symbolName = row[0];
+    dispatch(selectDGE(symbolName));
   };
 
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
@@ -137,7 +138,7 @@ const DGETable = () => {
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Mutations Table'>
+    <ProjectItemCard className={classes.container} name='Differential Gene Expressions'>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search symbol'
@@ -154,7 +155,7 @@ const DGETable = () => {
           />
           <DiscreteSlider
             name='Min abs fold change'
-            defaultValue={5}
+            defaultValue={1}
             marks={parseDiscreteSliderMarks(foldChangeMarks)}
             onChangeCommited={onFoldChangeCommited}
           />

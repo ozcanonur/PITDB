@@ -128,7 +128,7 @@ const MutationsTable = () => {
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Mutations Table'>
+    <ProjectItemCard className={classes.container} name='Mutations'>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'

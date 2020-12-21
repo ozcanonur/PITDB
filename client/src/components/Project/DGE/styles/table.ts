@@ -11,11 +11,6 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: '0.5rem',
     position: 'relative',
   },
-  multiSelect: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
@@ -34,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '0 2rem',
 
     '& > div:not(:last-child)': {
-      marginRight: '4rem',
+      marginRight: '6rem',
     },
   },
 }));
