@@ -71,6 +71,12 @@ const PieChart = () => {
           theme={{
             fontFamily: 'Poppins, sans-serif',
             textColor: 'rgb(51,51,102)',
+            tooltip: {
+              // @ts-ignore
+              fontSize: '1.4rem',
+              color: 'rgb(51,51,102)',
+              textColor: 'rgb(51,51,102)',
+            },
           }}
         />
       </div>

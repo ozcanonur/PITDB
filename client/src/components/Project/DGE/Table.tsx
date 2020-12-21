@@ -1,18 +1,18 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
+import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
 import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
-import { ActionMeta } from 'react-select';
 
 const DGETable = () => {
   const classes = useStyles();
@@ -156,13 +156,13 @@ const DGETable = () => {
         />
         <div className={classes.slidersContainer}>
           <DiscreteSlider
-            name='Max p value'
+            name='Max. p value'
             defaultValue={0.05}
             marks={parseDiscreteSliderMarks(pValueMarks)}
             onChangeCommited={onPValueChangeCommited}
           />
           <DiscreteSlider
-            name='Min abs fold change'
+            name='Min. abs. fold change'
             defaultValue={1}
             marks={parseDiscreteSliderMarks(foldChangeMarks)}
             onChangeCommited={onFoldChangeCommited}

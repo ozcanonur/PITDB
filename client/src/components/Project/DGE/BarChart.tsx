@@ -9,7 +9,7 @@ import { ReadCountsData } from './types';
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles/figures';
 
-const BarCharts = () => {
+const BarChart = () => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
@@ -86,6 +86,12 @@ const BarCharts = () => {
           theme={{
             fontFamily: 'Poppins, sans-serif',
             textColor: 'rgb(51,51,102)',
+            tooltip: {
+              // @ts-ignore
+              fontSize: '1.4rem',
+              color: 'rgb(51,51,102)',
+              textColor: 'rgb(51,51,102)',
+            },
           }}
         />
       </div>
@@ -93,4 +99,4 @@ const BarCharts = () => {
   );
 };
 
-export default BarCharts;
+export default BarChart;

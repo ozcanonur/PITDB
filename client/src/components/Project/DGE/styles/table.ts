@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     height: 'max-content',
-    width: '70%',
+    width: '60%',
     marginRight: '1rem',
   },
   tableContainer: {

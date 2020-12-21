@@ -1,5 +1,6 @@
 import DGETable from './Table';
-import BarCharts from './BarCharts';
+import BarChart from './BarChart';
+import VolcanoPlot from './VolcanoPlot';
 
 import { useStyles } from './styles/dge';
 
@@ -10,7 +11,8 @@ const DGE = () => {
     <div className={classes.container}>
       <DGETable />
       <div className={classes.figuresContainer}>
-        <BarCharts />
+        <VolcanoPlot />
+        <BarChart />
       </div>
     </div>
   );

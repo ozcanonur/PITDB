@@ -6,7 +6,7 @@ const DGESchema = new Schema({
   padj: Number,
 });
 
-interface IDGE extends Document {
+export interface IDGE extends Document {
   symbol: string;
   log2fc: number;
   padj: number;

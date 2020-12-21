@@ -4,7 +4,7 @@ import numeral from 'numeral';
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
 import { ExtendedRequest, DGEFilters } from './types';
-import { parseReadCount } from './helpers';
+import { parseValuesForVolcanoPlotAndFindMinMax } from './helpers';
 
 const router = express.Router();
 
@@ -108,6 +108,29 @@ router.get('/readCount', async (req: ExtendedRequest, res) => {
     res.send(counts);
   } catch (error) {
     console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get('/volcanoPlot', async (req: ExtendedRequest, res) => {
+  const { filters } = req.query;
+
+  try {
+    const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
+
+    const query = {
+      padj: { $lt: maxPValue },
+      $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
+    };
+
+    const dges = await DGE.find(query);
+
+    const { parsed, fcMin, fcMax, pMax } = parseValuesForVolcanoPlotAndFindMinMax(dges);
+
+    res.send({ data: parsed, fcMin, fcMax, pMax });
+  } catch (error) {
+    console.error(error);
+
     res.status(500).send(error);
   }
 });

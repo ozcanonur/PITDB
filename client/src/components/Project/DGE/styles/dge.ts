@@ -12,7 +12,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '30%',
+    width: '40%',
     minWidth: '32rem',
 
     '& > div:not(:last-child)': {
