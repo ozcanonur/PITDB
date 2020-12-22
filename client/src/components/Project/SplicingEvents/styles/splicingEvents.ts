@@ -14,6 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '40%',
     minWidth: '32rem',
+    marginRight: '1rem',
 
     '& > div:not(:last-child)': {
       marginBottom: '2rem',

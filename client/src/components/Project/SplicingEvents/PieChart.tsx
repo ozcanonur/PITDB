@@ -13,9 +13,9 @@ const PieChart = () => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
-  const filters = useSelector((state: RootState) => state.mutationFilters);
+  const filters = useSelector((state: RootState) => state.splicingEventsFilters);
 
-  const [data, setData] = useState<TypesData>({ SNP: 0, DEL: 0, INS: 0 });
+  const [data, setData] = useState<TypesData>({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const PieChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/mutations/types', { projectId, filters: filters as any }).then((res) => {
+    fetchFromApi('/api/splicingEvents/types', { projectId, filters: filters as any }).then((res) => {
       if (!mounted || !res) return;
 
       setData(res);
@@ -51,7 +51,7 @@ const PieChart = () => {
   }
 
   return (
-    <ProjectItemCard name='Variant type distribution for selected filters' className={classes.projectItemCard}>
+    <ProjectItemCard name='Event type distribution for selected filters' className={classes.projectItemCard}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsivePie

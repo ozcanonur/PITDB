@@ -16,6 +16,7 @@ import { parseDiscreteSliderMarks } from './helpers';
 
 const SplicingEventsTable = () => {
   const classes = useStyles();
+
   const { projectId } = useParams<{ projectId: string }>();
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
@@ -79,6 +80,7 @@ const SplicingEventsTable = () => {
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, filters]);
 
   // Don't run on first render
@@ -96,6 +98,7 @@ const SplicingEventsTable = () => {
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, sortedOn]);
 
   const handleSort = (field: string, currentOrder?: -1 | 1) => {

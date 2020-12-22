@@ -1,5 +1,8 @@
 import SplicingEventsTable from './Table';
 
+import PieChart from './PieChart';
+import BarChart from './BarChart';
+
 import { useStyles } from './styles/splicingEvents';
 
 const SplicingEvents = () => {
@@ -8,7 +11,10 @@ const SplicingEvents = () => {
   return (
     <div className={classes.container}>
       <SplicingEventsTable />
-      <div className={classes.figuresContainer}></div>
+      <div className={classes.figuresContainer}>
+        <PieChart />
+        <BarChart />
+      </div>
     </div>
   );
 };

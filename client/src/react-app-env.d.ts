@@ -11,6 +11,10 @@ interface RootState {
     symbol: string;
   };
   splicingEventsFilters: import('components/Project/SplicingEvents/types').SplicingEventsTableFilters;
+  selectedSplicingEvent: {
+    gene: string;
+    dPSI: number;
+  };
 }
 
 interface SelectOption {

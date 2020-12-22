@@ -3,15 +3,8 @@ export interface SplicingEventsTableFilters {
   hasPeptideEvidence: [string?, string?];
 }
 
-// export type ConditionsData = {
-//   [conditionName: string]: {
-//     AF: number;
-//     qual: number;
-//   };
-// };
+export type ConditionsData = { [conditionName: string]: number };
 
-// export type TypesData = {
-//   SNP: number;
-//   DEL: number;
-//   INS: number;
-// };
+export type TypesData = {
+  [eventType: string]: number;
+};

@@ -77,6 +77,7 @@ const DGETable = () => {
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, filters]);
 
   // Don't run on first render
@@ -94,6 +95,7 @@ const DGETable = () => {
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, sortedOn]);
 
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
