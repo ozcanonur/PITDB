@@ -11,8 +11,8 @@ export const convertSortFieldNameForMongoose = (field: string) => {
 };
 
 export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
-  const parsedSplicingEvents = splicingEvents.map((event) => {
-    const { geneName, eventType, deltaPsi, pval, pepEvidence } = event;
+  const parsedSplicingEvents = splicingEvents.map((splicingEvent) => {
+    const { geneName, event, eventType, deltaPsi, pval, pepEvidence } = splicingEvent;
 
     // numeral(deltaPsi).format('0.000e+0');
     const formattedDeltaPsi = deltaPsi;
@@ -20,6 +20,7 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
 
     return {
       geneName,
+      strand: event.slice(-1),
       eventType,
       deltaPsi: formattedDeltaPsi,
       pval: formattedPVal,
@@ -42,4 +43,14 @@ export const parseConditions = (conditions: any[]) => {
   }
 
   return parsedConditions;
+};
+
+export const getRegexForStrandFilter = (strandFilter: [string?, string?]) => {
+  let strandQuery: any = null;
+  if (strandFilter.length === 0) strandQuery = null;
+  else if (strandFilter.length === 1 && strandFilter[0] === '-') strandQuery = /\-$/;
+  else if (strandFilter.length === 1 && strandFilter[0] === '+') strandQuery = /\+$/;
+  else strandQuery = /\-$|\+$/;
+
+  return strandQuery;
 };

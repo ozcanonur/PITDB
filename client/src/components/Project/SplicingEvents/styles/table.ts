@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '0 2rem',
 
     '& > div:not(:last-child)': {
-      marginRight: '6rem',
+      marginRight: '4rem',
     },
   },
 }));

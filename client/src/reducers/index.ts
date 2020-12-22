@@ -63,7 +63,7 @@ const selectedDGE = (state: { symbol: string } = { symbol: '' }, action: SelectD
 };
 
 const splicingEventsFilters = (
-  state: SplicingEventsTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true'] },
+  state: SplicingEventsTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true'], strand: ['-', '+'] },
   action: SetSplicingEventsFiltersAction
 ) => {
   switch (action.type) {

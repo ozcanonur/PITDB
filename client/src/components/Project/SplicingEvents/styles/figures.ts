@@ -1,17 +1,6 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    // width: '40%',
-    minWidth: '32rem',
-
-    '& > div:not(:last-child)': {
-      marginBottom: '2rem',
-    },
-  },
   projectItemCard: {
     marginLeft: '2rem',
     width: '100%',

@@ -64,7 +64,7 @@ const BarChart = () => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Read count',
+            legend: 'Value',
             legendPosition: 'middle',
             legendOffset: 40,
             tickValues: 5,

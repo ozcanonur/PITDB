@@ -2,7 +2,12 @@ import express from 'express';
 
 import { SplicingDPSI } from '../../db/models/splicingDPSI';
 import { ExtendedRequest, SplicingEventsFilters } from './types';
-import { convertSortFieldNameForMongoose, parseSplicingEvents, parseConditions } from './helpers';
+import {
+  convertSortFieldNameForMongoose,
+  parseSplicingEvents,
+  parseConditions,
+  getRegexForStrandFilter,
+} from './helpers';
 
 const router = express.Router();
 
@@ -10,13 +15,14 @@ router.get('/', async (req: ExtendedRequest, res) => {
   const { projectId, skip, filters, sortedOn } = req.query;
 
   try {
-    const { maxPValue, hasPeptideEvidence } = JSON.parse(filters) as SplicingEventsFilters;
+    const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
     const query = {
       project: projectId,
       pval: { $lt: maxPValue },
       pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
+      event: getRegexForStrandFilter(strand),
     };
 
     const splicingEvents = await SplicingDPSI.find(query)
@@ -80,7 +86,7 @@ router.get('/types', async (req: ExtendedRequest, res) => {
   const { projectId, filters } = req.query;
 
   try {
-    const { maxPValue, hasPeptideEvidence } = JSON.parse(filters) as SplicingEventsFilters;
+    const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
 
     const counts: { _id: string; count: number }[] = await SplicingDPSI.aggregate([
       {
@@ -88,6 +94,7 @@ router.get('/types', async (req: ExtendedRequest, res) => {
           project: projectId,
           pval: { $lt: maxPValue },
           pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
+          event: getRegexForStrandFilter(strand),
         },
       },
       {
@@ -110,8 +117,6 @@ router.get('/types', async (req: ExtendedRequest, res) => {
 router.get('/conditions', async (req: ExtendedRequest, res) => {
   const { projectId, gene, dPSI } = req.query;
 
-  console.log(gene, dPSI);
-
   try {
     const splicingPsi = await SplicingDPSI.aggregate([
       { $match: { project: projectId, geneName: gene, deltaPsi: parseFloat(dPSI) } },
@@ -122,6 +127,31 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
     const parsedConditions = parseConditions(splicingPsi[0].conditions[0]);
 
     res.send(parsedConditions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get('/event', async (req: ExtendedRequest, res) => {
+  const { projectId, gene, dPSI } = req.query;
+
+  try {
+    const { event, eventType } = await SplicingDPSI.findOne({
+      project: projectId,
+      geneName: gene,
+      deltaPsi: parseFloat(dPSI),
+    });
+
+    const [, chr, leftPositions, rightPositions, direction] = event.split(':');
+
+    res.send({
+      eventType,
+      chr,
+      leftPositions: leftPositions.split('-'),
+      rightPositions: rightPositions.split('-'),
+      direction,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

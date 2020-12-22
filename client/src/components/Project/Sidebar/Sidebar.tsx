@@ -43,6 +43,12 @@ const Sidebar = () => {
       imgSrc: Category5,
       route: 'transcriptUsage',
     },
+    {
+      name: 'Peptide maps',
+      alt: 'peptide maps route',
+      imgSrc: Category1,
+      route: 'peptideMaps',
+    },
   ];
 
   const { projectId } = useParams<{ projectId: string }>();

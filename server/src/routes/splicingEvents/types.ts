@@ -7,4 +7,5 @@ export interface ExtendedRequest extends Request {
 export interface SplicingEventsFilters {
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
+  strand: [string?, string?];
 }

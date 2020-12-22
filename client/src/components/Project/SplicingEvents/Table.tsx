@@ -64,7 +64,7 @@ const SplicingEventsTable = () => {
     const firstRow = newTableData[0];
     setSelectedRow(firstRow);
 
-    const [gene, , dPSI] = firstRow;
+    const [gene, , , dPSI] = firstRow;
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
 
     setCurrentPage(0);
@@ -134,7 +134,7 @@ const SplicingEventsTable = () => {
 
   const selectSplicingEventOnClick = (row: string[]) => {
     setSelectedRow(row);
-    const [gene, , dPSI] = row;
+    const [gene, , , dPSI] = row;
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
@@ -189,6 +189,16 @@ const SplicingEventsTable = () => {
         />
         <div className={classes.multiSelectContainer}>
           <MultiSelect
+            name='Strand'
+            options={[
+              { value: '-', label: '-' },
+              { value: '+', label: '+' },
+            ]}
+            defaultValues={['-', '+']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'strand')}
+            className={classes.multiSelect}
+          />
+          <MultiSelect
             name='Peptide evidence'
             options={[
               { value: 'true', label: 'true' },
@@ -210,7 +220,7 @@ const SplicingEventsTable = () => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Type', 'dPSI', 'P Value', 'Peptide evidence']}
+        tableHead={['Gene', 'Strand', 'Type', 'dPSI', 'P Value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
