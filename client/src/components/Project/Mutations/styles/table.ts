@@ -3,8 +3,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     height: 'max-content',
-    width: '70%',
     marginRight: '1rem',
+    flexGrow: 1,
   },
   tableContainer: {
     padding: '2rem 4rem',

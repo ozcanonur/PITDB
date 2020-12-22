@@ -23,6 +23,11 @@ export interface TableProps {
   className?: string;
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
+  sortedOn?: {
+    field: string;
+    order?: -1 | 1;
+  };
+  handleSort?: (field: string, currentOrder?: -1 | 1) => void;
 }
 
 export interface TableRowProps {

@@ -4,11 +4,13 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Sidebar from './Sidebar/Sidebar';
 import Mutations from './Mutations/Mutations';
 import DGE from './DGE/DGE';
+import SplicingEvents from './SplicingEvents/SplicingEvents';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
-    background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff',
+    background: 'linear-gradient(to bottom, 25% #fff, #f2f4ff',
+    flexGrow: 1,
   },
 }));
 
@@ -26,6 +28,9 @@ const Project = () => {
         </Route>
         <Route path={`${match.path}/differentialGeneExpression`}>
           <DGE />
+        </Route>
+        <Route path={`${match.path}/splicingEvents`}>
+          <SplicingEvents />
         </Route>
       </Switch>
     </div>

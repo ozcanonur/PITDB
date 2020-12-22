@@ -155,6 +155,16 @@ const DGETable = () => {
           className={classes.singleSelect}
         />
         <div className={classes.slidersContainer}>
+          <MultiSelect
+            name='Peptide evidence'
+            options={[
+              { value: 'true', label: 'true' },
+              { value: 'false', label: 'false' },
+            ]}
+            defaultValues={['false']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            className={classes.multiSelect}
+          />
           <DiscreteSlider
             name='Max. p value'
             defaultValue={0.05}
@@ -166,16 +176,6 @@ const DGETable = () => {
             defaultValue={1}
             marks={parseDiscreteSliderMarks(foldChangeMarks)}
             onChangeCommited={onFoldChangeCommited}
-          />
-          <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['false']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
-            className={classes.multiSelect}
           />
         </div>
       </div>

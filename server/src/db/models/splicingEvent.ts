@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Model, Document } from 'mongoose';
 
 const SplicingEventSchema = new Schema({
   geneName: String,
@@ -14,4 +14,22 @@ const SplicingEventSchema = new Schema({
   domains_out: [String],
 });
 
-export const SplicingEvent = model('SplicingEvent', SplicingEventSchema);
+export interface ISplicingEvent extends Document {
+  geneName: string;
+  event: string;
+  alternative_transcripts: string;
+  total_transcripts: string[];
+  gene_id: string;
+  event_type: string;
+  pep_evidence: boolean;
+  project: string;
+  comparison: string;
+  domains_in: string[];
+  domains_out: string[];
+}
+
+export const SplicingEvent: Model<ISplicingEvent> = model<ISplicingEvent>(
+  'SplicingEvent',
+  SplicingEventSchema,
+  'SplicingEvents'
+);

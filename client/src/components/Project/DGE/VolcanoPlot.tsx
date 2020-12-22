@@ -40,7 +40,7 @@ const VolcanoPlot = () => {
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
 
   return (
-    <ProjectItemCard name='Volcano plot' className={classes.projectItemCard}>
+    <ProjectItemCard name='Volcano plot' className={classes.projectItemCard} style={{ minHeight: '35rem' }}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveScatterPlotCanvas
@@ -75,7 +75,7 @@ const VolcanoPlot = () => {
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            legend: 'Log10 p value',
+            legend: '-Log10 p value',
             legendPosition: 'middle',
             legendOffset: -50,
           }}

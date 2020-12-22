@@ -12,9 +12,10 @@ const MutationSchema = new Schema({
   chr: String,
   project: String,
   conditions: Object,
+  type: String,
 });
 
-interface IMutation extends Document {
+export interface IMutation extends Document {
   ref: string;
   silent: boolean;
   gene: string;
@@ -26,6 +27,7 @@ interface IMutation extends Document {
   chr: string;
   project: string;
   conditions: Object;
+  type: string;
 }
 
 export const Mutation: Model<IMutation> = model<IMutation>('Mutation', MutationSchema, 'mutations');

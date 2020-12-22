@@ -3,7 +3,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   container: {
     height: 'max-content',
-    width: '60%',
     marginRight: '1rem',
   },
   tableContainer: {
@@ -30,6 +29,10 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',
+    },
+
+    '& > div': {
+      width: '16rem',
     },
   },
   multiSelect: {

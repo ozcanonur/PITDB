@@ -4,6 +4,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 
 import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
@@ -25,6 +27,8 @@ const CustomTable = ({
   tableProps,
   rowOnClick,
   selectedRow,
+  sortedOn,
+  handleSort,
   ...props
 }: TableProps) => {
   const classes = useStyles();
@@ -37,8 +41,20 @@ const CustomTable = ({
         <TableHead>
           <TableRow className={classes.tableHeadRow}>
             {tableHead.map((e) => (
-              <TableCell key={e} className={`${classes.tableCell} ${classes.tableHeadCell}`}>
+              <TableCell
+                key={e}
+                className={`${classes.tableCell} ${classes.tableHeadCell}`}
+                onClick={handleSort ? () => handleSort(e, sortedOn?.order) : undefined}
+                style={{ cursor: handleSort ? 'pointer' : 'inherit' }}
+              >
                 {e}
+                {sortedOn && e === sortedOn.field ? (
+                  sortedOn.order === -1 ? (
+                    <ArrowDropDownIcon className={classes.sortDropdown} />
+                  ) : sortedOn.order === 1 ? (
+                    <ArrowDropUpIcon className={classes.sortDropdown} />
+                  ) : null
+                ) : null}
               </TableCell>
             ))}
           </TableRow>

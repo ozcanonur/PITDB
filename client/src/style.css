@@ -21,9 +21,11 @@ html {
 }
 
 #root {
-  min-height: 100vh;
+  height: 100vh;
   overflow: auto;
   min-width: 1200px;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes fadeIn {

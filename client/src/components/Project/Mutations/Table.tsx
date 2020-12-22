@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
+import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
@@ -14,9 +14,12 @@ import { selectMutation, setMutationFilters } from 'actions';
 
 const MutationsTable = () => {
   const classes = useStyles();
-
   const { projectId } = useParams<{ projectId: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
+  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+    field: 'Gene',
+    order: 1,
+  });
 
   const [tableData, setTableData] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -27,45 +30,76 @@ const MutationsTable = () => {
 
   const dispatch = useDispatch();
 
+  const fetchNewMutations = async (mounted: boolean) => {
+    setLoading(true);
+
+    const res = await fetchFromApi('/api/mutations', {
+      projectId,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    });
+
+    if (!mounted || !res) return;
+
+    const { mutations, mutationsCount } = res;
+
+    if (mutations.length === 0) {
+      setTableData([]);
+      setRowCount(0);
+      setCurrentPage(0);
+      setLoading(false);
+      return;
+    }
+
+    const newRowCount = parseInt(mutationsCount);
+    setRowCount(newRowCount);
+
+    const newTableData = mutations.map(Object.values);
+    setTableData(newTableData);
+
+    const firstRow = newTableData[0];
+    setSelectedRow(firstRow);
+
+    const [gene, position] = firstRow;
+    dispatch(selectMutation(gene, position));
+
+    setCurrentPage(0);
+
+    setLoading(false);
+  };
+
   useEffect(() => {
     let mounted = true;
 
-    setLoading(true);
-
-    fetchFromApi('/api/mutations', { projectId, skip: 0, filters: filters as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      const { mutations, mutationsCount } = res;
-
-      if (mutations.length === 0) {
-        setTableData([]);
-        setRowCount(0);
-        setCurrentPage(0);
-        setLoading(false);
-        return;
-      }
-
-      const newRowCount = parseInt(mutationsCount);
-      setRowCount(newRowCount);
-
-      const newTableData = mutations.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
-
-      const [gene, position] = firstRow;
-      dispatch(selectMutation(gene, position));
-
-      setCurrentPage(0);
-
-      setLoading(false);
-    });
+    fetchNewMutations(mounted);
 
     return () => {
       mounted = false;
     };
   }, [projectId, filters, dispatch]);
+
+  // Don't run on first render
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    let mounted = true;
+
+    fetchNewMutations(mounted);
+
+    return () => {
+      mounted = false;
+    };
+  }, [projectId, sortedOn]);
+
+  const handleSort = (field: string, currentOrder?: -1 | 1) => {
+    const newSortOrder = currentOrder ? -currentOrder : 1;
+    setSortedOn({ field, order: newSortOrder as -1 | 1 });
+  };
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -77,7 +111,12 @@ const MutationsTable = () => {
 
     setLoading(true);
 
-    const { mutations } = await fetchFromApi('/api/mutations', { projectId, skip, filters: filters as any });
+    const { mutations } = await fetchFromApi('/api/mutations', {
+      projectId,
+      skip,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    });
     setTableData([...tableData, ...mutations.map(Object.values)]);
 
     setLoading(false);
@@ -95,7 +134,6 @@ const MutationsTable = () => {
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-
     dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
   };
 
@@ -184,6 +222,8 @@ const MutationsTable = () => {
         className={classes.tableContainer}
         rowOnClick={selectGeneOnClick}
         selectedRow={selectedRow}
+        sortedOn={sortedOn}
+        handleSort={handleSort}
       />
     </ProjectItemCard>
   );
