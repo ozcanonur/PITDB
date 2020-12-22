@@ -5,9 +5,12 @@ import {
   SetMutationFiltersAction,
   SetDGEFiltersAction,
   SelectDGEAction,
+  SetSplicingEventsFiltersAction,
+  SelectSplicingEventAction,
 } from 'actions/types';
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
+import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
 
 const mutationFilters = (
   state: MutationTableFilters = {
@@ -59,9 +62,37 @@ const selectedDGE = (state: { symbol: string } = { symbol: '' }, action: SelectD
   }
 };
 
+const splicingEventsFilters = (
+  state: SplicingEventsTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true'] },
+  action: SetSplicingEventsFiltersAction
+) => {
+  switch (action.type) {
+    case ACTION.SET_SPLICING_EVENTS_FILTERS:
+      const newFilters = action.payload;
+      return { ...newFilters };
+    default:
+      return state;
+  }
+};
+
+const selectedSplicingEvent = (
+  state: { gene: string; dPSI: number } = { gene: '', dPSI: 0 },
+  action: SelectSplicingEventAction
+) => {
+  switch (action.type) {
+    case ACTION.SELECT_SPLICING_EVENT:
+      const { gene, dPSI } = action.payload;
+      return { gene, dPSI };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   mutationFilters,
   selectedMutation,
   DGEFilters,
   selectedDGE,
+  splicingEventsFilters,
+  selectedSplicingEvent,
 });

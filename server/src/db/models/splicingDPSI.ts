@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 
 const SplicingDPSISchema = new Schema({
   geneName: String,
@@ -11,4 +11,18 @@ const SplicingDPSISchema = new Schema({
   comparison: String,
 });
 
-export const SplicingDPSI = model('SplicingDPSI', SplicingDPSISchema);
+export interface ISplicingDPSI extends Document {
+  geneName: string;
+  event: string;
+  deltaPsi: number;
+  pval: number;
+  eventType: string;
+  pepEvidence: boolean;
+  comparison: string;
+}
+
+export const SplicingDPSI: Model<ISplicingDPSI> = model<ISplicingDPSI>(
+  'SplicingDPSI',
+  SplicingDPSISchema,
+  'SplicingDPSI'
+);

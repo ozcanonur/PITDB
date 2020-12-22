@@ -43,12 +43,15 @@ router.get('/symbolNames', async (req: ExtendedRequest, res) => {
   try {
     if (!searchInput) return res.send([]);
 
-    // WOOP, Need project id here
-    const dges = await DGE.find({ project: projectId, symbol: RegExp(`^${searchInput}`, 'i') }).limit(50);
+    const symbolNames = await DGE.aggregate([
+      { $match: { project: projectId, symbol: RegExp(`^${searchInput}`, 'i') } },
+      { $group: { _id: '$symbol' } },
+      { $limit: 50 },
+    ]);
 
-    if (!dges) return res.send([]);
+    if (!symbolNames) return res.send([]);
 
-    const parsedSymbolNames = dges.map(({ symbol }) => ({ value: symbol, label: symbol }));
+    const parsedSymbolNames = symbolNames.map((name) => ({ value: name._id, label: name._id }));
 
     res.send(parsedSymbolNames);
   } catch (error) {

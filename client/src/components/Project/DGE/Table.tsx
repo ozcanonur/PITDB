@@ -170,7 +170,7 @@ const DGETable = () => {
     });
   };
 
-  // WOOP, Hard coded peptide evidence
+  // WOOP, Hard coded peptide evidence on multiselect
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
 

@@ -52,11 +52,15 @@ router.get('/geneNames', async (req: ExtendedRequest, res) => {
   if (!searchInput) return res.send([]);
 
   try {
-    const mutations = await Mutation.find({ project: projectId, gene: RegExp(`^${searchInput}`, 'i') }).limit(50);
+    const geneNames = await Mutation.aggregate([
+      { $match: { project: projectId, gene: RegExp(`^${searchInput}`, 'i') } },
+      { $group: { _id: '$gene' } },
+      { $limit: 50 },
+    ]);
 
-    if (!mutations) return res.send([]);
+    if (!geneNames) return res.send([]);
 
-    const parsedGeneNames = mutations.map(({ gene }) => ({ value: gene, label: gene }));
+    const parsedGeneNames = geneNames.map((name) => ({ value: name._id, label: name._id }));
 
     res.send(parsedGeneNames);
   } catch (error) {

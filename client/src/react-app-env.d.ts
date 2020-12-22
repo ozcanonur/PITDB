@@ -10,6 +10,7 @@ interface RootState {
   selectedDGE: {
     symbol: string;
   };
+  splicingEventsFilters: import('components/Project/SplicingEvents/types').SplicingEventsTableFilters;
 }
 
 interface SelectOption {

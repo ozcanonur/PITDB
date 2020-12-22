@@ -26,16 +26,16 @@ const Sidebar = () => {
       route: 'differentialGeneExpression',
     },
     {
-      name: 'Browser',
-      alt: 'browser route',
-      imgSrc: Category3,
-      route: 'browser',
-    },
-    {
       name: 'Splicing events',
       alt: 'splicing events route',
       imgSrc: Category4,
       route: 'splicingEvents',
+    },
+    {
+      name: 'Browser',
+      alt: 'browser route',
+      imgSrc: Category3,
+      route: 'browser',
     },
     {
       name: 'Transcript usage',

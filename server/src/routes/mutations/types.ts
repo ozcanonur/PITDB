@@ -8,8 +8,4 @@ export interface MutationFilters {
   type: [string?, string?, string?];
   inCDS: [string?, string?];
   hasPeptideEvidence: [string?, string?];
-  sortedOn?: {
-    field: string;
-    order?: 1 | -1;
-  };
 }

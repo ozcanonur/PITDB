@@ -11,6 +11,11 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: '0.5rem',
     position: 'relative',
   },
+  multiSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
@@ -24,21 +29,12 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     marginRight: '2rem',
   },
-  slidersContainer: {
+  multiSelectContainer: {
     display: 'flex',
     padding: '0 2rem',
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',
     },
-
-    '& > div': {
-      width: '16rem',
-    },
-  },
-  multiSelect: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
   },
 }));

@@ -55,7 +55,7 @@ const MutationsTable = () => {
     const newRowCount = parseInt(mutationsCount);
     setRowCount(newRowCount);
 
-    const newTableData = mutations.map(Object.values);
+    const newTableData: string[][] = mutations.map(Object.values);
     setTableData(newTableData);
 
     const firstRow = newTableData[0];
@@ -129,7 +129,8 @@ const MutationsTable = () => {
 
   const selectGeneOnClick = (row: string[]) => {
     setSelectedRow(row);
-    dispatch(selectMutation(row[0], row[1]));
+    const [gene, position] = row;
+    dispatch(selectMutation(gene, position));
   };
 
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
