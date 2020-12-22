@@ -1,67 +1,54 @@
 import express from 'express';
-import numeral from 'numeral';
 
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
 import { ExtendedRequest, DGEFilters } from './types';
-import { parseValuesForVolcanoPlotAndFindMinMax } from './helpers';
+import { parseValuesForVolcanoPlotAndFindMinMax, parseDges, convertSortFieldNameForMongoose } from './helpers';
 
 const router = express.Router();
 
 router.get('/', async (req: ExtendedRequest, res) => {
-  const { skip, filters } = req.query;
+  const { projectId, skip, filters, sortedOn } = req.query;
 
   try {
     const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
+    const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
     const query = {
+      project: projectId,
       padj: { $lt: maxPValue },
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
     };
 
-    const dges = await DGE.find(query).skip(parseInt(skip)).limit(50);
+    const dges = await DGE.find(query)
+      .sort({ [convertSortFieldNameForMongoose(field)]: order })
+      .skip(parseInt(skip))
+      .limit(50);
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    const dgesCount = await DGE.countDocuments(query);
+    const parsedDges = parseDges(dges);
 
-    // WOOP, hard coding peptide evidence
-    const parsedDges = dges.map((dge) => {
-      const { symbol, log2fc, padj } = dge;
-      const formattedlog2fc = numeral(log2fc).format('0.000');
-      const formattedpadj = numeral(padj).format('0.000e+0');
-      return {
-        symbol,
-        log2fc: formattedlog2fc,
-        padj: formattedpadj,
-        hasPeptideEvidence: false,
-      };
-    });
+    const dgesCount = await DGE.countDocuments(query);
 
     res.send({ dges: parsedDges, dgesCount });
   } catch (error) {
     console.error(error);
-
     res.status(500).send(error);
   }
 });
 
 router.get('/symbolNames', async (req: ExtendedRequest, res) => {
-  const { searchInput } = req.query;
+  const { projectId, searchInput } = req.query;
 
   try {
     if (!searchInput) return res.send([]);
 
-    const query = [
-      { $match: { symbol: RegExp(`^${searchInput}`, 'i') } },
-      { $group: { _id: '$symbol' } },
-      { $limit: 50 },
-    ];
     // WOOP, Need project id here
-    const symbolNames = await DGE.aggregate(query);
+    const dges = await DGE.find({ project: projectId, symbol: RegExp(`^${searchInput}`, 'i') }).limit(50);
 
-    if (!symbolNames) return res.send([]);
+    if (!dges) return res.send([]);
 
-    const parsedSymbolNames = symbolNames.map((name) => ({ value: name._id, label: name._id }));
+    const parsedSymbolNames = dges.map(({ symbol }) => ({ value: symbol, label: symbol }));
 
     res.send(parsedSymbolNames);
   } catch (error) {
@@ -71,38 +58,26 @@ router.get('/symbolNames', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/bySymbolName', async (req: ExtendedRequest, res) => {
-  const { symbol } = req.query;
+  const { projectId, symbol } = req.query;
 
   try {
-    const query = { symbol };
-    const dges = await DGE.find(query);
+    const dges = await DGE.find({ project: projectId, symbol });
     if (!dges) return res.send([]);
 
-    const parsedDges = dges.map((dge) => {
-      const { symbol, log2fc, padj } = dge;
-      const formattedlog2fc = numeral(log2fc).format('0.000');
-      const formattedpadj = numeral(padj).format('0.000e+0');
-      return {
-        symbol,
-        log2fc: formattedlog2fc,
-        padj: formattedpadj,
-        hasPeptideEvidence: false,
-      };
-    });
+    const parsedDges = parseDges(dges);
 
     res.send(parsedDges);
   } catch (error) {
     console.error(error);
-
     res.status(500).send(error);
   }
 });
 
 router.get('/readCount', async (req: ExtendedRequest, res) => {
-  const { symbol } = req.query;
+  const { projectId, symbol } = req.query;
 
   try {
-    const { counts } = await ReadCount.findOne({ gene: symbol });
+    const { counts } = await ReadCount.findOne({ project: projectId, gene: symbol });
     if (!counts) return res.send([]);
 
     res.send(counts);
@@ -113,24 +88,22 @@ router.get('/readCount', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/volcanoPlot', async (req: ExtendedRequest, res) => {
-  const { filters } = req.query;
+  const { projectId, filters } = req.query;
 
   try {
     const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
 
-    const query = {
+    const dges = await DGE.find({
+      project: projectId,
       padj: { $lt: maxPValue },
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
-    };
-
-    const dges = await DGE.find(query);
+    });
 
     const { parsed, fcMin, fcMax, pMax } = parseValuesForVolcanoPlotAndFindMinMax(dges);
 
     res.send({ data: parsed, fcMin, fcMax, pMax });
   } catch (error) {
     console.error(error);
-
     res.status(500).send(error);
   }
 });

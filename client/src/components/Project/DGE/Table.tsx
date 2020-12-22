@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, MouseEvent } from 'react';
+import { useState, useEffect, ChangeEvent, MouseEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
@@ -19,6 +19,10 @@ const DGETable = () => {
 
   const { projectId } = useParams<{ projectId: string }>();
   const filters = useSelector((state: RootState) => state.DGEFilters);
+  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+    field: 'Symbol',
+    order: 1,
+  });
 
   const [tableData, setTableData] = useState<string[][]>([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -29,45 +33,73 @@ const DGETable = () => {
 
   const dispatch = useDispatch();
 
+  const fetchNewDges = (mounted: boolean) => {
+    setLoading(true);
+
+    fetchFromApi('/api/dges', { projectId, skip: 0, filters: filters as any, sortedOn: sortedOn as any }).then(
+      (res) => {
+        if (!mounted || !res) return;
+
+        const { dges, dgesCount } = res;
+
+        if (dgesCount.length === 0) {
+          setTableData([]);
+          setRowCount(0);
+          setCurrentPage(0);
+          setLoading(false);
+          return;
+        }
+
+        const newRowCount = parseInt(dgesCount);
+        setRowCount(newRowCount);
+
+        const newTableData = dges.map(Object.values);
+        setTableData(newTableData);
+
+        const firstRow = newTableData[0];
+        setSelectedRow(firstRow);
+
+        const [symbol] = firstRow;
+        dispatch(selectDGE(symbol));
+
+        setCurrentPage(0);
+
+        setLoading(false);
+      }
+    );
+  };
+
   useEffect(() => {
     let mounted = true;
 
-    setLoading(true);
-
-    fetchFromApi('/api/dges', { projectId, skip: 0, filters: filters as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      const { dges, dgesCount } = res;
-
-      if (dgesCount.length === 0) {
-        setTableData([]);
-        setRowCount(0);
-        setCurrentPage(0);
-        setLoading(false);
-        return;
-      }
-
-      const newRowCount = parseInt(dgesCount);
-      setRowCount(newRowCount);
-
-      const newTableData = dges.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
-
-      const [symbol] = firstRow;
-      dispatch(selectDGE(symbol));
-
-      setCurrentPage(0);
-
-      setLoading(false);
-    });
+    fetchNewDges(mounted);
 
     return () => {
       mounted = false;
     };
-  }, [projectId, filters, dispatch]);
+  }, [projectId, filters]);
+
+  // Don't run on first render
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    let mounted = true;
+
+    fetchNewDges(mounted);
+
+    return () => {
+      mounted = false;
+    };
+  }, [projectId, sortedOn]);
+
+  const handleSort = (field: string, currentOrder?: -1 | 1) => {
+    const newSortOrder = currentOrder ? -currentOrder : 1;
+    setSortedOn({ field, order: newSortOrder as -1 | 1 });
+  };
 
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
@@ -191,6 +223,8 @@ const DGETable = () => {
         className={classes.tableContainer}
         rowOnClick={selectDGEOnClick}
         selectedRow={selectedRow}
+        sortedOn={sortedOn}
+        handleSort={handleSort}
       />
     </ProjectItemCard>
   );

@@ -77,7 +77,7 @@ const MutationsTable = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, filters, dispatch]);
+  }, [projectId, filters]);
 
   // Don't run on first render
   const isFirstRender = useRef(true);

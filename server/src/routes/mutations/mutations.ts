@@ -69,8 +69,7 @@ router.get('/byGeneName', async (req: ExtendedRequest, res) => {
   const { projectId, geneName } = req.query;
 
   try {
-    const query = { project: projectId, gene: geneName };
-    const mutations = await Mutation.find(query);
+    const mutations = await Mutation.find({ project: projectId, gene: geneName });
     if (!mutations) return res.send([]);
 
     const parsedMutations = parseMutations(mutations);
@@ -86,8 +85,7 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
   const { projectId, gene, position } = req.query;
 
   try {
-    const query = { project: projectId, gene, refPos: parseInt(position) };
-    const { conditions } = await Mutation.findOne(query);
+    const { conditions } = await Mutation.findOne({ project: projectId, gene, refPos: parseInt(position) });
     if (!conditions) return res.sendStatus(500);
 
     // @ts-ignore

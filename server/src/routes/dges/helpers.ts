@@ -1,4 +1,5 @@
 import { IDGE } from '../../db/models/dge';
+import numeral from 'numeral';
 
 export const parseValuesForVolcanoPlotAndFindMinMax = (dges: IDGE[]) => {
   const parsed = [
@@ -37,4 +38,27 @@ export const parseValuesForVolcanoPlotAndFindMinMax = (dges: IDGE[]) => {
   });
 
   return { parsed, fcMin, fcMax, pMax };
+};
+
+export const parseDges = (dges: IDGE[]) => {
+  // WOOP, hard coding peptide evidence
+  const parsedDges = dges.map((dge) => {
+    const { symbol, log2fc, padj } = dge;
+    const formattedlog2fc = numeral(log2fc).format('0.000');
+    const formattedpadj = numeral(padj).format('0.000e+0');
+    return {
+      symbol,
+      log2fc: formattedlog2fc,
+      padj: formattedpadj,
+      hasPeptideEvidence: false,
+    };
+  });
+
+  return parsedDges;
+};
+
+export const convertSortFieldNameForMongoose = (field: string) => {
+  if (field === 'Symbol') return 'symbol';
+  else if (field === 'Log2 fold change') return 'log2fc';
+  else if (field === 'P value') return 'padj';
 };
