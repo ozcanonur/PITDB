@@ -92,7 +92,7 @@ const selectedSplicingEvent = (
 };
 
 const transcriptUsageFilters = (
-  state: TranscriptUsageTableFilters = { maxPValue: 0.05 },
+  state: TranscriptUsageTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true', 'false'] },
   action: SetTranscriptUsageFiltersAction
 ) => {
   switch (action.type) {

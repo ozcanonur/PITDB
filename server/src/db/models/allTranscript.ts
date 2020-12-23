@@ -25,7 +25,7 @@ const AllTranscriptSchema = new Schema({
 
 export interface IAllTranscript extends Document {
   TPM: { [condition: string]: { [sample: string]: number } };
-  strand: String;
+  strand: string;
   CDS: {
     [transcript: string]: {
       sequence: string;
@@ -35,23 +35,23 @@ export interface IAllTranscript extends Document {
       type: string;
     };
   };
-  gene: String;
+  gene: string;
   exons: [number, number][];
   variations: [
     {
-      ref: String;
-      pos: Number;
-      refPos: Number;
-      alt: String;
+      ref: string;
+      pos: number;
+      refPos: number;
+      alt: string;
     }
   ];
-  start: Number;
-  end: Number;
-  chr: String;
-  type: String;
-  seq: String;
-  transcriptID: String;
-  project: String;
+  start: number;
+  end: number;
+  chr: string;
+  type: string;
+  seq: string;
+  transcriptID: string;
+  project: string;
 }
 
 export const AllTranscript: Model<IAllTranscript> = model<IAllTranscript>(

@@ -2,8 +2,8 @@ import express from 'express';
 
 import { ExtendedRequest } from '../../types';
 import { TranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
-import { convertSortFieldNameForMongoose, parseTranscriptUsages } from './helpers';
-import { TranscriptUsageFilters } from './types';
+import { convertSortFieldNameForMongoose, parseTranscriptUsages, parseTranscriptsForViewer } from './helpers';
+import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
 
 const router = express.Router();
 
@@ -71,6 +71,32 @@ router.get('/byGeneName', async (req: ExtendedRequest, res) => {
     const parsedTranscriptUsages = parseTranscriptUsages(transcriptUsages);
 
     res.send(parsedTranscriptUsages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get('/transcripts', async (req: ExtendedRequest, res) => {
+  const { project, gene } = req.query;
+
+  try {
+    const transcriptUsages: TranscriptUsagesWithTranscript[] = await TranscriptUsageDPSI.aggregate([
+      { $match: { project, geneName: gene } },
+      {
+        $lookup: {
+          from: 'allTranscripts',
+          localField: 'transcript',
+          foreignField: 'transcriptID',
+          as: 'transcripts',
+        },
+      },
+    ]);
+
+    const transcripts = transcriptUsages.map((transcriptUsage) => transcriptUsage.transcripts[0]);
+    const parsedTranscripts = parseTranscriptsForViewer(transcripts);
+
+    res.send(parsedTranscripts);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

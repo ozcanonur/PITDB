@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme) => ({
   container: {
     height: 'max-content',
     marginRight: '1rem',
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   tableContainer: {
     padding: '2rem 4rem',
