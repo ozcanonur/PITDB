@@ -7,15 +7,18 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
 import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
-import { selectMutation, setMutationFilters } from 'actions';
+import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
+// import { parseDiscreteSliderMarks } from './helpers';
 
-const MutationsTable = ({ ...props }) => {
+const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
+
   const { projectId } = useParams<{ projectId: string }>();
-  const filters = useSelector((state: RootState) => state.mutationFilters);
+  const filters = useSelector((state: RootState) => state.splicingEventsFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
     field: 'Gene',
     order: 1,
@@ -30,10 +33,10 @@ const MutationsTable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewMutations = async (mounted: boolean) => {
+  const fetchNewSplicingEvents = async (mounted: boolean) => {
     setLoading(true);
 
-    const res = await fetchFromApi('/api/mutations', {
+    const res = await fetchFromApi('/api/splicingEvents', {
       projectId,
       skip: 0,
       filters: filters as any,
@@ -42,9 +45,9 @@ const MutationsTable = ({ ...props }) => {
 
     if (!mounted || !res) return;
 
-    const { mutations, mutationsCount } = res;
+    const { splicingEvents, splicingEventsCount } = res;
 
-    if (mutations.length === 0) {
+    if (splicingEvents.length === 0) {
       setTableData([]);
       setRowCount(0);
       setCurrentPage(0);
@@ -52,17 +55,17 @@ const MutationsTable = ({ ...props }) => {
       return;
     }
 
-    const newRowCount = parseInt(mutationsCount);
+    const newRowCount = parseInt(splicingEventsCount);
     setRowCount(newRowCount);
 
-    const newTableData: string[][] = mutations.map(Object.values);
+    const newTableData: string[][] = splicingEvents.map(Object.values);
     setTableData(newTableData);
 
     const firstRow = newTableData[0];
     setSelectedRow(firstRow);
 
-    const [gene, position] = firstRow;
-    dispatch(selectMutation(gene, position));
+    const [gene, , , , , dPSI] = firstRow;
+    dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
 
     setCurrentPage(0);
 
@@ -72,11 +75,12 @@ const MutationsTable = ({ ...props }) => {
   useEffect(() => {
     let mounted = true;
 
-    fetchNewMutations(mounted);
+    fetchNewSplicingEvents(mounted);
 
     return () => {
       mounted = false;
     };
+    // Add filters
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, filters]);
 
@@ -90,7 +94,7 @@ const MutationsTable = ({ ...props }) => {
 
     let mounted = true;
 
-    fetchNewMutations(mounted);
+    fetchNewSplicingEvents(mounted);
 
     return () => {
       mounted = false;
@@ -113,13 +117,13 @@ const MutationsTable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { mutations } = await fetchFromApi('/api/mutations', {
+    const { splicingEvents } = await fetchFromApi('/api/splicingEvents', {
       projectId,
       skip,
       filters: filters as any,
       sortedOn: sortedOn as any,
     });
-    setTableData([...tableData, ...mutations.map(Object.values)]);
+    setTableData([...tableData, ...splicingEvents.map(Object.values)]);
 
     setLoading(false);
   };
@@ -129,53 +133,55 @@ const MutationsTable = ({ ...props }) => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  const selectGeneOnClick = (row: string[]) => {
+  const selectSplicingEventOnClick = (row: string[]) => {
     setSelectedRow(row);
-    const [gene, position] = row;
-    dispatch(selectMutation(gene, position));
+    const [gene, , , , , dPSI] = row;
+    dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-    dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
-  };
+  // const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+  //   const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+  //   dispatch(setSplicingEventsFilters({ ...filters, [name]: newSelectedValues }));
+  // };
 
-  const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue });
+  // const fetchSingleSelectOptions = async (inputValue: string) =>
+  //   await fetchFromApi('/api/splicingEvents/geneNames', { projectId, searchInput: inputValue });
 
-  const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    // Just to trigger rerender with the actual set filters via useEffect
-    if (!selectedOption) {
-      dispatch(setMutationFilters({ ...filters }));
-      return;
-    }
+  // const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+  //   // Just to trigger rerender via useEffect
+  //   if (!selectedOption) {
+  //     dispatch(setSplicingEventsFilters({ ...filters }));
+  //     return;
+  //   }
 
-    setLoading(true);
+  //   setLoading(true);
 
-    // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
-      if (!res) return;
+  //   // WOOP, should we apply filters on search or not?
+  //   fetchFromApi('/api/splicingEvents/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
+  //     if (!res) return;
 
-      const newRowCount = res.length;
-      setRowCount(newRowCount);
+  //     const newRowCount = res.length;
+  //     setRowCount(newRowCount);
 
-      const newTableData = res.map(Object.values);
-      setTableData(newTableData);
+  //     const newTableData = res.map(Object.values);
+  //     setTableData(newTableData);
+  //     setSelectedRow(newTableData[0]);
+  //     setCurrentPage(0);
 
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
+  //     setLoading(false);
+  //   });
+  // };
 
-      const [gene, position] = firstRow;
-      dispatch(selectMutation(gene, position));
-      setCurrentPage(0);
+  // const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
 
-      setLoading(false);
-    });
-  };
+  // const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+  //   const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
+  //   dispatch(setSplicingEventsFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
+  // };
 
   return (
-    <ProjectItemCard className={classes.container} name='Mutations' {...props}>
-      <div className={classes.filtersContainer}>
+    <ProjectItemCard className={classes.container} name='Transcript Usage' {...props}>
+      {/* <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
           promiseOptions={fetchSingleSelectOptions}
@@ -184,24 +190,13 @@ const MutationsTable = ({ ...props }) => {
         />
         <div className={classes.multiSelectContainer}>
           <MultiSelect
-            name='Type'
+            name='Strand'
             options={[
-              { value: 'SNP', label: 'SNP' },
-              { value: 'DEL', label: 'DEL' },
-              { value: 'INS', label: 'INS' },
+              { value: '-', label: '-' },
+              { value: '+', label: '+' },
             ]}
-            defaultValues={['SNP', 'DEL', 'INS']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'type')}
-            className={classes.multiSelect}
-          />
-          <MultiSelect
-            name='In CDS'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['true']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            defaultValues={['-', '+']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'strand')}
             className={classes.multiSelect}
           />
           <MultiSelect
@@ -210,17 +205,23 @@ const MutationsTable = ({ ...props }) => {
               { value: 'true', label: 'true' },
               { value: 'false', label: 'false' },
             ]}
-            defaultValues={['false']}
+            defaultValues={['true']}
             onChange={(selectedOptions, _actionMeta) =>
               multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
             }
             className={classes.multiSelect}
           />
+          <DiscreteSlider
+            name='Max. p value'
+            defaultValue={0.05}
+            marks={parseDiscreteSliderMarks(pValueMarks)}
+            onChangeCommited={onPValueChangeCommited}
+          />
         </div>
-      </div>
+      </div> */}
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide evidence']}
+        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'P Value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -228,7 +229,7 @@ const MutationsTable = ({ ...props }) => {
         handlePageChange={handlePageChange}
         loading={loading}
         className={classes.tableContainer}
-        rowOnClick={selectGeneOnClick}
+        rowOnClick={selectSplicingEventOnClick}
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}
@@ -237,4 +238,4 @@ const MutationsTable = ({ ...props }) => {
   );
 };
 
-export default MutationsTable;
+export default SplicingEventsTable;

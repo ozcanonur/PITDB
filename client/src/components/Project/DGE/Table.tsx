@@ -14,7 +14,7 @@ import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
 
-const DGETable = () => {
+const DGETable = ({ ...props }) => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
@@ -165,7 +165,13 @@ const DGETable = () => {
 
       const newTableData = res.map(Object.values);
       setTableData(newTableData);
+
+      const firstRow = newTableData[0];
       setSelectedRow(newTableData[0]);
+
+      const [symbolName] = firstRow;
+      dispatch(selectDGE(symbolName));
+
       setCurrentPage(0);
 
       setLoading(false);
@@ -180,7 +186,7 @@ const DGETable = () => {
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Differential Gene Expressions'>
+    <ProjectItemCard className={classes.container} name='Differential Gene Expressions' {...props}>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search symbol'

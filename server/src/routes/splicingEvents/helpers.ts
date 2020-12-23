@@ -18,10 +18,16 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
     const formattedDeltaPsi = deltaPsi;
     const formattedPVal = numeral(pval).format('0.000e+0');
 
+    const [, , leftPositions, rightPositions] = event.split(':');
+    const start = leftPositions.split('-')[1];
+    const end = rightPositions.split('-')[0];
+
     return {
       geneName,
       strand: event.slice(-1),
       eventType,
+      start,
+      end,
       deltaPsi: formattedDeltaPsi,
       pval: formattedPVal,
       pepEvidence,

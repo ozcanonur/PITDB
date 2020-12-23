@@ -148,8 +148,7 @@ router.get('/event', async (req: ExtendedRequest, res) => {
     res.send({
       eventType,
       chr,
-      leftPositions: leftPositions.split('-'),
-      rightPositions: rightPositions.split('-'),
+      positions: [...leftPositions.split('-'), ...rightPositions.split('-')],
       direction,
     });
   } catch (error) {

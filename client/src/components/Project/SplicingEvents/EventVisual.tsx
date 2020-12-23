@@ -6,9 +6,7 @@ import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 
 import { fetchFromApi } from 'utils';
-import ExonSkipping from 'assets/exon_skipping.svg';
-import ArrowLeft from 'assets/arrow_left.svg';
-import ArrowRight from 'assets/arrow_right.svg';
+import ExonSkipping from 'components/UI/Svg/ExonSkipping';
 import { useStyles } from './styles/eventVisual';
 import { EventData } from './types';
 
@@ -21,8 +19,7 @@ const EventVisual = () => {
   const [eventData, setEventData] = useState<EventData>({
     eventType: '',
     chr: '',
-    leftPositions: [0, 0],
-    rightPositions: [0, 0],
+    positions: [0, 0, 0, 0],
     direction: '',
   });
   const [loading, setLoading] = useState(false);
@@ -46,25 +43,11 @@ const EventVisual = () => {
     };
   }, [projectId, gene, dPSI]);
 
-  const { chr, direction, eventType, leftPositions, rightPositions } = eventData;
-
   return (
-    <ProjectItemCard name='Event Visual' className={classes.projectItemCard}>
+    <ProjectItemCard name={`Splicing Event for ${gene}`} className={classes.projectItemCard}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-        <div className={classes.chr}>{`${chr}, ${eventType}`}</div>
-        <img className={classes.imgArrow} src={direction === '-' ? ArrowRight : ArrowLeft} alt='arrow' />
-        <img className={classes.img} src={ExonSkipping} alt='exon skipping' />
-        <div className={classes.positions}>
-          <div className={classes.topPositions}>
-            <div className={classes.position}>{leftPositions[1]}</div>
-            <div className={classes.position}>{rightPositions[1]}</div>
-          </div>
-          <div className={classes.bottomPositions}>
-            <div className={classes.position}>{leftPositions[0]}</div>
-            <div className={classes.position}>{rightPositions[0]}</div>
-          </div>
-        </div>
+        <ExonSkipping eventData={eventData} className={classes.svg} />
       </div>
     </ProjectItemCard>
   );

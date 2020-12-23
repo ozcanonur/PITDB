@@ -13,7 +13,6 @@ export type TypesData = {
 export type EventData = {
   eventType: string;
   chr: string;
-  leftPositions: [number, number];
-  rightPositions: [number, number];
+  positions: [number, number, number, number];
   direction: string;
 };

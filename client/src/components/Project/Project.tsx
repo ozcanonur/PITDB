@@ -5,6 +5,7 @@ import Sidebar from './Sidebar/Sidebar';
 import Mutations from './Mutations/Mutations';
 import DGE from './DGE/DGE';
 import SplicingEvents from './SplicingEvents/SplicingEvents';
+import TranscriptUsage from './TranscriptUsage/TranscriptUsage';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,6 +32,9 @@ const Project = () => {
         </Route>
         <Route path={`${match.path}/splicingEvents`}>
           <SplicingEvents />
+        </Route>
+        <Route path={`${match.path}/transcriptUsage`}>
+          <TranscriptUsage />
         </Route>
       </Switch>
     </div>

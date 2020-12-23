@@ -14,7 +14,7 @@ import { fetchFromApi } from 'utils';
 import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 
-const SplicingEventsTable = () => {
+const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { projectId } = useParams<{ projectId: string }>();
@@ -64,7 +64,7 @@ const SplicingEventsTable = () => {
     const firstRow = newTableData[0];
     setSelectedRow(firstRow);
 
-    const [gene, , , dPSI] = firstRow;
+    const [gene, , , , , dPSI] = firstRow;
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
 
     setCurrentPage(0);
@@ -134,7 +134,7 @@ const SplicingEventsTable = () => {
 
   const selectSplicingEventOnClick = (row: string[]) => {
     setSelectedRow(row);
-    const [gene, , , dPSI] = row;
+    const [gene, , , , , dPSI] = row;
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
@@ -164,7 +164,13 @@ const SplicingEventsTable = () => {
 
       const newTableData = res.map(Object.values);
       setTableData(newTableData);
+
+      const firstRow = newTableData[0];
       setSelectedRow(newTableData[0]);
+
+      const [gene, , , , , dPSI] = firstRow;
+      dispatch(selectSplicingEvent(gene, dPSI));
+
       setCurrentPage(0);
 
       setLoading(false);
@@ -179,7 +185,7 @@ const SplicingEventsTable = () => {
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Splicing Events'>
+    <ProjectItemCard className={classes.container} name='Splicing Events' {...props}>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
@@ -220,7 +226,7 @@ const SplicingEventsTable = () => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Strand', 'Type', 'dPSI', 'P Value', 'Peptide evidence']}
+        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'P Value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

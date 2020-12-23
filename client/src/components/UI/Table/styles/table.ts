@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
       fontSize: '1.4rem',
       fontWeight: 600,
       color: theme.palette.primary.main,
-      maxWidth: '6rem',
+      maxWidth: '9rem',
     },
   },
   tableCell: {

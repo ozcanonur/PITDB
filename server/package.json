@@ -8,7 +8,6 @@
     "start:build": "tsc -w",
     "start:run": "nodemon build/index.js",
     "client": "cd ../client && yarn start",
-    "server": "nodemon index.js",
     "dev": "concurrently --kill-others-on-fail \"yarn:start:*\" \"yarn client\"",
     "build:deploy": "tsc --outDir ../deployment",
     "deploy": "cd ../deployment && yarn deploy"

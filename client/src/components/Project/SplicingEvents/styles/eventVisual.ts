@@ -11,7 +11,6 @@ export const useStyles = makeStyles((theme) => ({
     transition: 'all .3s ease-in-out',
     height: '100%',
     width: '100%',
-    position: 'relative',
   },
   loading: {
     position: 'absolute',
@@ -21,53 +20,19 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '3rem',
     transition: 'all .3s ease-in-out',
   },
-  img: {
+  svg: {
     position: 'absolute',
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
-    height: '11rem',
-  },
-  chr: {
-    fontSize: '1.4rem',
-    color: theme.palette.primary.main,
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    marginTop: '-11.3rem',
-  },
-  imgArrow: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    marginTop: '-9.6rem',
-    height: '2.3rem',
-  },
-  positions: {
-    position: 'absolute',
-    left: '50%',
-    top: '47%',
-    transform: 'translate(-50%, -50%)',
-    width: '42rem',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '8rem',
-    justifyContent: 'space-between',
-  },
-  topPositions: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '0 13rem',
-  },
-  bottomPositions: {
-    display: 'flex',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-  position: {
-    fontSize: '1.4rem',
-    color: theme.palette.primary.main,
+    width: '80%',
+
+    '@media screen and (max-width: 1920px)': {
+      width: '90%',
+    },
+
+    '@media screen and (max-width: 1800px)': {
+      width: '100%',
+    },
   },
 }));
