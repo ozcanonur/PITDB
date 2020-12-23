@@ -1,5 +1,6 @@
 import { ReactWrapper } from 'enzyme';
-import { uniq, isEqual } from 'lodash';
+import uniq from 'lodash/uniq';
+import isEqual from 'lodash/isEqual';
 
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import { mountExtendedTable, getColumnValues, replaceAll, getTableRows } from './helpers';

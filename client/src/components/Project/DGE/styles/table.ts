@@ -27,6 +27,7 @@ export const useStyles = makeStyles((theme) => ({
   slidersContainer: {
     display: 'flex',
     padding: '0 2rem',
+    paddingLeft: '1.6rem',
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',

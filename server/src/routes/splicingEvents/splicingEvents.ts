@@ -1,7 +1,8 @@
 import express from 'express';
 
 import { SplicingDPSI } from '../../db/models/splicingDPSI';
-import { ExtendedRequest, SplicingEventsFilters } from './types';
+import { ExtendedRequest } from '../../types';
+import { SplicingEventsFilters } from './types';
 import {
   convertSortFieldNameForMongoose,
   parseSplicingEvents,

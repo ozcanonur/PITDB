@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request } from 'express';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -9,6 +9,7 @@ import compression from 'compression';
 import mutationsRouter from './routes/mutations/mutations';
 import dgesRouter from './routes/dges/dges';
 import splicingEventsRouter from './routes/splicingEvents/splicingEvents';
+import transcriptUsageRouter from './routes/transcriptUsage/transcriptUsage';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -26,8 +27,7 @@ app.use(
   })
 );
 app.use(compression());
-// @ts-ignore
-app.use(cors());
+app.use(cors<Request>());
 
 // Setup Mongo
 import './db/mongoose';
@@ -36,6 +36,7 @@ import './db/mongoose';
 app.use('/api/mutations', mutationsRouter);
 app.use('/api/dges', dgesRouter);
 app.use('/api/splicingEvents', splicingEventsRouter);
+app.use('/api/transcriptUsage', transcriptUsageRouter);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

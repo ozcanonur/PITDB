@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 
 import { FilterTableBy, Filter } from './types';
 import { isStringArray, isNumberTuple } from 'utils';

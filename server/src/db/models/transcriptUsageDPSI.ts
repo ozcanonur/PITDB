@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 
 const TranscriptUsageDPSISchema = new Schema({
   geneName: String,
@@ -9,4 +9,17 @@ const TranscriptUsageDPSISchema = new Schema({
   comparison: String,
 });
 
-export const TranscriptUsageDPSI = model('TranscriptUsageDPSI', TranscriptUsageDPSISchema);
+export interface ITranscriptUsageDPSI extends Document {
+  geneName: string;
+  transcript: string;
+  deltaPsi: string;
+  pval: number;
+  project: string;
+  comparison: string;
+}
+
+export const TranscriptUsageDPSI: Model<ITranscriptUsageDPSI> = model<ITranscriptUsageDPSI>(
+  'TranscriptUsageDPSI',
+  TranscriptUsageDPSISchema,
+  'transcriptUsageDPSI'
+);

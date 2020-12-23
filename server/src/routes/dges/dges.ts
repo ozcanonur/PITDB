@@ -2,7 +2,9 @@ import express from 'express';
 
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
-import { ExtendedRequest, DGEFilters } from './types';
+import { DGEFilters } from './types';
+import { ExtendedRequest } from '../../types';
+
 import { parseValuesForVolcanoPlotAndFindMinMax, parseDges, convertSortFieldNameForMongoose } from './helpers';
 
 const router = express.Router();
@@ -90,6 +92,7 @@ router.get('/readCount', async (req: ExtendedRequest, res) => {
   }
 });
 
+// Unnecessary, main route already gets this, just need to parse it aswell.
 router.get('/volcanoPlot', async (req: ExtendedRequest, res) => {
   const { projectId, filters } = req.query;
 

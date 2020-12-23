@@ -1,16 +1,21 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Model, Document } from 'mongoose';
 
 const TranscriptCountSchema = new Schema({
   transcript: String,
   project: String,
-  readCounts: {
-    'Nsi/1': Number,
-    'Nsi/2': Number,
-    'Nsi/3': Number,
-    'si/1': Number,
-    'si/2': Number,
-    'si/3': Number,
-  },
+  readCounts: Object,
 });
 
-export const TranscriptCount = model('TranscriptCount', TranscriptCountSchema);
+export interface ITranscriptCount extends Document {
+  transcript: string;
+  project: string;
+  readCounts: {
+    [condition: string]: number;
+  };
+}
+
+export const TranscriptCount: Model<ITranscriptCount> = model<ITranscriptCount>(
+  'TranscriptCount',
+  TranscriptCountSchema,
+  'transcriptCounts'
+);

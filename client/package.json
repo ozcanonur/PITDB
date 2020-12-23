@@ -28,7 +28,7 @@
     "@types/redux": "^3.6.0",
     "@types/redux-devtools-extension": "^2.13.2",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.3.2",
-    "aos": "^2.3.4",
+    "aos": "^3.0.0-beta.6",
     "axios": "^0.21.0",
     "enzyme": "^3.11.0",
     "history": "^5.0.0",
@@ -52,6 +52,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "sloc": "sloc src/ --format cli-table",
     "build:deploy": "react-scripts build && rm -rf ../deployment/build && mv build ../deployment"
   },
   "eslintConfig": {

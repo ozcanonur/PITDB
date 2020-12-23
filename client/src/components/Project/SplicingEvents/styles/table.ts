@@ -31,7 +31,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   multiSelectContainer: {
     display: 'flex',
-    padding: '0 2rem',
+    paddingRight: '2rem',
 
     '& > div:not(:last-child)': {
       marginRight: '4rem',

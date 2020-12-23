@@ -2,7 +2,8 @@ import express from 'express';
 
 import { Mutation } from '../../db/models/mutation';
 import { parseConditions, convertSortFieldNameForMongoose, parseMutations } from './helpers';
-import { ExtendedRequest, MutationFilters } from './types';
+import { MutationFilters } from './types';
+import { ExtendedRequest } from '../../types';
 
 const router = express.Router();
 
@@ -107,6 +108,9 @@ router.get('/types', async (req: ExtendedRequest, res) => {
   try {
     const { type: typeFilters, inCDS, hasPeptideEvidence } = JSON.parse(filters) as MutationFilters;
 
+    // WOOP, maybe use
+    // $group: { _id: '$eventType', count: { $sum: 1 } },
+    // As you did in splicing events?
     const counts = await Mutation.aggregate([
       {
         $match: {

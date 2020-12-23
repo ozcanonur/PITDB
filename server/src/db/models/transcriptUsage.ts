@@ -1,17 +1,23 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document, Model } from 'mongoose';
 
 const TranscriptUsageSchema = new Schema({
   geneName: String,
   transcript: String,
   project: String,
-  psi: {
-    Nsi_1: Number,
-    Nsi_2: Number,
-    Nsi_3: Number,
-    si_1: Number,
-    si_2: Number,
-    si_3: Number,
-  },
+  psi: Object,
 });
 
-export const TranscriptUsage = model('TranscriptUsage', TranscriptUsageSchema);
+export interface ITranscriptUsage extends Document {
+  geneName: string;
+  transcript: string;
+  project: string;
+  psi: {
+    [condition: string]: number;
+  };
+}
+
+export const TranscriptUsage: Model<ITranscriptUsage> = model<ITranscriptUsage>(
+  'TranscriptUsage',
+  TranscriptUsageSchema,
+  'transcriptUsage'
+);
