@@ -26,7 +26,7 @@ const Browse = () => {
     <>
       <Header />
       <Switch>
-        <Route path={`${match.path}/:projectId`}>
+        <Route path={`${match.path}/:project`}>
           <Project />
         </Route>
         <Route path={match.path}>

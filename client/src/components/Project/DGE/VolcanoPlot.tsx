@@ -12,7 +12,7 @@ import { useStyles } from './styles/figures';
 const VolcanoPlot = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.DGEFilters);
 
   const [volcanoPlotData, setVolcanoPlotData] = useState<VolcanoPlotData>({ data: [] });
@@ -25,7 +25,7 @@ const VolcanoPlot = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/dges/volcanoPlot', { projectId, filters: filters as any }).then((res) => {
+    fetchFromApi('/api/dges/volcanoPlot', { project, filters: filters as any }).then((res) => {
       if (!mounted || !res) return;
 
       setVolcanoPlotData(res);
@@ -35,7 +35,7 @@ const VolcanoPlot = () => {
     return () => {
       mounted = false;
     };
-  }, [filters, projectId]);
+  }, [filters, project]);
 
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
 

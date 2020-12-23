@@ -10,14 +10,14 @@ import { parseValuesForVolcanoPlotAndFindMinMax, parseDges, convertSortFieldName
 const router = express.Router();
 
 router.get('/', async (req: ExtendedRequest, res) => {
-  const { projectId, skip, filters, sortedOn } = req.query;
+  const { project, skip, filters, sortedOn } = req.query;
 
   try {
     const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
     const query = {
-      project: projectId,
+      project,
       padj: { $lt: maxPValue },
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
     };
@@ -40,13 +40,13 @@ router.get('/', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/symbolNames', async (req: ExtendedRequest, res) => {
-  const { projectId, searchInput } = req.query;
+  const { project, searchInput } = req.query;
 
   try {
     if (!searchInput) return res.send([]);
 
     const symbolNames = await DGE.aggregate([
-      { $match: { project: projectId, symbol: RegExp(`^${searchInput}`, 'i') } },
+      { $match: { project, symbol: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$symbol' } },
       { $limit: 50 },
     ]);
@@ -63,10 +63,10 @@ router.get('/symbolNames', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/bySymbolName', async (req: ExtendedRequest, res) => {
-  const { projectId, symbol } = req.query;
+  const { project, symbol } = req.query;
 
   try {
-    const dges = await DGE.find({ project: projectId, symbol });
+    const dges = await DGE.find({ project, symbol });
     if (!dges) return res.send([]);
 
     const parsedDges = parseDges(dges);
@@ -79,10 +79,10 @@ router.get('/bySymbolName', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/readCount', async (req: ExtendedRequest, res) => {
-  const { projectId, symbol } = req.query;
+  const { project, symbol } = req.query;
 
   try {
-    const { counts } = await ReadCount.findOne({ project: projectId, gene: symbol });
+    const { counts } = await ReadCount.findOne({ project, gene: symbol });
     if (!counts) return res.send([]);
 
     res.send(counts);
@@ -94,13 +94,13 @@ router.get('/readCount', async (req: ExtendedRequest, res) => {
 
 // Unnecessary, main route already gets this, just need to parse it aswell.
 router.get('/volcanoPlot', async (req: ExtendedRequest, res) => {
-  const { projectId, filters } = req.query;
+  const { project, filters } = req.query;
 
   try {
     const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
 
     const dges = await DGE.find({
-      project: projectId,
+      project,
       padj: { $lt: maxPValue },
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
     });

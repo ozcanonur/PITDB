@@ -15,6 +15,11 @@ interface RootState {
     gene: string;
     dPSI: number;
   };
+  transcriptUsageFilters: import('components/Project/SplicingEvents/types').SplicingEventsTableFilters;
+  selectedTranscriptUsage: {
+    gene: string;
+    transcript: string;
+  };
 }
 
 interface SelectOption {

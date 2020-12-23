@@ -51,7 +51,7 @@ const Sidebar = () => {
     },
   ];
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const currentRoute = useLocation().pathname.split('/')[3];
 
   const history = useHistory();
@@ -62,7 +62,7 @@ const Sidebar = () => {
 
   return (
     <div className={classes.sidebarContainer}>
-      <ProjectInfo projectId={projectId} />
+      <ProjectInfo project={project} />
       <div className={classes.routesContainer}>
         {routes.map(({ name, route, alt, imgSrc }) => (
           <div

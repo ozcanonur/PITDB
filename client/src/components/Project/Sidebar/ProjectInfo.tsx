@@ -1,13 +1,13 @@
 import { ReactComponent as DnaImg } from 'assets/dna_3.svg';
 import { useStyles } from './styles/projectInfo';
 
-const ProjectInfo = ({ projectId }: { projectId: string }) => {
+const ProjectInfo = ({ project }: { project: string }) => {
   const classes = useStyles();
 
   const infoItems = [
     {
       identifier: 'Experiment:',
-      value: projectId,
+      value: project,
     },
     {
       identifier: 'Sample:',

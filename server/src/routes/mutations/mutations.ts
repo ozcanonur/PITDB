@@ -8,7 +8,7 @@ import { ExtendedRequest } from '../../types';
 const router = express.Router();
 
 router.get('/', async (req: ExtendedRequest, res) => {
-  const { projectId, skip, filters, sortedOn } = req.query;
+  const { project, skip, filters, sortedOn } = req.query;
 
   try {
     const parsedFilters = JSON.parse(filters) as MutationFilters;
@@ -23,7 +23,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     // Have to convert string boolean to boolean
     const query = {
-      project: projectId,
+      project,
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
       type: { $in: typeFilters },
@@ -48,13 +48,13 @@ router.get('/', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/geneNames', async (req: ExtendedRequest, res) => {
-  const { projectId, searchInput } = req.query;
+  const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
 
   try {
     const geneNames = await Mutation.aggregate([
-      { $match: { project: projectId, gene: RegExp(`^${searchInput}`, 'i') } },
+      { $match: { project, gene: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$gene' } },
       { $limit: 50 },
     ]);
@@ -71,10 +71,10 @@ router.get('/geneNames', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/byGeneName', async (req: ExtendedRequest, res) => {
-  const { projectId, geneName } = req.query;
+  const { project, geneName } = req.query;
 
   try {
-    const mutations = await Mutation.find({ project: projectId, gene: geneName });
+    const mutations = await Mutation.find({ project, gene: geneName });
     if (!mutations) return res.send([]);
 
     const parsedMutations = parseMutations(mutations);
@@ -87,10 +87,10 @@ router.get('/byGeneName', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/conditions', async (req: ExtendedRequest, res) => {
-  const { projectId, gene, position } = req.query;
+  const { project, gene, position } = req.query;
 
   try {
-    const { conditions } = await Mutation.findOne({ project: projectId, gene, refPos: parseInt(position) });
+    const { conditions } = await Mutation.findOne({ project, gene, refPos: parseInt(position) });
     if (!conditions) return res.sendStatus(500);
 
     // @ts-ignore
@@ -103,7 +103,7 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/types', async (req: ExtendedRequest, res) => {
-  const { projectId, filters } = req.query;
+  const { project, filters } = req.query;
 
   try {
     const { type: typeFilters, inCDS, hasPeptideEvidence } = JSON.parse(filters) as MutationFilters;
@@ -114,7 +114,7 @@ router.get('/types', async (req: ExtendedRequest, res) => {
     const counts = await Mutation.aggregate([
       {
         $match: {
-          project: projectId,
+          project,
           hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
           inCDS: { $in: inCDS.map((e) => e === 'true') },
           type: { $in: typeFilters },

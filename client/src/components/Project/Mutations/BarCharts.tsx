@@ -12,7 +12,7 @@ import { useStyles } from './styles/figures';
 const BarCharts = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const { gene, position } = useSelector((state: RootState) => state.selectedMutation);
 
   const [conditionsData, setConditionsData] = useState<ConditionsData>({});
@@ -25,7 +25,7 @@ const BarCharts = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/mutations/conditions', { projectId, gene, position }).then((res) => {
+    fetchFromApi('/api/mutations/conditions', { project, gene, position }).then((res) => {
       if (!mounted || !res) return;
 
       setConditionsData(res);
@@ -35,7 +35,7 @@ const BarCharts = () => {
     return () => {
       mounted = false;
     };
-  }, [gene, position, projectId]);
+  }, [gene, position, project]);
 
   const qualityData = Object.keys(conditionsData).map((conditionName) => ({
     sample: conditionName,

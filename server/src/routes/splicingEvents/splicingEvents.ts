@@ -13,14 +13,14 @@ import {
 const router = express.Router();
 
 router.get('/', async (req: ExtendedRequest, res) => {
-  const { projectId, skip, filters, sortedOn } = req.query;
+  const { project, skip, filters, sortedOn } = req.query;
 
   try {
     const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
     const query = {
-      project: projectId,
+      project,
       pval: { $lt: maxPValue },
       pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       event: getRegexForStrandFilter(strand),
@@ -45,13 +45,13 @@ router.get('/', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/geneNames', async (req: ExtendedRequest, res) => {
-  const { projectId, searchInput } = req.query;
+  const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
 
   try {
     const geneNames = await SplicingDPSI.aggregate([
-      { $match: { project: projectId, geneName: RegExp(`^${searchInput}`, 'i') } },
+      { $match: { project, geneName: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$geneName' } },
       { $limit: 50 },
     ]);
@@ -68,10 +68,10 @@ router.get('/geneNames', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/byGeneName', async (req: ExtendedRequest, res) => {
-  const { projectId, geneName } = req.query;
+  const { project, geneName } = req.query;
 
   try {
-    const splicingEvents = await SplicingDPSI.find({ project: projectId, geneName });
+    const splicingEvents = await SplicingDPSI.find({ project, geneName });
     if (!splicingEvents) return res.send([]);
 
     const parsedSplicingEvents = parseSplicingEvents(splicingEvents);
@@ -84,7 +84,7 @@ router.get('/byGeneName', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/types', async (req: ExtendedRequest, res) => {
-  const { projectId, filters } = req.query;
+  const { project, filters } = req.query;
 
   try {
     const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
@@ -92,7 +92,7 @@ router.get('/types', async (req: ExtendedRequest, res) => {
     const counts: { _id: string; count: number }[] = await SplicingDPSI.aggregate([
       {
         $match: {
-          project: projectId,
+          project,
           pval: { $lt: maxPValue },
           pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
           event: getRegexForStrandFilter(strand),
@@ -116,11 +116,11 @@ router.get('/types', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/conditions', async (req: ExtendedRequest, res) => {
-  const { projectId, gene, dPSI } = req.query;
+  const { project, gene, dPSI } = req.query;
 
   try {
     const splicingPsi = await SplicingDPSI.aggregate([
-      { $match: { project: projectId, geneName: gene, deltaPsi: parseFloat(dPSI) } },
+      { $match: { project, geneName: gene, deltaPsi: parseFloat(dPSI) } },
       { $lookup: { from: 'SplicingPsi', localField: 'event', foreignField: 'event', as: 'conditions' } },
     ]);
 
@@ -135,11 +135,11 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
 });
 
 router.get('/event', async (req: ExtendedRequest, res) => {
-  const { projectId, gene, dPSI } = req.query;
+  const { project, gene, dPSI } = req.query;
 
   try {
     const { event, eventType } = await SplicingDPSI.findOne({
-      project: projectId,
+      project,
       geneName: gene,
       deltaPsi: parseFloat(dPSI),
     });

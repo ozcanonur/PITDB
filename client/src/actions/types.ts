@@ -1,6 +1,7 @@
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
+import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/types';
 
 export enum ACTION {
   SET_MUTATION_FILTERS,
@@ -9,6 +10,8 @@ export enum ACTION {
   SELECT_DGE,
   SET_SPLICING_EVENTS_FILTERS,
   SELECT_SPLICING_EVENT,
+  SET_TRANSCRIPT_USAGE_FILTERS,
+  SELECT_TRANSCRIPT_USAGE,
 }
 export type SelectMutationAction = {
   type: ACTION.SELECT_MUTATION;
@@ -45,5 +48,18 @@ export type SelectSplicingEventAction = {
   payload: {
     gene: string;
     dPSI: number;
+  };
+};
+
+export type SetTranscriptUsageFiltersAction = {
+  type: ACTION.SET_TRANSCRIPT_USAGE_FILTERS;
+  payload: TranscriptUsageTableFilters;
+};
+
+export type SelectTranscriptUsageAction = {
+  type: ACTION.SELECT_TRANSCRIPT_USAGE;
+  payload: {
+    gene: string;
+    transcript: string;
   };
 };

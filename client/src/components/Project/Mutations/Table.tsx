@@ -14,7 +14,7 @@ import { selectMutation, setMutationFilters } from 'actions';
 
 const MutationsTable = ({ ...props }) => {
   const classes = useStyles();
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
     field: 'Gene',
@@ -34,7 +34,7 @@ const MutationsTable = ({ ...props }) => {
     setLoading(true);
 
     const res = await fetchFromApi('/api/mutations', {
-      projectId,
+      project,
       skip: 0,
       filters: filters as any,
       sortedOn: sortedOn as any,
@@ -78,7 +78,7 @@ const MutationsTable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, filters]);
+  }, [project, filters]);
 
   // Don't run on first render
   const isFirstRender = useRef(true);
@@ -96,7 +96,7 @@ const MutationsTable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, sortedOn]);
+  }, [project, sortedOn]);
 
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
@@ -114,7 +114,7 @@ const MutationsTable = ({ ...props }) => {
     setLoading(true);
 
     const { mutations } = await fetchFromApi('/api/mutations', {
-      projectId,
+      project,
       skip,
       filters: filters as any,
       sortedOn: sortedOn as any,
@@ -141,7 +141,7 @@ const MutationsTable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/mutations/geneNames', { projectId, searchInput: inputValue });
+    await fetchFromApi('/api/mutations/geneNames', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
@@ -153,7 +153,7 @@ const MutationsTable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/mutations/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/mutations/byGeneName', { project, geneName: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;

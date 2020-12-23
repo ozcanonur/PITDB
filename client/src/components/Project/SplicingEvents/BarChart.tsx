@@ -12,7 +12,7 @@ import { useStyles } from './styles/figures';
 const BarChart = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const { gene, dPSI } = useSelector((state: RootState) => state.selectedSplicingEvent);
 
   const [conditionsData, setConditionsData] = useState<ConditionsData>({});
@@ -25,7 +25,7 @@ const BarChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicingEvents/conditions', { projectId, gene, dPSI }).then((res) => {
+    fetchFromApi('/api/splicingEvents/conditions', { project, gene, dPSI }).then((res) => {
       if (!mounted || !res) return;
 
       setConditionsData(res);
@@ -35,7 +35,7 @@ const BarChart = () => {
     return () => {
       mounted = false;
     };
-  }, [gene, dPSI, projectId]);
+  }, [gene, dPSI, project]);
 
   const parsedConditionsDataForBarChart = Object.keys(conditionsData).map((condition) => ({
     condition,

@@ -6,10 +6,13 @@ import {
   SelectDGEAction,
   SetSplicingEventsFiltersAction,
   SelectSplicingEventAction,
+  SetTranscriptUsageFiltersAction,
+  SelectTranscriptUsageAction,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
+import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/types';
 
 export const setMutationFilters = (filters: MutationTableFilters): SetMutationFiltersAction => {
   return {
@@ -57,6 +60,23 @@ export const selectSplicingEvent = (gene: string, dPSI: number): SelectSplicingE
     payload: {
       gene,
       dPSI,
+    },
+  };
+};
+
+export const setTranscriptUsageFilters = (filters: TranscriptUsageTableFilters): SetTranscriptUsageFiltersAction => {
+  return {
+    type: ACTION.SET_TRANSCRIPT_USAGE_FILTERS,
+    payload: filters,
+  };
+};
+
+export const selectTranscriptUsage = (gene: string, transcript: string): SelectTranscriptUsageAction => {
+  return {
+    type: ACTION.SELECT_TRANSCRIPT_USAGE,
+    payload: {
+      gene,
+      transcript,
     },
   };
 };

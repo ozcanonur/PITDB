@@ -17,7 +17,7 @@ import { parseDiscreteSliderMarks } from './helpers';
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
     field: 'Gene',
@@ -37,7 +37,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setLoading(true);
 
     const res = await fetchFromApi('/api/splicingEvents', {
-      projectId,
+      project,
       skip: 0,
       filters: filters as any,
       sortedOn: sortedOn as any,
@@ -81,7 +81,7 @@ const SplicingEventsTable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, filters]);
+  }, [project, filters]);
 
   // Don't run on first render
   const isFirstRender = useRef(true);
@@ -99,7 +99,7 @@ const SplicingEventsTable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, sortedOn]);
+  }, [project, sortedOn]);
 
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
@@ -117,7 +117,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setLoading(true);
 
     const { splicingEvents } = await fetchFromApi('/api/splicingEvents', {
-      projectId,
+      project,
       skip,
       filters: filters as any,
       sortedOn: sortedOn as any,
@@ -144,7 +144,7 @@ const SplicingEventsTable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/splicingEvents/geneNames', { projectId, searchInput: inputValue });
+    await fetchFromApi('/api/splicingEvents/geneNames', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender via useEffect
@@ -156,7 +156,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/splicingEvents/byGeneName', { projectId, geneName: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/splicingEvents/byGeneName', { project, geneName: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;
@@ -166,7 +166,7 @@ const SplicingEventsTable = ({ ...props }) => {
       setTableData(newTableData);
 
       const firstRow = newTableData[0];
-      setSelectedRow(newTableData[0]);
+      setSelectedRow(firstRow);
 
       const [gene, , , , , dPSI] = firstRow;
       dispatch(selectSplicingEvent(gene, dPSI));

@@ -12,7 +12,7 @@ import { useStyles } from './styles/figures';
 const PieChart = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
 
   const [data, setData] = useState<TypesData>({ SNP: 0, DEL: 0, INS: 0 });
@@ -25,7 +25,7 @@ const PieChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/mutations/types', { projectId, filters: filters as any }).then((res) => {
+    fetchFromApi('/api/mutations/types', { project, filters: filters as any }).then((res) => {
       if (!mounted || !res) return;
 
       setData(res);
@@ -35,7 +35,7 @@ const PieChart = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, filters]);
+  }, [project, filters]);
 
   const typeDistributionData: { id: string; label: string; value: number }[] = [];
   for (const type of Object.keys(data)) {
@@ -60,7 +60,7 @@ const PieChart = () => {
           innerRadius={0.4}
           padAngle={3}
           cornerRadius={0}
-          colors={['rgba(107, 107, 179, 0.65)', 'rgba(65, 15, 94, 0.8)', 'rgba(44, 85, 122, 0.7)']}
+          colors={['rgba(65, 15, 94, 0.8)', 'rgba(44, 85, 122, 0.7)', 'rgba(107, 107, 179, 0.65)']}
           borderWidth={0}
           borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
           radialLabelsSkipAngle={0}

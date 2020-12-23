@@ -17,7 +17,7 @@ import { setDGEFilters, selectDGE } from 'actions';
 const DGETable = ({ ...props }) => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.DGEFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
     field: 'Symbol',
@@ -36,37 +36,35 @@ const DGETable = ({ ...props }) => {
   const fetchNewDges = (mounted: boolean) => {
     setLoading(true);
 
-    fetchFromApi('/api/dges', { projectId, skip: 0, filters: filters as any, sortedOn: sortedOn as any }).then(
-      (res) => {
-        if (!mounted || !res) return;
+    fetchFromApi('/api/dges', { project, skip: 0, filters: filters as any, sortedOn: sortedOn as any }).then((res) => {
+      if (!mounted || !res) return;
 
-        const { dges, dgesCount } = res;
+      const { dges, dgesCount } = res;
 
-        if (dgesCount.length === 0) {
-          setTableData([]);
-          setRowCount(0);
-          setCurrentPage(0);
-          setLoading(false);
-          return;
-        }
-
-        const newRowCount = parseInt(dgesCount);
-        setRowCount(newRowCount);
-
-        const newTableData = dges.map(Object.values);
-        setTableData(newTableData);
-
-        const firstRow = newTableData[0];
-        setSelectedRow(firstRow);
-
-        const [symbol] = firstRow;
-        dispatch(selectDGE(symbol));
-
+      if (dgesCount.length === 0) {
+        setTableData([]);
+        setRowCount(0);
         setCurrentPage(0);
-
         setLoading(false);
+        return;
       }
-    );
+
+      const newRowCount = parseInt(dgesCount);
+      setRowCount(newRowCount);
+
+      const newTableData = dges.map(Object.values);
+      setTableData(newTableData);
+
+      const firstRow = newTableData[0];
+      setSelectedRow(firstRow);
+
+      const [symbol] = firstRow;
+      dispatch(selectDGE(symbol));
+
+      setCurrentPage(0);
+
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -78,7 +76,7 @@ const DGETable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, filters]);
+  }, [project, filters]);
 
   // Don't run on first render
   const isFirstRender = useRef(true);
@@ -96,7 +94,7 @@ const DGETable = ({ ...props }) => {
       mounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, sortedOn]);
+  }, [project, sortedOn]);
 
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
@@ -113,7 +111,7 @@ const DGETable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { dges } = await fetchFromApi('/api/dges', { projectId, skip, filters: filters as any });
+    const { dges } = await fetchFromApi('/api/dges', { project, skip, filters: filters as any });
     setTableData([...tableData, ...dges.map(Object.values)]);
 
     setLoading(false);
@@ -145,7 +143,7 @@ const DGETable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/dges/symbolNames', { projectId, searchInput: inputValue });
+    await fetchFromApi('/api/dges/symbolNames', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
@@ -157,7 +155,7 @@ const DGETable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/dges/bySymbolName', { projectId, symbol: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/dges/bySymbolName', { project, symbol: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;

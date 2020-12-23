@@ -12,7 +12,7 @@ import { useStyles } from './styles/figures';
 const BarChart = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const { symbol } = useSelector((state: RootState) => state.selectedDGE);
 
   const [readCountsData, setReadCountsData] = useState<ReadCountsData>({});
@@ -25,7 +25,7 @@ const BarChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/dges/readCount', { projectId, symbol }).then((res) => {
+    fetchFromApi('/api/dges/readCount', { project, symbol }).then((res) => {
       if (!mounted || !res) return;
 
       setReadCountsData(res);
@@ -35,7 +35,7 @@ const BarChart = () => {
     return () => {
       mounted = false;
     };
-  }, [symbol, projectId]);
+  }, [symbol, project]);
 
   const parsedReadCountsForBarChart = Object.keys(readCountsData).map((condition) => ({
     condition,

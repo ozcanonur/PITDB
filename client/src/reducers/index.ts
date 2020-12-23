@@ -7,10 +7,13 @@ import {
   SelectDGEAction,
   SetSplicingEventsFiltersAction,
   SelectSplicingEventAction,
+  SetTranscriptUsageFiltersAction,
+  SelectTranscriptUsageAction,
 } from 'actions/types';
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
+import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/types';
 
 const mutationFilters = (
   state: MutationTableFilters = {
@@ -88,6 +91,32 @@ const selectedSplicingEvent = (
   }
 };
 
+const transcriptUsageFilters = (
+  state: TranscriptUsageTableFilters = { maxPValue: 0.05 },
+  action: SetTranscriptUsageFiltersAction
+) => {
+  switch (action.type) {
+    case ACTION.SET_TRANSCRIPT_USAGE_FILTERS:
+      const newFilters = action.payload;
+      return { ...newFilters };
+    default:
+      return state;
+  }
+};
+
+const selectedTranscriptUsage = (
+  state: { gene: string; transcript: string } = { gene: '', transcript: '' },
+  action: SelectTranscriptUsageAction
+) => {
+  switch (action.type) {
+    case ACTION.SELECT_TRANSCRIPT_USAGE:
+      const { gene, transcript } = action.payload;
+      return { gene, transcript };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   mutationFilters,
   selectedMutation,
@@ -95,4 +124,6 @@ export default combineReducers({
   selectedDGE,
   splicingEventsFilters,
   selectedSplicingEvent,
+  transcriptUsageFilters,
+  selectedTranscriptUsage,
 });

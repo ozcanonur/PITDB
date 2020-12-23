@@ -13,7 +13,7 @@ import { EventData } from './types';
 const EventVisual = () => {
   const classes = useStyles();
 
-  const { projectId } = useParams<{ projectId: string }>();
+  const { project } = useParams<{ project: string }>();
   const { gene, dPSI } = useSelector((state: RootState) => state.selectedSplicingEvent);
 
   const [eventData, setEventData] = useState<EventData>({
@@ -31,7 +31,7 @@ const EventVisual = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicingEvents/event', { projectId, gene, dPSI }).then((res) => {
+    fetchFromApi('/api/splicingEvents/event', { project, gene, dPSI }).then((res) => {
       if (!mounted || !res) return;
 
       setEventData(res);
@@ -41,7 +41,7 @@ const EventVisual = () => {
     return () => {
       mounted = false;
     };
-  }, [projectId, gene, dPSI]);
+  }, [project, gene, dPSI]);
 
   return (
     <ProjectItemCard name={`Splicing Event for ${gene}`} className={classes.projectItemCard}>
