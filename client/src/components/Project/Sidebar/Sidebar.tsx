@@ -32,17 +32,18 @@ const Sidebar = () => {
       route: 'splicingEvents',
     },
     {
-      name: 'Browser',
-      alt: 'browser route',
-      imgSrc: Category3,
-      route: 'browser',
-    },
-    {
       name: 'Transcript usage',
       alt: 'transcript usage route',
       imgSrc: Category5,
       route: 'transcriptUsage',
     },
+    {
+      name: 'Browser',
+      alt: 'browser route',
+      imgSrc: Category3,
+      route: 'browser',
+    },
+
     {
       name: 'Peptide maps',
       alt: 'peptide maps route',

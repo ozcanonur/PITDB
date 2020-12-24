@@ -4,6 +4,7 @@ import { ExtendedRequest } from '../../types';
 import { TranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
 import { convertSortFieldNameForMongoose, parseTranscriptUsages, parseTranscriptsForViewer } from './helpers';
 import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
+import { TranscriptCount } from '../../db/models/transcriptCount';
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/geneNames', async (req: ExtendedRequest, res) => {
+router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
@@ -61,7 +62,7 @@ router.get('/geneNames', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/byGeneName', async (req: ExtendedRequest, res) => {
+router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   const { project, geneName } = req.query;
 
   try {
@@ -97,6 +98,26 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     const parsedTranscripts = parseTranscriptsForViewer(transcripts);
 
     res.send(parsedTranscripts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+router.get('/read-counts', async (req: ExtendedRequest, res) => {
+  const { project, transcript } = req.query;
+
+  try {
+    const transcriptCount = await TranscriptCount.findOne({ project, transcript });
+
+    const parsedReadCounts = Object.keys(transcriptCount.readCounts).map((condition) => {
+      return {
+        condition,
+        readCount: transcriptCount.readCounts[condition],
+      };
+    });
+
+    res.send(parsedReadCounts);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

@@ -36,7 +36,7 @@ const SplicingEventsTable = ({ ...props }) => {
   const fetchNewSplicingEvents = async (mounted: boolean) => {
     setLoading(true);
 
-    const res = await fetchFromApi('/api/splicingEvents', {
+    const res = await fetchFromApi('/api/splicing-events', {
       project,
       skip: 0,
       filters: filters as any,
@@ -116,7 +116,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { splicingEvents } = await fetchFromApi('/api/splicingEvents', {
+    const { splicingEvents } = await fetchFromApi('/api/splicing-events', {
       project,
       skip,
       filters: filters as any,
@@ -144,7 +144,7 @@ const SplicingEventsTable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/splicingEvents/geneNames', { project, searchInput: inputValue });
+    await fetchFromApi('/api/splicing-events/gene-names', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender via useEffect
@@ -156,7 +156,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/splicingEvents/byGeneName', { project, geneName: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/splicing-events/by-gene-name', { project, geneName: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;

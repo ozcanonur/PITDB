@@ -9,7 +9,7 @@ import compression from 'compression';
 import mutationsRouter from './routes/mutations/mutations';
 import dgesRouter from './routes/dges/dges';
 import splicingEventsRouter from './routes/splicingEvents/splicingEvents';
-import transcriptUsageRouter from './routes/transcriptUsage/transcriptUsage';
+import transcriptUsageRouter from './routes/transcriptUsages/transcriptUsage';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -35,8 +35,8 @@ import './db/mongoose';
 // Routes
 app.use('/api/mutations', mutationsRouter);
 app.use('/api/dges', dgesRouter);
-app.use('/api/splicingEvents', splicingEventsRouter);
-app.use('/api/transcriptUsage', transcriptUsageRouter);
+app.use('/api/splicing-events', splicingEventsRouter);
+app.use('/api/transcript-usages', transcriptUsageRouter);
 
 // Catch all for deploy
 app.get('/*', function (_req, res) {

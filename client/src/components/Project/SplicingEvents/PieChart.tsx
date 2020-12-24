@@ -25,7 +25,7 @@ const PieChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicingEvents/types', { project, filters: filters as any }).then((res) => {
+    fetchFromApi('/api/splicing-events/types', { project, filters: filters as any }).then((res) => {
       if (!mounted || !res) return;
 
       setData(res);

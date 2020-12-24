@@ -141,7 +141,7 @@ const MutationsTable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/mutations/geneNames', { project, searchInput: inputValue });
+    await fetchFromApi('/api/mutations/gene-names', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
@@ -153,7 +153,7 @@ const MutationsTable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/mutations/byGeneName', { project, geneName: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/mutations/by-gene-name', { project, geneName: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;

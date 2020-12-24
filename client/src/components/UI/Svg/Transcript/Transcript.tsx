@@ -10,7 +10,7 @@ const RAIL_LENGTH = 494;
 const RAIL_HEIGHT = 2;
 const EXON_HEIGHT = 17;
 
-const TranscriptViewerRail = ({ transcriptData, color, ...props }: TranscriptViewerRailProps) => {
+const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailProps) => {
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
   const { transcriptId, exons } = transcript;
 
@@ -28,7 +28,12 @@ const TranscriptViewerRail = ({ transcriptData, color, ...props }: TranscriptVie
   const ref = createRef<SVGRectElement>();
 
   return (
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 28' {...props}>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 800 28'
+      {...props}
+      style={{ direction: 'ltr', overflow: 'clip' }}
+    >
       <defs>
         <style>{'.transcriptViewerRail{fill:#336}.transcriptViewerExon{opacity:.7}'}</style>
       </defs>
@@ -56,7 +61,7 @@ const TranscriptViewerRail = ({ transcriptData, color, ...props }: TranscriptVie
                 <Tooltip triggerRef={ref}>
                   <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
                     <g>
-                      <rect x={0.25} y={0.25} width={145} height={20.63} rx={1} fill='white' />
+                      <rect x={0.25} y={0.25} width={160} height={20.63} rx={1} fill='white' />
                       <rect x={22.38} y={5.86} width={9.4} height={9.4} rx={1} fill='#336' />
                       <text
                         transform='translate(37.31 14.96)'
@@ -93,4 +98,4 @@ const TranscriptViewerRail = ({ transcriptData, color, ...props }: TranscriptVie
   );
 };
 
-export default TranscriptViewerRail;
+export default Transcript;

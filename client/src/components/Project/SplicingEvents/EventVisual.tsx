@@ -31,7 +31,7 @@ const EventVisual = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicingEvents/event', { project, gene, dPSI }).then((res) => {
+    fetchFromApi('/api/splicing-events/event', { project, gene, dPSI }).then((res) => {
       if (!mounted || !res) return;
 
       setEventData(res);

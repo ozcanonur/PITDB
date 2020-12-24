@@ -143,7 +143,7 @@ const DGETable = ({ ...props }) => {
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/dges/symbolNames', { project, searchInput: inputValue });
+    await fetchFromApi('/api/dges/symbol-names', { project, searchInput: inputValue });
 
   const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
@@ -155,7 +155,7 @@ const DGETable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/dges/bySymbolName', { project, symbol: selectedOption.value }).then((res) => {
+    fetchFromApi('/api/dges/by-symbol-name', { project, symbol: selectedOption.value }).then((res) => {
       if (!res) return;
 
       const newRowCount = res.length;

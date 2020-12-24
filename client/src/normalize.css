@@ -366,3 +366,7 @@ template {
   box-sizing: inherit;
   scrollbar-width: thin;
 }
+
+svg {
+  outline: none;
+}

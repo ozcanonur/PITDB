@@ -39,7 +39,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/symbolNames', async (req: ExtendedRequest, res) => {
+router.get('/symbol-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   try {
@@ -62,7 +62,7 @@ router.get('/symbolNames', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/bySymbolName', async (req: ExtendedRequest, res) => {
+router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
   const { project, symbol } = req.query;
 
   try {
@@ -78,7 +78,7 @@ router.get('/bySymbolName', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/readCount', async (req: ExtendedRequest, res) => {
+router.get('/read-count', async (req: ExtendedRequest, res) => {
   const { project, symbol } = req.query;
 
   try {
@@ -93,7 +93,7 @@ router.get('/readCount', async (req: ExtendedRequest, res) => {
 });
 
 // Unnecessary, main route already gets this, just need to parse it aswell.
-router.get('/volcanoPlot', async (req: ExtendedRequest, res) => {
+router.get('/volcano-plot', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   try {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import TranscriptViewerRail from 'components/UI/Svg/TranscriptViewerRail/TranscriptViewerRail';
+import Transcript from 'components/UI/Svg/Transcript/Transcript';
 import Loading from 'components/UI/Loading/Loading';
 
 import { Transcripts } from './types';
@@ -30,7 +30,7 @@ const TranscriptViewer = ({ ...props }) => {
 
     setLoading(true);
 
-    fetchFromApi('/api/transcriptUsage/transcripts', { project, gene }).then((res) => {
+    fetchFromApi('/api/transcript-usages/transcripts', { project, gene }).then((res) => {
       if (!mounted || !res) return;
 
       setTranscriptsData(res);
@@ -47,7 +47,7 @@ const TranscriptViewer = ({ ...props }) => {
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.transcriptRails} style={{ opacity: loading ? 0 : 1 }}>
         {transcriptsData.transcripts.map((transcript, index) => (
-          <TranscriptViewerRail
+          <Transcript
             key={transcript.transcriptId}
             transcriptData={{
               transcript: transcript,

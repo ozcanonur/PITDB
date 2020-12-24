@@ -25,7 +25,7 @@ const BarChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicingEvents/conditions', { project, gene, dPSI }).then((res) => {
+    fetchFromApi('/api/splicing-events/conditions', { project, gene, dPSI }).then((res) => {
       if (!mounted || !res) return;
 
       setConditionsData(res);

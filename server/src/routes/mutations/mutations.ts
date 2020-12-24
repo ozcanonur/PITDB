@@ -47,7 +47,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/geneNames', async (req: ExtendedRequest, res) => {
+router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
@@ -70,7 +70,7 @@ router.get('/geneNames', async (req: ExtendedRequest, res) => {
   }
 });
 
-router.get('/byGeneName', async (req: ExtendedRequest, res) => {
+router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   const { project, geneName } = req.query;
 
   try {

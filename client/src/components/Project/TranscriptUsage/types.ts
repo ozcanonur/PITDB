@@ -11,3 +11,11 @@ export type Transcripts = {
   minimumPosition: number;
   maximumPosition: number;
 };
+
+export interface TranscriptReadCount {
+  transcriptId: string;
+  conditions: {
+    condition: string;
+    [sample: string]: number | string;
+  }[];
+}

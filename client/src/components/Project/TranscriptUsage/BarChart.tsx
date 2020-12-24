@@ -4,57 +4,69 @@ import { useSelector } from 'react-redux';
 import { ResponsiveBar } from '@nivo/bar';
 
 import Loading from 'components/UI/Loading/Loading';
-import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { ReadCountsData } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { TranscriptReadCount } from './types';
+
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
+export const useStyles = makeStyles((theme) => ({
+  container: {
+    position: 'relative',
+    transform: 'translateX(-15rem)',
+  },
+  figureContainer: {
+    transition: 'all .3s ease-in-out',
+    height: '100%',
+    width: '40rem',
+  },
+  loading: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+    transition: 'all .3s ease-in-out',
+  },
+}));
 
 const BarChart = () => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  const { symbol } = useSelector((state: RootState) => state.selectedDGE);
+  const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
 
-  const [readCountsData, setReadCountsData] = useState<ReadCountsData>({});
+  const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCount[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
-    if (!symbol) return;
+    if (!transcript) return;
 
     setLoading(true);
 
-    fetchFromApi('/api/dges/read-count', { project, symbol }).then((res) => {
+    fetchFromApi('/api/transcript-usages/read-counts', { project, transcript }).then((res) => {
       if (!mounted || !res) return;
 
-      setReadCountsData(res);
+      setTranscriptReadCounts(res);
       setLoading(false);
     });
 
     return () => {
       mounted = false;
     };
-  }, [symbol, project]);
-
-  const parsedReadCountsForBarChart = Object.keys(readCountsData).map((condition) => ({
-    condition,
-    ...readCountsData[condition],
-  }));
-
-  console.log(parsedReadCountsForBarChart);
+  }, [project, transcript]);
 
   return (
-    <ProjectItemCard name={`Read counts for ${symbol}`} className={classes.projectItemCard}>
+    <div className={classes.container}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveBar
           enableGridX={false}
           enableGridY
-          data={parsedReadCountsForBarChart}
-          keys={['1', '2', '3']}
+          data={transcriptReadCounts}
+          keys={['readCount']}
           indexBy='condition'
-          margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
+          margin={{ top: 20, bottom: 75, left: 60, right: 40 }}
           padding={0.1}
           labelFormat='.1f'
           layout='horizontal'
@@ -77,7 +89,7 @@ const BarChart = () => {
             tickRotation: 0,
             legend: 'Condition',
             legendPosition: 'middle',
-            legendOffset: -45,
+            legendOffset: -50,
           }}
           labelSkipWidth={12}
           labelSkipHeight={12}
@@ -97,7 +109,7 @@ const BarChart = () => {
           }}
         />
       </div>
-    </ProjectItemCard>
+    </div>
   );
 };
 

@@ -5,11 +5,16 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import TranscriptViewer from './TranscriptViewer';
+import BarChart from './BarChart';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: '2rem',
     marginRight: '1rem',
+  },
+  figures: {
+    display: 'flex',
+    height: '30rem',
   },
 }));
 
@@ -20,7 +25,10 @@ const Figures = ({ ...props }) => {
 
   return (
     <ProjectItemCard className={classes.container} name={`Transcript Viewer for ${gene}`} {...props}>
-      <TranscriptViewer />
+      <div className={classes.figures}>
+        <TranscriptViewer />
+        <BarChart />
+      </div>
     </ProjectItemCard>
   );
 };
