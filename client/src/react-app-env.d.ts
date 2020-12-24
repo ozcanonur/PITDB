@@ -20,6 +20,9 @@ interface RootState {
     gene: string;
     transcript: string;
   };
+  selectedTranscriptViewerTranscript: {
+    transcript: string;
+  };
 }
 
 interface SelectOption {

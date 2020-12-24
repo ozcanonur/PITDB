@@ -10,6 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem 4rem',
     paddingBottom: '0.5rem',
     position: 'relative',
+    minHeight: '52rem',
   },
   multiSelect: {
     display: 'flex',

@@ -2,30 +2,13 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import TranscriptViewerRail from 'components/UI/Svg/TranscriptViewerRail';
+import TranscriptViewerRail from 'components/UI/Svg/TranscriptViewerRail/TranscriptViewerRail';
+import Loading from 'components/UI/Loading/Loading';
 
 import { Transcripts } from './types';
 import { fetchFromApi } from 'utils';
-
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-export const useStyles = makeStyles((theme) => ({
-  transcriptViewerContainer: {
-    padding: '2rem',
-    display: 'flex',
-  },
-  transcriptRails: {
-    width: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    transform: 'translateZ(0)',
-
-    '& > svg:not(:last-child)': {
-      marginBottom: '2rem',
-    },
-  },
-  transcriptRail: {},
-}));
+import { COLORS } from 'variables/transcriptViewerColors';
+import { useStyles } from './styles/transcriptViewer';
 
 const TranscriptViewer = ({ ...props }) => {
   const classes = useStyles();
@@ -38,14 +21,20 @@ const TranscriptViewer = ({ ...props }) => {
     maximumPosition: 0,
     minimumPosition: 0,
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
+
+    if (!gene) return;
+
+    setLoading(true);
 
     fetchFromApi('/api/transcriptUsage/transcripts', { project, gene }).then((res) => {
       if (!mounted || !res) return;
 
       setTranscriptsData(res);
+      setLoading(false);
     });
 
     return () => {
@@ -53,21 +42,19 @@ const TranscriptViewer = ({ ...props }) => {
     };
   }, [project, gene]);
 
-  // Remove this
-  if (transcriptsData.transcripts.length === 0) return null;
-
   return (
     <div className={classes.transcriptViewerContainer} {...props}>
-      <div className={classes.transcriptRails}>
-        {transcriptsData.transcripts.map((transcript) => (
+      <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
+      <div className={classes.transcriptRails} style={{ opacity: loading ? 0 : 1 }}>
+        {transcriptsData.transcripts.map((transcript, index) => (
           <TranscriptViewerRail
             key={transcript.transcriptId}
-            className={classes.transcriptRail}
             transcriptData={{
               transcript: transcript,
               minimumPosition: transcriptsData.minimumPosition,
               maximumPosition: transcriptsData.maximumPosition,
             }}
+            color={COLORS[index]}
           />
         ))}
       </div>

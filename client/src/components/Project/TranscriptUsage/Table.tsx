@@ -11,7 +11,7 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
 import { useStyles } from './styles/table';
 import { fetchFromApi } from 'utils';
-import { setTranscriptUsageFilters, selectTranscriptUsage } from 'actions';
+import { setTranscriptUsageFilters, selectTranscriptUsage, selectTranscriptViewerTranscript } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 
 const SplicingEventsTable = ({ ...props }) => {
@@ -66,6 +66,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
     const [gene, transcript] = firstRow;
     dispatch(selectTranscriptUsage(gene, transcript));
+    dispatch(selectTranscriptViewerTranscript(transcript));
 
     setCurrentPage(0);
 
@@ -136,6 +137,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setSelectedRow(row);
     const [gene, transcript] = row;
     dispatch(selectTranscriptUsage(gene, transcript));
+    dispatch(selectTranscriptViewerTranscript(transcript));
   };
 
   // WOOP, there is no peptide evidence yet, hard coded it
@@ -171,6 +173,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
       const [gene, transcript] = firstRow;
       dispatch(selectTranscriptUsage(gene, transcript));
+      dispatch(selectTranscriptViewerTranscript(transcript));
 
       setCurrentPage(0);
 

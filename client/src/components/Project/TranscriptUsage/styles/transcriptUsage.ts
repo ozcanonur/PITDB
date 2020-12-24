@@ -7,17 +7,6 @@ export const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: '2rem',
     paddingBottom: '4rem',
-  },
-  figuresContainer: {
-    display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    width: '40%',
-    minWidth: '32rem',
-    marginRight: '1rem',
-
-    '& > div:not(:last-child)': {
-      marginBottom: '2rem',
-    },
   },
 }));

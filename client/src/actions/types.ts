@@ -12,6 +12,7 @@ export enum ACTION {
   SELECT_SPLICING_EVENT,
   SET_TRANSCRIPT_USAGE_FILTERS,
   SELECT_TRANSCRIPT_USAGE,
+  SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT,
 }
 export type SelectMutationAction = {
   type: ACTION.SELECT_MUTATION;
@@ -60,6 +61,13 @@ export type SelectTranscriptUsageAction = {
   type: ACTION.SELECT_TRANSCRIPT_USAGE;
   payload: {
     gene: string;
+    transcript: string;
+  };
+};
+
+export type SelectTranscriptViewerTranscriptAction = {
+  type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT;
+  payload: {
     transcript: string;
   };
 };

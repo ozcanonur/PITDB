@@ -9,6 +9,7 @@ import {
   SelectSplicingEventAction,
   SetTranscriptUsageFiltersAction,
   SelectTranscriptUsageAction,
+  SelectTranscriptViewerTranscriptAction,
 } from 'actions/types';
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
@@ -25,8 +26,7 @@ const mutationFilters = (
 ) => {
   switch (action.type) {
     case ACTION.SET_MUTATION_FILTERS:
-      const newFilters = action.payload;
-      return { ...newFilters };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -38,8 +38,7 @@ const selectedMutation = (
 ) => {
   switch (action.type) {
     case ACTION.SELECT_MUTATION:
-      const { gene, position } = action.payload;
-      return { gene, position };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -48,8 +47,7 @@ const selectedMutation = (
 const DGEFilters = (state: DGETableFilters = { maxPValue: 0.05, minAbsFoldChange: 1 }, action: SetDGEFiltersAction) => {
   switch (action.type) {
     case ACTION.SET_DGE_FILTERS:
-      const newFilters = action.payload;
-      return { ...newFilters };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -58,8 +56,7 @@ const DGEFilters = (state: DGETableFilters = { maxPValue: 0.05, minAbsFoldChange
 const selectedDGE = (state: { symbol: string } = { symbol: '' }, action: SelectDGEAction) => {
   switch (action.type) {
     case ACTION.SELECT_DGE:
-      const { symbol } = action.payload;
-      return { symbol };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -71,8 +68,7 @@ const splicingEventsFilters = (
 ) => {
   switch (action.type) {
     case ACTION.SET_SPLICING_EVENTS_FILTERS:
-      const newFilters = action.payload;
-      return { ...newFilters };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -84,8 +80,7 @@ const selectedSplicingEvent = (
 ) => {
   switch (action.type) {
     case ACTION.SELECT_SPLICING_EVENT:
-      const { gene, dPSI } = action.payload;
-      return { gene, dPSI };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -97,8 +92,7 @@ const transcriptUsageFilters = (
 ) => {
   switch (action.type) {
     case ACTION.SET_TRANSCRIPT_USAGE_FILTERS:
-      const newFilters = action.payload;
-      return { ...newFilters };
+      return { ...action.payload };
     default:
       return state;
   }
@@ -110,8 +104,19 @@ const selectedTranscriptUsage = (
 ) => {
   switch (action.type) {
     case ACTION.SELECT_TRANSCRIPT_USAGE:
-      const { gene, transcript } = action.payload;
-      return { gene, transcript };
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
+const selectedTranscriptViewerTranscript = (
+  state: { transcript: string } = { transcript: '' },
+  action: SelectTranscriptViewerTranscriptAction
+) => {
+  switch (action.type) {
+    case ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT:
+      return { ...action.payload };
     default:
       return state;
   }
@@ -126,4 +131,5 @@ export default combineReducers({
   selectedSplicingEvent,
   transcriptUsageFilters,
   selectedTranscriptUsage,
+  selectedTranscriptViewerTranscript,
 });

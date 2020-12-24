@@ -8,6 +8,7 @@ import {
   SelectSplicingEventAction,
   SetTranscriptUsageFiltersAction,
   SelectTranscriptUsageAction,
+  SelectTranscriptViewerTranscriptAction,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/types';
 import { DGETableFilters } from 'components/Project/DGE/types';
@@ -76,6 +77,15 @@ export const selectTranscriptUsage = (gene: string, transcript: string): SelectT
     type: ACTION.SELECT_TRANSCRIPT_USAGE,
     payload: {
       gene,
+      transcript,
+    },
+  };
+};
+
+export const selectTranscriptViewerTranscript = (transcript: string): SelectTranscriptViewerTranscriptAction => {
+  return {
+    type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT,
+    payload: {
       transcript,
     },
   };

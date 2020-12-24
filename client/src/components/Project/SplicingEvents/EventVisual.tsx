@@ -6,7 +6,7 @@ import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 
 import { fetchFromApi } from 'utils';
-import ExonSkipping from 'components/UI/Svg/ExonSkipping';
+import ExonSkipping from 'components/UI/Svg/ExonSkipping/ExonSkipping';
 import { useStyles } from './styles/eventVisual';
 import { EventData } from './types';
 
