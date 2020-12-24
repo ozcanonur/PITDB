@@ -8,7 +8,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import RangeSlider from 'components/UI/RangeSlider/RangeSlider';
 
 import { ExtendedTableProps } from './types';
-import { useStyles } from './styles/extendedTable';
+import { useStyles } from './styles';
 import { filterTable, getInitialFilterValues } from './helpers';
 
 const ExtendedTable = ({

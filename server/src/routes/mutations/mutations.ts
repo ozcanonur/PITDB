@@ -19,7 +19,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
       if (parsedFilters[key].length === 0) return res.send({ mutations: [], mutationsCount: 0 });
     }
 
-    const { type: typeFilters, inCDS, hasPeptideEvidence } = parsedFilters;
+    const { type: typeFilters, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
 
     // Have to convert string boolean to boolean
     const query = {
@@ -27,6 +27,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
       type: { $in: typeFilters },
+      silent: { $in: isSynonymous.map((e) => e === 'true') },
     };
 
     const mutations = await Mutation.find(query)

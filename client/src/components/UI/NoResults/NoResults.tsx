@@ -1,4 +1,4 @@
-import { useStyles } from './styles/noResults';
+import { useStyles } from './styles';
 
 const NoResults = () => {
   const classes = useStyles();

@@ -6,11 +6,17 @@ import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 import TriangleClip from 'assets/double_triangle.svg';
 
-import { QuestionCardProps } from './types';
-import { useStyles } from './styles/help';
+import { useStyles } from './styles';
 import { questions } from 'variables/helpQuestionTexts';
 
-const QuestionCard = ({ questionTitle, questionAnswer, ...props }: QuestionCardProps) => {
+const QuestionCard = ({
+  questionTitle,
+  questionAnswer,
+  ...props
+}: {
+  questionTitle: string;
+  questionAnswer: string;
+}) => {
   const classes = useStyles();
 
   return (

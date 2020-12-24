@@ -2,7 +2,7 @@ import { useHistory } from 'react-router-dom';
 
 import { navItems } from 'variables/headerNavItems';
 import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
-import { useStyles } from './styles/header';
+import { useStyles } from './styles';
 
 const Header = ({ ...props }) => {
   const classes = useStyles();

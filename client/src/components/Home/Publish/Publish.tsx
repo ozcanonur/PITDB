@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { bulletPoints } from 'variables/publishBulletPoints';
 import CardClip from 'assets/card_clip_2.svg';
 import BulletPoints from 'assets/publish_steps.svg';
-import { useStyles } from './styles/publish';
+import { useStyles } from './styles';
 
 const Publish = ({ ...props }) => {
   const classes = useStyles();

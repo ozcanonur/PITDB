@@ -2,7 +2,7 @@ import TableCell from '@material-ui/core/TableCell/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 import { TableRowProps } from './types';
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 
 const Row = ({ row, clickableCells, rowOnClick, selectedRow }: TableRowProps) => {
   const classes = useStyles();

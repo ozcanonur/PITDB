@@ -14,7 +14,7 @@ export const parseConditions = (conditions: any) => {
 
 export const parseMutations = (mutations: IMutation[]) => {
   const parsedMutations = mutations.map((mutation) => {
-    const { ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type } = mutation;
+    const { ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent } = mutation;
 
     return {
       gene,
@@ -22,6 +22,7 @@ export const parseMutations = (mutations: IMutation[]) => {
       type,
       ref,
       alt,
+      silent,
       inCDS: inCDS.toString(),
       hasPeptideEvidence: hasPeptideEvidence.toString(),
     };
@@ -45,4 +46,5 @@ export const convertSortFieldNameForMongoose = (field: string) => {
   else if (field === 'Alt') return 'alt';
   else if (field === 'In CDS') return 'inCDS';
   else if (field === 'Peptide evidence') return 'hasPeptideEvidence';
+  else if (field === 'Synonymous') return 'silent';
 };

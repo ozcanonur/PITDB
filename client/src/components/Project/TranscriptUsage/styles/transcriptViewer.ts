@@ -6,6 +6,8 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem',
     display: 'flex',
     position: 'relative',
+    overflow: 'auto',
+    direction: 'rtl',
   },
   transcriptRails: {
     display: 'flex',
@@ -15,6 +17,7 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '1rem',
     overflow: 'auto',
     direction: 'rtl',
+    height: 'max-content',
 
     '& > svg:not(:last-child)': {
       marginBottom: '2rem',
@@ -22,10 +25,10 @@ export const useStyles = makeStyles((theme) => ({
   },
   loading: {
     position: 'absolute',
-    left: '50%',
+    left: '43%',
     top: '50%',
+    marginRight: '3rem',
     transform: 'translate(-50%, -50%)',
-    marginTop: '3rem',
     transition: 'all .3s ease-in-out',
   },
 }));

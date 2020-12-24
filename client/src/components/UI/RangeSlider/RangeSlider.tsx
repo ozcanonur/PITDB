@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
 import { RangeSliderProps } from './types';
-import { useStyles } from './styles/rangeSlider';
+import { useStyles } from './styles';
 
 const RangeSlider = ({
   name,

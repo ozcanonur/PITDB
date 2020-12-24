@@ -70,7 +70,7 @@ const BarChart = () => {
           padding={0.1}
           labelFormat='.1f'
           layout='horizontal'
-          colors={['rgba(107, 107, 179, 0.65)', 'rgba(44, 85, 122, 0.7)', 'rgba(65, 15, 94, 0.8)']}
+          colors={['rgba(65, 15, 94, 0.8)']}
           borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
           axisTop={null}
           axisRight={null}

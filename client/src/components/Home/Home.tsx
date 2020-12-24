@@ -3,13 +3,13 @@ import AOS from 'aos';
 
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
-import Hero from './Hero';
-import DatabaseStatistics from './DatabaseStatistics';
-import Flow from './Flow';
-import Publish from './Publish';
+import Hero from './Hero/Hero';
+import DatabaseStatistics from './DatabaseStatistics/DatabaseStatistics';
+import Flow from './Flow/Flow';
+import Publish from './Publish/Publish';
 
 import HeroImg from 'assets/hero_dna.svg';
-import { useStyles } from './styles/home';
+import { useStyles } from './styles';
 
 const Home = () => {
   const classes = useStyles();

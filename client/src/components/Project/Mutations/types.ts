@@ -2,6 +2,7 @@ export interface MutationTableFilters {
   type: [string?, string?, string?];
   inCDS: [string?, string?];
   hasPeptideEvidence: [string?, string?];
+  isSynonymous: [string?, string?];
 }
 
 export type ConditionsData = {

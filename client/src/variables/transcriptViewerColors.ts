@@ -1,4 +1,4 @@
-// Might need more colors, hard coding it to max transcripts now
+// Might need more colors, hard coding it for now
 export const COLORS = [
   '#336',
   '#6b88a2',

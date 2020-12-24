@@ -1,5 +1,5 @@
 import { Styles } from 'react-select';
-import { selectStyles } from 'components/UI/MultiSelect/styles/multiSelect';
+import { selectStyles } from 'components/UI/MultiSelect/styles';
 
 export const singleSelectStyles: Styles = {
   ...selectStyles,

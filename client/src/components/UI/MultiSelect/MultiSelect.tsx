@@ -5,7 +5,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import { MultiSelectProps } from './types';
-import { selectStyles } from './styles/multiSelect';
+import { selectStyles } from './styles';
 
 const {
   ValueContainer,

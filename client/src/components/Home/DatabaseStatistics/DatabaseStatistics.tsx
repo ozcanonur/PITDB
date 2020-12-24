@@ -1,7 +1,7 @@
-import { StatisticProps } from './types';
+import { StatisticProps } from '../types';
 import CardClip from 'assets/card_clip.svg';
 import { statisticTexts, placeholderDescription } from 'variables/homeDatabaseStatistics';
-import { useStyles } from './styles/databaseStatistics';
+import { useStyles } from './styles';
 
 const Statistic = ({ title, description }: StatisticProps) => {
   const classes = useStyles();

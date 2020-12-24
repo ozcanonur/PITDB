@@ -1,7 +1,7 @@
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 
-import { useStyles } from './styles/API';
+import { useStyles } from './styles';
 
 const API = () => {
   const classes = useStyles();

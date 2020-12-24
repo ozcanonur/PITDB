@@ -1,5 +1,5 @@
 import BessantLab from 'assets/bessant_lab.svg';
-import { useStyles } from './styles/footer';
+import { useStyles } from './styles';
 
 const Footer = () => {
   const classes = useStyles();

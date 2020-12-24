@@ -4,7 +4,7 @@ import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 
 import { CustomPaginationActionsProps } from './types';
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 
 const CustomPaginationActions = ({ count, page, rowsPerPage, onChangePage }: CustomPaginationActionsProps) => {
   const classes = useStyles();

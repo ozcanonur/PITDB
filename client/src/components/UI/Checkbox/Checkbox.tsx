@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { CheckboxProps } from './types';
-import { useStyles } from './styles/checkbox';
+import { useStyles } from './styles';
 
 const Checkbox = ({ label, parentLabel, onChange, iconProps, labelProps, className, ...props }: CheckboxProps) => {
   const classes = useStyles();

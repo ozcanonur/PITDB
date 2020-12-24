@@ -6,6 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import TranscriptViewer from './TranscriptViewer';
 import BarChart from './BarChart';
+import ConfidenceChart from './ConfidenceChart';
 
 export const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,6 +29,7 @@ const Figures = ({ ...props }) => {
       <div className={classes.figures}>
         <TranscriptViewer />
         <BarChart />
+        <ConfidenceChart />
       </div>
     </ProjectItemCard>
   );

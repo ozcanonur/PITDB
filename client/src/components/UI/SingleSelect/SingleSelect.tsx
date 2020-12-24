@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import { SingleSelectProps } from './types';
-import { singleSelectStyles } from './styles/singleSelect';
+import { singleSelectStyles } from './styles';
 
 const { DropdownIndicator, MenuList, Menu } = components;
 

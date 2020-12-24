@@ -12,7 +12,7 @@ import Loading from 'components/UI/Loading/Loading';
 import { TableProps } from './types';
 import Row from './TableRow';
 import CustomPaginationActions from './CustomPaginationActions';
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 
 const CustomTable = ({
   tableHead,

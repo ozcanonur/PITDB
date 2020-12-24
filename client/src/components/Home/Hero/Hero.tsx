@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom';
 
-import { useStyles } from './styles/hero';
+import { useStyles } from './styles';
 
 const Hero = ({ ...props }) => {
   const classes = useStyles();

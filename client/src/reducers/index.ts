@@ -21,6 +21,7 @@ const mutationFilters = (
     type: ['SNP', 'DEL', 'INS'],
     inCDS: ['true'],
     hasPeptideEvidence: ['false'],
+    isSynonymous: ['true', 'false'],
   },
   action: SetMutationFiltersAction
 ) => {

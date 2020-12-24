@@ -1,7 +1,7 @@
 import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 
-import { useStyles } from './styles/about';
+import { useStyles } from './styles';
 
 const About = () => {
   const classes = useStyles();

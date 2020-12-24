@@ -2,7 +2,7 @@ import { useState, ChangeEvent } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
-import { useStyles } from './styles/discreteSlider';
+import { useStyles } from './styles';
 import { DiscreteSliderProps } from './types';
 
 export default function DiscreteSlider({

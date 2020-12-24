@@ -1,9 +1,9 @@
-import { FlowShapeProps } from './types';
+import { FlowShapeProps } from '../types';
 import { ReactComponent as LogoImg } from 'assets/dna_small.svg';
 import { ReactComponent as LCMS } from 'assets/lcms_icon.svg';
 import { ReactComponent as UniProt } from 'assets/uniprot_icon.svg';
 import { ReactComponent as PITDBCylinder } from 'assets/cylinder.svg';
-import { useStyles } from './styles/flow';
+import { useStyles } from './styles';
 
 const FlowShape = ({ children }: FlowShapeProps) => {
   const classes = useStyles();

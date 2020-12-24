@@ -22,7 +22,7 @@ export const useStyles = makeStyles((theme) => ({
   logoText: {
     color: 'white',
     fontSize: '3rem',
-    fontWeight: 700,
+    fontWeight: 600,
     marginLeft: '1rem',
   },
   navContainer: {

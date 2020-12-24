@@ -184,6 +184,18 @@ const MutationsTable = ({ ...props }) => {
         />
         <div className={classes.multiSelectContainer}>
           <MultiSelect
+            name='Synonymous'
+            options={[
+              { value: 'true', label: 'true' },
+              { value: 'false', label: 'false' },
+            ]}
+            defaultValues={['true', 'false']}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'isSynonymous')
+            }
+            className={classes.multiSelect}
+          />
+          <MultiSelect
             name='Type'
             options={[
               { value: 'SNP', label: 'SNP' },
@@ -220,7 +232,7 @@ const MutationsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'In CDS', 'Peptide evidence']}
+        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'Synonymous', 'In CDS', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

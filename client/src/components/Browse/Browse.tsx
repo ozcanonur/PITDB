@@ -6,10 +6,10 @@ import Header from 'components/Header/Header';
 import Footer from 'components/Footer/Footer';
 import Project from 'components/Project/Project';
 
-import Examples from './Examples';
-import Experiments from './Experiments';
+import Examples from './Examples/Examples';
+import Experiments from './Experiments/Experiments';
 
-import { useStyles } from './styles/browse';
+import { useStyles } from './styles';
 
 const Browse = () => {
   const classes = useStyles();

@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import AOS from 'aos';
 
-import { ExampleProps } from './types';
+import { ExampleProps } from '../types';
 import { examples } from 'variables/browseExamples';
 import { ReactComponent as DnaImg } from 'assets/dna_2.svg';
 import UserImg from 'assets/user.svg';
-import { useStyles } from './styles/examples';
+import { useStyles } from './styles';
 
 const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
   const classes = useStyles();
