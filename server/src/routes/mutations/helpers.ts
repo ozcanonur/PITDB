@@ -1,5 +1,3 @@
-import { IMutation } from '../../db/models/mutation';
-
 export const parseConditions = (conditions: any) => {
   const result: { [sample: string]: { AF: number; qual: number } } = {};
   Object.keys(conditions).forEach((conditionName) => {
@@ -10,25 +8,6 @@ export const parseConditions = (conditions: any) => {
   });
 
   return result;
-};
-
-export const parseMutations = (mutations: IMutation[]) => {
-  const parsedMutations = mutations.map((mutation) => {
-    const { ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent } = mutation;
-
-    return {
-      gene,
-      refPos,
-      type,
-      ref,
-      alt,
-      silent,
-      inCDS: inCDS.toString(),
-      hasPeptideEvidence: hasPeptideEvidence.toString(),
-    };
-  });
-
-  return parsedMutations;
 };
 
 // export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {

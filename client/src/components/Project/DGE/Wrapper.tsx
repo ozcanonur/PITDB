@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import AOS from 'aos';
 
-import DGETable from './Table';
-import BarChart from './BarChart';
-import VolcanoPlot from './VolcanoPlot';
+import DGETable from './Table/Table';
+import BarChart from './BarChart/BarChart';
+import VolcanoPlot from './VolcanoPlot/VolcanoPlot';
 
-import { useStyles } from './styles/dge';
+import { useStyles } from './styles';
 
 const DGE = () => {
   const classes = useStyles();

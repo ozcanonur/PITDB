@@ -5,18 +5,35 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { ReadCountsData } from './types';
-import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
 
-const BarChart = () => {
+import { fetchFromApi } from 'utils';
+import { useStyles } from './styles';
+import { ReadCountResponse, BarChartData } from './types';
+
+const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
   const { symbol } = useSelector((state: RootState) => state.selectedDGE);
 
-  const [readCountsData, setReadCountsData] = useState<ReadCountsData>({});
+  const [barChartData, setBarChartData] = useState<BarChartData>([]);
   const [loading, setLoading] = useState(false);
+
+  const fetchReadCounts = async (mounted: boolean) => {
+    const res: ReadCountResponse = await fetchFromApi('/api/dges/read-count', { project, symbol });
+
+    setLoading(false);
+
+    if (!mounted || !Object.keys(res)) return;
+
+    // Bar charts accepts data in this format
+    const parsedReadCount: BarChartData = Object.keys(res).map((condition) => ({
+      condition,
+      ...res[condition],
+    }));
+
+    setBarChartData(parsedReadCount);
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -25,34 +42,26 @@ const BarChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/dges/read-count', { project, symbol }).then((res) => {
-      if (!mounted || !res) return;
-
-      setReadCountsData(res);
-      setLoading(false);
-    });
+    fetchReadCounts(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbol, project]);
 
-  const parsedReadCountsForBarChart = Object.keys(readCountsData).map((condition) => ({
-    condition,
-    ...readCountsData[condition],
-  }));
-
-  console.log(parsedReadCountsForBarChart);
+  let barChartKeys: string[] = [];
+  if (barChartData.length > 0) barChartKeys = Object.keys(barChartData[0]).filter((e) => e !== 'condition');
 
   return (
-    <ProjectItemCard name={`Read counts for ${symbol}`} className={classes.projectItemCard}>
+    <ProjectItemCard name={`Read counts for ${symbol}`} className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
+      <div className={classes.barChartContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveBar
           enableGridX={false}
           enableGridY
-          data={parsedReadCountsForBarChart}
-          keys={['1', '2', '3']}
+          data={barChartData}
+          keys={barChartKeys}
           indexBy='condition'
           margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
           padding={0.1}

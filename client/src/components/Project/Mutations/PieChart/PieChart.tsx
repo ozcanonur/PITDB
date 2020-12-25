@@ -5,9 +5,9 @@ import { ResponsivePie } from '@nivo/pie';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { TypesData } from './types';
+import { TypesResponse } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { useStyles } from './styles';
 
 const PieChart = () => {
   const classes = useStyles();
@@ -15,26 +15,29 @@ const PieChart = () => {
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
 
-  const [data, setData] = useState<TypesData>({ SNP: 0, DEL: 0, INS: 0 });
+  const [data, setData] = useState<TypesResponse>({ SNP: 0, DEL: 0, INS: 0 });
   const [loading, setLoading] = useState(false);
+
+  const fetchTypes = async (mounted: boolean) => {
+    setLoading(true);
+
+    const res: TypesResponse = await fetchFromApi('/api/mutations/types', { project, filters: filters as any });
+
+    if (!mounted || !res) return;
+
+    setData(res);
+    setLoading(false);
+  };
 
   useEffect(() => {
     let mounted = true;
 
-    if (!filters) return;
-
-    setLoading(true);
-
-    fetchFromApi('/api/mutations/types', { project, filters: filters as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      setData(res);
-      setLoading(false);
-    });
+    fetchTypes(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
   const typeDistributionData: { id: string; label: string; value: number }[] = [];

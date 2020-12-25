@@ -5,10 +5,16 @@ import { ReadCount } from '../../db/models/readCount';
 import { DGEFilters } from './types';
 import { ExtendedRequest } from '../../types';
 
-import { parseValuesForVolcanoPlotAndFindMinMax, parseDges, convertSortFieldNameForMongoose } from './helpers';
+import { parseVolcanoPlotData, convertSortFieldNameForMongoose } from './helpers';
 
 const router = express.Router();
 
+/*
+ * Route for differential gene expression table data
+ * Filters by project, max p value, min absolute fold change
+ * Sorts if sortedOn passed in request
+ * Response is limited to 50 rows per request
+ */
 router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
@@ -26,11 +32,20 @@ router.get('/', async (req: ExtendedRequest, res) => {
       .sort({ [convertSortFieldNameForMongoose(field)]: order })
       .skip(parseInt(skip))
       .limit(50);
+
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    const parsedDges = parseDges(dges);
+    // const formattedlog2fc = numeral(log2fc).format('0.000');
+    // const formattedpadj = numeral(padj).format('0.000e+0');
+    // WOOP, hard coding peptide evidence
+    const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
+      symbol,
+      log2fc,
+      padj,
+      hasPeptideEvidence: false,
+    }));
 
-    const dgesCount = await DGE.countDocuments(query);
+    const dgesCount: number = await DGE.countDocuments(query);
 
     res.send({ dges: parsedDges, dgesCount });
   } catch (error) {
@@ -39,13 +54,18 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for differential gene expression table single select choices
+ * Filters by project, and finds symbol names that start with the searchInput
+ * Groups by symbol name to get a unique list
+ */
 router.get('/symbol-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
-  try {
-    if (!searchInput) return res.send([]);
+  if (!searchInput) return res.send([]);
 
-    const symbolNames = await DGE.aggregate([
+  try {
+    const symbolNames: { _id: string }[] = await DGE.aggregate([
       { $match: { project, symbol: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$symbol' } },
       { $limit: 50 },
@@ -53,23 +73,31 @@ router.get('/symbol-names', async (req: ExtendedRequest, res) => {
 
     if (!symbolNames) return res.send([]);
 
-    const parsedSymbolNames = symbolNames.map((name) => ({ value: name._id, label: name._id }));
-
-    res.send(parsedSymbolNames);
+    res.send(symbolNames);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
 
+/*
+ * Route for getting entries by symbol name
+ * Filters by project and symbol
+ */
 router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
   const { project, symbol } = req.query;
 
   try {
     const dges = await DGE.find({ project, symbol });
+
     if (!dges) return res.send([]);
 
-    const parsedDges = parseDges(dges);
+    const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
+      symbol,
+      log2fc,
+      padj,
+      hasPeptideEvidence: false,
+    }));
 
     res.send(parsedDges);
   } catch (error) {
@@ -78,12 +106,17 @@ router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting read counts for the selected symbol
+ * Filters by project and symbol
+ */
 router.get('/read-count', async (req: ExtendedRequest, res) => {
   const { project, symbol } = req.query;
 
   try {
     const { counts } = await ReadCount.findOne({ project, gene: symbol });
-    if (!counts) return res.send([]);
+
+    if (!counts) return res.send({});
 
     res.send(counts);
   } catch (error) {
@@ -92,7 +125,10 @@ router.get('/read-count', async (req: ExtendedRequest, res) => {
   }
 });
 
-// Unnecessary, main route already gets this, just need to parse it aswell.
+/*
+ * Route for getting volcano plot data
+ * Filters by project, max p value and min abs fold change
+ */
 router.get('/volcano-plot', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
@@ -105,9 +141,9 @@ router.get('/volcano-plot', async (req: ExtendedRequest, res) => {
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
     });
 
-    const { parsed, fcMin, fcMax, pMax } = parseValuesForVolcanoPlotAndFindMinMax(dges);
+    const { data, fcMin, fcMax, pMax } = parseVolcanoPlotData(dges);
 
-    res.send({ data: parsed, fcMin, fcMax, pMax });
+    res.send({ data, fcMin, fcMax, pMax });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

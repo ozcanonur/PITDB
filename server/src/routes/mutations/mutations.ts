@@ -1,12 +1,18 @@
 import express from 'express';
 
 import { Mutation } from '../../db/models/mutation';
-import { parseConditions, convertSortFieldNameForMongoose, parseMutations } from './helpers';
+import { parseConditions, convertSortFieldNameForMongoose } from './helpers';
 import { MutationFilters } from './types';
 import { ExtendedRequest } from '../../types';
 
 const router = express.Router();
 
+/*
+ * Route for mutations table data
+ * Filters by project, max p value, min absolute fold change
+ * Sorts if sortedOn passed in request
+ * Response is limited to 50 rows per request
+ */
 router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
@@ -14,19 +20,14 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const parsedFilters = JSON.parse(filters) as MutationFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    for (const key of Object.keys(parsedFilters)) {
-      // @ts-ignore
-      if (parsedFilters[key].length === 0) return res.send({ mutations: [], mutationsCount: 0 });
-    }
-
-    const { type: typeFilters, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
+    const { variantType, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
 
     // Have to convert string boolean to boolean
     const query = {
       project,
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
-      type: { $in: typeFilters },
+      type: { $in: variantType },
       silent: { $in: isSynonymous.map((e) => e === 'true') },
     };
 
@@ -39,7 +40,16 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     const mutationsCount = await Mutation.countDocuments(query);
 
-    const parsedMutations = parseMutations(mutations);
+    const parsedMutations = mutations.map(({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
+      gene,
+      refPos,
+      type,
+      ref,
+      alt,
+      silent,
+      inCDS,
+      hasPeptideEvidence,
+    }));
 
     res.send({ mutations: parsedMutations, mutationsCount });
   } catch (error) {
@@ -48,37 +58,52 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for mutations table single select choices
+ * Filters by project, and finds symbol names that start with the searchInput
+ * Groups by symbol name to get a unique list
+ */
 router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
 
   try {
-    const geneNames = await Mutation.aggregate([
+    const geneNames: { _id: string }[] = await Mutation.aggregate([
       { $match: { project, gene: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$gene' } },
       { $limit: 50 },
     ]);
 
-    if (!geneNames) return res.send([]);
-
-    const parsedGeneNames = geneNames.map((name) => ({ value: name._id, label: name._id }));
-
-    res.send(parsedGeneNames);
+    res.send(geneNames);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
 
+/*
+ * Route for getting entries by gene name
+ * Filters by project and gene name
+ */
 router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   const { project, geneName } = req.query;
 
   try {
     const mutations = await Mutation.find({ project, gene: geneName });
+
     if (!mutations) return res.send([]);
 
-    const parsedMutations = parseMutations(mutations);
+    const parsedMutations = mutations.map(({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
+      gene,
+      refPos,
+      type,
+      ref,
+      alt,
+      silent,
+      inCDS,
+      hasPeptideEvidence,
+    }));
 
     res.send(parsedMutations);
   } catch (error) {
@@ -87,11 +112,16 @@ router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting conditions data(AF, qual) for mutation bar charts for a gene and position
+ * Filters by project, gene and position
+ */
 router.get('/conditions', async (req: ExtendedRequest, res) => {
   const { project, gene, position } = req.query;
 
   try {
     const { conditions } = await Mutation.findOne({ project, gene, refPos: parseInt(position) });
+
     if (!conditions) return res.sendStatus(500);
 
     // @ts-ignore
@@ -103,41 +133,36 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting variant type distribution data for mutation pie chart
+ * Filters by project and given filters
+ */
 router.get('/types', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   try {
-    const { type: typeFilters, inCDS, hasPeptideEvidence } = JSON.parse(filters) as MutationFilters;
+    const { variantType, inCDS, hasPeptideEvidence } = JSON.parse(filters) as MutationFilters;
 
-    // WOOP, maybe use
-    // $group: { _id: '$eventType', count: { $sum: 1 } },
-    // As you did in splicing events?
-    const counts = await Mutation.aggregate([
+    const counts: { _id: string; count: number }[] = await Mutation.aggregate([
       {
         $match: {
           project,
           hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
           inCDS: { $in: inCDS.map((e) => e === 'true') },
-          type: { $in: typeFilters },
+          type: { $in: variantType },
         },
       },
       {
-        $facet: {
-          SNP: typeFilters.includes('SNP') ? [{ $match: { type: 'SNP' } }, { $count: 'SNP' }] : [],
-          DEL: typeFilters.includes('DEL') ? [{ $match: { type: 'DEL' } }, { $count: 'DEL' }] : [],
-          INS: typeFilters.includes('INS') ? [{ $match: { type: 'INS' } }, { $count: 'INS' }] : [],
-        },
-      },
-      {
-        $project: {
-          SNP: { $arrayElemAt: ['$SNP.SNP', 0] },
-          DEL: { $arrayElemAt: ['$DEL.DEL', 0] },
-          INS: { $arrayElemAt: ['$INS.INS', 0] },
-        },
+        $group: { _id: '$type', count: { $sum: 1 } },
       },
     ]);
 
-    res.send(...counts);
+    const parsedCounts: { [type: string]: number } = {};
+    counts.forEach((count) => {
+      parsedCounts[count._id] = count.count;
+    });
+
+    res.send(parsedCounts);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

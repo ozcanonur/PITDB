@@ -2,8 +2,8 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Sidebar from './Sidebar/Sidebar';
-import Mutations from './Mutations/Mutations';
-import DGE from './DGE/DGE';
+import MutationsWrapper from './Mutations/Wrapper';
+import DGEWrapper from './DGE/Wrapper';
 import SplicingEvents from './SplicingEvents/SplicingEvents';
 import TranscriptUsage from './TranscriptUsage/TranscriptUsage';
 
@@ -25,10 +25,10 @@ const Project = () => {
       <Sidebar />
       <Switch>
         <Route path={`${match.path}/mutations`}>
-          <Mutations />
+          <MutationsWrapper />
         </Route>
         <Route path={`${match.path}/differentialGeneExpression`}>
-          <DGE />
+          <DGEWrapper />
         </Route>
         <Route path={`${match.path}/splicingEvents`}>
           <SplicingEvents />

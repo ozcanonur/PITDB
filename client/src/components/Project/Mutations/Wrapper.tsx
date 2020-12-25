@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import AOS from 'aos';
 
-import MutationsTable from './Table';
-import BarCharts from './BarCharts';
-import PieChart from './PieChart';
+import MutationsTable from './Table/Table';
+import BarCharts from './BarCharts/BarCharts';
+import PieChart from './PieChart/PieChart';
 
-import { useStyles } from './styles/mutations';
+import { useStyles } from './styles';
 
 const Mutations = () => {
   const classes = useStyles();

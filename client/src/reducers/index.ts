@@ -11,14 +11,14 @@ import {
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
 } from 'actions/types';
-import { MutationTableFilters } from 'components/Project/Mutations/types';
-import { DGETableFilters } from 'components/Project/DGE/types';
+import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
+import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/types';
 
 const mutationFilters = (
   state: MutationTableFilters = {
-    type: ['SNP', 'DEL', 'INS'],
+    variantType: ['SNP', 'DEL', 'INS'],
     inCDS: ['true'],
     hasPeptideEvidence: ['false'],
     isSynonymous: ['true', 'false'],

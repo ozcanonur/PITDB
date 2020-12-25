@@ -8,12 +8,14 @@ import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { selectMutation, setMutationFilters } from 'actions';
+import { MutationsResponse, GeneNamesResponse, ByGeneNameResponse } from './types';
 
 const MutationsTable = ({ ...props }) => {
   const classes = useStyles();
+
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
@@ -33,7 +35,7 @@ const MutationsTable = ({ ...props }) => {
   const fetchNewMutations = async (mounted: boolean) => {
     setLoading(true);
 
-    const res = await fetchFromApi('/api/mutations', {
+    const res: MutationsResponse = await fetchFromApi('/api/mutations', {
       project,
       skip: 0,
       filters: filters as any,
@@ -44,31 +46,26 @@ const MutationsTable = ({ ...props }) => {
 
     const { mutations, mutationsCount } = res;
 
-    if (mutations.length === 0) {
-      setTableData([]);
-      setRowCount(0);
-      setCurrentPage(0);
-      setLoading(false);
-      return;
-    }
-
-    const newRowCount = parseInt(mutationsCount);
+    const newRowCount = mutationsCount;
     setRowCount(newRowCount);
 
-    const newTableData: string[][] = mutations.map(Object.values);
+    const newTableData = mutations.map(Object.values);
     setTableData(newTableData);
+
+    setCurrentPage(0);
+
+    setLoading(false);
+
+    if (mutations.length === 0) return;
 
     const firstRow = newTableData[0];
     setSelectedRow(firstRow);
 
     const [gene, position] = firstRow;
     dispatch(selectMutation(gene, position));
-
-    setCurrentPage(0);
-
-    setLoading(false);
   };
 
+  // Refetch on filters change
   useEffect(() => {
     let mounted = true;
 
@@ -80,7 +77,8 @@ const MutationsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Don't run on first render
+  // Refetch on sort
+  // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -113,15 +111,16 @@ const MutationsTable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { mutations } = await fetchFromApi('/api/mutations', {
+    const { mutations }: MutationsResponse = await fetchFromApi('/api/mutations', {
       project,
       skip,
       filters: filters as any,
       sortedOn: sortedOn as any,
     });
-    setTableData([...tableData, ...mutations.map(Object.values)]);
 
     setLoading(false);
+
+    setTableData([...tableData, ...mutations.map(Object.values)]);
   };
 
   const handleRowsPerPageChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -140,10 +139,16 @@ const MutationsTable = ({ ...props }) => {
     dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
   };
 
-  const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/mutations/gene-names', { project, searchInput: inputValue });
+  const fetchSingleSelectOptions = async (inputValue: string) => {
+    const geneNames: GeneNamesResponse = await fetchFromApi('/api/mutations/gene-names', {
+      project,
+      searchInput: inputValue,
+    });
 
-  const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    return geneNames.map((name) => ({ value: name._id, label: name._id }));
+  };
+
+  const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
     if (!selectedOption) {
       dispatch(setMutationFilters({ ...filters }));
@@ -153,24 +158,28 @@ const MutationsTable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/mutations/by-gene-name', { project, geneName: selectedOption.value }).then((res) => {
-      if (!res) return;
-
-      const newRowCount = res.length;
-      setRowCount(newRowCount);
-
-      const newTableData = res.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
-
-      const [gene, position] = firstRow;
-      dispatch(selectMutation(gene, position));
-      setCurrentPage(0);
-
-      setLoading(false);
+    const res: ByGeneNameResponse = await fetchFromApi('/api/mutations/by-gene-name', {
+      project,
+      geneName: selectedOption.value,
     });
+
+    const newRowCount = res.length;
+    setRowCount(newRowCount);
+
+    const newTableData = res.map(Object.values);
+    setTableData(newTableData);
+
+    setCurrentPage(0);
+
+    setLoading(false);
+
+    if (res.length === 0) return;
+
+    const firstRow = newTableData[0];
+    setSelectedRow(firstRow);
+
+    const [gene, position] = firstRow;
+    dispatch(selectMutation(gene, position));
   };
 
   return (
@@ -203,7 +212,9 @@ const MutationsTable = ({ ...props }) => {
               { value: 'INS', label: 'INS' },
             ]}
             defaultValues={['SNP', 'DEL', 'INS']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'type')}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'variantType')
+            }
             className={classes.multiSelect}
           />
           <MultiSelect

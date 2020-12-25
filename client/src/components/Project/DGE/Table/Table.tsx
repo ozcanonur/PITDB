@@ -9,10 +9,11 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
+import { DGESResponse, SymbolNamesResponse, BySymbolNameResponse } from './types';
 
 const DGETable = ({ ...props }) => {
   const classes = useStyles();
@@ -33,40 +34,39 @@ const DGETable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewDges = (mounted: boolean) => {
+  const fetchNewDges = async (mounted: boolean) => {
     setLoading(true);
 
-    fetchFromApi('/api/dges', { project, skip: 0, filters: filters as any, sortedOn: sortedOn as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      const { dges, dgesCount } = res;
-
-      if (dgesCount.length === 0) {
-        setTableData([]);
-        setRowCount(0);
-        setCurrentPage(0);
-        setLoading(false);
-        return;
-      }
-
-      const newRowCount = parseInt(dgesCount);
-      setRowCount(newRowCount);
-
-      const newTableData = dges.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
-
-      const [symbol] = firstRow;
-      dispatch(selectDGE(symbol));
-
-      setCurrentPage(0);
-
-      setLoading(false);
+    const res: DGESResponse = await fetchFromApi('/api/dges', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
     });
+
+    if (!mounted || !res) return;
+
+    const { dges, dgesCount } = res;
+
+    setRowCount(dgesCount);
+
+    const newTableData = dges.map(Object.values);
+    setTableData(newTableData);
+
+    setCurrentPage(0);
+
+    setLoading(false);
+
+    if (dgesCount === 0) return;
+
+    const firstRow = newTableData[0];
+    setSelectedRow(firstRow);
+
+    const [symbol] = firstRow;
+    dispatch(selectDGE(symbol));
   };
 
+  // Refetch on filters change
   useEffect(() => {
     let mounted = true;
 
@@ -78,7 +78,8 @@ const DGETable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Don't run on first render
+  // Refetch on sort
+  // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -111,10 +112,11 @@ const DGETable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { dges } = await fetchFromApi('/api/dges', { project, skip, filters: filters as any });
-    setTableData([...tableData, ...dges.map(Object.values)]);
+    const { dges }: DGESResponse = await fetchFromApi('/api/dges', { project, skip, filters: filters as any });
 
     setLoading(false);
+
+    setTableData([...tableData, ...dges.map(Object.values)]);
   };
 
   const handleRowsPerPageChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -124,28 +126,35 @@ const DGETable = ({ ...props }) => {
 
   const selectDGEOnClick = (row: string[]) => {
     setSelectedRow(row);
-    const symbolName = row[0];
+    const [symbolName] = row;
     dispatch(selectDGE(symbolName));
   };
 
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
 
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
-    dispatch(setDGEFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
+    const newMaxPValue = parseFloat(pValueMarks[value]);
+    dispatch(setDGEFilters({ ...filters, maxPValue: newMaxPValue }));
   };
 
   const foldChangeMarks = ['0', '0.5', '1', '5', '10'];
 
   const onFoldChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMinFoldChangeFilterValue = parseFloat(foldChangeMarks[value]);
-    dispatch(setDGEFilters({ ...filters, minAbsFoldChange: newMinFoldChangeFilterValue }));
+    const newMinAbsFoldChange = parseFloat(foldChangeMarks[value]);
+    dispatch(setDGEFilters({ ...filters, minAbsFoldChange: newMinAbsFoldChange }));
   };
 
-  const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/dges/symbol-names', { project, searchInput: inputValue });
+  const fetchSingleSelectOptions = async (inputValue: string) => {
+    const symbolNames: SymbolNamesResponse = await fetchFromApi('/api/dges/symbol-names', {
+      project,
+      searchInput: inputValue,
+    });
 
-  const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    // Single select component accepts data in this format
+    return symbolNames.map(({ _id }) => ({ value: _id, label: _id }));
+  };
+
+  const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender with the actual set filters via useEffect
     if (!selectedOption) {
       dispatch(setDGEFilters({ ...filters }));
@@ -155,25 +164,28 @@ const DGETable = ({ ...props }) => {
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/dges/by-symbol-name', { project, symbol: selectedOption.value }).then((res) => {
-      if (!res) return;
-
-      const newRowCount = res.length;
-      setRowCount(newRowCount);
-
-      const newTableData = res.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(newTableData[0]);
-
-      const [symbolName] = firstRow;
-      dispatch(selectDGE(symbolName));
-
-      setCurrentPage(0);
-
-      setLoading(false);
+    const res: BySymbolNameResponse = await fetchFromApi('/api/dges/by-symbol-name', {
+      project,
+      symbol: selectedOption.value,
     });
+
+    const newRowCount = res.length;
+    setRowCount(newRowCount);
+
+    const newTableData = res.map(Object.values);
+    setTableData(newTableData);
+
+    setCurrentPage(0);
+
+    setLoading(false);
+
+    if (newRowCount === 0) return;
+
+    const firstRow = newTableData[0];
+    setSelectedRow(newTableData[0]);
+
+    const [symbolName] = firstRow;
+    dispatch(selectDGE(symbolName));
   };
 
   // WOOP, Hard coded peptide evidence on multiselect

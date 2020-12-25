@@ -1,12 +1,12 @@
 /// <reference types="react-scripts" />
 
 interface RootState {
-  mutationFilters: import('components/Project/Mutations/types').MutationTableFilters;
+  mutationFilters: import('components/Project/Mutations/Table/types').MutationTableFilters;
   selectedMutation: {
     gene: string;
     position: string;
   };
-  DGEFilters: import('components/Project/DGE/types').DGETableFilters;
+  DGEFilters: import('components/Project/DGE/Table/types').DGETableFilters;
   selectedDGE: {
     symbol: string;
   };

@@ -5,9 +5,9 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { ConditionsData } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { useStyles } from './styles';
+import { ConditionsResponse } from './types';
 
 const BarCharts = () => {
   const classes = useStyles();
@@ -15,28 +15,34 @@ const BarCharts = () => {
   const { project } = useParams<{ project: string }>();
   const { gene, position } = useSelector((state: RootState) => state.selectedMutation);
 
-  const [conditionsData, setConditionsData] = useState<ConditionsData>({});
+  const [conditionsData, setConditionsData] = useState<ConditionsResponse>({});
   const [loading, setLoading] = useState(false);
+
+  const fetchConditionsData = async (mounted: boolean) => {
+    setLoading(true);
+
+    const res: ConditionsResponse = await fetchFromApi('/api/mutations/conditions', { project, gene, position });
+
+    if (!mounted || !res) return;
+
+    setConditionsData(res);
+    setLoading(false);
+  };
 
   useEffect(() => {
     let mounted = true;
 
     if (!gene || !position) return;
 
-    setLoading(true);
-
-    fetchFromApi('/api/mutations/conditions', { project, gene, position }).then((res) => {
-      if (!mounted || !res) return;
-
-      setConditionsData(res);
-      setLoading(false);
-    });
+    fetchConditionsData(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gene, position, project]);
 
+  // Bar chart wants data in this format
   const qualityData = Object.keys(conditionsData).map((conditionName) => ({
     sample: conditionName,
     qual: conditionsData[conditionName].qual,

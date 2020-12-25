@@ -7,3 +7,4 @@ server/build/
 deployment/
 .env
 client/.eslintcache
+client/defunct/

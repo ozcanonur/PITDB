@@ -7,7 +7,7 @@ import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import { VolcanoPlotData } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { useStyles } from './styles';
 
 const VolcanoPlot = () => {
   const classes = useStyles();
@@ -18,23 +18,26 @@ const VolcanoPlot = () => {
   const [volcanoPlotData, setVolcanoPlotData] = useState<VolcanoPlotData>({ data: [] });
   const [loading, setLoading] = useState(false);
 
+  const fetchVolcanoPlotData = async (mounted: boolean) => {
+    const res: VolcanoPlotData = await fetchFromApi('/api/dges/volcano-plot', { project, filters: filters as any });
+
+    if (!mounted || !res) return;
+
+    setVolcanoPlotData(res);
+    setLoading(false);
+  };
+
   useEffect(() => {
     let mounted = true;
 
-    if (!filters) return;
-
     setLoading(true);
 
-    fetchFromApi('/api/dges/volcano-plot', { project, filters: filters as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      setVolcanoPlotData(res);
-      setLoading(false);
-    });
+    fetchVolcanoPlotData(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, project]);
 
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
