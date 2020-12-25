@@ -1,13 +1,13 @@
 import { useLocation, useHistory, useParams } from 'react-router-dom';
 
-import ProjectInfo from './ProjectInfo';
+import ProjectInfo from './ProjectInfo/ProjectInfo';
 import Category1 from 'assets/category1.svg';
 import Category2 from 'assets/category2.svg';
 import Category3 from 'assets/category3.svg';
 import Category4 from 'assets/category4.svg';
 import Category5 from 'assets/category5.svg';
 
-import { useStyles } from './styles/sidebar';
+import { useStyles } from './styles';
 
 const Sidebar = () => {
   const classes = useStyles();

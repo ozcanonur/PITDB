@@ -13,8 +13,6 @@ const Experiments = ({ ...props }) => {
     });
   }, []);
 
-  const clickableCells = { '2': () => {}, '3': () => {} };
-
   const filters: Filter[] = [
     {
       type: 'MultiSelect',
@@ -59,7 +57,6 @@ const Experiments = ({ ...props }) => {
         'Variations',
       ]}
       filters={filters}
-      clickableCells={clickableCells}
       // @ts-ignore
       style={{ marginTop: '12rem' }}
       {...props}

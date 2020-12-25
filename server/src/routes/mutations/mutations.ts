@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { Mutation } from '../../db/models/mutation';
-import { parseConditions, convertSortFieldNameForMongoose } from './helpers';
+import { parseConditions, findMongoFieldFromTableColumn } from './helpers';
 import { MutationFilters } from './types';
 import { ExtendedRequest } from '../../types';
 
@@ -32,7 +32,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
     };
 
     const mutations = await Mutation.find(query)
-      .sort({ [convertSortFieldNameForMongoose(field)]: order })
+      .sort({ [findMongoFieldFromTableColumn(field)]: order })
       .skip(parseInt(skip))
       .limit(50);
 
@@ -61,7 +61,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
 /*
  * Route for mutations table single select choices
  * Filters by project, and finds symbol names that start with the searchInput
- * Groups by symbol name to get a unique list
+ * Groups by gene name to get a unique list
  */
 router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;

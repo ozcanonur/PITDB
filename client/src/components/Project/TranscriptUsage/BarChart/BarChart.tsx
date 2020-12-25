@@ -5,59 +5,44 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import Loading from 'components/UI/Loading/Loading';
 import { fetchFromApi } from 'utils';
-import { TranscriptReadCount } from './types';
+import { TranscriptReadCounts } from './types';
+import { useStyles } from './styles';
 
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-export const useStyles = makeStyles((theme) => ({
-  container: {
-    position: 'relative',
-    transform: 'translateX(-15rem)',
-  },
-  figureContainer: {
-    transition: 'all .3s ease-in-out',
-    height: '100%',
-    width: '40rem',
-  },
-  loading: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-    transition: 'all .3s ease-in-out',
-  },
-}));
-
-const BarChart = () => {
+const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
   const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
 
-  const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCount[]>([]);
+  const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCounts>([]);
   const [loading, setLoading] = useState(false);
+
+  const fetchReadCounts = async (mounted: boolean) => {
+    setLoading(true);
+    const res: TranscriptReadCounts = await fetchFromApi('/api/transcript-usages/read-counts', { project, transcript });
+
+    setLoading(false);
+
+    if (!mounted || !res) return;
+
+    setTranscriptReadCounts(res);
+  };
 
   useEffect(() => {
     let mounted = true;
 
     if (!transcript) return;
 
-    setLoading(true);
-
-    fetchFromApi('/api/transcript-usages/read-counts', { project, transcript }).then((res) => {
-      if (!mounted || !res) return;
-
-      setTranscriptReadCounts(res);
-      setLoading(false);
-    });
+    fetchReadCounts(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, transcript]);
 
   return (
-    <div className={classes.container}>
+    <div className={classes.container} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveBar

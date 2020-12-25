@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     marginRight: '2rem',
   },
-  slidersContainer: {
+  filtersSubContainer: {
     display: 'flex',
     padding: '0 2rem',
     paddingLeft: '1.6rem',

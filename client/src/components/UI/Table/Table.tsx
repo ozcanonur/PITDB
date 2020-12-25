@@ -17,7 +17,6 @@ import { useStyles } from './styles';
 const CustomTable = ({
   tableHead,
   tableData,
-  clickableCells,
   rowCount,
   rowsPerPage = 10,
   currentPage = 0,
@@ -78,13 +77,7 @@ const CustomTable = ({
         ) : (
           <TableBody>
             {slicedTableData.map((row, key) => (
-              <Row
-                key={key}
-                row={row}
-                clickableCells={clickableCells}
-                rowOnClick={rowOnClick}
-                selectedRow={selectedRow}
-              />
+              <Row key={key} row={row} rowOnClick={rowOnClick} selectedRow={selectedRow} />
             ))}
           </TableBody>
         )}

@@ -6,16 +6,6 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '1rem',
     flexGrow: 1,
   },
-  tableContainer: {
-    padding: '2rem 4rem',
-    paddingBottom: '0.5rem',
-    position: 'relative',
-  },
-  multiSelect: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
@@ -36,5 +26,15 @@ export const useStyles = makeStyles((theme) => ({
     '& > div:not(:last-child)': {
       marginRight: '4rem',
     },
+  },
+  multiSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  tableContainer: {
+    padding: '2rem 4rem',
+    paddingBottom: '0.5rem',
+    position: 'relative',
   },
 }));

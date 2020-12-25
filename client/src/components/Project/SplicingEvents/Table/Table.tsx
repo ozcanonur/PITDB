@@ -9,16 +9,18 @@ import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
-import { useStyles } from './styles/table';
+import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
-import { setTranscriptUsageFilters, selectTranscriptUsage, selectTranscriptViewerTranscript } from 'actions';
+import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
+import { SelectOption } from 'components/UI/MultiSelect/types';
+import { SplicingEventsResponse, SplicingEventsGeneNamesResponse, SplicingEventsByGeneNameResponse } from './types';
 
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  const filters = useSelector((state: RootState) => state.transcriptUsageFilters);
+  const filters = useSelector((state: RootState) => state.splicingEventsFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
     field: 'Gene',
     order: 1,
@@ -33,10 +35,10 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewTranscriptUsages = async (mounted: boolean) => {
+  const fetchNewSplicingEvents = async (mounted: boolean) => {
     setLoading(true);
 
-    const res = await fetchFromApi('/api/transcript-usages', {
+    const res: SplicingEventsResponse = await fetchFromApi('/api/splicing-events', {
       project,
       skip: 0,
       filters: filters as any,
@@ -45,38 +47,32 @@ const SplicingEventsTable = ({ ...props }) => {
 
     if (!mounted || !res) return;
 
-    const { transcriptUsages, transcriptUsagesCount } = res;
+    const { splicingEvents, splicingEventsCount } = res;
 
-    if (transcriptUsages.length === 0) {
-      setTableData([]);
-      setRowCount(0);
-      setCurrentPage(0);
-      setLoading(false);
-      return;
-    }
-
-    const newRowCount = parseInt(transcriptUsagesCount);
+    const newRowCount = splicingEventsCount;
     setRowCount(newRowCount);
 
-    const newTableData: string[][] = transcriptUsages.map(Object.values);
+    const newTableData: string[][] = splicingEvents.map(Object.values);
     setTableData(newTableData);
-
-    const firstRow = newTableData[0];
-    setSelectedRow(firstRow);
-
-    const [gene, transcript] = firstRow;
-    dispatch(selectTranscriptUsage(gene, transcript));
-    dispatch(selectTranscriptViewerTranscript(transcript));
 
     setCurrentPage(0);
 
     setLoading(false);
+
+    if (splicingEvents.length === 0) return;
+
+    const firstRow = newTableData[0];
+    setSelectedRow(firstRow);
+
+    const [gene, , , , , dPSI] = firstRow;
+    dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
+  // Refetch on filters change
   useEffect(() => {
     let mounted = true;
 
-    fetchNewTranscriptUsages(mounted);
+    fetchNewSplicingEvents(mounted);
 
     return () => {
       mounted = false;
@@ -84,7 +80,8 @@ const SplicingEventsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Don't run on first render
+  // Refetch on sort
+  // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -94,7 +91,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
     let mounted = true;
 
-    fetchNewTranscriptUsages(mounted);
+    fetchNewSplicingEvents(mounted);
 
     return () => {
       mounted = false;
@@ -117,13 +114,14 @@ const SplicingEventsTable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { transcriptUsages } = await fetchFromApi('/api/transcript-usages', {
+    const { splicingEvents }: SplicingEventsResponse = await fetchFromApi('/api/splicing-events', {
       project,
       skip,
       filters: filters as any,
       sortedOn: sortedOn as any,
     });
-    setTableData([...tableData, ...transcriptUsages.map(Object.values)]);
+
+    setTableData([...tableData, ...splicingEvents.map(Object.values)]);
 
     setLoading(false);
   };
@@ -133,63 +131,68 @@ const SplicingEventsTable = ({ ...props }) => {
     setRowsPerPage(newRowsPerPage);
   };
 
-  const selectTranscriptUsageOnClick = (row: string[]) => {
+  const selectSplicingEventOnClick = (row: string[]) => {
     setSelectedRow(row);
-    const [gene, transcript] = row;
-    dispatch(selectTranscriptUsage(gene, transcript));
-    dispatch(selectTranscriptViewerTranscript(transcript));
+    const [gene, , , , , dPSI] = row;
+    dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
-  // WOOP, there is no peptide evidence yet, hard coded it
   const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-    dispatch(setTranscriptUsageFilters({ ...filters, [name]: newSelectedValues }));
+    dispatch(setSplicingEventsFilters({ ...filters, [name]: newSelectedValues }));
   };
 
-  const fetchSingleSelectOptions = async (inputValue: string) =>
-    await fetchFromApi('/api/transcript-usages/gene-names', { project, searchInput: inputValue });
+  const fetchSingleSelectOptions = async (inputValue: string) => {
+    const geneNames: SplicingEventsGeneNamesResponse = await fetchFromApi('/api/splicing-events/gene-names', {
+      project,
+      searchInput: inputValue,
+    });
+    return geneNames.map((name) => ({ value: name._id, label: name._id }));
+  };
 
-  const singleSelectOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+  const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     // Just to trigger rerender via useEffect
     if (!selectedOption) {
-      dispatch(setTranscriptUsageFilters({ ...filters }));
+      dispatch(setSplicingEventsFilters({ ...filters }));
       return;
     }
 
     setLoading(true);
 
     // WOOP, should we apply filters on search or not?
-    fetchFromApi('/api/transcript-usages/by-gene-name', { project, geneName: selectedOption.value }).then((res) => {
-      if (!res) return;
-
-      const newRowCount = res.length;
-      setRowCount(newRowCount);
-
-      const newTableData = res.map(Object.values);
-      setTableData(newTableData);
-
-      const firstRow = newTableData[0];
-      setSelectedRow(firstRow);
-
-      const [gene, transcript] = firstRow;
-      dispatch(selectTranscriptUsage(gene, transcript));
-      dispatch(selectTranscriptViewerTranscript(transcript));
-
-      setCurrentPage(0);
-
-      setLoading(false);
+    const res: SplicingEventsByGeneNameResponse = await fetchFromApi('/api/splicing-events/by-gene-name', {
+      project,
+      geneName: selectedOption.value,
     });
+
+    const newRowCount = res.length;
+    setRowCount(newRowCount);
+
+    const newTableData = res.map(Object.values);
+    setTableData(newTableData);
+
+    setCurrentPage(0);
+
+    setLoading(false);
+
+    if (res.length === 0) return;
+
+    const firstRow = newTableData[0];
+    setSelectedRow(firstRow);
+
+    const [gene, , , , , dPSI] = firstRow;
+    dispatch(selectSplicingEvent(gene, dPSI));
   };
 
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
 
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
-    dispatch(setTranscriptUsageFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
+    dispatch(setSplicingEventsFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Transcript Usage' {...props}>
+    <ProjectItemCard className={classes.container} name='Splicing Events' {...props}>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
@@ -199,12 +202,22 @@ const SplicingEventsTable = ({ ...props }) => {
         />
         <div className={classes.multiSelectContainer}>
           <MultiSelect
+            name='Strand'
+            options={[
+              { value: '-', label: '-' },
+              { value: '+', label: '+' },
+            ]}
+            defaultValues={['-', '+']}
+            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'strand')}
+            className={classes.multiSelect}
+          />
+          <MultiSelect
             name='Peptide evidence'
             options={[
               { value: 'true', label: 'true' },
               { value: 'false', label: 'false' },
             ]}
-            defaultValues={['false', 'true']}
+            defaultValues={['true']}
             onChange={(selectedOptions, _actionMeta) =>
               multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
             }
@@ -220,7 +233,7 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Transcript', 'dPSI', 'P value', 'Peptide evidence']}
+        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'P Value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -228,7 +241,7 @@ const SplicingEventsTable = ({ ...props }) => {
         handlePageChange={handlePageChange}
         loading={loading}
         className={classes.tableContainer}
-        rowOnClick={selectTranscriptUsageOnClick}
+        rowOnClick={selectSplicingEventOnClick}
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}

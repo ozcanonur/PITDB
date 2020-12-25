@@ -1,7 +1,7 @@
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
-import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/types';
-import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/types';
+import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
+import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
 
 export enum ACTION {
   SET_MUTATION_FILTERS,

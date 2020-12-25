@@ -14,6 +14,7 @@ import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
 import { DGESResponse, SymbolNamesResponse, BySymbolNameResponse } from './types';
+import { SelectOption } from 'components/UI/MultiSelect/types';
 
 const DGETable = ({ ...props }) => {
   const classes = useStyles();
@@ -204,7 +205,7 @@ const DGETable = ({ ...props }) => {
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.slidersContainer}>
+        <div className={classes.filtersSubContainer}>
           <MultiSelect
             name='Peptide evidence'
             options={[

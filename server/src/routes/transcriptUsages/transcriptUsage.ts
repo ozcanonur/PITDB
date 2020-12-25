@@ -2,12 +2,18 @@ import express from 'express';
 
 import { ExtendedRequest } from '../../types';
 import { TranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
-import { convertSortFieldNameForMongoose, parseTranscriptUsages, parseTranscriptsForViewer } from './helpers';
+import { findMongoFieldFromTableColumn, parseTranscriptUsages, parseTranscriptsForViewer } from './helpers';
 import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
 import { TranscriptCount } from '../../db/models/transcriptCount';
 
 const router = express.Router();
 
+/*
+ * Route for transcript usages table data
+ * Filters by project and max p value
+ * Sorts if sortedOn passed in request
+ * Response is limited to 50 rows per request
+ */
 router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
@@ -22,13 +28,27 @@ router.get('/', async (req: ExtendedRequest, res) => {
     };
 
     const transcriptUsages = await TranscriptUsageDPSI.find(query)
-      .sort({ [convertSortFieldNameForMongoose(field)]: order })
+      .sort({ [findMongoFieldFromTableColumn(field)]: order })
       .skip(parseInt(skip))
       .limit(50);
 
     if (!transcriptUsages) return res.send({ transcriptUsages: [], transcriptUsagesCount: 0 });
 
-    const parsedTranscriptUsages = parseTranscriptUsages(transcriptUsages);
+    const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
+      const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
+
+      // const formattedDeltaPsi = numeral(deltaPsi).format('0.000e+0');
+      // const formattedPVal = numeral(pval).format('0.000e+0');
+
+      // WOOP, hard coding peptide evidence
+      return {
+        geneName,
+        transcript,
+        deltaPsi,
+        pval,
+        hasPeptideEvidence: false,
+      };
+    });
 
     const transcriptUsagesCount = await TranscriptUsageDPSI.countDocuments(query);
 
@@ -39,29 +59,34 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for transcript usages single select choices
+ * Filters by project, and finds gene names that start with the searchInput
+ * Groups by gene names to get a unique list
+ */
 router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
 
   try {
-    const geneNames = await TranscriptUsageDPSI.aggregate([
+    const geneNames: { _id: string }[] = await TranscriptUsageDPSI.aggregate([
       { $match: { project, geneName: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$geneName' } },
       { $limit: 50 },
     ]);
 
-    if (!geneNames) return res.send([]);
-
-    const parsedGeneNames = geneNames.map((name) => ({ value: name._id, label: name._id }));
-
-    res.send(parsedGeneNames);
+    res.send(geneNames);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
 
+/*
+ * Route for getting entries by gene name
+ * Filters by project and gene name
+ */
 router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   const { project, geneName } = req.query;
 
@@ -78,6 +103,10 @@ router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting transcripts for transcript usages event viewer
+ * Filters by project and gene
+ */
 router.get('/transcripts', async (req: ExtendedRequest, res) => {
   const { project, gene } = req.query;
 
@@ -104,6 +133,10 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting read counts for transcript usages bar chart
+ * Filters by project and transcript
+ */
 router.get('/read-counts', async (req: ExtendedRequest, res) => {
   const { project, transcript } = req.query;
 

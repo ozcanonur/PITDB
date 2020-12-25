@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import AOS from 'aos';
 
-import SplicingEventsTable from './Table';
-import PieChart from './PieChart';
-import BarChart from './BarChart';
-import EventVisual from './EventVisual';
+import SplicingEventsTable from './Table/Table';
+import PieChart from './PieChart/PieChart';
+import BarChart from './BarChart/BarChart';
+import EventVisual from './EventVisual/EventVisual';
 
-import { useStyles } from './styles/splicingEvents';
+import { useStyles } from './styles';
 
-const SplicingEvents = () => {
+const SplicingEventsWrapper = () => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -30,4 +30,4 @@ const SplicingEvents = () => {
   );
 };
 
-export default SplicingEvents;
+export default SplicingEventsWrapper;

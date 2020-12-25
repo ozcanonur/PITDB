@@ -12,6 +12,7 @@ import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { selectMutation, setMutationFilters } from 'actions';
 import { MutationsResponse, GeneNamesResponse, ByGeneNameResponse } from './types';
+import { SelectOption } from 'components/UI/MultiSelect/types';
 
 const MutationsTable = ({ ...props }) => {
   const classes = useStyles();

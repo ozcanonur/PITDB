@@ -31,8 +31,8 @@ const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailPro
     <svg
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 800 28'
-      {...props}
       style={{ direction: 'ltr', overflow: 'clip' }}
+      {...props}
     >
       <defs>
         <style>{'.transcriptViewerRail{fill:#336}.transcriptViewerExon{opacity:.7}'}</style>

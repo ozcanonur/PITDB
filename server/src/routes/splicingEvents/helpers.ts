@@ -1,8 +1,8 @@
 import { ISplicingDPSI } from '../../db/models/splicingDPSI';
-import numeral from 'numeral';
+import { ISplicingPsi } from '../../db/models/splicingPsi';
 import { omit } from 'lodash';
 
-export const convertSortFieldNameForMongoose = (field: string) => {
+export const findMongoFieldFromTableColumn = (field: string) => {
   if (field === 'Gene') return 'geneName';
   else if (field === 'Type') return 'eventType';
   else if (field === 'dPSI') return 'deltaPsi';
@@ -14,9 +14,8 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
   const parsedSplicingEvents = splicingEvents.map((splicingEvent) => {
     const { geneName, event, eventType, deltaPsi, pval, pepEvidence } = splicingEvent;
 
-    // numeral(deltaPsi).format('0.000e+0');
-    const formattedDeltaPsi = deltaPsi;
-    const formattedPVal = numeral(pval).format('0.000e+0');
+    // const formattedDeltaPsi = numeral(deltaPsi).format('0.000e+0');;
+    // const formattedPVal = numeral(pval).format('0.000e+0');
 
     const [, , leftPositions, rightPositions] = event.split(':');
     const start = leftPositions.split('-')[1];
@@ -28,8 +27,8 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
       eventType,
       start,
       end,
-      deltaPsi: formattedDeltaPsi,
-      pval: formattedPVal,
+      deltaPsi,
+      pval,
       pepEvidence,
     };
   });
@@ -38,10 +37,10 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
 };
 
 // Only select condition fields
-export const parseConditions = (conditions: any[]) => {
+export const parseConditions = (conditions: ISplicingPsi) => {
   const relevantFields = omit(conditions, ['_id', 'event', 'project']);
   // Convert Nsi/1 etc. to Nsi1
-  const parsedConditions: { [field: string]: number } = {};
+  const parsedConditions: { [conditionName: string]: number } = {};
   for (const field of Object.keys(relevantFields)) {
     const convertedField = field.replace('/', '');
     //@ts-ignore

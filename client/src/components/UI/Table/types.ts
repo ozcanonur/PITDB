@@ -10,9 +10,6 @@ export interface CustomPaginationActionsProps {
 export interface TableProps {
   tableHead: string[];
   tableData: string[][];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
   currentPage?: number;
   rowsPerPage?: number;
   handleRowsPerPageChange?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -32,9 +29,6 @@ export interface TableProps {
 
 export interface TableRowProps {
   row: string[];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
   style?: CSSProperties;

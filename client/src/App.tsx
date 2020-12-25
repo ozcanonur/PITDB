@@ -1,5 +1,7 @@
 import { useLayoutEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Switch, useLocation } from 'react-router-dom';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+
 import Loading from 'components/UI/Loading/Loading';
 
 const Home = lazy(() => import('components/Home/Home'));
@@ -18,18 +20,25 @@ const ScrollToTop = () => {
   return null;
 };
 
+const useStyles = makeStyles((theme) => ({
+  loading: {
+    height: '100vh',
+  },
+  loadingSvg: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}));
+
 const App = () => {
+  const classes = useStyles();
+
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Suspense
-        fallback={
-          <Loading
-            style={{ height: '100vh' }}
-            svgProps={{ style: { position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' } }}
-          />
-        }
-      >
+      <Suspense fallback={<Loading className={classes.loading} svgProps={{ className: classes.loadingSvg }} />}>
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/browse' component={Browse} />

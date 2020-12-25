@@ -1,19 +1,12 @@
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
 import Sidebar from './Sidebar/Sidebar';
 import MutationsWrapper from './Mutations/Wrapper';
 import DGEWrapper from './DGE/Wrapper';
-import SplicingEvents from './SplicingEvents/SplicingEvents';
-import TranscriptUsage from './TranscriptUsage/TranscriptUsage';
+import SplicingEventsWrapper from './SplicingEvents/Wrapper';
+import TranscriptUsageWrapper from './TranscriptUsage/Wrapper';
 
-export const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    background: 'linear-gradient(to bottom, 25% #fff, #f2f4ff',
-    flexGrow: 1,
-  },
-}));
+import { useStyles } from './styles';
 
 const Project = () => {
   const classes = useStyles();
@@ -31,10 +24,10 @@ const Project = () => {
           <DGEWrapper />
         </Route>
         <Route path={`${match.path}/splicingEvents`}>
-          <SplicingEvents />
+          <SplicingEventsWrapper />
         </Route>
         <Route path={`${match.path}/transcriptUsage`}>
-          <TranscriptUsage />
+          <TranscriptUsageWrapper />
         </Route>
       </Switch>
     </div>

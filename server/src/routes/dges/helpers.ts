@@ -1,5 +1,4 @@
 import { IDGE } from '../../db/models/dge';
-// import numeral from 'numeral';
 
 export const parseVolcanoPlotData = (dges: IDGE[]) => {
   const parsed = [

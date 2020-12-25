@@ -5,45 +5,54 @@ import { ResponsiveBar } from '@nivo/bar';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { ConditionsData } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { useStyles } from './styles';
+import { ConditionsResponse } from './types';
 
-const BarChart = () => {
+const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
   const { gene, dPSI } = useSelector((state: RootState) => state.selectedSplicingEvent);
 
-  const [conditionsData, setConditionsData] = useState<ConditionsData>({});
+  const [conditionsData, setConditionsData] = useState<ConditionsResponse>({});
   const [loading, setLoading] = useState(false);
+
+  const fetchConditionsData = async (mounted: boolean) => {
+    setLoading(true);
+    const res: ConditionsResponse = await fetchFromApi('/api/splicing-events/conditions', { project, gene, dPSI });
+
+    if (!mounted || !res) return;
+
+    setConditionsData(res);
+    setLoading(false);
+  };
 
   useEffect(() => {
     let mounted = true;
 
     if (!gene || !dPSI) return;
 
-    setLoading(true);
-
-    fetchFromApi('/api/splicing-events/conditions', { project, gene, dPSI }).then((res) => {
-      if (!mounted || !res) return;
-
-      setConditionsData(res);
-      setLoading(false);
-    });
+    fetchConditionsData(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gene, dPSI, project]);
 
+  // Bar chart wants data in this format
   const parsedConditionsDataForBarChart = Object.keys(conditionsData).map((condition) => ({
     condition,
     value: conditionsData[condition],
   }));
 
   return (
-    <ProjectItemCard name={`Conditions for ${gene} with ${dPSI.toLocaleString()}`} className={classes.projectItemCard}>
+    <ProjectItemCard
+      name={`Conditions for ${gene} with ${dPSI.toLocaleString()}`}
+      className={classes.projectItemCard}
+      {...props}
+    >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveBar

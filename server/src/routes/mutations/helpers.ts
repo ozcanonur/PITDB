@@ -10,15 +10,7 @@ export const parseConditions = (conditions: any) => {
   return result;
 };
 
-// export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {
-//   return typeFilters.map((typeFilter) => {
-//     if (typeFilter === 'INS') return { ref: '' };
-//     if (typeFilter === 'DEL') return { alt: '' };
-//     if (typeFilter === 'SNP') return { $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }] };
-//   });
-// };
-
-export const convertSortFieldNameForMongoose = (field: string) => {
+export const findMongoFieldFromTableColumn = (field: string) => {
   if (field === 'Gene') return 'gene';
   else if (field === 'Position') return 'refPos';
   else if (field === 'Ref') return 'ref';
@@ -27,3 +19,11 @@ export const convertSortFieldNameForMongoose = (field: string) => {
   else if (field === 'Peptide evidence') return 'hasPeptideEvidence';
   else if (field === 'Synonymous') return 'silent';
 };
+
+// export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {
+//   return typeFilters.map((typeFilter) => {
+//     if (typeFilter === 'INS') return { ref: '' };
+//     if (typeFilter === 'DEL') return { alt: '' };
+//     if (typeFilter === 'SNP') return { $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }] };
+//   });
+// };

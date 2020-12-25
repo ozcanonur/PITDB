@@ -1,5 +1,5 @@
 import { ReactComponent as DnaImg } from 'assets/dna_3.svg';
-import { useStyles } from './styles/projectInfo';
+import { useStyles } from './styles';
 
 const ProjectInfo = ({ project }: { project: string }) => {
   const classes = useStyles();

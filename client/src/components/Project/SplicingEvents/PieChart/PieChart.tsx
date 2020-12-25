@@ -5,42 +5,45 @@ import { ResponsivePie } from '@nivo/pie';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { TypesData } from './types';
 import { fetchFromApi } from 'utils';
-import { useStyles } from './styles/figures';
+import { useStyles } from './styles';
+import { TypesResponse } from './types';
 
-const PieChart = () => {
+const PieChart = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
 
-  const [data, setData] = useState<TypesData>({});
+  const [typesData, setTypesData] = useState<TypesResponse>({});
   const [loading, setLoading] = useState(false);
+
+  const fetchTypesData = async (mounted: boolean) => {
+    setLoading(true);
+
+    const res: TypesResponse = await fetchFromApi('/api/splicing-events/types', { project, filters: filters as any });
+
+    if (!mounted || !res) return;
+
+    setTypesData(res);
+    setLoading(false);
+  };
 
   useEffect(() => {
     let mounted = true;
 
-    if (!filters) return;
-
-    setLoading(true);
-
-    fetchFromApi('/api/splicing-events/types', { project, filters: filters as any }).then((res) => {
-      if (!mounted || !res) return;
-
-      setData(res);
-      setLoading(false);
-    });
+    fetchTypesData(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
+  // Pie chart wants data in this format
   const typeDistributionData: { id: string; label: string; value: number }[] = [];
-  for (const type of Object.keys(data)) {
-    // @ts-ignore
-    const value = data[type];
+  for (const type of Object.keys(typesData)) {
+    const value = typesData[type];
     if (value === 0) continue;
 
     typeDistributionData.push({
@@ -51,7 +54,7 @@ const PieChart = () => {
   }
 
   return (
-    <ProjectItemCard name='Event type distribution for selected filters' className={classes.projectItemCard}>
+    <ProjectItemCard name='Event type distribution for selected filters' className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsivePie

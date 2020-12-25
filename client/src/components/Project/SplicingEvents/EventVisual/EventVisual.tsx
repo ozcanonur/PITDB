@@ -7,8 +7,8 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 
 import { fetchFromApi } from 'utils';
 import ExonSkipping from 'components/UI/Svg/ExonSkipping/ExonSkipping';
-import { useStyles } from './styles/eventVisual';
-import { EventData } from './types';
+import { useStyles } from './styles';
+import { EventResponse } from './types';
 
 const EventVisual = () => {
   const classes = useStyles();
@@ -16,7 +16,7 @@ const EventVisual = () => {
   const { project } = useParams<{ project: string }>();
   const { gene, dPSI } = useSelector((state: RootState) => state.selectedSplicingEvent);
 
-  const [eventData, setEventData] = useState<EventData>({
+  const [eventData, setEventData] = useState<EventResponse>({
     eventType: '',
     chr: '',
     positions: [0, 0, 0, 0],
@@ -24,23 +24,28 @@ const EventVisual = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  const fetchEventData = async (mounted: boolean) => {
+    setLoading(true);
+
+    const res: EventResponse = await fetchFromApi('/api/splicing-events/event', { project, gene, dPSI });
+
+    if (!mounted || !res) return;
+
+    setEventData(res);
+    setLoading(false);
+  };
+
   useEffect(() => {
     let mounted = true;
 
     if (!gene || !dPSI) return;
 
-    setLoading(true);
-
-    fetchFromApi('/api/splicing-events/event', { project, gene, dPSI }).then((res) => {
-      if (!mounted || !res) return;
-
-      setEventData(res);
-      setLoading(false);
-    });
+    fetchEventData(mounted);
 
     return () => {
       mounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, gene, dPSI]);
 
   return (

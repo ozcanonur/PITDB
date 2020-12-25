@@ -1,10 +1,10 @@
 import express from 'express';
 
-import { SplicingDPSI } from '../../db/models/splicingDPSI';
+import { ISplicingDPSI, SplicingDPSI } from '../../db/models/splicingDPSI';
 import { ExtendedRequest } from '../../types';
-import { SplicingEventsFilters } from './types';
+import { SplicingEventsFilters, SplicingDPSIWithConditions } from './types';
 import {
-  convertSortFieldNameForMongoose,
+  findMongoFieldFromTableColumn,
   parseSplicingEvents,
   parseConditions,
   getRegexForStrandFilter,
@@ -12,6 +12,12 @@ import {
 
 const router = express.Router();
 
+/*
+ * Route for splicing events table data
+ * Filters by project, max p value, min absolute fold change
+ * Sorts if sortedOn passed in request
+ * Response is limited to 50 rows per request
+ */
 router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
@@ -27,7 +33,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
     };
 
     const splicingEvents = await SplicingDPSI.find(query)
-      .sort({ [convertSortFieldNameForMongoose(field)]: order })
+      .sort({ [findMongoFieldFromTableColumn(field)]: order })
       .skip(parseInt(skip))
       .limit(50);
 
@@ -44,34 +50,40 @@ router.get('/', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for splicing events single select choices
+ * Filters by project, and finds gene names that start with the searchInput
+ * Groups by gene names to get a unique list
+ */
 router.get('/gene-names', async (req: ExtendedRequest, res) => {
   const { project, searchInput } = req.query;
 
   if (!searchInput) return res.send([]);
 
   try {
-    const geneNames = await SplicingDPSI.aggregate([
+    const geneNames: { _id: string }[] = await SplicingDPSI.aggregate([
       { $match: { project, geneName: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$geneName' } },
       { $limit: 50 },
     ]);
 
-    if (!geneNames) return res.send([]);
-
-    const parsedGeneNames = geneNames.map((name) => ({ value: name._id, label: name._id }));
-
-    res.send(parsedGeneNames);
+    res.send(geneNames);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
   }
 });
 
+/*
+ * Route for getting entries by gene name
+ * Filters by project and gene name
+ */
 router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   const { project, geneName } = req.query;
 
   try {
     const splicingEvents = await SplicingDPSI.find({ project, geneName });
+
     if (!splicingEvents) return res.send([]);
 
     const parsedSplicingEvents = parseSplicingEvents(splicingEvents);
@@ -83,6 +95,10 @@ router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting event type distribution data for splicing events pie chart
+ * Filters by project and given filters
+ */
 router.get('/types', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
@@ -115,11 +131,15 @@ router.get('/types', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting conditions data for splicing events bar chart
+ * Filters by project, gene and dPSI (gene + dPSI is the unique identifier)
+ */
 router.get('/conditions', async (req: ExtendedRequest, res) => {
   const { project, gene, dPSI } = req.query;
 
   try {
-    const splicingPsi = await SplicingDPSI.aggregate([
+    const splicingPsi: SplicingDPSIWithConditions[] = await SplicingDPSI.aggregate([
       { $match: { project, geneName: gene, deltaPsi: parseFloat(dPSI) } },
       { $lookup: { from: 'SplicingPsi', localField: 'event', foreignField: 'event', as: 'conditions' } },
     ]);
@@ -134,6 +154,10 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
   }
 });
 
+/*
+ * Route for getting splicing events event viewer data
+ * Filters by project, gene and dPSI (gene + dPSI is the unique identifier)
+ */
 router.get('/event', async (req: ExtendedRequest, res) => {
   const { project, gene, dPSI } = req.query;
 

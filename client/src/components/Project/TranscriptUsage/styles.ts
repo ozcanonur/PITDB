@@ -9,4 +9,12 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: '4rem',
     flexDirection: 'column',
   },
+  figuresContainer: {
+    marginTop: '2rem',
+    marginRight: '1rem',
+  },
+  figures: {
+    display: 'flex',
+    height: '30rem',
+  },
 }));

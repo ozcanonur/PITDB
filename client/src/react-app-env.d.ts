@@ -10,12 +10,12 @@ interface RootState {
   selectedDGE: {
     symbol: string;
   };
-  splicingEventsFilters: import('components/Project/SplicingEvents/types').SplicingEventsTableFilters;
+  splicingEventsFilters: import('components/Project/SplicingEvents/Table/types').SplicingEventsTableFilters;
   selectedSplicingEvent: {
     gene: string;
     dPSI: number;
   };
-  transcriptUsageFilters: import('components/Project/SplicingEvents/types').SplicingEventsTableFilters;
+  transcriptUsageFilters: import('components/Project/SplicingEvents/Table/types').SplicingEventsTableFilters;
   selectedTranscriptUsage: {
     gene: string;
     transcript: string;
@@ -23,11 +23,6 @@ interface RootState {
   selectedTranscriptViewerTranscript: {
     transcript: string;
   };
-}
-
-interface SelectOption {
-  value: string;
-  label: string;
 }
 
 interface GenericObject {
