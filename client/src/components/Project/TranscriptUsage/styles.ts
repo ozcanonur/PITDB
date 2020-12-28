@@ -15,6 +15,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   figures: {
     display: 'flex',
-    height: '30rem',
+    height: '33rem',
   },
 }));

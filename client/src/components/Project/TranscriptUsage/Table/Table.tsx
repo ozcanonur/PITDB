@@ -14,7 +14,11 @@ import { fetchFromApi } from 'utils';
 import { setTranscriptUsageFilters, selectTranscriptUsage, selectTranscriptViewerTranscript } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import { TranscriptUsagesResponse, TranscriptUsageGeneNamesResponse, TranscriptUsageByGeneNameResponse } from './types';
+import {
+  TranscriptUsagesResponse,
+  TranscriptUsageGeneNamesResponse,
+  TranscriptUsageByGeneNameResponse,
+} from './types';
 
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
@@ -140,16 +144,23 @@ const SplicingEventsTable = ({ ...props }) => {
   };
 
   // WOOP, there is no peptide evidence yet, hard coded it
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+  const multiSelectOnChange = (
+    selectedOptions: SelectOption[],
+    _actionMeta: ActionMeta<any>,
+    name: string
+  ) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
     dispatch(setTranscriptUsageFilters({ ...filters, [name]: newSelectedValues }));
   };
 
   const fetchSingleSelectOptions = async (inputValue: string) => {
-    const geneNames: TranscriptUsageGeneNamesResponse = await fetchFromApi('/api/transcript-usages/gene-names', {
-      project,
-      searchInput: inputValue,
-    });
+    const geneNames: TranscriptUsageGeneNamesResponse = await fetchFromApi(
+      '/api/transcript-usages/gene-names',
+      {
+        project,
+        searchInput: inputValue,
+      }
+    );
 
     return geneNames.map((name) => ({ value: name._id, label: name._id }));
   };
@@ -169,15 +180,15 @@ const SplicingEventsTable = ({ ...props }) => {
       geneName: selectedOption.value,
     });
 
+    setLoading(false);
+
+    setCurrentPage(0);
+
     const newRowCount = res.length;
     setRowCount(newRowCount);
 
     const newTableData = res.map(Object.values);
     setTableData(newTableData);
-
-    setCurrentPage(0);
-
-    setLoading(false);
 
     if (res.length === 0) return;
 
@@ -201,7 +212,7 @@ const SplicingEventsTable = ({ ...props }) => {
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
-          promiseOptions={fetchSingleSelectOptions}
+          options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />

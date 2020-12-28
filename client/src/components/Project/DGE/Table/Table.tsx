@@ -113,7 +113,11 @@ const DGETable = ({ ...props }) => {
 
     setLoading(true);
 
-    const { dges }: DGESResponse = await fetchFromApi('/api/dges', { project, skip, filters: filters as any });
+    const { dges }: DGESResponse = await fetchFromApi('/api/dges', {
+      project,
+      skip,
+      filters: filters as any,
+    });
 
     setLoading(false);
 
@@ -170,17 +174,17 @@ const DGETable = ({ ...props }) => {
       symbol: selectedOption.value,
     });
 
+    setLoading(false);
+
+    setCurrentPage(0);
+
     const newRowCount = res.length;
     setRowCount(newRowCount);
 
     const newTableData = res.map(Object.values);
     setTableData(newTableData);
 
-    setCurrentPage(0);
-
-    setLoading(false);
-
-    if (newRowCount === 0) return;
+    if (res.length === 0) return;
 
     const firstRow = newTableData[0];
     setSelectedRow(newTableData[0]);
@@ -190,7 +194,11 @@ const DGETable = ({ ...props }) => {
   };
 
   // WOOP, Hard coded peptide evidence on multiselect
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+  const multiSelectOnChange = (
+    selectedOptions: SelectOption[],
+    _actionMeta: ActionMeta<any>,
+    name: string
+  ) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
 
     dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
@@ -201,7 +209,7 @@ const DGETable = ({ ...props }) => {
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search symbol'
-          promiseOptions={fetchSingleSelectOptions}
+          options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
@@ -213,7 +221,9 @@ const DGETable = ({ ...props }) => {
               { value: 'false', label: 'false' },
             ]}
             defaultValues={['false']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
+            }
             className={classes.multiSelect}
           />
           <DiscreteSlider

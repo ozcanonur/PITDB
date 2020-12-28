@@ -34,11 +34,11 @@ const Experiments = ({ ...props }) => {
       max: 74400,
       defaultValues: [10000, 55000],
     },
-    {
-      type: 'SingleSelect',
-      onIndex: 3,
-      name: 'Search',
-    },
+    // {
+    //   type: 'SingleSelect',
+    //   onIndex: 3,
+    //   name: 'Search',
+    // },
   ];
 
   return (

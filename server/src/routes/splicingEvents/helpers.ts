@@ -14,9 +14,6 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
   const parsedSplicingEvents = splicingEvents.map((splicingEvent) => {
     const { geneName, event, eventType, deltaPsi, pval, pepEvidence } = splicingEvent;
 
-    // const formattedDeltaPsi = numeral(deltaPsi).format('0.000e+0');;
-    // const formattedPVal = numeral(pval).format('0.000e+0');
-
     const [, , leftPositions, rightPositions] = event.split(':');
     const start = leftPositions.split('-')[1];
     const end = rightPositions.split('-')[0];

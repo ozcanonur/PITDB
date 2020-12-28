@@ -3,9 +3,6 @@ import { OptionsType } from 'react-select';
 export interface ExtendedTableProps {
   tableData: string[][];
   tableHead: string[];
-  clickableCells?: {
-    [key: string]: (name: string) => void;
-  };
   filters?: Filter[];
   isSortable?: Boolean;
   options?: OptionsType<any>;

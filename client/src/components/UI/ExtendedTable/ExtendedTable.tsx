@@ -11,15 +11,7 @@ import { ExtendedTableProps } from './types';
 import { useStyles } from './styles';
 import { filterTable, getInitialFilterValues } from './helpers';
 
-const ExtendedTable = ({
-  tableData,
-  tableHead,
-  clickableCells,
-  filters,
-  options,
-  isSortable = true,
-  ...props
-}: ExtendedTableProps) => {
+const ExtendedTable = ({ tableData, tableHead, filters, options, isSortable = true, ...props }: ExtendedTableProps) => {
   const classes = useStyles();
 
   const initialFilterValues = getInitialFilterValues(tableData, filters);
@@ -104,7 +96,6 @@ const ExtendedTable = ({
         <Table
           tableHead={tableHead}
           tableData={filteredTableData}
-          clickableCells={clickableCells}
           currentPage={0}
           handlePageChange={() => {}}
           rowCount={5}

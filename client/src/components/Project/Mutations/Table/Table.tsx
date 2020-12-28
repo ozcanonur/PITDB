@@ -135,7 +135,11 @@ const MutationsTable = ({ ...props }) => {
     dispatch(selectMutation(gene, position));
   };
 
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+  const multiSelectOnChange = (
+    selectedOptions: SelectOption[],
+    _actionMeta: ActionMeta<any>,
+    name: string
+  ) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
     dispatch(setMutationFilters({ ...filters, [name]: newSelectedValues }));
   };
@@ -164,15 +168,15 @@ const MutationsTable = ({ ...props }) => {
       geneName: selectedOption.value,
     });
 
+    setLoading(false);
+
+    setCurrentPage(0);
+
     const newRowCount = res.length;
     setRowCount(newRowCount);
 
     const newTableData = res.map(Object.values);
     setTableData(newTableData);
-
-    setCurrentPage(0);
-
-    setLoading(false);
 
     if (res.length === 0) return;
 
@@ -188,7 +192,7 @@ const MutationsTable = ({ ...props }) => {
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
-          promiseOptions={fetchSingleSelectOptions}
+          options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
@@ -225,7 +229,9 @@ const MutationsTable = ({ ...props }) => {
               { value: 'false', label: 'false' },
             ]}
             defaultValues={['true']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
+            }
             className={classes.multiSelect}
           />
           <MultiSelect

@@ -35,8 +35,6 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    // const formattedlog2fc = numeral(log2fc).format('0.000');
-    // const formattedpadj = numeral(padj).format('0.000e+0');
     // WOOP, hard coding peptide evidence
     const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
       symbol,

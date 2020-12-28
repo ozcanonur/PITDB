@@ -14,7 +14,11 @@ import { fetchFromApi } from 'utils';
 import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import { SplicingEventsResponse, SplicingEventsGeneNamesResponse, SplicingEventsByGeneNameResponse } from './types';
+import {
+  SplicingEventsResponse,
+  SplicingEventsGeneNamesResponse,
+  SplicingEventsByGeneNameResponse,
+} from './types';
 
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
@@ -137,7 +141,11 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
-  const multiSelectOnChange = (selectedOptions: SelectOption[], _actionMeta: ActionMeta<any>, name: string) => {
+  const multiSelectOnChange = (
+    selectedOptions: SelectOption[],
+    _actionMeta: ActionMeta<any>,
+    name: string
+  ) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
     dispatch(setSplicingEventsFilters({ ...filters, [name]: newSelectedValues }));
   };
@@ -165,15 +173,15 @@ const SplicingEventsTable = ({ ...props }) => {
       geneName: selectedOption.value,
     });
 
+    setLoading(false);
+
+    setCurrentPage(0);
+
     const newRowCount = res.length;
     setRowCount(newRowCount);
 
     const newTableData = res.map(Object.values);
     setTableData(newTableData);
-
-    setCurrentPage(0);
-
-    setLoading(false);
 
     if (res.length === 0) return;
 
@@ -196,7 +204,7 @@ const SplicingEventsTable = ({ ...props }) => {
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
-          promiseOptions={fetchSingleSelectOptions}
+          options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
@@ -208,7 +216,9 @@ const SplicingEventsTable = ({ ...props }) => {
               { value: '+', label: '+' },
             ]}
             defaultValues={['-', '+']}
-            onChange={(selectedOptions, _actionMeta) => multiSelectOnChange(selectedOptions, _actionMeta, 'strand')}
+            onChange={(selectedOptions, _actionMeta) =>
+              multiSelectOnChange(selectedOptions, _actionMeta, 'strand')
+            }
             className={classes.multiSelect}
           />
           <MultiSelect

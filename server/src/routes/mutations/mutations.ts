@@ -40,16 +40,18 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     const mutationsCount = await Mutation.countDocuments(query);
 
-    const parsedMutations = mutations.map(({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
-      gene,
-      refPos,
-      type,
-      ref,
-      alt,
-      silent,
-      inCDS,
-      hasPeptideEvidence,
-    }));
+    const parsedMutations = mutations.map(
+      ({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
+        gene,
+        refPos,
+        type,
+        ref,
+        alt,
+        silent,
+        inCDS,
+        hasPeptideEvidence,
+      })
+    );
 
     res.send({ mutations: parsedMutations, mutationsCount });
   } catch (error) {
@@ -94,16 +96,18 @@ router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
 
     if (!mutations) return res.send([]);
 
-    const parsedMutations = mutations.map(({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
-      gene,
-      refPos,
-      type,
-      ref,
-      alt,
-      silent,
-      inCDS,
-      hasPeptideEvidence,
-    }));
+    const parsedMutations = mutations.map(
+      ({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
+        gene,
+        refPos,
+        type,
+        ref,
+        alt,
+        silent,
+        inCDS,
+        hasPeptideEvidence,
+      })
+    );
 
     res.send(parsedMutations);
   } catch (error) {

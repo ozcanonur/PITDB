@@ -8,3 +8,9 @@ export interface TranscriptUsageFilters {
 export interface TranscriptUsagesWithTranscript extends ITranscriptUsageDPSI {
   transcripts: IAllTranscript[];
 }
+
+export interface ConditionsByGeneName {
+  [transcript: string]: {
+    [conditionName: string]: number[];
+  };
+}

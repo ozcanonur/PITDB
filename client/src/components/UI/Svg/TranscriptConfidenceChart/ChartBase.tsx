@@ -1,6 +1,16 @@
-export const ChartBase = () => {
+interface Props {
+  conditionNames: string[];
+}
+
+export const ChartBase = ({ conditionNames, ...props }: Props) => {
   return (
-    <g id='prefix__Graph_base'>
+    <g id='prefix__Graph_base' {...props}>
+      <path
+        fill='url(#prefix__linear-gradient-21)'
+        stroke='url(#prefix__linear-gradient-22)'
+        strokeMiterlimit={10}
+        d='M31.68 4.34h196'
+      />
       <path
         fill='url(#prefix__linear-gradient)'
         stroke='url(#prefix__linear-gradient-2)'
@@ -84,21 +94,15 @@ export const ChartBase = () => {
       </text>
       <text className='prefix__cls-11' transform='rotate(-89.36 53.497 46.202)'>
         <tspan className='prefix__cls-12'>{'Y'}</tspan>
-        <tspan x={3.66} y={0}>
-          {''}
-        </tspan>
       </text>
       <text className='prefix__cls-11' transform='translate(113.85 195.85)'>
         <tspan className='prefix__cls-12'>{'X'}</tspan>
-        <tspan x={3.66} y={0}>
-          {''}
-        </tspan>
       </text>
       <text className='prefix__cls-11' transform='translate(67.29 195.85)'>
-        {'Nsi'}
+        {conditionNames[0]}
       </text>
       <text className='prefix__cls-11' transform='translate(182.62 195.85)'>
-        {'si'}
+        {conditionNames[1]}
       </text>
       <text className='prefix__cls-11' transform='translate(16.68 59.91)'>
         {'70'}
@@ -109,12 +113,6 @@ export const ChartBase = () => {
       <text className='prefix__cls-11' transform='translate(16.68 23.01)'>
         {'90'}
       </text>
-      <path
-        fill='url(#prefix__linear-gradient-21)'
-        stroke='url(#prefix__linear-gradient-22)'
-        strokeMiterlimit={10}
-        d='M31.68 4.34h196'
-      />
       <text className='prefix__cls-11' transform='translate(15.94 6.7)'>
         {'100'}
       </text>

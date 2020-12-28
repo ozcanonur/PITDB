@@ -2,6 +2,7 @@ import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
+import debounce from 'debounce-promise';
 
 import { SingleSelectProps } from './types';
 import { singleSelectStyles } from './styles';
@@ -34,10 +35,7 @@ const CustomMenuList = (props: any) => (
 
 const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
 
-const SingleSelect = ({ singleSelectProps, name, promiseOptions, onChange, ...props }: SingleSelectProps) => {
-  // const filterValues = (inputValue: string) =>
-  //   options.filter((e) => e.label.toLowerCase().startsWith(inputValue.toLowerCase()));
-
+const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
   // For menu close animation
   const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
   const onMenuClose = () => {
@@ -56,6 +54,8 @@ const SingleSelect = ({ singleSelectProps, name, promiseOptions, onChange, ...pr
     containerEl?.appendChild(clonedMenuEl!);
   };
 
+  const debouncedOptions = debounce(options, 500, { leading: true });
+
   return (
     <div {...props}>
       <AsyncSelect
@@ -63,7 +63,7 @@ const SingleSelect = ({ singleSelectProps, name, promiseOptions, onChange, ...pr
         components={{ DropdownIndicator: CustomDropdownIndicator, MenuList: CustomMenuList, Menu: CustomMenu }}
         cacheOptions
         defaultOptions
-        loadOptions={promiseOptions}
+        loadOptions={debouncedOptions}
         styles={singleSelectStyles}
         placeholder={name}
         closeMenuOnSelect={false}

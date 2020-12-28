@@ -2,9 +2,15 @@ import express from 'express';
 
 import { ExtendedRequest } from '../../types';
 import { TranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
-import { findMongoFieldFromTableColumn, parseTranscriptUsages, parseTranscriptsForViewer } from './helpers';
-import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
+import { TranscriptUsage } from '../../db/models/transcriptUsage';
 import { TranscriptCount } from '../../db/models/transcriptCount';
+import {
+  findMongoFieldFromTableColumn,
+  parseTranscriptUsages,
+  parseTranscriptsForViewer,
+  parseConditionsByGeneName,
+} from './helpers';
+import { TranscriptUsageFilters, TranscriptUsagesWithTranscript, ConditionsByGeneName } from './types';
 
 const router = express.Router();
 
@@ -36,9 +42,6 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
       const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
-
-      // const formattedDeltaPsi = numeral(deltaPsi).format('0.000e+0');
-      // const formattedPVal = numeral(pval).format('0.000e+0');
 
       // WOOP, hard coding peptide evidence
       return {
@@ -151,6 +154,27 @@ router.get('/read-counts', async (req: ExtendedRequest, res) => {
     });
 
     res.send(parsedReadCounts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+/*
+ * Route for getting transcript usage confidence bar chart data
+ * Filters by project and gene name
+ */
+router.get('/conditions-by-gene-name', async (req: ExtendedRequest, res) => {
+  const { project, gene } = req.query;
+
+  try {
+    const transcriptUsages = await TranscriptUsage.find({ project, geneName: gene });
+
+    if (!transcriptUsages) return res.send([]);
+
+    const conditionsByGeneName = parseConditionsByGeneName(transcriptUsages);
+
+    res.send(conditionsByGeneName);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
