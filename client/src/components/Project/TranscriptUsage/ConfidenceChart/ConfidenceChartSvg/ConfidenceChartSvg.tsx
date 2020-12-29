@@ -9,8 +9,8 @@ import { COLORS } from 'variables/transcriptViewerColors';
 
 const CHART_HEIGHT = 183;
 
-const CONDITION_ONE_X_POS = 73;
-const CONDITION_TWO_X_POS = 185;
+const CONDITION_ONE_X_POS = 109;
+const CONDITION_TWO_X_POS = 268;
 
 const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
   const chartValues = makeChartValues(data);
@@ -25,7 +25,7 @@ const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
     <svg
       xmlns='http://www.w3.org/2000/svg'
       xmlnsXlink='http://www.w3.org/1999/xlink'
-      viewBox='0 0 227.68 200.85'
+      viewBox='0 0 350 200'
       {...props}
     >
       <defs>

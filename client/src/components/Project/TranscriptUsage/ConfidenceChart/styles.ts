@@ -1,13 +1,11 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  container: {
+  projectItemCard: {
+    marginLeft: '2rem',
+    width: '100%',
+    height: '38.65rem',
     position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    height: '100%',
-    padding: '2rem 0',
-    // transform: 'translateX(-12rem)',
   },
   loading: {
     position: 'absolute',

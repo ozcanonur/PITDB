@@ -1,13 +1,15 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  transcriptViewerContainer: {
-    width: '60%',
-    padding: '2rem',
-    display: 'flex',
+  projectItemCard: {
     position: 'relative',
-    overflow: 'auto',
+    // overflow: 'auto',
     direction: 'rtl',
+    // marginTop: '2rem',
+  },
+  transcriptViewerContainer: {
+    maxHeight: '30rem',
+    overflow: 'auto',
   },
   transcriptRails: {
     display: 'flex',
@@ -17,14 +19,11 @@ export const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     direction: 'rtl',
     height: 'max-content',
-
-    '& > svg:not(:last-child)': {
-      marginBottom: '2rem',
-    },
+    padding: '1rem 2rem 0.5rem',
   },
   loading: {
     position: 'absolute',
-    left: '43%',
+    left: '50%',
     top: '50%',
     marginRight: '3rem',
     transform: 'translate(-50%, -50%)',

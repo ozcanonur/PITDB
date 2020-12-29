@@ -7,67 +7,67 @@ export const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
         fill='url(#prefix__linear-gradient-21)'
         stroke='url(#prefix__linear-gradient-22)'
         strokeMiterlimit={10}
-        d='M31.68 4.34h196'
+        d='M30 4.34h350'
       />
       <path
         fill='url(#prefix__linear-gradient)'
         stroke='url(#prefix__linear-gradient-2)'
         strokeMiterlimit={10}
-        d='M31.68 20.66h196'
+        d='M30 20.66h350'
       />
       <path
         fill='url(#prefix__linear-gradient-3)'
         stroke='url(#prefix__linear-gradient-4)'
         strokeMiterlimit={10}
-        d='M31.68 39.18h196'
+        d='M30 39.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-5)'
         stroke='url(#prefix__linear-gradient-6)'
         strokeMiterlimit={10}
-        d='M31.68 57.18h196'
+        d='M30 57.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-7)'
         stroke='url(#prefix__linear-gradient-8)'
         strokeMiterlimit={10}
-        d='M31.68 75.18h196'
+        d='M30 75.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-9)'
         stroke='url(#prefix__linear-gradient-10)'
         strokeMiterlimit={10}
-        d='M31.68 93.18h196'
+        d='M30 93.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-11)'
         stroke='url(#prefix__linear-gradient-12)'
         strokeMiterlimit={10}
-        d='M31.68 111.18h196'
+        d='M30 111.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-13)'
         stroke='url(#prefix__linear-gradient-14)'
         strokeMiterlimit={10}
-        d='M31.68 129.18h196'
+        d='M30 129.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-15)'
         stroke='url(#prefix__linear-gradient-16)'
         strokeMiterlimit={10}
-        d='M31.68 147.18h196'
+        d='M30 147.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-17)'
         stroke='url(#prefix__linear-gradient-18)'
         strokeMiterlimit={10}
-        d='M31.68 165.18h196'
+        d='M30 165.18h350'
       />
       <path
         fill='url(#prefix__linear-gradient-19)'
         stroke='url(#prefix__linear-gradient-20)'
         strokeMiterlimit={10}
-        d='M31.68 183.51h196'
+        d='M30 183.51h350'
       />
       <text className='prefix__cls-11' transform='translate(20.9 185.41)'>
         {'0'}
@@ -93,13 +93,13 @@ export const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
       <text className='prefix__cls-11' transform='rotate(-89.36 53.497 46.202) translate(-30, 0)'>
         <tspan className='prefix__cls-12'>{'Transcript Usage %'}</tspan>
       </text>
-      <text className='prefix__cls-11' transform='translate(110.85 198.85)'>
+      {/* <text className='prefix__cls-11' transform='translate(150 198.85)'>
         <tspan className='prefix__cls-12'>{'Conditions'}</tspan>
-      </text>
-      <text className='prefix__cls-11' transform='translate(67.29 198.85)'>
+      </text> */}
+      <text className='prefix__cls-11' transform='translate(102 200)'>
         {conditionNames[0]}
       </text>
-      <text className='prefix__cls-11' transform='translate(182.62 198.85)'>
+      <text className='prefix__cls-11' transform='translate(264 200)'>
         {conditionNames[1]}
       </text>
       <text className='prefix__cls-11' transform='translate(16.68 59.91)'>
@@ -114,8 +114,8 @@ export const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
       <text className='prefix__cls-11' transform='translate(13.94 6.7)'>
         {'100'}
       </text>
-      <path stroke='#d9d9d9' fill='#bbb' strokeMiterlimit={10} d='M73.01 189.24l.04-5.55' />
-      <path stroke='#eee' fill='#bbb' strokeMiterlimit={10} d='M185.43 189.24l.04-5.55' />
+      <path stroke='#d9d9d9' fill='#bbb' strokeMiterlimit={10} d='M109 189.24l.04-5.55' />
+      <path stroke='#eee' fill='#bbb' strokeMiterlimit={10} d='M268 189.24l.04-5.55' />
     </g>
   );
 };

@@ -9,12 +9,22 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: '4rem',
     flexDirection: 'column',
   },
-  figuresContainer: {
-    marginTop: '2rem',
-    marginRight: '1rem',
-  },
-  figures: {
+  tableAndFigures: {
     display: 'flex',
-    height: '33rem',
+    width: '100%',
+    height: 'max-content',
+    marginTop: '2rem',
+  },
+  figuresContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '40%',
+    minWidth: '32rem',
+    marginRight: '1rem',
+
+    '& > div:not(:last-child)': {
+      marginBottom: '2rem',
+    },
   },
 }));

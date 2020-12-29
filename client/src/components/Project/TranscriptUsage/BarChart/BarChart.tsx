@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ResponsiveBar } from '@nivo/bar';
 import tinyColor from 'tinycolor2';
 
+import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Loading from 'components/UI/Loading/Loading';
 import { fetchFromApi } from 'utils';
 import { TranscriptReadCounts } from './types';
@@ -17,6 +18,7 @@ const BarChart = ({ ...props }) => {
   const { color } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscriptColor);
 
   const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCounts>([]);
+  const [barChartColor, setBarChartColor] = useState('#336');
   const [loading, setLoading] = useState(false);
 
   const fetchReadCounts = async (mounted: boolean) => {
@@ -32,6 +34,7 @@ const BarChart = ({ ...props }) => {
     if (!mounted || !res) return;
 
     setTranscriptReadCounts(res);
+    setBarChartColor(String(tinyColor(color).setAlpha(0.8)));
   };
 
   useEffect(() => {
@@ -48,7 +51,7 @@ const BarChart = ({ ...props }) => {
   }, [project, transcript]);
 
   return (
-    <div className={classes.container} {...props}>
+    <ProjectItemCard name={`Read counts for ${transcript}`} className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveBar
@@ -57,11 +60,11 @@ const BarChart = ({ ...props }) => {
           data={transcriptReadCounts}
           keys={['readCount']}
           indexBy='condition'
-          margin={{ top: 0, bottom: 50, left: 60, right: 40 }}
+          margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
           padding={0.1}
           labelFormat='.1f'
           layout='horizontal'
-          colors={[String(tinyColor(color).setAlpha(0.8))]}
+          colors={[barChartColor]}
           borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
           axisTop={null}
           axisRight={null}
@@ -100,7 +103,7 @@ const BarChart = ({ ...props }) => {
           }}
         />
       </div>
-    </div>
+    </ProjectItemCard>
   );
 };
 

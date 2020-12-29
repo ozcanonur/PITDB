@@ -4,22 +4,7 @@ export const useStyles = makeStyles((theme) => ({
   container: {
     height: 'max-content',
     marginRight: '1rem',
-    // flexGrow: 1,
-  },
-  tableContainer: {
-    padding: '2rem 4rem',
-    paddingBottom: '0.5rem',
-    position: 'relative',
-    minHeight: '52rem',
-
-    '& td': {
-      top: '50% !important',
-    },
-  },
-  multiSelect: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexGrow: 1,
   },
   filtersContainer: {
     position: 'relative',
@@ -36,10 +21,20 @@ export const useStyles = makeStyles((theme) => ({
   },
   multiSelectContainer: {
     display: 'flex',
-    padding: '0 2rem',
+    paddingRight: '2rem',
 
     '& > div:not(:last-child)': {
       marginRight: '4rem',
     },
+  },
+  multiSelect: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  tableContainer: {
+    padding: '2rem 4rem',
+    paddingBottom: '0.5rem',
+    position: 'relative',
   },
 }));

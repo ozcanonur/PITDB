@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
+import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import TranscriptSvg from 'components/Project/TranscriptUsage/TranscriptViewer/TranscriptSvg';
 import Loading from 'components/UI/Loading/Loading';
 
@@ -48,22 +49,24 @@ const TranscriptViewer = ({ ...props }) => {
   }, [project, gene]);
 
   return (
-    <div className={classes.transcriptViewerContainer} {...props}>
+    <ProjectItemCard name={`Transcript viewer for ${gene}`} className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <div className={classes.transcriptRails} style={{ opacity: loading ? 0 : 1 }}>
-        {transcriptsData.transcripts.map((transcript, index) => (
-          <TranscriptSvg
-            key={transcript.transcriptId}
-            transcriptData={{
-              transcript: transcript,
-              minimumPosition: transcriptsData.minimumPosition,
-              maximumPosition: transcriptsData.maximumPosition,
-            }}
-            color={COLORS[index]}
-          />
-        ))}
+      <div className={classes.transcriptViewerContainer}>
+        <div className={classes.transcriptRails} style={{ opacity: loading ? 0 : 1 }}>
+          {transcriptsData.transcripts.map((transcript, index) => (
+            <TranscriptSvg
+              key={transcript.transcriptId}
+              transcriptData={{
+                transcript: transcript,
+                minimumPosition: transcriptsData.minimumPosition,
+                maximumPosition: transcriptsData.maximumPosition,
+              }}
+              color={COLORS[index]}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </ProjectItemCard>
   );
 };
 
