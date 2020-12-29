@@ -23,6 +23,9 @@ interface RootState {
   selectedTranscriptViewerTranscript: {
     transcript: string;
   };
+  selectedTranscriptViewerTranscriptColor: {
+    color: string;
+  };
 }
 
 interface GenericObject {

@@ -6,7 +6,8 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     height: '100%',
-    transform: 'translateX(-12rem)',
+    padding: '2rem 0',
+    // transform: 'translateX(-12rem)',
   },
   loading: {
     position: 'absolute',

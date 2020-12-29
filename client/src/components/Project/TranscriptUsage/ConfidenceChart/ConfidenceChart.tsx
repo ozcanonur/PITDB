@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ConditionsByGeneNameResponse } from './types';
 
-import TranscriptConfidenceChart from 'components/UI/Svg/TranscriptConfidenceChart/TranscriptConfidenceChart';
+import ConfidenceChartSvg from 'components/Project/TranscriptUsage/ConfidenceChart/ConfidenceChartSvg/ConfidenceChartSvg';
 import Loading from 'components/UI/Loading/Loading';
 
 import { fetchFromApi } from 'utils';
@@ -50,10 +50,7 @@ const ConfidenceChart = () => {
   return (
     <div className={classes.container}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <TranscriptConfidenceChart
-        data={conditionsData}
-        style={{ height: '27rem', opacity: loading ? 0 : 1 }}
-      />
+      <ConfidenceChartSvg data={conditionsData} style={{ height: '100%', opacity: loading ? 0 : 1 }} />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {
   SetTranscriptUsageFiltersAction,
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
+  SelectTranscriptViewerTranscriptColorAction,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
@@ -48,7 +49,9 @@ export const selectDGE = (symbol: string): SelectDGEAction => {
   };
 };
 
-export const setSplicingEventsFilters = (filters: SplicingEventsTableFilters): SetSplicingEventsFiltersAction => {
+export const setSplicingEventsFilters = (
+  filters: SplicingEventsTableFilters
+): SetSplicingEventsFiltersAction => {
   return {
     type: ACTION.SET_SPLICING_EVENTS_FILTERS,
     payload: filters,
@@ -65,7 +68,9 @@ export const selectSplicingEvent = (gene: string, dPSI: number): SelectSplicingE
   };
 };
 
-export const setTranscriptUsageFilters = (filters: TranscriptUsageTableFilters): SetTranscriptUsageFiltersAction => {
+export const setTranscriptUsageFilters = (
+  filters: TranscriptUsageTableFilters
+): SetTranscriptUsageFiltersAction => {
   return {
     type: ACTION.SET_TRANSCRIPT_USAGE_FILTERS,
     payload: filters,
@@ -82,11 +87,24 @@ export const selectTranscriptUsage = (gene: string, transcript: string): SelectT
   };
 };
 
-export const selectTranscriptViewerTranscript = (transcript: string): SelectTranscriptViewerTranscriptAction => {
+export const selectTranscriptViewerTranscript = (
+  transcript: string
+): SelectTranscriptViewerTranscriptAction => {
   return {
     type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT,
     payload: {
       transcript,
+    },
+  };
+};
+
+export const selectTranscriptViewerTranscriptColor = (
+  color: string
+): SelectTranscriptViewerTranscriptColorAction => {
+  return {
+    type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR,
+    payload: {
+      color,
     },
   };
 };

@@ -6,7 +6,11 @@ export type ChartValue = {
   conditions: { conditionName: string; avg: number; ci: number }[];
 };
 
-export interface TranscriptConfidenceChartProps {
+export interface ConfidenceChartSvgProps {
   style: CSSProperties;
   data: ConditionsByGeneNameResponse;
+}
+
+export interface ChartBaseProps {
+  conditionNames: string[];
 }

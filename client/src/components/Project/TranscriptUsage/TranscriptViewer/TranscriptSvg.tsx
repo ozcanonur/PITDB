@@ -2,15 +2,15 @@ import { createRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Tooltip } from 'react-svg-tooltip';
 
-import { selectTranscriptViewerTranscript } from 'actions';
-import { TranscriptViewerRailProps } from './types';
+import { selectTranscriptViewerTranscript, selectTranscriptViewerTranscriptColor } from 'actions';
+import { TranscriptSvgProps } from './types';
 
 const RAIL_OFFSET = 153;
 const RAIL_LENGTH = 494;
 const RAIL_HEIGHT = 2;
 const EXON_HEIGHT = 17;
 
-const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailProps) => {
+const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) => {
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
   const { transcriptId, exons } = transcript;
 
@@ -23,6 +23,7 @@ const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailPro
   const dispatch = useDispatch();
   const selectTranscriptOnClick = () => {
     dispatch(selectTranscriptViewerTranscript(transcriptId));
+    dispatch(selectTranscriptViewerTranscriptColor(color));
   };
 
   const ref = createRef<SVGRectElement>();
@@ -30,7 +31,7 @@ const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailPro
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 800 28'
+      viewBox='0 0 650 28'
       style={{ direction: 'ltr', overflow: 'clip' }}
       {...props}
     >
@@ -57,21 +58,26 @@ const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailPro
             const exonWidth = increment * (end - start);
             return (
               <g key={String(start + end)} className='transcriptViewerExon' transform='translate(0 5)'>
-                <rect fill={color} ref={ref} x={exonStartingPosition} width={exonWidth} height={EXON_HEIGHT} rx={1} />{' '}
+                <rect
+                  fill={color}
+                  ref={ref}
+                  x={exonStartingPosition}
+                  width={exonWidth}
+                  height={EXON_HEIGHT}
+                  rx={1}
+                />
                 <Tooltip triggerRef={ref}>
                   <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
-                    <g>
-                      <rect x={0.25} y={0.25} width={160} height={20.63} rx={1} fill='white' />
-                      <rect x={22.38} y={5.86} width={9.4} height={9.4} rx={1} fill='#336' />
-                      <text
-                        transform='translate(37.31 14.96)'
-                        fontSize={'1.1rem'}
-                        fontFamily='Poppins, sans-serif'
-                        fill='#336'
-                      >
-                        {`${start} - ${end}`}
-                      </text>
-                    </g>
+                    <rect x={0.25} y={0.25} width={160} height={20.63} rx={1} fill='white' />
+                    <rect x={22.38} y={5.86} width={9.4} height={9.4} rx={1} fill='#336' />
+                    <text
+                      transform='translate(37.31 14.96)'
+                      fontSize={'1.1rem'}
+                      fontFamily='Poppins, sans-serif'
+                      fill='#336'
+                    >
+                      {`${start} - ${end}`}
+                    </text>
                   </g>
                 </Tooltip>
               </g>
@@ -98,4 +104,4 @@ const Transcript = ({ transcriptData, color, ...props }: TranscriptViewerRailPro
   );
 };
 
-export default Transcript;
+export default TranscriptSvg;

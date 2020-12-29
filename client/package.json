@@ -29,6 +29,7 @@
     "@types/react-select": "^3.0.28",
     "@types/redux": "^3.6.0",
     "@types/redux-devtools-extension": "^2.13.2",
+    "@types/tinycolor2": "^1.4.2",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.3.2",
     "aos": "^3.0.0-beta.6",
     "axios": "^0.21.0",
@@ -49,6 +50,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "tinycolor2": "^1.4.2",
     "typescript": "^4.0.3"
   },
   "scripts": {

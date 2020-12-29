@@ -66,7 +66,7 @@ const Examples = ({ ...props }) => {
           key={example.id}
           exampleProps={example}
           data-aos='zoom-in'
-          data-aos-delay={String(250 + index * 200)}
+          data-aos-delay={String(200 + index * 150)}
         />
       ))}
     </section>

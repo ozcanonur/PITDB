@@ -11,6 +11,7 @@ import {
   SetTranscriptUsageFiltersAction,
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
+  SelectTranscriptViewerTranscriptColorAction,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -47,7 +48,10 @@ const selectedMutation = (
   }
 };
 
-const DGEFilters = (state: DGETableFilters = { maxPValue: 0.05, minAbsFoldChange: 1 }, action: SetDGEFiltersAction) => {
+const DGEFilters = (
+  state: DGETableFilters = { maxPValue: 0.05, minAbsFoldChange: 1 },
+  action: SetDGEFiltersAction
+) => {
   switch (action.type) {
     case ACTION.SET_DGE_FILTERS:
       return { ...action.payload };
@@ -125,6 +129,18 @@ const selectedTranscriptViewerTranscript = (
   }
 };
 
+const selectedTranscriptViewerTranscriptColor = (
+  state: { color: string } = { color: '#336' },
+  action: SelectTranscriptViewerTranscriptColorAction
+) => {
+  switch (action.type) {
+    case ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   mutationFilters,
   selectedMutation,
@@ -135,4 +151,5 @@ export default combineReducers({
   transcriptUsageFilters,
   selectedTranscriptUsage,
   selectedTranscriptViewerTranscript,
+  selectedTranscriptViewerTranscriptColor,
 });

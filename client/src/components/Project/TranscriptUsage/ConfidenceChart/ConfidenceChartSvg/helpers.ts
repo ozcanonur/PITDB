@@ -50,5 +50,5 @@ export const makeChartValues = (data: ConditionsByGeneNameResponse) => {
     chartValues.push(value);
   });
 
-  return chartValues;
+  return chartValues.sort((x, y) => x.transcript.localeCompare(y.transcript));
 };

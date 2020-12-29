@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { ResponsiveBar } from '@nivo/bar';
+import tinyColor from 'tinycolor2';
 
 import Loading from 'components/UI/Loading/Loading';
 import { fetchFromApi } from 'utils';
@@ -13,13 +14,18 @@ const BarChart = ({ ...props }) => {
 
   const { project } = useParams<{ project: string }>();
   const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
+  const { color } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscriptColor);
 
   const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCounts>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchReadCounts = async (mounted: boolean) => {
     setLoading(true);
-    const res: TranscriptReadCounts = await fetchFromApi('/api/transcript-usages/read-counts', { project, transcript });
+
+    const res: TranscriptReadCounts = await fetchFromApi('/api/transcript-usages/read-counts', {
+      project,
+      transcript,
+    });
 
     setLoading(false);
 
@@ -51,11 +57,11 @@ const BarChart = ({ ...props }) => {
           data={transcriptReadCounts}
           keys={['readCount']}
           indexBy='condition'
-          margin={{ top: 20, bottom: 75, left: 60, right: 40 }}
+          margin={{ top: 0, bottom: 50, left: 60, right: 40 }}
           padding={0.1}
           labelFormat='.1f'
           layout='horizontal'
-          colors={['rgba(65, 15, 94, 0.8)']}
+          colors={[String(tinyColor(color).setAlpha(0.8))]}
           borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
           axisTop={null}
           axisRight={null}

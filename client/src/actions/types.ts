@@ -13,6 +13,7 @@ export enum ACTION {
   SET_TRANSCRIPT_USAGE_FILTERS,
   SELECT_TRANSCRIPT_USAGE,
   SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT,
+  SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR,
 }
 export type SelectMutationAction = {
   type: ACTION.SELECT_MUTATION;
@@ -69,5 +70,12 @@ export type SelectTranscriptViewerTranscriptAction = {
   type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT;
   payload: {
     transcript: string;
+  };
+};
+
+export type SelectTranscriptViewerTranscriptColorAction = {
+  type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR;
+  payload: {
+    color: string;
   };
 };

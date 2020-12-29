@@ -26,11 +26,15 @@ const TranscriptUsageWrapper = () => {
   return (
     <div className={classes.container}>
       <TranscriptUsageTable data-aos='fade-in' />
-      <ProjectItemCard className={classes.figuresContainer} name={`Transcript Viewer for ${gene}`} data-aos='fade-in'>
+      <ProjectItemCard
+        className={classes.figuresContainer}
+        name={`Transcript Viewer for ${gene}`}
+        data-aos='fade-in'
+      >
         <div className={classes.figures}>
           <TranscriptViewer />
-          <BarChart />
           <ConfidenceChart />
+          <BarChart />
         </div>
       </ProjectItemCard>
     </div>

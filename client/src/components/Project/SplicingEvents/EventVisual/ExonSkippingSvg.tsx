@@ -1,4 +1,4 @@
-const ExonSkipping = ({ eventData, ...props }: { eventData: any; className: string }) => {
+const ExonSkippingSvg = ({ eventData, ...props }: { eventData: any; className: string }) => {
   const { chr, direction, eventType, positions } = eventData;
 
   const [pos1, pos2, pos3, pos4] = positions;
@@ -59,13 +59,19 @@ const ExonSkipping = ({ eventData, ...props }: { eventData: any; className: stri
             <g className='prefix__cls-1'>
               <path className='prefix__cls-2' d='M246 31.98h298' />
               <path className='prefix__cls-3' d='M262.72 31.98H544' />
-              <path className='prefix__cls-2' d='M270.58 42.35l-4.41-10.37 4.41-10.37L246 31.98l24.58 10.37z' />
+              <path
+                className='prefix__cls-2'
+                d='M270.58 42.35l-4.41-10.37 4.41-10.37L246 31.98l24.58 10.37z'
+              />
             </g>
           ) : (
             <g className='prefix__cls-1'>
               <path className='prefix__cls-2' d='M544 31.98H246' />
               <path className='prefix__cls-3' d='M527.28 31.98H246' />
-              <path className='prefix__cls-2' d='M519.42 21.61l4.41 10.37-4.41 10.37L544 31.98l-24.58-10.37z' />
+              <path
+                className='prefix__cls-2'
+                d='M519.42 21.61l4.41 10.37-4.41 10.37L544 31.98l-24.58-10.37z'
+              />
             </g>
           )}
           <path
@@ -98,4 +104,4 @@ const ExonSkipping = ({ eventData, ...props }: { eventData: any; className: stri
   );
 };
 
-export default ExonSkipping;
+export default ExonSkippingSvg;

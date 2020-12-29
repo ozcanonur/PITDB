@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import Transcript from 'components/UI/Svg/Transcript/Transcript';
+import TranscriptSvg from 'components/Project/TranscriptUsage/TranscriptViewer/TranscriptSvg';
 import Loading from 'components/UI/Loading/Loading';
 
 import { TranscriptsData } from './types';
@@ -52,7 +52,7 @@ const TranscriptViewer = ({ ...props }) => {
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.transcriptRails} style={{ opacity: loading ? 0 : 1 }}>
         {transcriptsData.transcripts.map((transcript, index) => (
-          <Transcript
+          <TranscriptSvg
             key={transcript.transcriptId}
             transcriptData={{
               transcript: transcript,

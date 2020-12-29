@@ -1,8 +1,6 @@
-interface Props {
-  conditionNames: string[];
-}
+import { ChartBaseProps } from './types';
 
-export const ChartBase = ({ conditionNames, ...props }: Props) => {
+export const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
   return (
     <g id='prefix__Graph_base' {...props}>
       <path
@@ -71,11 +69,11 @@ export const ChartBase = ({ conditionNames, ...props }: Props) => {
         strokeMiterlimit={10}
         d='M31.68 183.51h196'
       />
-      <text className='prefix__cls-11' transform='translate(16.68 167.85)'>
-        {'10'}
-      </text>
       <text className='prefix__cls-11' transform='translate(20.9 185.41)'>
         {'0'}
+      </text>
+      <text className='prefix__cls-11' transform='translate(18.68 167.85)'>
+        {'10'}
       </text>
       <text className='prefix__cls-11' transform='translate(16.68 149.52)'>
         {'20'}
@@ -92,16 +90,16 @@ export const ChartBase = ({ conditionNames, ...props }: Props) => {
       <text className='prefix__cls-11' transform='translate(16.68 77.91)'>
         {'60'}
       </text>
-      <text className='prefix__cls-11' transform='rotate(-89.36 53.497 46.202)'>
-        <tspan className='prefix__cls-12'>{'Y'}</tspan>
+      <text className='prefix__cls-11' transform='rotate(-89.36 53.497 46.202) translate(-30, 0)'>
+        <tspan className='prefix__cls-12'>{'Transcript Usage %'}</tspan>
       </text>
-      <text className='prefix__cls-11' transform='translate(113.85 195.85)'>
-        <tspan className='prefix__cls-12'>{'X'}</tspan>
+      <text className='prefix__cls-11' transform='translate(110.85 198.85)'>
+        <tspan className='prefix__cls-12'>{'Conditions'}</tspan>
       </text>
-      <text className='prefix__cls-11' transform='translate(67.29 195.85)'>
+      <text className='prefix__cls-11' transform='translate(67.29 198.85)'>
         {conditionNames[0]}
       </text>
-      <text className='prefix__cls-11' transform='translate(182.62 195.85)'>
+      <text className='prefix__cls-11' transform='translate(182.62 198.85)'>
         {conditionNames[1]}
       </text>
       <text className='prefix__cls-11' transform='translate(16.68 59.91)'>
@@ -113,7 +111,7 @@ export const ChartBase = ({ conditionNames, ...props }: Props) => {
       <text className='prefix__cls-11' transform='translate(16.68 23.01)'>
         {'90'}
       </text>
-      <text className='prefix__cls-11' transform='translate(15.94 6.7)'>
+      <text className='prefix__cls-11' transform='translate(13.94 6.7)'>
         {'100'}
       </text>
       <path stroke='#d9d9d9' fill='#bbb' strokeMiterlimit={10} d='M73.01 189.24l.04-5.55' />
@@ -321,7 +319,7 @@ export const ChartDefs = () => {
       />
       <style>
         {
-          '.prefix__cls-11{font-size:8px;fill:#336;font-family:Poppins, sans-serif}.prefix__cls-12{letter-spacing:-.01em}'
+          '.prefix__cls-11{font-size:9px;fill:#336;font-family:Poppins, sans-serif}.prefix__cls-12{letter-spacing:-.01em}'
         }
       </style>
     </>

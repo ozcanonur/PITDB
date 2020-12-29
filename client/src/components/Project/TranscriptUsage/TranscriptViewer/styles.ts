@@ -14,7 +14,6 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     transform: 'translateZ(0)',
     width: '100%',
-    marginTop: '1rem',
     overflow: 'auto',
     direction: 'rtl',
     height: 'max-content',

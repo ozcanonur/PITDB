@@ -1,8 +1,10 @@
+// import { createRef } from 'react';
 import { useSelector } from 'react-redux';
+// import { Tooltip } from 'react-svg-tooltip';
 
 import { ChartBase, ChartDefs } from './ChartBase';
 import { makeChartValues, getConditionNames } from './helpers';
-import { TranscriptConfidenceChartProps } from './types';
+import { ConfidenceChartSvgProps } from './types';
 import { COLORS } from 'variables/transcriptViewerColors';
 
 const CHART_HEIGHT = 183;
@@ -10,18 +12,20 @@ const CHART_HEIGHT = 183;
 const CONDITION_ONE_X_POS = 73;
 const CONDITION_TWO_X_POS = 185;
 
-const TranscriptConfidentChart = ({ data, ...props }: TranscriptConfidenceChartProps) => {
+const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
   const chartValues = makeChartValues(data);
 
   const { transcript: selectedTranscript } = useSelector(
     (state: RootState) => state.selectedTranscriptViewerTranscript
   );
 
+  // const ref = createRef<SVGRectElement>();
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       xmlnsXlink='http://www.w3.org/1999/xlink'
-      viewBox='0 0 227.68 197.85'
+      viewBox='0 0 227.68 200.85'
       {...props}
     >
       <defs>
@@ -48,7 +52,7 @@ const TranscriptConfidentChart = ({ data, ...props }: TranscriptConfidenceChartP
               x2={CONDITION_TWO_X_POS}
               y2={lineEnd}
               stroke={COLORS[index]}
-              strokeWidth={transcript === selectedTranscript ? 1.5 : 0.5}
+              strokeWidth={transcript === selectedTranscript ? 1.5 : 0.2}
               style={{ transition: 'all .2s' }}
             />
             <polygon
@@ -57,6 +61,11 @@ const TranscriptConfidentChart = ({ data, ...props }: TranscriptConfidenceChartP
               opacity={transcript === selectedTranscript ? 0.65 : 0.1}
               style={{ transition: 'all .2s' }}
             />
+            {/* <Tooltip triggerRef={ref}>
+              <text transform='' fontSize={'1.1rem'} fontFamily='Poppins, sans-serif' fill='#336'>
+                5423523
+              </text>
+            </Tooltip> */}
           </g>
         );
       })}
@@ -64,4 +73,4 @@ const TranscriptConfidentChart = ({ data, ...props }: TranscriptConfidenceChartP
   );
 };
 
-export default TranscriptConfidentChart;
+export default ConfidenceChartSvg;
