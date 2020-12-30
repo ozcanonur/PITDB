@@ -2,7 +2,8 @@
 import { useSelector } from 'react-redux';
 // import { Tooltip } from 'react-svg-tooltip';
 
-import { ChartBase, ChartDefs } from './ChartBase';
+import ChartBase from './ChartBase';
+
 import { makeChartValues, getConditionNames } from './helpers';
 import { ConfidenceChartSvgProps } from './types';
 import { COLORS } from 'variables/transcriptViewerColors';
@@ -26,11 +27,9 @@ const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
       xmlns='http://www.w3.org/2000/svg'
       xmlnsXlink='http://www.w3.org/1999/xlink'
       viewBox='0 0 350 200'
+      preserveAspectRatio='xMinYMid meet'
       {...props}
     >
-      <defs>
-        <ChartDefs />
-      </defs>
       <ChartBase conditionNames={getConditionNames(data)} />
       {chartValues.map(({ transcript, conditions }, index) => {
         const [lineStart, lineEnd] = conditions.map(({ avg }) => CHART_HEIGHT - avg * CHART_HEIGHT);

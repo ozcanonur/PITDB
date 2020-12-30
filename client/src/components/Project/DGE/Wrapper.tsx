@@ -7,7 +7,7 @@ import VolcanoPlot from './VolcanoPlot/VolcanoPlot';
 
 import { useStyles } from './styles';
 
-const DGE = () => {
+const DGEWrapper = () => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const DGE = () => {
   );
 };
 
-export default DGE;
+export default DGEWrapper;

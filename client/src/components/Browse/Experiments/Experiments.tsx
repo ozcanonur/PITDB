@@ -6,7 +6,11 @@ import { Filter } from 'components/UI/ExtendedTable/types';
 
 import { sampleTableData } from 'variables/browseTableData';
 
+import { useStyles } from './styles';
+
 const Experiments = ({ ...props }) => {
+  const classes = useStyles();
+
   useEffect(() => {
     AOS.init({
       duration: 500,
@@ -57,8 +61,7 @@ const Experiments = ({ ...props }) => {
         'Variations',
       ]}
       filters={filters}
-      // @ts-ignore
-      style={{ marginTop: '12rem' }}
+      className={classes.extendedTable}
       {...props}
     />
   );

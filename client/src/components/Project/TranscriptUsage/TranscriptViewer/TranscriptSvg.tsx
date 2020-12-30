@@ -33,7 +33,7 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 650 28'
       style={{ direction: 'ltr', overflow: 'clip' }}
-      preserveAspectRatio='xMinYMax'
+      // preserveAspectRatio='none'
       {...props}
     >
       <defs>

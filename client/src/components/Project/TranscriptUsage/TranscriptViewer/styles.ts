@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
     // overflow: 'auto',
     direction: 'rtl',
     // marginTop: '2rem',
+    minHeight: '25rem',
   },
   transcriptViewerContainer: {
     maxHeight: '30rem',

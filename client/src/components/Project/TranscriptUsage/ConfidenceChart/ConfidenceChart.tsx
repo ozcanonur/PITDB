@@ -66,7 +66,7 @@ const ConfidenceChart = ({ ...props }) => {
           opacity: loading ? 0 : 1,
         }}
       >
-        <ConfidenceChartSvg style={{ height: '100%' }} data={conditionsData} />
+        <ConfidenceChartSvg style={{ height: '100%', width: '100%' }} data={conditionsData} />
       </div>
     </ProjectItemCard>
   );

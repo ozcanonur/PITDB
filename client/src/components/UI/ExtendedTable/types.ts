@@ -6,6 +6,7 @@ export interface ExtendedTableProps {
   filters?: Filter[];
   isSortable?: Boolean;
   options?: OptionsType<any>;
+  className?: string;
 }
 
 export interface FilterTableBy {

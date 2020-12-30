@@ -5,7 +5,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Loading from 'components/UI/Loading/Loading';
 
 const Home = lazy(() => import('components/Home/Home'));
-const Browse = lazy(() => import('components/Browse/Browse'));
+const BrowseWrapper = lazy(() => import('components/Browse/Wrapper'));
 const API = lazy(() => import('components/API/API'));
 const About = lazy(() => import('components/About/About'));
 const Help = lazy(() => import('components/Help/Help'));
@@ -38,10 +38,12 @@ const App = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Suspense fallback={<Loading className={classes.loading} svgProps={{ className: classes.loadingSvg }} />}>
+      <Suspense
+        fallback={<Loading className={classes.loading} svgProps={{ className: classes.loadingSvg }} />}
+      >
         <Switch>
           <Route exact path='/' component={Home} />
-          <Route path='/browse' component={Browse} />
+          <Route path='/browse' component={BrowseWrapper} />
           <Route path='/api' component={API} />
           <Route path='/about' component={About} />
           <Route path='/help' component={Help} />

@@ -23,32 +23,32 @@ const Sidebar = () => {
       name: 'Diff. gene expression',
       alt: 'differential gene expression route',
       imgSrc: Category2,
-      route: 'differentialGeneExpression',
+      route: 'differential-gene-expression',
     },
     {
       name: 'Splicing events',
       alt: 'splicing events route',
       imgSrc: Category4,
-      route: 'splicingEvents',
+      route: 'splicing-events',
     },
     {
       name: 'Transcript usage',
       alt: 'transcript usage route',
       imgSrc: Category5,
-      route: 'transcriptUsage',
+      route: 'transcript-usage',
     },
     {
-      name: 'Browser',
-      alt: 'browser route',
+      name: 'Gene browser',
+      alt: 'gene browser route',
       imgSrc: Category3,
-      route: 'browser',
+      route: 'gene-browser',
     },
 
     {
       name: 'Peptide maps',
       alt: 'peptide maps route',
       imgSrc: Category1,
-      route: 'peptideMaps',
+      route: 'peptide-maps',
     },
   ];
 

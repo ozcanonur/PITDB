@@ -7,7 +7,7 @@ import PieChart from './PieChart/PieChart';
 
 import { useStyles } from './styles';
 
-const Mutations = () => {
+const MutationsWrapper = () => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -28,4 +28,4 @@ const Mutations = () => {
   );
 };
 
-export default Mutations;
+export default MutationsWrapper;
