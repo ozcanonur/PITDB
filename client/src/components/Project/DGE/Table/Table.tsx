@@ -35,28 +35,13 @@ const DGETable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewDges = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: DGESResponse = await fetchFromApi('/api/dges', {
-      project,
-      skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
-    });
-
-    if (!mounted || !res) return;
-
-    const { dges, dgesCount } = res;
-
+  const updateTable = ({ dges, dgesCount }: DGESResponse) => {
     setRowCount(dgesCount);
 
     const newTableData = dges.map(Object.values);
     setTableData(newTableData);
 
     setCurrentPage(0);
-
-    setLoading(false);
 
     if (dgesCount === 0) return;
 
@@ -69,12 +54,24 @@ const DGETable = ({ ...props }) => {
 
   // Refetch on filters change
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewDges(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/dges', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: DGESResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
@@ -88,12 +85,24 @@ const DGETable = ({ ...props }) => {
       return;
     }
 
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewDges(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/dges', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: DGESResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);

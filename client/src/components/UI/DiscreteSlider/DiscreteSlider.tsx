@@ -18,7 +18,7 @@ export default function DiscreteSlider({
 
   const [value, setValue] = useState(2);
 
-  const handleChange = (event: ChangeEvent<{}>, newValue: number | number[]) => {
+  const handleChange = (_event: ChangeEvent<{}>, newValue: number | number[]) => {
     setValue(newValue as number);
   };
 

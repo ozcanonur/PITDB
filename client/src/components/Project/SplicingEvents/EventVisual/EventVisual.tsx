@@ -24,26 +24,22 @@ const EventVisual = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const fetchEventData = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: EventResponse = await fetchFromApi('/api/splicing-events/event', { project, gene, dPSI });
-
-    if (!mounted || !res) return;
-
-    setEventData(res);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!gene || !dPSI) return;
 
-    fetchEventData(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/splicing-events/event', { project, gene, dPSI }).then((res: EventResponse) => {
+      if (!isMounted || !res) return;
+
+      setEventData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, gene, dPSI]);

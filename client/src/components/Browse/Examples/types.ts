@@ -1,4 +1,6 @@
-export interface ExampleProps {
+import { HTMLAttributes } from 'react';
+
+export interface ExampleProps extends HTMLAttributes<HTMLDivElement> {
   exampleProps: {
     id: string;
     species: string;

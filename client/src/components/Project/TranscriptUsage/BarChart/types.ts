@@ -1,4 +1,4 @@
-export type TranscriptReadCounts = {
+export type TranscriptReadCountsResponse = {
   transcriptId: string;
   conditions: {
     condition: string;

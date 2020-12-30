@@ -6,7 +6,7 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import TranscriptSvg from 'components/Project/TranscriptUsage/TranscriptViewer/TranscriptSvg';
 import Loading from 'components/UI/Loading/Loading';
 
-import { TranscriptsData } from './types';
+import { TranscriptsResponse } from './types';
 import { fetchFromApi } from 'utils';
 import { COLORS } from 'variables/transcriptViewerColors';
 import { useStyles } from './styles';
@@ -17,33 +17,29 @@ const TranscriptViewer = ({ ...props }) => {
   const { project } = useParams<{ project: string }>();
   const { gene } = useSelector((state: RootState) => state.selectedTranscriptUsage);
 
-  const [transcriptsData, setTranscriptsData] = useState<TranscriptsData>({
+  const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
     transcripts: [],
     maximumPosition: 0,
     minimumPosition: 0,
   });
   const [loading, setLoading] = useState(false);
 
-  const fetchTranscriptsData = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: TranscriptsData = await fetchFromApi('/api/transcript-usages/transcripts', { project, gene });
-
-    if (!mounted || !res) return;
-
-    setTranscriptsData(res);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!gene) return;
 
-    fetchTranscriptsData(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/transcript-usages/transcripts', { project, gene }).then((res: TranscriptsResponse) => {
+      if (!isMounted || !res) return;
+
+      setTranscriptsData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, gene]);

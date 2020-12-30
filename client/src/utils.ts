@@ -32,3 +32,18 @@ export const fetchFromApi = async (route: string, params?: Params, paramsSeriali
     return console.error(err);
   }
 };
+
+// export const useAsyncEffect = (func: any, onSuccess: (data: any) => void, dependencies: any[]) => {
+//   useEffect(() => {
+//     let isMounted = true;
+
+//     func().then((data: any) => {
+//       if (isMounted) onSuccess(data);
+//     });
+
+//     return () => {
+//       isMounted = false;
+//     };
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [...dependencies]);
+// };

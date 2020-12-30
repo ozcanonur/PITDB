@@ -18,26 +18,22 @@ const BarCharts = () => {
   const [conditionsData, setConditionsData] = useState<ConditionsResponse>({});
   const [loading, setLoading] = useState(false);
 
-  const fetchConditionsData = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: ConditionsResponse = await fetchFromApi('/api/mutations/conditions', { project, gene, position });
-
-    if (!mounted || !res) return;
-
-    setConditionsData(res);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!gene || !position) return;
 
-    fetchConditionsData(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/mutations/conditions', { project, gene, position }).then((res: ConditionsResponse) => {
+      if (!isMounted || !res) return;
+
+      setConditionsData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gene, position, project]);
@@ -55,7 +51,10 @@ const BarCharts = () => {
 
   return (
     <>
-      <ProjectItemCard name={`Quality for ${gene} at ${position.toLocaleString()}`} className={classes.projectItemCard}>
+      <ProjectItemCard
+        name={`Quality for ${gene} at ${position.toLocaleString()}`}
+        className={classes.projectItemCard}
+      >
         <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
         <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
           <ResponsiveBar
@@ -67,7 +66,12 @@ const BarCharts = () => {
             margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
             padding={0.1}
             layout='horizontal'
-            colors={['rgba(107, 107, 179, 0.65)', 'rgba(65, 15, 94, 0.8)', 'rgba(44, 85, 122, 0.7)', '#2C557A']}
+            colors={[
+              'rgba(107, 107, 179, 0.65)',
+              'rgba(65, 15, 94, 0.8)',
+              'rgba(44, 85, 122, 0.7)',
+              '#2C557A',
+            ]}
             borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
             axisTop={null}
             axisRight={null}

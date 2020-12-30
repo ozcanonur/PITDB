@@ -19,33 +19,28 @@ const BarChart = ({ ...props }) => {
   const [barChartData, setBarChartData] = useState<BarChartData>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchReadCounts = async (mounted: boolean) => {
-    const res: ReadCountResponse = await fetchFromApi('/api/dges/read-count', { project, symbol });
-
-    setLoading(false);
-
-    if (!mounted || !Object.keys(res)) return;
-
-    // Bar charts accepts data in this format
-    const parsedReadCount: BarChartData = Object.keys(res).map((condition) => ({
-      condition,
-      ...res[condition],
-    }));
-
-    setBarChartData(parsedReadCount);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!symbol) return;
 
     setLoading(true);
 
-    fetchReadCounts(mounted);
+    fetchFromApi('/api/dges/read-count', { project, symbol }).then((res: ReadCountResponse) => {
+      if (!isMounted || !res) return;
+
+      // Bar charts accepts data in this format
+      const parsedReadCount: BarChartData = Object.keys(res).map((condition) => ({
+        condition,
+        ...res[condition],
+      }));
+
+      setBarChartData(parsedReadCount);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbol, project]);

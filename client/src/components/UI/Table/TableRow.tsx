@@ -14,15 +14,13 @@ const formatCellValue = (value: any) => {
 const Row = ({ row, rowOnClick, selectedRow }: TableRowProps) => {
   const classes = useStyles();
 
-  const isSelectedRow = row === selectedRow;
-
   return (
     <TableRow
       className={classes.tableBodyRow}
       onClick={rowOnClick ? () => rowOnClick(row) : undefined}
       style={{
         cursor: rowOnClick ? 'pointer' : 'inherit',
-        backgroundColor: isSelectedRow ? 'rgba(51, 51, 102, 0.1)' : 'transparent',
+        backgroundColor: row === selectedRow ? 'rgba(51, 51, 102, 0.1)' : 'transparent',
       }}
     >
       {row.map((value, key) => (

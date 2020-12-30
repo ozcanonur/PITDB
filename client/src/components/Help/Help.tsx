@@ -8,15 +8,9 @@ import TriangleClip from 'assets/double_triangle.svg';
 
 import { useStyles } from './styles';
 import { questions } from 'variables/helpQuestionTexts';
+import { QuestionCardProps } from './types';
 
-const QuestionCard = ({
-  questionTitle,
-  questionAnswer,
-  ...props
-}: {
-  questionTitle: string;
-  questionAnswer: string;
-}) => {
+const QuestionCard = ({ questionTitle, questionAnswer, ...props }: QuestionCardProps) => {
   const classes = useStyles();
 
   return (
@@ -57,9 +51,10 @@ const Help = () => {
         <section className={classes.heroContainer} data-aos='fade-right'>
           <h1 className={classes.heading}>What is PITDB ?</h1>
           <p className={classes.secondaryHeading}>
-            The PIT approach involves the analysis of a given sample by both RNA-seq and proteomic mass spectrometry
-            followed by sequence-level integration of the acquired data to provide an unprecedented insight into which
-            genomic elements are being transcribed and translated within a given sample.{' '}
+            The PIT approach involves the analysis of a given sample by both RNA-seq and proteomic mass
+            spectrometry followed by sequence-level integration of the acquired data to provide an
+            unprecedented insight into which genomic elements are being transcribed and translated within a
+            given sample.{' '}
           </p>
           <div className={classes.browseButton} onClick={navToBrowse}>
             Browse
@@ -69,7 +64,12 @@ const Help = () => {
           <img className={classes.topTriangleClip} src={TriangleClip} alt='triangle' data-aos='fade-right' />
           <div className={classes.questionsContainer}>
             {questions.map(({ question, answer }) => (
-              <QuestionCard key={question} questionTitle={question} questionAnswer={answer} data-aos='fade-up' />
+              <QuestionCard
+                key={question}
+                questionTitle={question}
+                questionAnswer={answer}
+                data-aos='fade-up'
+              />
             ))}
           </div>
           <img className={classes.bottomTriangleClip} src={TriangleClip} alt='triangle' />

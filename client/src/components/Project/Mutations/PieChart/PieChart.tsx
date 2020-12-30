@@ -18,24 +18,20 @@ const PieChart = () => {
   const [data, setData] = useState<TypesResponse>({ SNP: 0, DEL: 0, INS: 0 });
   const [loading, setLoading] = useState(false);
 
-  const fetchTypes = async (mounted: boolean) => {
+  useEffect(() => {
+    let isMounted = true;
+
     setLoading(true);
 
-    const res: TypesResponse = await fetchFromApi('/api/mutations/types', { project, filters: filters as any });
+    fetchFromApi('/api/mutations/types', { project, filters: filters as any }).then((res: TypesResponse) => {
+      if (!isMounted || !res) return;
 
-    if (!mounted || !res) return;
-
-    setData(res);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    let mounted = true;
-
-    fetchTypes(mounted);
+      setData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
@@ -54,7 +50,10 @@ const PieChart = () => {
   }
 
   return (
-    <ProjectItemCard name='Variant type distribution for selected filters' className={classes.projectItemCard}>
+    <ProjectItemCard
+      name='Variant type distribution for selected filters'
+      className={classes.projectItemCard}
+    >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsivePie

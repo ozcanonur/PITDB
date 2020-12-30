@@ -1,6 +1,7 @@
 import { useStyles } from './styles';
+import { ProjectItemCardProps } from './types';
 
-const ProjectItemCard = ({ name, children, className, ...props }: any) => {
+const ProjectItemCard = ({ name, children, className, ...props }: ProjectItemCardProps) => {
   const classes = useStyles();
 
   return (

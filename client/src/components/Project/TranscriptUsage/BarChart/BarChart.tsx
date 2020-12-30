@@ -7,7 +7,7 @@ import tinyColor from 'tinycolor2';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Loading from 'components/UI/Loading/Loading';
 import { fetchFromApi } from 'utils';
-import { TranscriptReadCounts } from './types';
+import { TranscriptReadCountsResponse } from './types';
 import { useStyles } from './styles';
 
 const BarChart = ({ ...props }) => {
@@ -17,35 +17,30 @@ const BarChart = ({ ...props }) => {
   const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
   const { color } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscriptColor);
 
-  const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCounts>([]);
+  const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCountsResponse>([]);
   const [barChartColor, setBarChartColor] = useState('#336');
   const [loading, setLoading] = useState(false);
 
-  const fetchReadCounts = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: TranscriptReadCounts = await fetchFromApi('/api/transcript-usages/read-counts', {
-      project,
-      transcript,
-    });
-
-    setLoading(false);
-
-    if (!mounted || !res) return;
-
-    setTranscriptReadCounts(res);
-    setBarChartColor(String(tinyColor(color).setAlpha(0.8)));
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!transcript) return;
 
-    fetchReadCounts(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/transcript-usages/read-counts', {
+      project,
+      transcript,
+    }).then((res: TranscriptReadCountsResponse) => {
+      if (!isMounted || !res) return;
+
+      setTranscriptReadCounts(res);
+      setBarChartColor(String(tinyColor(color).setAlpha(0.8)));
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, transcript]);

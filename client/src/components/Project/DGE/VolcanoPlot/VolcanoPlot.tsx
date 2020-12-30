@@ -5,37 +5,36 @@ import { ResponsiveScatterPlotCanvas } from '@nivo/scatterplot';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import { VolcanoPlotData } from './types';
+import { VolcanoPlotResponse } from './types';
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 
-const VolcanoPlot = () => {
+const VolcanoPlot = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.DGEFilters);
 
-  const [volcanoPlotData, setVolcanoPlotData] = useState<VolcanoPlotData>({ data: [] });
+  const [volcanoPlotData, setVolcanoPlotData] = useState<VolcanoPlotResponse>({ data: [] });
   const [loading, setLoading] = useState(false);
 
-  const fetchVolcanoPlotData = async (mounted: boolean) => {
-    const res: VolcanoPlotData = await fetchFromApi('/api/dges/volcano-plot', { project, filters: filters as any });
-
-    if (!mounted || !res) return;
-
-    setVolcanoPlotData(res);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     setLoading(true);
 
-    fetchVolcanoPlotData(mounted);
+    fetchFromApi('/api/dges/volcano-plot', {
+      project,
+      filters: filters as any,
+    }).then((res: VolcanoPlotResponse) => {
+      if (!isMounted || !res) return;
+
+      setVolcanoPlotData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, project]);
@@ -43,7 +42,12 @@ const VolcanoPlot = () => {
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
 
   return (
-    <ProjectItemCard name='Volcano plot' className={classes.projectItemCard} style={{ minHeight: '35rem' }}>
+    <ProjectItemCard
+      name='Volcano plot'
+      className={classes.projectItemCard}
+      style={{ minHeight: '35rem' }}
+      {...props}
+    >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveScatterPlotCanvas

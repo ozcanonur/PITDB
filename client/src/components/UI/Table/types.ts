@@ -1,4 +1,4 @@
-import { MouseEvent, ChangeEvent, CSSProperties } from 'react';
+import { MouseEvent, ChangeEvent, HTMLAttributes } from 'react';
 
 export interface CustomPaginationActionsProps {
   count: number;
@@ -7,7 +7,7 @@ export interface CustomPaginationActionsProps {
   onChangePage: (_event: MouseEvent<HTMLButtonElement> | null, page: number) => void;
 }
 
-export interface TableProps {
+export interface TableProps extends HTMLAttributes<HTMLDivElement> {
   tableHead: string[];
   tableData: string[][];
   currentPage?: number;
@@ -16,8 +16,7 @@ export interface TableProps {
   rowCount: number;
   handlePageChange: (event: MouseEvent<HTMLButtonElement> | null, page: number) => void;
   loading?: boolean;
-  tableProps?: any;
-  className?: string;
+  tableProps?: HTMLAttributes<HTMLTableElement>;
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
   sortedOn?: {
@@ -27,9 +26,8 @@ export interface TableProps {
   handleSort?: (field: string, currentOrder?: -1 | 1) => void;
 }
 
-export interface TableRowProps {
+export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   row: string[];
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
-  style?: CSSProperties;
 }

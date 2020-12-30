@@ -18,24 +18,22 @@ const PieChart = ({ ...props }) => {
   const [typesData, setTypesData] = useState<TypesResponse>({});
   const [loading, setLoading] = useState(false);
 
-  const fetchTypesData = async (mounted: boolean) => {
+  useEffect(() => {
+    let isMounted = true;
+
     setLoading(true);
 
-    const res: TypesResponse = await fetchFromApi('/api/splicing-events/types', { project, filters: filters as any });
+    fetchFromApi('/api/splicing-events/types', { project, filters: filters as any }).then(
+      (res: TypesResponse) => {
+        if (!isMounted || !res) return;
 
-    if (!mounted || !res) return;
-
-    setTypesData(res);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    let mounted = true;
-
-    fetchTypesData(mounted);
+        setTypesData(res);
+        setLoading(false);
+      }
+    );
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
@@ -54,7 +52,11 @@ const PieChart = ({ ...props }) => {
   }
 
   return (
-    <ProjectItemCard name='Event type distribution for selected filters' className={classes.projectItemCard} {...props}>
+    <ProjectItemCard
+      name='Event type distribution for selected filters'
+      className={classes.projectItemCard}
+      {...props}
+    >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsivePie

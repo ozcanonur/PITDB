@@ -39,20 +39,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewSplicingEvents = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: SplicingEventsResponse = await fetchFromApi('/api/splicing-events', {
-      project,
-      skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
-    });
-
-    if (!mounted || !res) return;
-
-    const { splicingEvents, splicingEventsCount } = res;
-
+  const updateTable = ({ splicingEvents, splicingEventsCount }: SplicingEventsResponse) => {
     const newRowCount = splicingEventsCount;
     setRowCount(newRowCount);
 
@@ -60,8 +47,6 @@ const SplicingEventsTable = ({ ...props }) => {
     setTableData(newTableData);
 
     setCurrentPage(0);
-
-    setLoading(false);
 
     if (splicingEvents.length === 0) return;
 
@@ -74,12 +59,24 @@ const SplicingEventsTable = ({ ...props }) => {
 
   // Refetch on filters change
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewSplicingEvents(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/splicing-events', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: SplicingEventsResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
@@ -93,12 +90,24 @@ const SplicingEventsTable = ({ ...props }) => {
       return;
     }
 
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewSplicingEvents(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/splicing-events', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: SplicingEventsResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);

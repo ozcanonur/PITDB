@@ -33,20 +33,7 @@ const MutationsTable = ({ ...props }) => {
 
   const dispatch = useDispatch();
 
-  const fetchNewMutations = async (mounted: boolean) => {
-    setLoading(true);
-
-    const res: MutationsResponse = await fetchFromApi('/api/mutations', {
-      project,
-      skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
-    });
-
-    if (!mounted || !res) return;
-
-    const { mutations, mutationsCount } = res;
-
+  const updateTable = ({ mutations, mutationsCount }: MutationsResponse) => {
     const newRowCount = mutationsCount;
     setRowCount(newRowCount);
 
@@ -54,8 +41,6 @@ const MutationsTable = ({ ...props }) => {
     setTableData(newTableData);
 
     setCurrentPage(0);
-
-    setLoading(false);
 
     if (mutations.length === 0) return;
 
@@ -68,12 +53,23 @@ const MutationsTable = ({ ...props }) => {
 
   // Refetch on filters change
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewMutations(mounted);
+    setLoading(true);
+    fetchFromApi('/api/mutations', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: MutationsResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
@@ -87,12 +83,23 @@ const MutationsTable = ({ ...props }) => {
       return;
     }
 
-    let mounted = true;
+    let isMounted = true;
 
-    fetchNewMutations(mounted);
+    setLoading(true);
+    fetchFromApi('/api/mutations', {
+      project,
+      skip: 0,
+      filters: filters as any,
+      sortedOn: sortedOn as any,
+    }).then((res: MutationsResponse) => {
+      if (!isMounted || !res) return;
+
+      updateTable(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);

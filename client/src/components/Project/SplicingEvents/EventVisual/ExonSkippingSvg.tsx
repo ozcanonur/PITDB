@@ -1,4 +1,6 @@
-const ExonSkippingSvg = ({ eventData, ...props }: { eventData: any; className: string }) => {
+import { ExonSkippingSvgProps } from './types';
+
+const ExonSkippingSvg = ({ eventData, ...props }: ExonSkippingSvgProps) => {
   const { chr, direction, eventType, positions } = eventData;
 
   const [pos1, pos2, pos3, pos4] = positions;
@@ -96,7 +98,6 @@ const ExonSkippingSvg = ({ eventData, ...props }: { eventData: any; className: s
           <text className='prefix__cls-7' transform='translate(588.5 196.98)'>
             {pos4}
           </text>
-
           <path fill='none' d='M604.46 167.98v-.28' />
         </g>
       </g>

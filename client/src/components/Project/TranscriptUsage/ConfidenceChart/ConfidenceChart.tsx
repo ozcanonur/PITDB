@@ -20,38 +20,30 @@ const ConfidenceChart = ({ ...props }) => {
   const [conditionsData, setConditionsData] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const fetchConditions = async (mounted: boolean) => {
+  useEffect(() => {
+    let isMounted = true;
+
     setLoading(true);
 
-    const res: ConditionsByGeneNameResponse = await fetchFromApi(
-      '/api/transcript-usages/conditions-by-gene-name',
-      {
-        project,
-        gene,
-      }
-    );
+    fetchFromApi('/api/transcript-usages/conditions-by-gene-name', {
+      project,
+      gene,
+    }).then((res: ConditionsByGeneNameResponse) => {
+      if (!isMounted || !res) return;
 
-    setLoading(false);
-
-    if (!res || !mounted) return;
-
-    setConditionsData(res);
-  };
-
-  useEffect(() => {
-    let mounted = true;
-
-    fetchConditions(mounted);
+      setConditionsData(res);
+      setLoading(false);
+    });
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, gene]);
 
   return (
     <ProjectItemCard
-      name={`95% Confidence Interval for ${transcript}`}
+      name={`95% Confidence interval for ${transcript}`}
       className={classes.projectItemCard}
       {...props}
     >

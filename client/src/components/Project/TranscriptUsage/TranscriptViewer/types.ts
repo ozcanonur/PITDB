@@ -1,4 +1,6 @@
-export type TranscriptsData = {
+import { SVGAttributes } from 'react';
+
+export type TranscriptsResponse = {
   transcripts: {
     transcriptId: string;
     exons?: { start: number; end: number }[];
@@ -7,7 +9,7 @@ export type TranscriptsData = {
   maximumPosition: number;
 };
 
-export interface TranscriptSvgProps {
+export interface TranscriptSvgProps extends SVGAttributes<SVGElement> {
   transcriptData: {
     transcript: {
       transcriptId: string;

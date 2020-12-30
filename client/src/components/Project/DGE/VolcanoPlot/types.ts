@@ -1,4 +1,4 @@
-export type VolcanoPlotData = {
+export type VolcanoPlotResponse = {
   data: {
     id: string;
     data: {

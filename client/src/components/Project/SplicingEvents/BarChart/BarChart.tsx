@@ -18,25 +18,24 @@ const BarChart = ({ ...props }) => {
   const [conditionsData, setConditionsData] = useState<ConditionsResponse>({});
   const [loading, setLoading] = useState(false);
 
-  const fetchConditionsData = async (mounted: boolean) => {
-    setLoading(true);
-    const res: ConditionsResponse = await fetchFromApi('/api/splicing-events/conditions', { project, gene, dPSI });
-
-    if (!mounted || !res) return;
-
-    setConditionsData(res);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
     if (!gene || !dPSI) return;
 
-    fetchConditionsData(mounted);
+    setLoading(true);
+
+    fetchFromApi('/api/splicing-events/conditions', { project, gene, dPSI }).then(
+      (res: ConditionsResponse) => {
+        if (!isMounted || !res) return;
+
+        setConditionsData(res);
+        setLoading(false);
+      }
+    );
 
     return () => {
-      mounted = false;
+      isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gene, dPSI, project]);
