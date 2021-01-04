@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { ISplicingDPSI, SplicingDPSI } from '../../db/models/splicingDPSI';
+import { SplicingDPSI } from '../../db/models/splicingDPSI';
 import { ExtendedRequest } from '../../types';
 import { SplicingEventsFilters, SplicingDPSIWithConditions } from './types';
 import {

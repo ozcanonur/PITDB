@@ -33,15 +33,21 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
   return parsedSplicingEvents;
 };
 
-// Only select condition fields
 export const parseConditions = (conditions: ISplicingPsi) => {
   const relevantFields = omit(conditions, ['_id', 'event', 'project']);
-  // Convert Nsi/1 etc. to Nsi1
-  const parsedConditions: { [conditionName: string]: number } = {};
+
+  const parsedConditions: { [sample: string]: number | string; condition: string }[] = [];
   for (const field of Object.keys(relevantFields)) {
-    const convertedField = field.replace('/', '');
-    //@ts-ignore
-    parsedConditions[convertedField] = relevantFields[field];
+    const [conditionName, sample] = field.split('/');
+
+    const existingEntry = parsedConditions.find((entry) => entry.condition === conditionName);
+    if (!existingEntry) {
+      // @ts-ignore
+      const newEntry = { condition: conditionName, [sample]: relevantFields[field] };
+      parsedConditions.push(newEntry);
+    }
+    // @ts-ignore
+    else existingEntry[sample] = relevantFields[field];
   }
 
   return parsedConditions;

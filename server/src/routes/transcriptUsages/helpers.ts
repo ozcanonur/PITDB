@@ -49,3 +49,21 @@ export const parseConditionsByGeneName = (transcriptUsages: ITranscriptUsage[]) 
 
   return conditionsByGeneName;
 };
+
+export const parseReadCounts = (conditions: { [condition: string]: number }) => {
+  const parsedConditions: { [sample: string]: number | string; condition: string }[] = [];
+  for (const field of Object.keys(conditions)) {
+    const [conditionName, sample] = field.split('/');
+
+    const existingEntry = parsedConditions.find((entry) => entry.condition === conditionName);
+    if (!existingEntry) {
+      // @ts-ignore
+      const newEntry = { condition: conditionName, [sample]: conditions[field] };
+      parsedConditions.push(newEntry);
+    }
+    // @ts-ignore
+    else existingEntry[sample] = conditions[field];
+  }
+
+  return parsedConditions;
+};

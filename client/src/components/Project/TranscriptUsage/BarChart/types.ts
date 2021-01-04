@@ -1,7 +1,4 @@
 export type TranscriptReadCountsResponse = {
-  transcriptId: string;
-  conditions: {
-    condition: string;
-    [sample: string]: number | string;
-  }[];
+  [sample: string]: string | number;
+  condition: string;
 }[];

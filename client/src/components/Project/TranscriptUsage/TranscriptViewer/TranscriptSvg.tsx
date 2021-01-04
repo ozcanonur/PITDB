@@ -55,7 +55,7 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
         {/* These are the exon boxes */}
         {exons?.map(({ start, end }) => {
           const exonStartingPosition = RAIL_OFFSET + increment * (start - minimumPosition);
-          const exonWidth = increment * (end - start);
+          const exonWidth = increment * (end - start + 1);
           return (
             <g key={String(start + end)} className='transcriptViewerExon' transform='translate(0 8)'>
               <rect fill={color} ref={ref} x={exonStartingPosition} width={exonWidth} height={EXON_HEIGHT} />

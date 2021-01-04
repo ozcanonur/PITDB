@@ -1,3 +1,4 @@
 export type ConditionsResponse = {
-  [conditionName: string]: number;
-};
+  [sample: string]: number | string;
+  condition: string;
+}[];

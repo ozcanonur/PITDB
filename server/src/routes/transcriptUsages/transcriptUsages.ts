@@ -8,7 +8,9 @@ import {
   findMongoFieldFromTableColumn,
   parseTranscriptsForViewer,
   parseConditionsByGeneName,
+  parseReadCounts,
 } from './helpers';
+
 import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
 
 const router = express.Router();
@@ -152,14 +154,9 @@ router.get('/read-counts', async (req: ExtendedRequest, res) => {
   try {
     const transcriptCount = await TranscriptCount.findOne({ project, transcript });
 
-    const parsedReadCounts = Object.keys(transcriptCount.readCounts).map((condition) => {
-      return {
-        condition,
-        readCount: transcriptCount.readCounts[condition],
-      };
-    });
+    const parsedReadCount = parseReadCounts(transcriptCount.readCounts);
 
-    res.send(parsedReadCounts);
+    res.send(parsedReadCount);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);
