@@ -1,9 +1,9 @@
-export interface MutationTableFilters {
+export type MutationTableFilters = {
   variantType: [string?, string?, string?];
   inCDS: [string?, string?];
   hasPeptideEvidence: [string?, string?];
   isSynonymous: [string?, string?];
-}
+};
 
 export type MutationsResponse = {
   mutations: {

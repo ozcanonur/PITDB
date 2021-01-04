@@ -6,5 +6,7 @@ client/build/
 server/build/
 deployment/
 .env
-client/.eslintcache
+.eslintcache
 client/defunct/
+debug.log
+yarn-error.log

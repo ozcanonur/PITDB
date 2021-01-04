@@ -19,7 +19,7 @@ const MutationsTable = ({ ...props }) => {
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.mutationFilters);
-  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+  const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
   });
@@ -204,7 +204,7 @@ const MutationsTable = ({ ...props }) => {
           className={classes.singleSelect}
         />
         <div className={classes.multiSelectContainer}>
-          <MultiSelect
+          {/* <MultiSelect
             name='Synonymous'
             options={[
               { value: 'true', label: 'true' },
@@ -215,7 +215,7 @@ const MutationsTable = ({ ...props }) => {
               multiSelectOnChange(selectedOptions, _actionMeta, 'isSynonymous')
             }
             className={classes.multiSelect}
-          />
+          /> */}
           <MultiSelect
             name='Type'
             options={[

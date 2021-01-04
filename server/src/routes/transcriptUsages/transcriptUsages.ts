@@ -6,11 +6,10 @@ import { TranscriptUsage } from '../../db/models/transcriptUsage';
 import { TranscriptCount } from '../../db/models/transcriptCount';
 import {
   findMongoFieldFromTableColumn,
-  parseTranscriptUsages,
   parseTranscriptsForViewer,
   parseConditionsByGeneName,
 } from './helpers';
-import { TranscriptUsageFilters, TranscriptUsagesWithTranscript, ConditionsByGeneName } from './types';
+import { TranscriptUsageFilters, TranscriptUsagesWithTranscript } from './types';
 
 const router = express.Router();
 
@@ -30,7 +29,6 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const query = {
       project,
       pval: { $lt: maxPValue },
-      // pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
     };
 
     const transcriptUsages = await TranscriptUsageDPSI.find(query)
@@ -43,13 +41,11 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
       const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
 
-      // WOOP, hard coding peptide evidence
       return {
         geneName,
         transcript,
         deltaPsi,
         pval,
-        hasPeptideEvidence: false,
       };
     });
 
@@ -95,9 +91,19 @@ router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
 
   try {
     const transcriptUsages = await TranscriptUsageDPSI.find({ project, geneName });
+
     if (!transcriptUsages) return res.send([]);
 
-    const parsedTranscriptUsages = parseTranscriptUsages(transcriptUsages);
+    const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
+      const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
+
+      return {
+        geneName,
+        transcript,
+        deltaPsi,
+        pval,
+      };
+    });
 
     res.send(parsedTranscriptUsages);
   } catch (error) {

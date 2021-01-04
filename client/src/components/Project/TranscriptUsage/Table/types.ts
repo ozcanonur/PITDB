@@ -1,7 +1,7 @@
-export interface TranscriptUsageTableFilters {
+export type TranscriptUsageTableFilters = {
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
-}
+};
 
 export type TranscriptUsagesResponse = {
   transcriptUsages: {

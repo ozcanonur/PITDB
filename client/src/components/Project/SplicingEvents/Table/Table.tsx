@@ -25,7 +25,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
-  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+  const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
   });
@@ -252,7 +252,7 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'P Value', 'Peptide evidence']}
+        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'Adj. p value', 'Peptide evidence']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

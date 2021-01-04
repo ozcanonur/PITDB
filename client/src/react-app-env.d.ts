@@ -1,5 +1,9 @@
 /// <reference types="react-scripts" />
 
+interface GenericObject {
+  [key: string]: any;
+}
+
 interface RootState {
   mutationFilters: import('components/Project/Mutations/Table/types').MutationTableFilters;
   selectedMutation: {
@@ -26,8 +30,4 @@ interface RootState {
   selectedTranscriptViewerTranscriptColor: {
     color: string;
   };
-}
-
-interface GenericObject {
-  [key: string]: any;
 }

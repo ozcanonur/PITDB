@@ -23,7 +23,7 @@ const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
         </linearGradient>
         <style>
           {
-            '.prefix__cls-11{font-size:9px;fill:#336;font-family:Poppins, sans-serif}.prefix__cls-12{letter-spacing:-.01em}'
+            '.prefix__cls-11{font-size:7.5px;fill:#336;font-family:Poppins, sans-serif}.prefix__cls-12{letter-spacing:-.01em}'
           }
         </style>
       </defs>
@@ -135,10 +135,10 @@ const ChartBase = ({ conditionNames, ...props }: ChartBaseProps) => {
         {/* <text className='prefix__cls-11' transform='translate(150 198.85)'>
         <tspan className='prefix__cls-12'>{'Conditions'}</tspan>
       </text> */}
-        <text className='prefix__cls-11' transform='translate(102 200)'>
+        <text className='prefix__cls-11' transform='translate(103 200)'>
           {conditionNames[0]}
         </text>
-        <text className='prefix__cls-11' transform='translate(264 200)'>
+        <text className='prefix__cls-11' transform='translate(265 200)'>
           {conditionNames[1]}
         </text>
       </g>

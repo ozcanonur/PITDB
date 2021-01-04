@@ -1,20 +1,11 @@
 import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage/ConfidenceChart/types';
 import { ChartValue } from './types';
-
-// double confInterval = 1.96 * sd / Math.sqrt(entry.getValue().size());
+import { std } from 'mathjs';
 
 const getAvg = (values: number[]) => values.reduce((prev, curr) => prev + curr) / values.length;
 
-const getCi = (values: number[]) => {
-  const avg = getAvg(values);
-
-  let variance = 0;
-  for (const value of values) {
-    variance += Math.pow(value - avg, 2);
-  }
-
-  // WOOP, HMM? calculation order should be wrong, ask esteban
-  const sd = Math.sqrt(variance) / (values.length - 1);
+export const getCi = (values: number[]) => {
+  const sd = std(values, 'biased');
 
   const ci = (1.96 * sd) / Math.sqrt(values.length);
 

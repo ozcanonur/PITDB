@@ -8,26 +8,7 @@ export const findMongoFieldFromTableColumn = (field: string) => {
   if (field === 'Gene') return 'geneName';
   else if (field === 'Transcript') return 'transcript';
   else if (field === 'dPSI') return 'deltaPsi';
-  else if (field === 'P value') return 'pval';
-  // WOOP, change peptide evidence sort column value
-  else if (field === 'Peptide evidence') return 'geneName';
-};
-
-export const parseTranscriptUsages = (transcriptUsages: ITranscriptUsageDPSI[]) => {
-  const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
-    const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
-
-    // WOOP, hard coding peptide evidence
-    return {
-      geneName,
-      transcript,
-      deltaPsi,
-      pval,
-      hasPeptideEvidence: false,
-    };
-  });
-
-  return parsedTranscriptUsages;
+  else if (field === 'Adj. p value') return 'pval';
 };
 
 export const parseTranscriptsForViewer = (transcripts: IAllTranscript[]) => {

@@ -1,8 +1,8 @@
-export interface DGETableFilters {
+export type DGETableFilters = {
   maxPValue: number;
   minAbsFoldChange: number;
   // hasPeptideEvidence: [string?, string?];
-}
+};
 
 export type DGESResponse = {
   dges: {

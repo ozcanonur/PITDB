@@ -5,7 +5,7 @@ import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
-import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
+// import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
@@ -25,7 +25,7 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.transcriptUsageFilters);
-  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+  const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
   });
@@ -152,15 +152,15 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectTranscriptViewerTranscript(transcript));
   };
 
-  // WOOP, there is no peptide evidence yet, hard coded it
-  const multiSelectOnChange = (
-    selectedOptions: SelectOption[],
-    _actionMeta: ActionMeta<any>,
-    name: string
-  ) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-    dispatch(setTranscriptUsageFilters({ ...filters, [name]: newSelectedValues }));
-  };
+  // // WOOP, there is no peptide evidence yet, hard coded it
+  // const multiSelectOnChange = (
+  //   selectedOptions: SelectOption[],
+  //   _actionMeta: ActionMeta<any>,
+  //   name: string
+  // ) => {
+  //   const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+  //   dispatch(setTranscriptUsageFilters({ ...filters, [name]: newSelectedValues }));
+  // };
 
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: TranscriptUsageGeneNamesResponse = await fetchFromApi(
@@ -226,7 +226,7 @@ const SplicingEventsTable = ({ ...props }) => {
           className={classes.singleSelect}
         />
         <div className={classes.multiSelectContainer}>
-          <MultiSelect
+          {/* <MultiSelect
             name='Peptide evidence'
             options={[
               { value: 'true', label: 'true' },
@@ -237,7 +237,7 @@ const SplicingEventsTable = ({ ...props }) => {
               multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
             }
             className={classes.multiSelect}
-          />
+          /> */}
           <DiscreteSlider
             name='Max. p value'
             defaultValue={0.05}
@@ -248,7 +248,7 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Transcript', 'dPSI', 'P value', 'Peptide evidence']}
+        tableHead={['Gene', 'Transcript', 'dPSI', 'Adj. p value']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

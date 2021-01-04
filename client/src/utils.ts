@@ -20,13 +20,14 @@ export const isNumberTuple = (test: any[]): boolean => {
   return false;
 };
 
-interface Params {
-  [key: string]: string | number | boolean;
-}
-
-export const fetchFromApi = async (route: string, params?: Params, paramsSerializer?: any) => {
+export const fetchFromApi = async (
+  route: string,
+  params?: {
+    [key: string]: string | number | boolean;
+  }
+) => {
   try {
-    const response = await axios.get(route, { params, paramsSerializer });
+    const response = await axios.get(route, { params });
     return response.data;
   } catch (err) {
     return console.error(err);

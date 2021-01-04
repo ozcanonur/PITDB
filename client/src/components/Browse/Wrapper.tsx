@@ -19,7 +19,7 @@ const BrowseWrapper = () => {
     <>
       <Header />
       <Switch>
-        <Route path={`${match.path}/:project`} component={Project}></Route>
+        <Route path={`${match.path}/project/:project`} component={Project} />
         <Route component={BrowseMain} />
       </Switch>
     </>

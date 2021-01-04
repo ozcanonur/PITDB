@@ -6,7 +6,7 @@ export const findMongoFieldFromTableColumn = (field: string) => {
   if (field === 'Gene') return 'geneName';
   else if (field === 'Type') return 'eventType';
   else if (field === 'dPSI') return 'deltaPsi';
-  else if (field === 'P Value') return 'pval';
+  else if (field === 'Adj. p value') return 'pval';
   else if (field === 'Peptide evidence') return 'pepEvidence';
 };
 

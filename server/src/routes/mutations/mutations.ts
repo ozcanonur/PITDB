@@ -27,8 +27,8 @@ router.get('/', async (req: ExtendedRequest, res) => {
       project,
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
-      type: { $in: variantType },
       silent: { $in: isSynonymous.map((e) => e === 'true') },
+      type: { $in: variantType },
     };
 
     const mutations = await Mutation.find(query)

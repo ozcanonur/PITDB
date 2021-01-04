@@ -13,7 +13,7 @@ const ExampleCard = ({ exampleProps, ...props }: ExampleProps) => {
 
   const history = useHistory();
   const navToProject = () => {
-    history.push(`/browse/${id}/mutations`);
+    history.push(`/browse/project/${id}/mutations`);
   };
 
   return (

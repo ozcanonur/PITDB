@@ -35,12 +35,10 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    // WOOP, hard coding peptide evidence
     const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
       symbol,
       log2fc,
       padj,
-      hasPeptideEvidence: false,
     }));
 
     const dgesCount: number = await DGE.countDocuments(query);
@@ -94,7 +92,6 @@ router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
       symbol,
       log2fc,
       padj,
-      hasPeptideEvidence: false,
     }));
 
     res.send(parsedDges);
@@ -105,7 +102,7 @@ router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
 });
 
 /*
- * Route for getting read counts for the selected symbol
+ * Route for getting read counts for the selected symbol for bar chart
  * Filters by project and symbol
  */
 router.get('/read-count', async (req: ExtendedRequest, res) => {

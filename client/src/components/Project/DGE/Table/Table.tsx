@@ -6,7 +6,7 @@ import { ActionMeta } from 'react-select';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
-import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
+// import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
 import { useStyles } from './styles';
@@ -21,7 +21,7 @@ const DGETable = ({ ...props }) => {
 
   const { project } = useParams<{ project: string }>();
   const filters = useSelector((state: RootState) => state.DGEFilters);
-  const [sortedOn, setSortedOn] = useState<{ field: string; order?: -1 | 1 }>({
+  const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Symbol',
     order: 1,
   });
@@ -202,16 +202,16 @@ const DGETable = ({ ...props }) => {
     dispatch(selectDGE(symbolName));
   };
 
-  // WOOP, Hard coded peptide evidence on multiselect
-  const multiSelectOnChange = (
-    selectedOptions: SelectOption[],
-    _actionMeta: ActionMeta<any>,
-    name: string
-  ) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
+  // // WOOP, Hard coded peptide evidence on multiselect
+  // const multiSelectOnChange = (
+  //   selectedOptions: SelectOption[],
+  //   _actionMeta: ActionMeta<any>,
+  //   name: string
+  // ) => {
+  //   const newSelectedValues = (selectedOptions || []).map((option) => option.value);
 
-    dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
-  };
+  //   dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
+  // };
 
   return (
     <ProjectItemCard className={classes.container} name='Differential Gene Expressions' {...props}>
@@ -223,7 +223,7 @@ const DGETable = ({ ...props }) => {
           className={classes.singleSelect}
         />
         <div className={classes.filtersSubContainer}>
-          <MultiSelect
+          {/* <MultiSelect
             name='Peptide evidence'
             options={[
               { value: 'true', label: 'true' },
@@ -234,7 +234,7 @@ const DGETable = ({ ...props }) => {
               multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
             }
             className={classes.multiSelect}
-          />
+          /> */}
           <DiscreteSlider
             name='Max. p value'
             defaultValue={0.05}
@@ -251,7 +251,7 @@ const DGETable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Symbol', 'Log2 fold change', 'P value', 'Peptide evidence']}
+        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

@@ -18,6 +18,7 @@ export const findMongoFieldFromTableColumn = (field: string) => {
   else if (field === 'In CDS') return 'inCDS';
   else if (field === 'Peptide evidence') return 'hasPeptideEvidence';
   else if (field === 'Synonymous') return 'silent';
+  else if (field === 'Type') return 'type';
 };
 
 // export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {

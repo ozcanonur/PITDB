@@ -1,8 +1,8 @@
-export interface SplicingEventsTableFilters {
+export type SplicingEventsTableFilters = {
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
   strand: [string?, string?];
-}
+};
 
 export type SplicingEventsResponse = {
   splicingEvents: {

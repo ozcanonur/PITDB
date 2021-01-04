@@ -42,5 +42,5 @@ export const parseVolcanoPlotData = (dges: IDGE[]) => {
 export const convertSortFieldNameForMongoose = (field: string) => {
   if (field === 'Symbol') return 'symbol';
   else if (field === 'Log2 fold change') return 'log2fc';
-  else if (field === 'P value') return 'padj';
+  else if (field === 'Adj. p value') return 'padj';
 };

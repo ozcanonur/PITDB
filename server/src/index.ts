@@ -39,8 +39,8 @@ app.use('/api/splicing-events', splicingEventsRouter);
 app.use('/api/transcript-usages', transcriptUsagesRouter);
 
 // Catch all for deploy
-app.get('/*', function (_req, res) {
-  res.sendFile(clientBuildPath + '/index.html', function (err) {
+app.get('/*', (_req, res) => {
+  res.sendFile(clientBuildPath + '/index.html', (err) => {
     if (err) res.status(500).send(err);
   });
 });
