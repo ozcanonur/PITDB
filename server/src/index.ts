@@ -10,6 +10,7 @@ import mutationsRouter from './routes/mutations/mutations';
 import dgesRouter from './routes/dges/dges';
 import splicingEventsRouter from './routes/splicingEvents/splicingEvents';
 import transcriptUsagesRouter from './routes/transcriptUsages/transcriptUsages';
+import geneBrowserRouter from './routes/geneBrowser/geneBrowser';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -37,6 +38,7 @@ app.use('/api/mutations', mutationsRouter);
 app.use('/api/dges', dgesRouter);
 app.use('/api/splicing-events', splicingEventsRouter);
 app.use('/api/transcript-usages', transcriptUsagesRouter);
+app.use('/api/gene-browser', geneBrowserRouter);
 
 // Catch all for deploy
 app.get('/*', (_req, res) => {

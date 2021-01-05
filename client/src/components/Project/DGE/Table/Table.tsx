@@ -126,6 +126,7 @@ const DGETable = ({ ...props }) => {
       project,
       skip,
       filters: filters as any,
+      sortedOn: sortedOn as any,
     });
 
     setLoading(false);

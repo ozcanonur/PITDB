@@ -1,7 +1,7 @@
 /*
  * This is a temporary fix to an issue coming from react-spring
  * which is used at nivo library charts
- * Has to be run prior to building or nivo chart animations/axis breaks on production
+ * Has to be run prior to building or nivo chart animations/axis break on production
  */
 
 const fs = require('fs');

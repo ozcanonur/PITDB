@@ -4,7 +4,7 @@ import { mean } from 'lodash';
 
 import { getMaxReadCount, getValuesForCondition } from './helpers';
 import { getCi } from 'components/Project/TranscriptUsage/ConfidenceChart/ConfidenceChartSvg/helpers';
-import { PointsLayerProps, ConfidenceBarChartProps } from './types';
+import { LayerProps, ConfidenceBarChartProps } from './types';
 
 const ConfidenceBarChart = ({
   barChartData,
@@ -20,73 +20,87 @@ const ConfidenceBarChart = ({
     condition: condition.condition,
   }));
 
-  const Points = ({ bars, xScale, yScale }: PointsLayerProps) => {
-    return (
-      <>
-        {bars.map((bar, index) => {
-          const condition = bar.data.indexValue;
-          const currentCondition = barChartData.find((data) => data.condition === condition);
+  const Interval = ({ bars, xScale, yScale }: LayerProps) => (
+    <>
+      {bars.map((bar, index) => {
+        const condition = bar.data.indexValue;
+        const currentCondition = barChartData.find((data) => data.condition === condition);
 
-          if (!currentCondition) return null;
+        if (!currentCondition) return null;
 
-          const values = getValuesForCondition(currentCondition).sort();
-          const ci = getCi(values);
+        const values = getValuesForCondition(currentCondition).sort();
+        const ci = getCi(values);
 
-          return (
-            <Fragment key={index}>
-              <g>
-                {/* This is the vertical line at the start of variance line */}
-                <line
-                  x1={Math.max(xScale(mean(values) - ci), 0)}
-                  y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
-                  x2={Math.max(xScale(mean(values) - ci), 0)}
-                  y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
-                  stroke='rgba(65, 15, 94, 0.8)'
-                  strokeWidth='2.5'
-                  style={{ transition: 'all .4s' }}
-                />
-                {/* This is the horizontal variance line */}
-                <line
-                  x1={Math.max(xScale(mean(values) - ci), 0)}
-                  y1={yScale(bar.data.data.condition) + bar.height / 2}
-                  x2={xScale(mean(values) + ci)}
-                  y2={yScale(bar.data.data.condition) + bar.height / 2}
-                  stroke='rgba(65, 15, 94, 0.8)'
-                  strokeWidth='2.5'
-                  style={{ transition: 'all .4s' }}
-                />
-                {/* This is the vertical line at the end of variance line */}
-                <line
-                  x1={xScale(mean(values) + ci)}
-                  y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
-                  x2={xScale(mean(values) + ci)}
-                  y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
-                  stroke='rgba(65, 15, 94, 0.8)'
-                  strokeWidth='2.5'
-                  style={{ transition: 'all .4s' }}
-                />
-              </g>
-              {/* These are the points */}
-              {values.map((value, valueIndex) => (
-                <circle
-                  key={valueIndex}
-                  cx={xScale(value)}
-                  cy={yScale(bar.data.data.condition) + bar.height / 2 + valueIndex * 8}
-                  r={5}
-                  fill='rgba(65, 15, 94, 0.8)'
-                  style={{ transition: 'all .4s' }}
-                />
-              ))}
-            </Fragment>
-          );
-        })}
-      </>
-    );
-  };
+        return (
+          <Fragment key={index}>
+            {/* This is the vertical line at the start of variance line */}
+            <line
+              x1={Math.max(xScale(mean(values) - ci), 0)}
+              y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
+              x2={Math.max(xScale(mean(values) - ci), 0)}
+              y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
+              stroke='rgba(65, 15, 94, 0.8)'
+              strokeWidth='2.5'
+              style={{ transition: 'all .4s' }}
+            />
+            {/* This is the horizontal variance line */}
+            <line
+              x1={Math.max(xScale(mean(values) - ci), 0)}
+              y1={yScale(bar.data.data.condition) + bar.height / 2}
+              x2={xScale(mean(values) + ci)}
+              y2={yScale(bar.data.data.condition) + bar.height / 2}
+              stroke='rgba(65, 15, 94, 0.8)'
+              strokeWidth='2.5'
+              style={{ transition: 'all .4s' }}
+            />
+            {/* This is the vertical line at the end of variance line */}
+            <line
+              x1={xScale(mean(values) + ci)}
+              y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
+              x2={xScale(mean(values) + ci)}
+              y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
+              stroke='rgba(65, 15, 94, 0.8)'
+              strokeWidth='2.5'
+              style={{ transition: 'all .4s' }}
+            />
+          </Fragment>
+        );
+      })}
+    </>
+  );
+
+  const Points = ({ bars, xScale, yScale }: LayerProps) => (
+    <>
+      {bars.map((bar, index) => {
+        const condition = bar.data.indexValue;
+        const currentCondition = barChartData.find((data) => data.condition === condition);
+
+        if (!currentCondition) return null;
+
+        const values = getValuesForCondition(currentCondition).sort();
+
+        return (
+          <Fragment key={index}>
+            {/* These are the points */}
+            {values.map((value, valueIndex) => (
+              <circle
+                key={valueIndex}
+                cx={xScale(value)}
+                cy={yScale(bar.data.data.condition) + bar.height / 2 + valueIndex * 8}
+                r={5}
+                fill='rgba(65, 15, 94, 0.8)'
+                style={{ transition: 'all .4s' }}
+              />
+            ))}
+          </Fragment>
+        );
+      })}
+    </>
+  );
 
   return (
     <ResponsiveBar
-      layers={['grid', 'axes', 'bars', 'markers', Points]}
+      layers={['grid', Interval, 'bars', 'axes', 'markers', Points]}
       enableGridX
       enableGridY
       data={meanReadCounts}
@@ -99,8 +113,6 @@ const ConfidenceBarChart = ({
       labelFormat={labelFormat}
       layout='horizontal'
       colors={barColor || ['rgba(44, 85, 122, 0.65)']}
-      axisTop={null}
-      axisRight={null}
       axisBottom={{
         tickSize: 5,
         tickPadding: 5,
@@ -121,17 +133,14 @@ const ConfidenceBarChart = ({
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={'white'}
-      animate={true}
-      motionStiffness={90}
-      motionDamping={15}
       theme={{
         fontFamily: 'Poppins, sans-serif',
-        textColor: 'rgb(51,51,102)',
+        textColor: '#336',
         tooltip: {
           // @ts-ignore
           fontSize: '1.4rem',
-          color: 'rgb(51,51,102)',
-          textColor: 'rgb(51,51,102)',
+          color: '#336',
+          textColor: '#336',
         },
       }}
     />

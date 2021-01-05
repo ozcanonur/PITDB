@@ -64,7 +64,7 @@ router.get('/symbol-names', async (req: ExtendedRequest, res) => {
     const symbolNames: { _id: string }[] = await DGE.aggregate([
       { $match: { project, symbol: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$symbol' } },
-      { $limit: 50 },
+      { $limit: 20 },
     ]);
 
     if (!symbolNames) return res.send([]);

@@ -1,5 +1,25 @@
+import { useEffect } from 'react';
+import AOS from 'aos';
+
+import TranscriptViewer from './TranscriptViewer/TranscriptViewer';
+
+import { useStyles } from './styles';
+
 const GeneBrowserWrapper = () => {
-  return <div>Gene Browser</div>;
+  const classes = useStyles();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 300,
+      once: true,
+    });
+  }, []);
+
+  return (
+    <div className={classes.container}>
+      <TranscriptViewer />
+    </div>
+  );
 };
 
 export default GeneBrowserWrapper;

@@ -1,6 +1,5 @@
 import { IAllTranscript } from 'db/models/allTranscript';
 
-import { ITranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
 import { ITranscriptUsage } from '../../db/models/transcriptUsage';
 import { ConditionsByGeneName } from './types';
 

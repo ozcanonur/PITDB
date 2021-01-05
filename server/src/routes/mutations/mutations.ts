@@ -74,7 +74,7 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
     const geneNames: { _id: string }[] = await Mutation.aggregate([
       { $match: { project, gene: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$gene' } },
-      { $limit: 50 },
+      { $limit: 20 },
     ]);
 
     res.send(geneNames);

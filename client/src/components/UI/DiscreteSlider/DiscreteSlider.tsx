@@ -5,7 +5,7 @@ import Slider from '@material-ui/core/Slider';
 import { useStyles } from './styles';
 import { DiscreteSliderProps } from './types';
 
-export default function DiscreteSlider({
+const DiscreteSlider = ({
   name,
   marks,
   defaultValue,
@@ -13,7 +13,7 @@ export default function DiscreteSlider({
   track,
   className,
   ...props
-}: DiscreteSliderProps) {
+}: DiscreteSliderProps) => {
   const classes = useStyles();
 
   const [value, setValue] = useState(2);
@@ -48,4 +48,6 @@ export default function DiscreteSlider({
       />
     </div>
   );
-}
+};
+
+export default DiscreteSlider;

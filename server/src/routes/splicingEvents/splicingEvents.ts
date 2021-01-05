@@ -64,7 +64,7 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
     const geneNames: { _id: string }[] = await SplicingDPSI.aggregate([
       { $match: { project, geneName: RegExp(`^${searchInput}`, 'i') } },
       { $group: { _id: '$geneName' } },
-      { $limit: 50 },
+      { $limit: 20 },
     ]);
 
     res.send(geneNames);

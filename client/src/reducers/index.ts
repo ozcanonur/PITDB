@@ -12,12 +12,15 @@ import {
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
+  SetGeneBrowserFiltersAction,
+  SelectGeneBrowserGeneAction,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
+import { GeneBrowserFilters } from 'components/Project/GeneBrowser/TranscriptViewer/types';
 
 const mutationFilters = (
   state: MutationTableFilters = {
@@ -141,6 +144,30 @@ const selectedTranscriptViewerTranscriptColor = (
   }
 };
 
+const geneBrowserFilters = (
+  state: GeneBrowserFilters = { conditions: ['Nsi'], minQual: 0.5, minTPM: 0 },
+  action: SetGeneBrowserFiltersAction
+) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_FILTERS:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
+const selectedGeneBrowserGene = (
+  state: { gene: string } = { gene: 'BIRC2' },
+  action: SelectGeneBrowserGeneAction
+) => {
+  switch (action.type) {
+    case ACTION.SELECT_GENE_BROWSER_GENE:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   mutationFilters,
   selectedMutation,
@@ -152,4 +179,6 @@ export default combineReducers({
   selectedTranscriptUsage,
   selectedTranscriptViewerTranscript,
   selectedTranscriptViewerTranscriptColor,
+  geneBrowserFilters,
+  selectedGeneBrowserGene,
 });

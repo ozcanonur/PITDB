@@ -10,11 +10,13 @@ import {
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
+  SelectGeneBrowserGeneAction,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
+import { GeneBrowserFilters } from 'components/Project/GeneBrowser/TranscriptViewer/types';
 
 export const setMutationFilters = (filters: MutationTableFilters): SetMutationFiltersAction => {
   return {
@@ -105,6 +107,22 @@ export const selectTranscriptViewerTranscriptColor = (
     type: ACTION.SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR,
     payload: {
       color,
+    },
+  };
+};
+
+export const setGeneBrowserFilters = (filters: GeneBrowserFilters) => {
+  return {
+    type: ACTION.SET_GENE_BROWSER_FILTERS,
+    payload: filters,
+  };
+};
+
+export const selectGeneBrowserGene = (gene: string): SelectGeneBrowserGeneAction => {
+  return {
+    type: ACTION.SELECT_GENE_BROWSER_GENE,
+    payload: {
+      gene,
     },
   };
 };

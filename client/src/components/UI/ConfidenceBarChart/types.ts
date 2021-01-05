@@ -19,7 +19,7 @@ type Bars = {
   y: number;
 }[];
 
-export interface PointsLayerProps {
+export interface LayerProps {
   bars: Bars;
   xScale: any;
   yScale: any;
