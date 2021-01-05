@@ -1,5 +1,13 @@
+import { useStyles } from './styles';
+
 const PeptideMapsWrapper = () => {
-  return <div>Peptide Maps</div>;
+  const classes = useStyles();
+
+  return (
+    <div className={classes.container}>
+      <div className={classes.placeholder}>Peptide Maps, soon.</div>
+    </div>
+  );
 };
 
 export default PeptideMapsWrapper;

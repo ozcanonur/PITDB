@@ -145,7 +145,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { conditions: ['Nsi'], minQual: 0.5, minTPM: 0 },
+  state: GeneBrowserFilters = { conditions: ['Nsi'], minQual: 250, minTPM: 0.5 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {

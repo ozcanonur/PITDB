@@ -149,6 +149,9 @@ const DGETable = ({ ...props }) => {
 
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValue = parseFloat(pValueMarks[value]);
+
+    if (newMaxPValue === filters.maxPValue) return;
+
     dispatch(setDGEFilters({ ...filters, maxPValue: newMaxPValue }));
   };
 
@@ -156,6 +159,9 @@ const DGETable = ({ ...props }) => {
 
   const onFoldChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMinAbsFoldChange = parseFloat(foldChangeMarks[value]);
+
+    if (newMinAbsFoldChange === filters.minAbsFoldChange) return;
+
     dispatch(setDGEFilters({ ...filters, minAbsFoldChange: newMinAbsFoldChange }));
   };
 

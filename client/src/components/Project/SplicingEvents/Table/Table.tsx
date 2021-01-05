@@ -205,6 +205,9 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
+
+    if (newMaxPValueFilterValue === filters.maxPValue) return;
+
     dispatch(setSplicingEventsFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 

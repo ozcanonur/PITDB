@@ -5,8 +5,8 @@ import { min, max } from 'lodash';
 
 import { TranscriptSvgProps } from './types';
 
-const RAIL_OFFSET = 110;
-const RAIL_LENGTH = 530;
+const RAIL_OFFSET = 90;
+const RAIL_LENGTH = 550;
 const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
 

@@ -16,6 +16,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     padding: '0 2rem',
     paddingLeft: '1.6rem',
+    marginLeft: '6rem',
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',
@@ -56,5 +57,11 @@ export const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
     marginTop: '3rem',
     transition: 'all .3s ease-in-out',
+  },
+  noResults: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
   },
 }));

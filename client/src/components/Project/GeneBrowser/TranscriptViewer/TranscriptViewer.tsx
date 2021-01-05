@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
+import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
@@ -78,11 +79,22 @@ const TranscriptViewer = ({ ...props }) => {
 
   const tpmMarks = ['0', '0.1', '0.5', '1', '5'];
 
-  const qualityMarks = ['0', '100', '300', '400', '1000'];
-
   const onMinTPMChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMinTPMValue = parseFloat(tpmMarks[value]);
+
+    if (newMinTPMValue === filters.minTPM) return;
+
     dispatch(setGeneBrowserFilters({ ...filters, minTPM: newMinTPMValue }));
+  };
+
+  const qualityMarks = ['0', '100', '250', '500', '1000'];
+
+  const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+    const newMinQualValue = parseFloat(qualityMarks[value]);
+
+    if (newMinQualValue === filters.minQual) return;
+
+    dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
   };
 
   const multiSelectOnChange = (
@@ -91,12 +103,11 @@ const TranscriptViewer = ({ ...props }) => {
     name: string
   ) => {
     const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-
     dispatch(setGeneBrowserFilters({ ...filters, [name]: newSelectedValues }));
   };
 
   return (
-    <ProjectItemCard name={`Transcript viewer`} className={classes.projectItemCard} {...props}>
+    <ProjectItemCard name={`Transcript browser for ${gene}`} className={classes.projectItemCard} {...props}>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
@@ -125,16 +136,23 @@ const TranscriptViewer = ({ ...props }) => {
           />
           <DiscreteSlider
             name='Min. Quality'
-            defaultValue={0}
+            defaultValue={250}
             marks={parseDiscreteSliderMarks(qualityMarks)}
-            onChangeCommited={() => {}}
+            onChangeCommited={onMinQualityChangeCommited}
           />
         </div>
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <div className={classes.transcriptViewerContainer} style={{ opacity: loading ? 0 : 1 }}>
+      <NoResults
+        className={classes.noResults}
+        style={{ opacity: !loading && transcriptsData.transcripts.length === 0 ? 1 : 0 }}
+      />
+      <div
+        className={classes.transcriptViewerContainer}
+        style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
+      >
         <div className={classes.transcriptRails}>
-          {transcriptsData.transcripts.map((transcript, index) => (
+          {transcriptsData.transcripts.map((transcript) => (
             <TranscriptSvg
               key={transcript.transcriptId}
               transcriptData={{

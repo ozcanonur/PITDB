@@ -11,7 +11,12 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
-import { setTranscriptUsageFilters, selectTranscriptUsage, selectTranscriptViewerTranscript } from 'actions';
+import {
+  setTranscriptUsageFilters,
+  selectTranscriptUsage,
+  selectTranscriptViewerTranscript,
+  selectTranscriptViewerTranscriptColor,
+} from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 import {
@@ -19,6 +24,7 @@ import {
   TranscriptUsageGeneNamesResponse,
   TranscriptUsageByGeneNameResponse,
 } from './types';
+import { COLORS } from 'variables/transcriptViewerColors';
 
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
@@ -150,6 +156,7 @@ const SplicingEventsTable = ({ ...props }) => {
     const [gene, transcript] = row;
     dispatch(selectTranscriptUsage(gene, transcript));
     dispatch(selectTranscriptViewerTranscript(transcript));
+    dispatch(selectTranscriptViewerTranscriptColor(COLORS[0]));
   };
 
   // // WOOP, there is no peptide evidence yet, hard coded it
@@ -213,6 +220,9 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
+
+    if (newMaxPValueFilterValue === filters.maxPValue) return;
+
     dispatch(setTranscriptUsageFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 

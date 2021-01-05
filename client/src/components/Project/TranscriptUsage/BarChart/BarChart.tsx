@@ -36,7 +36,7 @@ const BarChart = ({ ...props }) => {
       if (!isMounted || !res) return;
 
       setTranscriptReadCounts(res);
-      setBarChartColor(String(tinyColor(color).setAlpha(0.8)));
+      setBarChartColor(String(tinyColor(color).setAlpha(0.65)));
       setLoading(false);
     });
 
