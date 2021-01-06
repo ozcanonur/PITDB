@@ -37,6 +37,21 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
       {...props}
     >
       <g>
+        <text
+          transform='translate(10 16.8)'
+          fontSize='0.65rem'
+          fontFamily='Poppins, sans-serif'
+          color='#336'
+          fill='#336'
+          cursor='pointer'
+          onClick={selectTranscriptOnClick}
+        >
+          {transcriptId}
+        </text>
+        {/* This is the selected transcript background */}
+        {selectedTranscript === transcriptId ? (
+          <rect x={0} y={4} width={100} height={20} rx={1} fill='rgba(51, 51, 102, 0.1)' />
+        ) : null}
         {/* This is the rail */}
         <g transform='translate(0 5)'>
           <path d='M153 9h494' />
@@ -66,21 +81,6 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
             </g>
           );
         })}
-        <text
-          transform='translate(10 16.8)'
-          fontSize='0.65rem'
-          fontFamily='Poppins, sans-serif'
-          color='#336'
-          fill='#336'
-          cursor='pointer'
-          onClick={selectTranscriptOnClick}
-        >
-          {transcriptId}
-        </text>
-        {/* This is the selected transcript background */}
-        {selectedTranscript === transcriptId ? (
-          <rect x={0} y={4} width={100} height={20} rx={1} fill='rgba(51, 51, 102, 0.1)' />
-        ) : null}
       </g>
     </svg>
   );

@@ -18,6 +18,7 @@ type Transcript = {
     aaRef?: string;
     aaAlt?: string;
   }[];
+  conditions: string[];
 };
 
 export type TranscriptData = {

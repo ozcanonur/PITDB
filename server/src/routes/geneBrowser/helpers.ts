@@ -10,12 +10,7 @@ export const parseMutations = (mutations: IMutation[]) => {
 
   const flatMutationTranscriptsPos = flatten(mutationTranscriptsPos, { maxDepth: 2 });
 
-  const parsedMutations: {
-    transcript: string;
-    pos: number;
-    aaRef?: string;
-    aaAlt?: string;
-  }[] = [];
+  const parsedMutations: ParsedMutations = [];
 
   Object.keys(flatMutationTranscriptsPos).forEach((transcript) => {
     // @ts-ignore
@@ -40,8 +35,10 @@ export const parseTranscriptsForViewer = (
   let minimumPosition = Number.MAX_VALUE;
   let maximumPosition = 0;
 
+  console.log(transcripts);
+
   const parsedTranscripts = transcripts
-    .map(({ transcriptID, start, end, exons, CDS }) => {
+    .map(({ transcriptID, start, end, exons, CDS, TPM }) => {
       if (start < minimumPosition) minimumPosition = start;
       if (end > maximumPosition) maximumPosition = end;
 
@@ -56,6 +53,7 @@ export const parseTranscriptsForViewer = (
         exons: exons.map(([start, end]) => ({ start, end })),
         cds: CDS && Object.keys(CDS).length > 0 ? CDS[Object.keys(CDS)[0]] : null,
         mutations,
+        conditions: Object.keys(TPM),
       };
     })
     .sort((x, y) => x.transcriptId.localeCompare(y.transcriptId));

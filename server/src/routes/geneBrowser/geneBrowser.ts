@@ -23,7 +23,6 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     const transcripts = await AllTranscript.find({ project, gene });
 
     // Filter by selected conditions and min TPM
-    // WOOP, change 0
     const filteredTranscripts = transcripts.filter(
       ({ TPM }) =>
         conditions.some((condition) => Object.keys(TPM).includes(condition)) &&
