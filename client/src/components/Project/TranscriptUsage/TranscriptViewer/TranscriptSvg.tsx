@@ -39,23 +39,15 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
       <g>
         {/* This is the rail */}
         <g transform='translate(0 5)'>
-          <path className='transcriptViewerRail' d='M153 9h494' />
-          <rect
-            fill={color}
-            className='transcriptViewerRail'
-            x={RAIL_OFFSET}
-            y={8}
-            width={RAIL_LENGTH}
-            height={RAIL_HEIGHT}
-            rx={0.5}
-          />
+          <path d='M153 9h494' />
+          <rect fill={color} x={RAIL_OFFSET} y={8} width={RAIL_LENGTH} height={RAIL_HEIGHT} rx={0.5} />
         </g>
         {/* These are the exon boxes */}
         {exons?.map(({ start, end }) => {
           const exonStartingPosition = RAIL_OFFSET + increment * (start - minimumPosition);
           const exonWidth = increment * (end - start + 1);
           return (
-            <g key={String(start + end)} className='transcriptViewerExon' transform='translate(0 8)'>
+            <g key={String(start + end)} transform='translate(0 8)'>
               <rect fill={color} ref={ref} x={exonStartingPosition} width={exonWidth} height={EXON_HEIGHT} />
               <Tooltip triggerRef={ref}>
                 <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
