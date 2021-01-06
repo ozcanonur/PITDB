@@ -3,3 +3,10 @@ export type GeneBrowserFilters = {
   minTPM: number;
   minQual: number;
 };
+
+export type ParsedMutations = {
+  transcript: string;
+  pos: number;
+  aaRef?: string;
+  aaAlt?: string;
+}[];

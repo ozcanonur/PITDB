@@ -2,8 +2,9 @@ import express from 'express';
 import flatten from 'flat';
 
 import { AllTranscript } from '../../db/models/allTranscript';
+import { Mutation } from '../../db/models/mutation';
 import { ExtendedRequest } from '../../types';
-import { parseTranscriptsForViewer } from './helpers';
+import { parseTranscriptsForViewer, parseMutations } from './helpers';
 import { GeneBrowserFilters } from './types';
 
 const router = express.Router();
@@ -19,16 +20,20 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
   const { conditions, minTPM, minQual } = parsedFilters;
 
   try {
-    let transcripts = await AllTranscript.find({ project, gene });
+    const transcripts = await AllTranscript.find({ project, gene });
 
     // Filter by selected conditions and min TPM
-    transcripts = transcripts.filter(
+    // WOOP, change 0
+    const filteredTranscripts = transcripts.filter(
       ({ TPM }) =>
         conditions.some((condition) => Object.keys(TPM).includes(condition)) &&
         Object.values(flatten(TPM)).every((value) => value >= minTPM)
     );
 
-    const parsedTranscripts = parseTranscriptsForViewer(transcripts);
+    const mutations = await Mutation.find({ gene });
+    const parsedMutations = parseMutations(mutations);
+
+    const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations);
 
     res.send(parsedTranscripts);
   } catch (error) {

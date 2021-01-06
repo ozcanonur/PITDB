@@ -2,7 +2,7 @@ import { SVGAttributes } from 'react';
 
 export type GeneNamesResponse = { _id: string }[];
 
-export type Transcript = {
+type Transcript = {
   transcriptId: string;
   exons: { start: number; end: number }[];
   cds?: {
@@ -12,14 +12,22 @@ export type Transcript = {
     end: number;
     type: string;
   };
+  mutations: {
+    transcript: string;
+    pos: number;
+    aaRef?: string;
+    aaAlt?: string;
+  }[];
+};
+
+export type TranscriptData = {
+  transcript: Transcript;
+  minimumPosition: number;
+  maximumPosition: number;
 };
 
 export interface TranscriptSvgProps extends SVGAttributes<SVGElement> {
-  transcriptData: {
-    transcript: Transcript;
-    minimumPosition: number;
-    maximumPosition: number;
-  };
+  transcriptData: TranscriptData;
 }
 
 export type TranscriptsResponse = {

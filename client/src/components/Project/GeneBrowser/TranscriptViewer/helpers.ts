@@ -1,4 +1,4 @@
-import { Transcript } from './types';
+import { TranscriptData } from './types';
 
 export const parseDiscreteSliderMarks = (marks: string[]) =>
   marks.map((mark, index) => ({
@@ -7,16 +7,10 @@ export const parseDiscreteSliderMarks = (marks: string[]) =>
     label: mark,
   }));
 
+// WOOP, I have no idea about the logic here
+// Literal copypasta from Esteban's java
 export const getCDSPosition = (
-  {
-    transcript,
-    minimumPosition,
-    maximumPosition,
-  }: {
-    transcript: Transcript;
-    minimumPosition: number;
-    maximumPosition: number;
-  },
+  { transcript, minimumPosition, maximumPosition }: TranscriptData,
   increment: number,
   railOffset: number
 ) => {
@@ -25,7 +19,6 @@ export const getCDSPosition = (
   let startSet = false;
 
   let posOnTranscript = 1;
-  let posOnGenome = minimumPosition;
 
   const { cds, exons } = transcript;
 
@@ -34,7 +27,7 @@ export const getCDSPosition = (
   const { start: sequenceStart, end: sequenceEnd } = cds;
 
   for (const exon of exons) {
-    posOnGenome = exon.start;
+    const posOnGenome = exon.start;
     const exonLength = exon.end - exon.start + 1;
     if (posOnTranscript + exonLength > sequenceStart && !startSet) {
       start = posOnGenome + sequenceStart - posOnTranscript + 1;
@@ -51,4 +44,39 @@ export const getCDSPosition = (
   start = railOffset + increment * (start - minimumPosition + 1);
 
   return { cdsStart: start, cdsWidth: width };
+};
+
+// WOOP, I have no idea about the logic here also
+// Literal copypasta from above
+export const getMutationPosition = (
+  { transcript, minimumPosition }: TranscriptData,
+  increment: number,
+  railOffset: number
+) => {
+  const { mutations, exons } = transcript;
+
+  const result: number[] = [];
+
+  mutations.forEach(({ pos }) => {
+    let start = minimumPosition;
+    let startSet = false;
+
+    let posOnTranscript = 1;
+
+    for (const exon of exons) {
+      const posOnGenome = exon.start;
+      const exonLength = exon.end - exon.start + 1;
+      if (posOnTranscript + exonLength > pos && !startSet) {
+        start = posOnGenome + pos - posOnTranscript + 1;
+        startSet = true;
+      }
+      posOnTranscript += exonLength;
+    }
+
+    start = railOffset + increment * (start - minimumPosition + 1);
+
+    result.push(start);
+  });
+
+  return result;
 };

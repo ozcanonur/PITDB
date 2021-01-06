@@ -4,12 +4,15 @@ import flatten from 'flat';
 import { min, max } from 'lodash';
 
 import { TranscriptSvgProps } from './types';
-import { getCDSPosition } from './helpers';
+import { getCDSPosition, getMutationPosition } from './helpers';
 
 const RAIL_OFFSET = 90;
 const RAIL_LENGTH = 550;
 const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
+const CDS_HEIGHT = 4;
+const MUTATION_HEIGHT = 10;
+const MUTATION_WIDTH = 1;
 
 const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
   const {
@@ -24,6 +27,7 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
   const maxExonStart: number = max(Object.values(flatten(exons))) || 0;
 
   const { cdsStart, cdsWidth } = getCDSPosition(transcriptData, increment, RAIL_OFFSET);
+  const mutationPositions = getMutationPosition(transcriptData, increment, RAIL_OFFSET);
 
   const exonRef = createRef<SVGRectElement>();
   const cdsRef = createRef<SVGRectElement>();
@@ -62,7 +66,7 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
                 height={EXON_HEIGHT}
               />
               <Tooltip triggerRef={exonRef}>
-                <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
+                <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))' transform='translate(0, -5)'>
                   <rect x={0.25} y={0.25} width={105} height={16} rx={1} fill='#eceef7' />
                   <rect x={10} y={5} width={8} height={8} rx={1} fill='#336' />
                   <text
@@ -80,9 +84,9 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
         })}
         {/* This is the CDS */}
         <g transform='translate(0 20)'>
-          <rect fill='#FFDE4D' x={cdsStart} width={cdsWidth} height={4} ref={cdsRef} />
+          <rect fill='#FFDE4D' x={cdsStart} width={cdsWidth} height={CDS_HEIGHT} rx={0.5} ref={cdsRef} />
           <Tooltip triggerRef={cdsRef}>
-            <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
+            <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))' transform='translate(0, -5)'>
               <rect x={0.25} y={0.25} width={105} height={16} rx={1} fill='#eceef7' />
               <rect x={10} y={5} width={8} height={8} rx={1} fill='#FFDE4D' />
               <text
@@ -96,6 +100,14 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
             </g>
           </Tooltip>
         </g>
+        {/* These are the mutations */}
+        {mutationPositions.map((pos) => {
+          return (
+            <g key={pos} transform='translate(0 8)'>
+              <rect fill='#C8553D' x={pos} width={MUTATION_WIDTH} height={MUTATION_HEIGHT} />
+            </g>
+          );
+        })}
         <text
           transform='translate(10 16.8)'
           fontSize='0.65rem'

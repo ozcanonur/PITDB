@@ -50,7 +50,7 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
             <g key={String(start + end)} transform='translate(0 8)'>
               <rect fill={color} ref={ref} x={exonStartingPosition} width={exonWidth} height={EXON_HEIGHT} />
               <Tooltip triggerRef={ref}>
-                <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))'>
+                <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))' transform='translate(0, -5)'>
                   <rect x={0.25} y={0.25} width={100} height={16} rx={1} fill='#eceef7' />
                   <rect x={10} y={5} width={8} height={8} rx={1} fill={color} />
                   <text
