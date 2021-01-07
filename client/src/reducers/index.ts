@@ -24,6 +24,7 @@ import { GeneBrowserFilters } from 'components/Project/GeneBrowser/TranscriptVie
 
 const mutationFilters = (
   state: MutationTableFilters = {
+    gene: '',
     variantType: ['SNP', 'DEL', 'INS'],
     inCDS: ['true'],
     hasPeptideEvidence: ['false'],
@@ -52,7 +53,7 @@ const selectedMutation = (
 };
 
 const DGEFilters = (
-  state: DGETableFilters = { maxPValue: 0.05, minAbsFoldChange: 1 },
+  state: DGETableFilters = { symbol: '', maxPValue: 0.05, minAbsFoldChange: 1 },
   action: SetDGEFiltersAction
 ) => {
   switch (action.type) {
@@ -73,7 +74,12 @@ const selectedDGE = (state: { symbol: string } = { symbol: '' }, action: SelectD
 };
 
 const splicingEventsFilters = (
-  state: SplicingEventsTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true'], strand: ['-', '+'] },
+  state: SplicingEventsTableFilters = {
+    gene: '',
+    maxPValue: 0.05,
+    hasPeptideEvidence: ['true'],
+    strand: ['-', '+'],
+  },
   action: SetSplicingEventsFiltersAction
 ) => {
   switch (action.type) {
@@ -97,7 +103,7 @@ const selectedSplicingEvent = (
 };
 
 const transcriptUsageFilters = (
-  state: TranscriptUsageTableFilters = { maxPValue: 0.05, hasPeptideEvidence: ['true', 'false'] },
+  state: TranscriptUsageTableFilters = { gene: '', maxPValue: 0.05, hasPeptideEvidence: ['true', 'false'] },
   action: SetTranscriptUsageFiltersAction
 ) => {
   switch (action.type) {

@@ -34,7 +34,7 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
 };
 
 export const parseConditions = (conditions: ISplicingPsi) => {
-  const relevantFields = omit(conditions, ['_id', 'event', 'project']);
+  const relevantFields: any = omit(conditions, ['_id', 'event', 'project']);
 
   const parsedConditions: { [sample: string]: number | string; condition: string }[] = [];
   for (const field of Object.keys(relevantFields)) {
@@ -42,12 +42,9 @@ export const parseConditions = (conditions: ISplicingPsi) => {
 
     const existingEntry = parsedConditions.find((entry) => entry.condition === conditionName);
     if (!existingEntry) {
-      // @ts-ignore
       const newEntry = { condition: conditionName, [sample]: relevantFields[field] };
       parsedConditions.push(newEntry);
-    }
-    // @ts-ignore
-    else existingEntry[sample] = relevantFields[field];
+    } else existingEntry[sample] = relevantFields[field];
   }
 
   return parsedConditions;

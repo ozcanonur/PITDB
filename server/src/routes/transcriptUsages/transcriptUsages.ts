@@ -25,13 +25,17 @@ router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
   try {
-    const { maxPValue } = JSON.parse(filters) as TranscriptUsageFilters;
+    const { gene, maxPValue } = JSON.parse(filters) as TranscriptUsageFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    const query = {
+    let query = {
       project,
       pval: { $lt: maxPValue },
     };
+
+    if (gene)
+      // @ts-ignore
+      query = { ...query, geneName: gene };
 
     const transcriptUsages = await TranscriptUsageDPSI.find(query)
       .sort({ [findMongoFieldFromTableColumn(field)]: order })
@@ -78,36 +82,6 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
     ]);
 
     res.send(geneNames);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
-  }
-});
-
-/*
- * Route for getting entries by gene name
- * Filters by project and gene name
- */
-router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
-  const { project, geneName } = req.query;
-
-  try {
-    const transcriptUsages = await TranscriptUsageDPSI.find({ project, geneName });
-
-    if (!transcriptUsages) return res.send([]);
-
-    const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
-      const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
-
-      return {
-        geneName,
-        transcript,
-        deltaPsi,
-        pval,
-      };
-    });
-
-    res.send(parsedTranscriptUsages);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

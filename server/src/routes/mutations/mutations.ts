@@ -20,16 +20,20 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const parsedFilters = JSON.parse(filters) as MutationFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    const { variantType, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
+    const { gene, variantType, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
 
     // Have to convert string boolean to boolean
-    const query = {
+    let query = {
       project,
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
       silent: { $in: isSynonymous.map((e) => e === 'true') },
       type: { $in: variantType },
     };
+
+    if (gene)
+      // @ts-ignore
+      query = { ...query, gene };
 
     const mutations = await Mutation.find(query)
       .sort({ [findMongoFieldFromTableColumn(field)]: order })
@@ -85,38 +89,6 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
 });
 
 /*
- * Route for getting entries by gene name
- * Filters by project and gene name
- */
-router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
-  const { project, geneName } = req.query;
-
-  try {
-    const mutations = await Mutation.find({ project, gene: geneName });
-
-    if (!mutations) return res.send([]);
-
-    const parsedMutations = mutations.map(
-      ({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
-        gene,
-        refPos,
-        type,
-        ref,
-        alt,
-        silent,
-        inCDS,
-        hasPeptideEvidence,
-      })
-    );
-
-    res.send(parsedMutations);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
-  }
-});
-
-/*
  * Route for getting conditions data(AF, qual) for mutation bar charts for a gene and position
  * Filters by project, gene and position
  */
@@ -128,7 +100,6 @@ router.get('/conditions', async (req: ExtendedRequest, res) => {
 
     if (!conditions) return res.sendStatus(500);
 
-    // @ts-ignore
     const parsedConditions = parseConditions(conditions);
     res.send(parsedConditions);
   } catch (error) {

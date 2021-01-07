@@ -19,11 +19,7 @@ import {
 } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import {
-  TranscriptUsagesResponse,
-  TranscriptUsageGeneNamesResponse,
-  TranscriptUsageByGeneNameResponse,
-} from './types';
+import { TranscriptUsagesResponse, TranscriptUsageGeneNamesResponse } from './types';
 import { COLORS } from 'variables/transcriptViewerColors';
 
 const SplicingEventsTable = ({ ...props }) => {
@@ -182,38 +178,8 @@ const SplicingEventsTable = ({ ...props }) => {
   };
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    // Just to trigger rerender via useEffect
-    if (!selectedOption) {
-      dispatch(setTranscriptUsageFilters({ ...filters }));
-      return;
-    }
-
-    setLoading(true);
-
-    // WOOP, should we apply filters on search or not?
-    const res: TranscriptUsageByGeneNameResponse = await fetchFromApi('/api/transcript-usages/by-gene-name', {
-      project,
-      geneName: selectedOption.value,
-    });
-
-    setLoading(false);
-
-    setCurrentPage(0);
-
-    const newRowCount = res.length;
-    setRowCount(newRowCount);
-
-    const newTableData = res.map(Object.values);
-    setTableData(newTableData);
-
-    if (res.length === 0) return;
-
-    const firstRow = newTableData[0];
-    setSelectedRow(firstRow);
-
-    const [gene, transcript] = firstRow;
-    dispatch(selectTranscriptUsage(gene, transcript));
-    dispatch(selectTranscriptViewerTranscript(transcript));
+    const gene = selectedOption ? selectedOption.value : '';
+    dispatch(setTranscriptUsageFilters({ ...filters, gene }));
   };
 
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];

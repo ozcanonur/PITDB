@@ -120,7 +120,6 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
             );
           })}
         </g>
-
         {/* This is the CDS */}
         <g transform='translate(0 20)'>
           <rect fill='#FFDE4D' x={cdsStart} width={cdsWidth} height={CDS_HEIGHT} rx={0.5} ref={cdsRef} />

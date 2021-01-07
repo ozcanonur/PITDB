@@ -13,7 +13,7 @@ import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
-import { DGESResponse, SymbolNamesResponse, BySymbolNameResponse } from './types';
+import { DGESResponse, SymbolNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 const DGETable = ({ ...props }) => {
@@ -176,37 +176,8 @@ const DGETable = ({ ...props }) => {
   };
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    // Just to trigger rerender with the actual set filters via useEffect
-    if (!selectedOption) {
-      dispatch(setDGEFilters({ ...filters }));
-      return;
-    }
-
-    setLoading(true);
-
-    // WOOP, should we apply filters on search or not?
-    const res: BySymbolNameResponse = await fetchFromApi('/api/dges/by-symbol-name', {
-      project,
-      symbol: selectedOption.value,
-    });
-
-    setLoading(false);
-
-    setCurrentPage(0);
-
-    const newRowCount = res.length;
-    setRowCount(newRowCount);
-
-    const newTableData = res.map(Object.values);
-    setTableData(newTableData);
-
-    if (res.length === 0) return;
-
-    const firstRow = newTableData[0];
-    setSelectedRow(newTableData[0]);
-
-    const [symbolName] = firstRow;
-    dispatch(selectDGE(symbolName));
+    const symbol = selectedOption ? selectedOption.value : '';
+    dispatch(setDGEFilters({ ...filters, symbol }));
   };
 
   // // WOOP, Hard coded peptide evidence on multiselect

@@ -19,14 +19,18 @@ router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
   try {
-    const { maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
+    const { symbol, maxPValue, minAbsFoldChange } = JSON.parse(filters) as DGEFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    const query = {
+    let query = {
       project,
       padj: { $lt: maxPValue },
       $or: [{ log2fc: { $gte: minAbsFoldChange } }, { log2fc: { $lte: -minAbsFoldChange } }],
     };
+
+    if (symbol)
+      // @ts-ignore
+      query = { ...query, symbol };
 
     const dges = await DGE.find(query)
       .sort({ [convertSortFieldNameForMongoose(field)]: order })
@@ -70,31 +74,6 @@ router.get('/symbol-names', async (req: ExtendedRequest, res) => {
     if (!symbolNames) return res.send([]);
 
     res.send(symbolNames);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
-  }
-});
-
-/*
- * Route for getting entries by symbol name
- * Filters by project and symbol
- */
-router.get('/by-symbol-name', async (req: ExtendedRequest, res) => {
-  const { project, symbol } = req.query;
-
-  try {
-    const dges = await DGE.find({ project, symbol });
-
-    if (!dges) return res.send([]);
-
-    const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
-      symbol,
-      log2fc,
-      padj,
-    }));
-
-    res.send(parsedDges);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

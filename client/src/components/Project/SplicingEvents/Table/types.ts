@@ -1,4 +1,5 @@
 export type SplicingEventsTableFilters = {
+  gene: string;
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
   strand: [string?, string?];
@@ -19,14 +20,3 @@ export type SplicingEventsResponse = {
 };
 
 export type SplicingEventsGeneNamesResponse = { _id: string }[];
-
-export type SplicingEventsByGeneNameResponse = {
-  geneName: string;
-  strand: string;
-  eventType: string;
-  start: string;
-  end: string;
-  deltaPsi: number;
-  pval: number;
-  pepEvidence: boolean;
-}[];

@@ -1,4 +1,5 @@
 export type TranscriptUsageTableFilters = {
+  gene: string;
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
 };
@@ -15,11 +16,3 @@ export type TranscriptUsagesResponse = {
 };
 
 export type TranscriptUsageGeneNamesResponse = { _id: string }[];
-
-export type TranscriptUsageByGeneNameResponse = {
-  geneName: string;
-  transcript: string;
-  deltaPsi: string;
-  pval: number;
-  hasPeptideEvidence: boolean;
-}[];

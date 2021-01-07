@@ -22,15 +22,19 @@ router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
   try {
-    const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
+    const { gene, maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    const query = {
+    let query = {
       project,
       pval: { $lt: maxPValue },
       pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       event: getRegexForStrandFilter(strand),
     };
+
+    if (gene)
+      // @ts-ignore
+      query = { ...query, geneName: gene };
 
     const splicingEvents = await SplicingDPSI.find(query)
       .sort({ [findMongoFieldFromTableColumn(field)]: order })
@@ -68,27 +72,6 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
     ]);
 
     res.send(geneNames);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error);
-  }
-});
-
-/*
- * Route for getting entries by gene name
- * Filters by project and gene name
- */
-router.get('/by-gene-name', async (req: ExtendedRequest, res) => {
-  const { project, geneName } = req.query;
-
-  try {
-    const splicingEvents = await SplicingDPSI.find({ project, geneName });
-
-    if (!splicingEvents) return res.send([]);
-
-    const parsedSplicingEvents = parseSplicingEvents(splicingEvents);
-
-    res.send(parsedSplicingEvents);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

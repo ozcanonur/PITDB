@@ -14,11 +14,7 @@ import { fetchFromApi } from 'utils';
 import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
 import { parseDiscreteSliderMarks } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import {
-  SplicingEventsResponse,
-  SplicingEventsGeneNamesResponse,
-  SplicingEventsByGeneNameResponse,
-} from './types';
+import { SplicingEventsResponse, SplicingEventsGeneNamesResponse } from './types';
 
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
@@ -168,37 +164,8 @@ const SplicingEventsTable = ({ ...props }) => {
   };
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    // Just to trigger rerender via useEffect
-    if (!selectedOption) {
-      dispatch(setSplicingEventsFilters({ ...filters }));
-      return;
-    }
-
-    setLoading(true);
-
-    // WOOP, should we apply filters on search or not?
-    const res: SplicingEventsByGeneNameResponse = await fetchFromApi('/api/splicing-events/by-gene-name', {
-      project,
-      geneName: selectedOption.value,
-    });
-
-    setLoading(false);
-
-    setCurrentPage(0);
-
-    const newRowCount = res.length;
-    setRowCount(newRowCount);
-
-    const newTableData = res.map(Object.values);
-    setTableData(newTableData);
-
-    if (res.length === 0) return;
-
-    const firstRow = newTableData[0];
-    setSelectedRow(firstRow);
-
-    const [gene, , , , , dPSI] = firstRow;
-    dispatch(selectSplicingEvent(gene, dPSI));
+    const gene = selectedOption ? selectedOption.value : '';
+    dispatch(setSplicingEventsFilters({ ...filters, gene }));
   };
 
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];

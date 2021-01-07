@@ -2,6 +2,7 @@ import { IAllTranscript } from 'db/models/allTranscript';
 import { ITranscriptUsageDPSI } from 'db/models/transcriptUsageDPSI';
 
 export type TranscriptUsageFilters = {
+  gene: string;
   maxPValue: number;
 };
 

@@ -18,6 +18,12 @@ export enum ACTION {
   SET_GENE_BROWSER_FILTERS,
   SELECT_GENE_BROWSER_GENE,
 }
+
+export type SetMutationFiltersAction = {
+  type: ACTION.SET_MUTATION_FILTERS;
+  payload: MutationTableFilters;
+};
+
 export type SelectMutationAction = {
   type: ACTION.SELECT_MUTATION;
   payload: {
@@ -26,21 +32,16 @@ export type SelectMutationAction = {
   };
 };
 
+export type SetDGEFiltersAction = {
+  type: ACTION.SET_DGE_FILTERS;
+  payload: DGETableFilters;
+};
+
 export type SelectDGEAction = {
   type: ACTION.SELECT_DGE;
   payload: {
     symbol: string;
   };
-};
-
-export type SetMutationFiltersAction = {
-  type: ACTION.SET_MUTATION_FILTERS;
-  payload: MutationTableFilters;
-};
-
-export type SetDGEFiltersAction = {
-  type: ACTION.SET_DGE_FILTERS;
-  payload: DGETableFilters;
 };
 
 export type SetSplicingEventsFiltersAction = {

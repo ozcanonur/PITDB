@@ -11,7 +11,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { selectMutation, setMutationFilters } from 'actions';
-import { MutationsResponse, GeneNamesResponse, ByGeneNameResponse } from './types';
+import { MutationsResponse, GeneNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 const MutationsTable = ({ ...props }) => {
@@ -161,37 +161,8 @@ const MutationsTable = ({ ...props }) => {
   };
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    // Just to trigger rerender with the actual set filters via useEffect
-    if (!selectedOption) {
-      dispatch(setMutationFilters({ ...filters }));
-      return;
-    }
-
-    setLoading(true);
-
-    // WOOP, should we apply filters on search or not?
-    const res: ByGeneNameResponse = await fetchFromApi('/api/mutations/by-gene-name', {
-      project,
-      geneName: selectedOption.value,
-    });
-
-    setLoading(false);
-
-    setCurrentPage(0);
-
-    const newRowCount = res.length;
-    setRowCount(newRowCount);
-
-    const newTableData = res.map(Object.values);
-    setTableData(newTableData);
-
-    if (res.length === 0) return;
-
-    const firstRow = newTableData[0];
-    setSelectedRow(firstRow);
-
-    const [gene, position] = firstRow;
-    dispatch(selectMutation(gene, position));
+    const gene = selectedOption ? selectedOption.value : '';
+    dispatch(setMutationFilters({ ...filters, gene }));
   };
 
   return (

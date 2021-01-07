@@ -56,12 +56,9 @@ export const parseReadCounts = (conditions: { [condition: string]: number }) => 
 
     const existingEntry = parsedConditions.find((entry) => entry.condition === conditionName);
     if (!existingEntry) {
-      // @ts-ignore
       const newEntry = { condition: conditionName, [sample]: conditions[field] };
       parsedConditions.push(newEntry);
-    }
-    // @ts-ignore
-    else existingEntry[sample] = conditions[field];
+    } else existingEntry[sample] = conditions[field];
   }
 
   return parsedConditions;

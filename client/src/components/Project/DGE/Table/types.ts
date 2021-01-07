@@ -1,7 +1,7 @@
 export type DGETableFilters = {
+  symbol: string;
   maxPValue: number;
   minAbsFoldChange: number;
-  // hasPeptideEvidence: [string?, string?];
 };
 
 export type DGESResponse = {
@@ -14,9 +14,3 @@ export type DGESResponse = {
 };
 
 export type SymbolNamesResponse = { _id: string }[];
-
-export type BySymbolNameResponse = {
-  symbol: string;
-  log2fc: number;
-  padj: number;
-}[];

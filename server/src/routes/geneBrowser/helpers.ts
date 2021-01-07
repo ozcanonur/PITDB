@@ -8,12 +8,13 @@ export const parseMutations = (mutations: IMutation[]) => {
     [transcript: string]: { pos: number; aaRef?: string; aaAlt?: string };
   }[] = mutations.map((mutation) => mutation.transcriptsPos);
 
-  const flatMutationTranscriptsPos = flatten(mutationTranscriptsPos, { maxDepth: 2 });
+  const flatMutationTranscriptsPos: { [transcript: string]: any } = flatten(mutationTranscriptsPos, {
+    maxDepth: 2,
+  });
 
   const parsedMutations: ParsedMutations = [];
 
   Object.keys(flatMutationTranscriptsPos).forEach((transcript) => {
-    // @ts-ignore
     const { pos, aaRef, aaAlt } = flatMutationTranscriptsPos[transcript];
     const parsedMutation = {
       // flatten creates keys like '1.ENST0000232' etc.
@@ -34,8 +35,6 @@ export const parseTranscriptsForViewer = (
 ) => {
   let minimumPosition = Number.MAX_VALUE;
   let maximumPosition = 0;
-
-  console.log(transcripts);
 
   const parsedTranscripts = transcripts
     .map(({ transcriptID, start, end, exons, CDS, TPM }) => {
