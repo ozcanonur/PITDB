@@ -19,7 +19,6 @@ const RangeSlider = ({
   const [values, setValues] = useState<number[]>([initialSmallNum, initialLargeNum]);
 
   const handleChange = (_event: ChangeEvent<{}>, values: number | number[]) => {
-    // console.log(_event);
     setValues(values as number[]);
   };
 

@@ -15,7 +15,7 @@ export const getValuesForCondition = (condition: {
   return values;
 };
 
-export const getMaxReadCount = (barChartData: BarChartData) => {
+export const getMaxCount = (barChartData: BarChartData) => {
   const values = barChartData.map((data) => getValuesForCondition(data)).flat();
 
   return max(values) as number;

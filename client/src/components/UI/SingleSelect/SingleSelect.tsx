@@ -35,7 +35,14 @@ const CustomMenuList = (props: any) => (
 
 const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
 
-const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: SingleSelectProps) => {
+const SingleSelect = ({
+  singleSelectProps,
+  name,
+  options,
+  onChange,
+  defaultInputValue,
+  ...props
+}: SingleSelectProps) => {
   // For menu close animation
   const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
   const onMenuClose = () => {
@@ -60,7 +67,11 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
     <div {...props}>
       <AsyncSelect
         name={name}
-        components={{ DropdownIndicator: CustomDropdownIndicator, MenuList: CustomMenuList, Menu: CustomMenu }}
+        components={{
+          DropdownIndicator: CustomDropdownIndicator,
+          MenuList: CustomMenuList,
+          Menu: CustomMenu,
+        }}
         cacheOptions
         defaultOptions
         loadOptions={debouncedOptions}
@@ -71,6 +82,8 @@ const SingleSelect = ({ singleSelectProps, name, options, onChange, ...props }: 
         escapeClearsValue
         isClearable
         blurInputOnSelect
+        defaultInputValue={defaultInputValue}
+        aria-label={`${name} single-select`}
         // menuIsOpen
         // For menu close animation
         id={uniqueId}

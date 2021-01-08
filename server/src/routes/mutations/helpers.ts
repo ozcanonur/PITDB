@@ -20,11 +20,3 @@ export const findMongoFieldFromTableColumn = (field: string) => {
   else if (field === 'Synonymous') return 'silent';
   else if (field === 'Type') return 'type';
 };
-
-// export const parseTypeFiltersForMongoose = (typeFilters: [string?, string?, string?]) => {
-//   return typeFilters.map((typeFilter) => {
-//     if (typeFilter === 'INS') return { ref: '' };
-//     if (typeFilter === 'DEL') return { alt: '' };
-//     if (typeFilter === 'SNP') return { $and: [{ ref: { $ne: '' } }, { alt: { $ne: '' } }] };
-//   });
-// };

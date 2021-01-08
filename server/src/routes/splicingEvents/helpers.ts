@@ -52,6 +52,7 @@ export const parseConditions = (conditions: ISplicingPsi) => {
 
 export const getRegexForStrandFilter = (strandFilter: [string?, string?]) => {
   let strandQuery: any = null;
+
   if (strandFilter.length === 0) strandQuery = null;
   else if (strandFilter.length === 1 && strandFilter[0] === '-') strandQuery = /\-$/;
   else if (strandFilter.length === 1 && strandFilter[0] === '+') strandQuery = /\+$/;

@@ -42,6 +42,9 @@ app.use('/api/gene-browser', geneBrowserRouter);
 
 // Catch all for deploy
 app.get('/*', (_req, res) => {
+  // Cache static assets such as JS, images etc.
+  res.set('Cache-control', 'public, max-age=31536000');
+
   res.sendFile(clientBuildPath + '/index.html', (err) => {
     if (err) res.status(500).send(err);
   });

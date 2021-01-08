@@ -79,7 +79,14 @@ const CustomControl = (props: any) => (
   </Control>
 );
 
-const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValues, ...props }: MultiSelectProps) => {
+const MultiSelect = ({
+  multiSelectProps,
+  name,
+  options,
+  onChange,
+  defaultValues,
+  ...props
+}: MultiSelectProps) => {
   const [ref, setRef] = useState<HTMLDivElement | null>(null);
 
   // For menu close animation
@@ -125,6 +132,7 @@ const MultiSelect = ({ multiSelectProps, name, options, onChange, defaultValues,
         isClearable
         controlShouldRenderValue
         blurOnRemove
+        aria-label={`${name} multi-select`}
         // For menu close animation
         id={uniqueId}
         onMenuClose={onMenuClose}

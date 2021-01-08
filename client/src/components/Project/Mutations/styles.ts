@@ -12,7 +12,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '40%',
+    width: '35%',
     minWidth: '32rem',
     marginRight: '1rem',
 

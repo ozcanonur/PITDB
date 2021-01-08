@@ -6,12 +6,13 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
-import 'normalize.css';
-import 'styles.css';
-import 'aos/dist/aos.css';
 import App from 'App';
 import { theme } from 'theme';
 import reducers from 'reducers';
+
+import 'normalize.css';
+import 'styles.css';
+import 'aos/dist/aos.css';
 
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)));
 

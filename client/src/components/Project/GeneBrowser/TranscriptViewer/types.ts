@@ -1,8 +1,6 @@
-import { SVGAttributes } from 'react';
-
 export type GeneNamesResponse = { _id: string }[];
 
-type Transcript = {
+export type Transcript = {
   transcriptId: string;
   exons: { start: number; end: number }[];
   cds?: {
@@ -18,7 +16,10 @@ type Transcript = {
     aaRef?: string;
     aaAlt?: string;
   }[];
-  conditions: string[];
+  conditions: {
+    condition: string;
+    mean: number;
+  }[];
 };
 
 export type TranscriptData = {
@@ -26,10 +27,6 @@ export type TranscriptData = {
   minimumPosition: number;
   maximumPosition: number;
 };
-
-export interface TranscriptSvgProps extends SVGAttributes<SVGElement> {
-  transcriptData: TranscriptData;
-}
 
 export type TranscriptsResponse = {
   transcripts: Transcript[];

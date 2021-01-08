@@ -10,4 +10,8 @@ export interface ISplicingPsi extends Document {
   project: string;
 }
 
-export const SplicingPsi: Model<ISplicingPsi> = model<ISplicingPsi>('SplicingPsi', SplicingPsiSchema, 'SplicingPsi');
+export const SplicingPsi: Model<ISplicingPsi> = model<ISplicingPsi>(
+  'SplicingPsi',
+  SplicingPsiSchema,
+  'SplicingPsi'
+);

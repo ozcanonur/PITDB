@@ -4,9 +4,9 @@ export type GeneBrowserFilters = {
   minQual: number;
 };
 
-export type ParsedMutations = {
+export type ParsedMutation = {
   transcript: string;
   pos: number;
   aaRef?: string;
   aaAlt?: string;
-}[];
+};

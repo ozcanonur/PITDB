@@ -2,9 +2,10 @@ import { Fragment } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { mean } from 'lodash';
 
-import { getMaxReadCount, getValuesForCondition } from './helpers';
+import { getMaxCount, getValuesForCondition } from './helpers';
 import { getCi } from 'components/Project/TranscriptUsage/ConfidenceChart/ConfidenceChartSvg/helpers';
 import { LayerProps, ConfidenceBarChartProps } from './types';
+import { useStyles } from './styles';
 
 const ConfidenceBarChart = ({
   barChartData,
@@ -15,7 +16,9 @@ const ConfidenceBarChart = ({
   max,
   barColor,
 }: ConfidenceBarChartProps) => {
-  const meanReadCounts = barChartData.map((condition) => ({
+  const classes = useStyles();
+
+  const meanValues = barChartData.map((condition) => ({
     mean: mean(getValuesForCondition(condition)),
     condition: condition.condition,
   }));
@@ -39,9 +42,7 @@ const ConfidenceBarChart = ({
               y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
               x2={Math.max(xScale(mean(values) - ci), 0)}
               y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
-              stroke='rgba(65, 15, 94, 0.8)'
-              strokeWidth='2.5'
-              style={{ transition: 'all .4s' }}
+              className={classes.line}
             />
             {/* This is the horizontal variance line */}
             <line
@@ -49,9 +50,7 @@ const ConfidenceBarChart = ({
               y1={yScale(bar.data.data.condition) + bar.height / 2}
               x2={xScale(mean(values) + ci)}
               y2={yScale(bar.data.data.condition) + bar.height / 2}
-              stroke='rgba(65, 15, 94, 0.8)'
-              strokeWidth='2.5'
-              style={{ transition: 'all .4s' }}
+              className={classes.line}
             />
             {/* This is the vertical line at the end of variance line */}
             <line
@@ -59,9 +58,7 @@ const ConfidenceBarChart = ({
               y1={yScale(bar.data.data.condition) + bar.height / 2 - bar.height / 6}
               x2={xScale(mean(values) + ci)}
               y2={yScale(bar.data.data.condition) + bar.height / 2 + bar.height / 6}
-              stroke='rgba(65, 15, 94, 0.8)'
-              strokeWidth='2.5'
-              style={{ transition: 'all .4s' }}
+              className={classes.line}
             />
           </Fragment>
         );
@@ -88,8 +85,7 @@ const ConfidenceBarChart = ({
                 cx={xScale(value)}
                 cy={yScale(bar.data.data.condition) + bar.height / 2 + valueIndex * 8}
                 r={5}
-                fill='rgba(65, 15, 94, 0.8)'
-                style={{ transition: 'all .4s' }}
+                className={classes.point}
               />
             ))}
           </Fragment>
@@ -103,10 +99,10 @@ const ConfidenceBarChart = ({
       layers={['grid', Interval, 'bars', 'axes', 'markers', Points]}
       enableGridX
       enableGridY
-      data={meanReadCounts}
+      data={meanValues}
       keys={['mean']}
       minValue={min || undefined}
-      maxValue={max || getMaxReadCount(barChartData)}
+      maxValue={max || getMaxCount(barChartData)}
       indexBy='condition'
       margin={{ top: 20, bottom: 100, left: 60, right: 40 }}
       padding={0.1}

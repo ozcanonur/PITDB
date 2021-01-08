@@ -10,7 +10,7 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import TranscriptSvg from './TranscriptSvg';
+import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -113,6 +113,7 @@ const TranscriptViewer = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
+          defaultInputValue='BIRC2'
           className={classes.singleSelect}
         />
         <div className={classes.filtersSubContainer}>
@@ -140,6 +141,20 @@ const TranscriptViewer = ({ ...props }) => {
             marks={parseDiscreteSliderMarks(qualityMarks)}
             onChangeCommited={onMinQualityChangeCommited}
           />
+        </div>
+        <div className={classes.legend}>
+          <div>
+            <div className={classes.legendExonShape} />
+            <p>Exon</p>
+          </div>
+          <div>
+            <div className={classes.legendCdsShape} />
+            <p>CDS</p>
+          </div>
+          <div>
+            <div className={classes.legendMutationShape} />
+            <p>Mutation</p>
+          </div>
         </div>
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />

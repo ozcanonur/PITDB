@@ -51,7 +51,7 @@ const BarChart = ({ ...props }) => {
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ConfidenceBarChart
           barChartData={conditionsData}
-          axisBottomLabel='Value'
+          axisBottomLabel='psi'
           axisLeftLabel='Condition'
           labelFormat='.3f'
           min={0}

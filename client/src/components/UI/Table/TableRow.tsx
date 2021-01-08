@@ -1,12 +1,16 @@
 import numeral from 'numeral';
 import TableCell from '@material-ui/core/TableCell/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import DoneIcon from '@material-ui/icons/Done';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { TableRowProps } from './types';
 import { useStyles } from './styles';
 
 const formatCellValue = (value: any) => {
-  if (isNaN(value)) return String(value);
+  if (value === true) return <DoneIcon style={{ color: '#489c48' }} />;
+  else if (value === false) return <CloseIcon style={{ color: '#8c041f' }} />;
+  else if (isNaN(value)) return String(value);
   else if (value % 1 === 0) return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   else return numeral(value).format('0.000e+0');
 };

@@ -45,12 +45,16 @@ const BarChart = ({ ...props }) => {
   }, [symbol, project]);
 
   return (
-    <ProjectItemCard name={`Read counts for ${symbol}`} className={classes.projectItemCard} {...props}>
+    <ProjectItemCard
+      name={`Normalised read counts for ${symbol}`}
+      className={classes.projectItemCard}
+      {...props}
+    >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.barChartContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ConfidenceBarChart
           barChartData={barChartData}
-          axisBottomLabel='Read count'
+          axisBottomLabel='Normalised read count'
           axisLeftLabel='Condition'
           labelFormat='.2f'
         />

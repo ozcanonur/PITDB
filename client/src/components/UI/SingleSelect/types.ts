@@ -6,4 +6,5 @@ export interface SingleSelectProps {
   onChange?: (values: ValueType<any, any>, actionMeta: ActionMeta<any>) => void;
   singleSelectProps?: any;
   className?: string;
+  defaultInputValue?: string;
 }

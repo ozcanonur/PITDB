@@ -1,7 +1,8 @@
 import { IAllTranscript } from 'db/models/allTranscript';
 import { IMutation } from 'db/models/mutation';
 import flatten from 'flat';
-import { ParsedMutations } from './types';
+import { mean } from 'lodash';
+import { ParsedMutation } from './types';
 
 export const parseMutations = (mutations: IMutation[]) => {
   const mutationTranscriptsPos: {
@@ -12,7 +13,7 @@ export const parseMutations = (mutations: IMutation[]) => {
     maxDepth: 2,
   });
 
-  const parsedMutations: ParsedMutations = [];
+  const parsedMutations: ParsedMutation[] = [];
 
   Object.keys(flatMutationTranscriptsPos).forEach((transcript) => {
     const { pos, aaRef, aaAlt } = flatMutationTranscriptsPos[transcript];
@@ -31,7 +32,7 @@ export const parseMutations = (mutations: IMutation[]) => {
 
 export const parseTranscriptsForViewer = (
   transcripts: IAllTranscript[],
-  parsedMutations: ParsedMutations
+  parsedMutations: ParsedMutation[]
 ) => {
   let minimumPosition = Number.MAX_VALUE;
   let maximumPosition = 0;
@@ -47,15 +48,28 @@ export const parseTranscriptsForViewer = (
         (mutation) => mutation.transcript.replace('_', '.') === transcriptID
       );
 
+      const parsedConditions = Object.entries(TPM).map(([condition, values]) => {
+        const meanValue = mean(Object.values(values));
+        return {
+          condition,
+          mean: meanValue,
+        };
+      });
+
       return {
         transcriptId: transcriptID,
         exons: exons.map(([start, end]) => ({ start, end })),
         cds: CDS && Object.keys(CDS).length > 0 ? CDS[Object.keys(CDS)[0]] : null,
         mutations,
-        conditions: Object.keys(TPM),
+        conditions: parsedConditions,
       };
     })
-    .sort((x, y) => x.transcriptId.localeCompare(y.transcriptId));
+    // WOOP, getting mean across all conditions here, PITGUI divides to Nsi/si but we don't
+    .sort(
+      (x, y) =>
+        mean(y.conditions.map((condition) => condition.mean)) -
+        mean(x.conditions.map((condition) => condition.mean))
+    );
 
   return { transcripts: parsedTranscripts, minimumPosition, maximumPosition };
 };

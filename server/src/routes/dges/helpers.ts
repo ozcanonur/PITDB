@@ -32,6 +32,7 @@ export const parseVolcanoPlotData = (dges: IDGE[]) => {
       x: convertedLog2fc,
       y: convertedPadj,
     };
+
     if (log2fc < 0) parsed[0].data.push(scatterPoint);
     else parsed[1].data.push(scatterPoint);
   });
