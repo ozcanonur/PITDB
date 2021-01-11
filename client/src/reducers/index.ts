@@ -13,7 +13,6 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
-  SelectGeneBrowserGeneAction,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -151,23 +150,11 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { conditions: ['Nsi'], minQual: 250, minTPM: 0.5 },
+  state: GeneBrowserFilters = { gene: 'BIRC2', conditions: ['Nsi', 'si'], minQual: 250, minTPM: 0.5 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_FILTERS:
-      return { ...action.payload };
-    default:
-      return state;
-  }
-};
-
-const selectedGeneBrowserGene = (
-  state: { gene: string } = { gene: 'BIRC2' },
-  action: SelectGeneBrowserGeneAction
-) => {
-  switch (action.type) {
-    case ACTION.SELECT_GENE_BROWSER_GENE:
       return { ...action.payload };
     default:
       return state;
@@ -186,5 +173,4 @@ export default combineReducers({
   selectedTranscriptViewerTranscript,
   selectedTranscriptViewerTranscriptColor,
   geneBrowserFilters,
-  selectedGeneBrowserGene,
 });

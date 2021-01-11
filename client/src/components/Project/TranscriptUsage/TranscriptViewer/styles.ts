@@ -3,10 +3,10 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   projectItemCard: {
     position: 'relative',
-    // overflow: 'auto',
     direction: 'rtl',
-    // marginTop: '2rem',
     minHeight: '25rem',
+    // overflow: 'auto',
+    // marginTop: '2rem',
   },
   transcriptViewerContainer: {
     maxHeight: '30rem',

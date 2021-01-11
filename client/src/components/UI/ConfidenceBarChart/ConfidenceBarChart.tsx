@@ -3,7 +3,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import { mean } from 'lodash';
 
 import { getMaxCount, getValuesForCondition } from './helpers';
-import { getCi } from 'components/Project/TranscriptUsage/ConfidenceChart/ConfidenceChartSvg/helpers';
+import { getCi } from 'components/Project/TranscriptUsage/ConfidenceIntervalChart/ConfidenceIntervalChartSvg/helpers';
 import { LayerProps, ConfidenceBarChartProps } from './types';
 import { useStyles } from './styles';
 

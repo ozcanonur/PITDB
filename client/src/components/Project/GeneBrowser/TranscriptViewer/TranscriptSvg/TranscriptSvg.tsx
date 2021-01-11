@@ -84,7 +84,7 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
         </g>
         {/* These are the exon boxes */}
         <g transform='translate(0 8)'>
-          {exons?.map(({ start, end }) => {
+          {exons.map(({ start, end }) => {
             const exonStartingPosition = RAIL_OFFSET + pixelPerValue * (start - minimumPosition + 1);
             const exonWidth = pixelPerValue * (end - start + 1);
             return (

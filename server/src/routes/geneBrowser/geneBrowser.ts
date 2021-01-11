@@ -14,10 +14,10 @@ const router = express.Router();
  * Filters by project and gene and given filters
  */
 router.get('/transcripts', async (req: ExtendedRequest, res) => {
-  const { project, gene, filters } = req.query;
+  const { project, filters } = req.query;
 
   const parsedFilters = JSON.parse(filters) as GeneBrowserFilters;
-  const { conditions, minTPM, minQual } = parsedFilters;
+  const { gene, conditions, minTPM, minQual } = parsedFilters;
 
   try {
     const transcripts = await AllTranscript.find({ project, gene });

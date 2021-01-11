@@ -9,6 +9,7 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
 
@@ -16,13 +17,12 @@ import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from './types';
-import { setGeneBrowserFilters, selectGeneBrowserGene } from 'actions';
+import { setGeneBrowserFilters } from 'actions';
 
 const TranscriptViewer = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  const { gene } = useSelector((state: RootState) => state.selectedGeneBrowserGene);
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
@@ -37,7 +37,7 @@ const TranscriptViewer = ({ ...props }) => {
 
     setLoading(true);
 
-    fetchFromApi('/api/gene-browser/transcripts', { project, gene, filters: filters as any }).then(
+    fetchFromApi('/api/gene-browser/transcripts', { project, filters: filters as any }).then(
       (res: TranscriptsResponse) => {
         if (!isMounted || !res) return;
 
@@ -50,7 +50,7 @@ const TranscriptViewer = ({ ...props }) => {
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project, gene, filters]);
+  }, [project, filters]);
 
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
@@ -74,7 +74,7 @@ const TranscriptViewer = ({ ...props }) => {
       return;
     }
 
-    dispatch(selectGeneBrowserGene(selectedOption.value));
+    dispatch(setGeneBrowserFilters({ ...filters, gene: selectedOption.value }));
   };
 
   const tpmMarks = ['0', '0.1', '0.5', '1', '5'];
@@ -107,7 +107,11 @@ const TranscriptViewer = ({ ...props }) => {
   };
 
   return (
-    <ProjectItemCard name={`Transcript browser for ${gene}`} className={classes.projectItemCard} {...props}>
+    <ProjectItemCard
+      name={`Transcript browser for ${filters.gene}`}
+      className={classes.projectItemCard}
+      {...props}
+    >
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search gene'
@@ -123,7 +127,7 @@ const TranscriptViewer = ({ ...props }) => {
               { value: 'Nsi', label: 'Nsi' },
               { value: 'si', label: 'si' },
             ]}
-            defaultValues={['Nsi']}
+            defaultValues={['Nsi', 'si']}
             onChange={(selectedOptions, _actionMeta) =>
               multiSelectOnChange(selectedOptions, _actionMeta, 'conditions')
             }
@@ -142,20 +146,11 @@ const TranscriptViewer = ({ ...props }) => {
             onChangeCommited={onMinQualityChangeCommited}
           />
         </div>
-        <div className={classes.legend}>
-          <div>
-            <div className={classes.legendExonShape} />
-            <p>Exon</p>
-          </div>
-          <div>
-            <div className={classes.legendCdsShape} />
-            <p>CDS</p>
-          </div>
-          <div>
-            <div className={classes.legendMutationShape} />
-            <p>Mutation</p>
-          </div>
-        </div>
+        <GenericLegend
+          items={['Exon', 'CDS', 'Mutation']}
+          colors={['#336', '#F8E58E', '#C8553D']}
+          direction='vertical'
+        />
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <NoResults

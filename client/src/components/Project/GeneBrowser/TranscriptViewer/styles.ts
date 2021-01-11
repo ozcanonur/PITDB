@@ -64,35 +64,4 @@ export const useStyles = makeStyles((theme) => ({
     top: '50%',
     transform: 'translate(-50%, -50%)',
   },
-  legend: {
-    marginLeft: '5rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-
-    fontSize: '1.4rem',
-    color: theme.palette.primary.main,
-    fontWeight: 500,
-
-    '& > div': {
-      display: 'flex',
-      alignItems: 'center',
-
-      '& > div:first-of-type': {
-        height: '1.4rem',
-        width: '1.4rem',
-        marginRight: '1rem',
-        borderRadius: '2px',
-      },
-    },
-  },
-  legendExonShape: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  legendCdsShape: {
-    backgroundColor: '#F8E58E',
-  },
-  legendMutationShape: {
-    backgroundColor: '#C8553D',
-  },
 }));

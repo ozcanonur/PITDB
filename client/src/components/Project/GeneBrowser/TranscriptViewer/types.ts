@@ -35,6 +35,7 @@ export type TranscriptsResponse = {
 };
 
 export type GeneBrowserFilters = {
+  gene: string;
   conditions: string[];
   minTPM: number;
   minQual: number;

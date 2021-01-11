@@ -1,4 +1,4 @@
-import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage/ConfidenceChart/types';
+import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage/ConfidenceIntervalChart/types';
 import { ChartValue } from './types';
 import { std } from 'mathjs';
 

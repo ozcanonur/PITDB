@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import TranscriptSvg from 'components/Project/TranscriptUsage/TranscriptViewer/TranscriptSvg';
+import TranscriptSvg from 'components/Project/TranscriptUsage/TranscriptViewer/TranscriptViewerSvg/TranscriptViewerSvg';
 import Loading from 'components/UI/Loading/Loading';
 
 import { TranscriptsResponse } from './types';

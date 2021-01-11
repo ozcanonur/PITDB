@@ -10,16 +10,6 @@ const API = lazy(() => import('components/API/API'));
 const About = lazy(() => import('components/About/About'));
 const Help = lazy(() => import('components/Help/Help'));
 
-const ScrollToTop = () => {
-  const { pathname } = useLocation();
-
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-};
-
 const useStyles = makeStyles((theme) => ({
   loading: {
     height: '100vh',
@@ -31,6 +21,16 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
   },
 }));
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 const App = () => {
   const classes = useStyles();

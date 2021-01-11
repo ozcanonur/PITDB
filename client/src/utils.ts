@@ -1,5 +1,19 @@
 import axios from 'axios';
 
+export const fetchFromApi = async (
+  route: string,
+  params?: {
+    [key: string]: string | number | boolean;
+  }
+) => {
+  try {
+    const response = await axios.get(route, { params });
+    return response.data;
+  } catch (err) {
+    return console.error(err);
+  }
+};
+
 export const isStringArray = (test: any): boolean =>
   Array.isArray(test) && !test.some((value) => typeof value !== 'string');
 
@@ -16,20 +30,6 @@ export const isNumberTuple = (test: any[]): boolean => {
   }
 
   return false;
-};
-
-export const fetchFromApi = async (
-  route: string,
-  params?: {
-    [key: string]: string | number | boolean;
-  }
-) => {
-  try {
-    const response = await axios.get(route, { params });
-    return response.data;
-  } catch (err) {
-    return console.error(err);
-  }
 };
 
 // export const useAsyncEffect = (func: any, onSuccess: (data: any) => void, dependencies: any[]) => {

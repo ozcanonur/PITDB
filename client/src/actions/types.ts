@@ -88,10 +88,3 @@ export type SetGeneBrowserFiltersAction = {
   type: ACTION.SET_GENE_BROWSER_FILTERS;
   payload: GeneBrowserFilters;
 };
-
-export type SelectGeneBrowserGeneAction = {
-  type: ACTION.SELECT_GENE_BROWSER_GENE;
-  payload: {
-    gene: string;
-  };
-};

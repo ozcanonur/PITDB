@@ -1,5 +1,5 @@
-import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage/ConfidenceChart/types';
-import { CSSProperties, SVGAttributes } from 'react';
+import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage/ConfidenceIntervalChart/types';
+import { SVGAttributes } from 'react';
 
 export type ChartValue = {
   transcript: string;
@@ -7,7 +7,6 @@ export type ChartValue = {
 };
 
 export interface ConfidenceChartSvgProps extends SVGAttributes<SVGElement> {
-  style: CSSProperties;
   data: ConditionsByGeneNameResponse;
 }
 

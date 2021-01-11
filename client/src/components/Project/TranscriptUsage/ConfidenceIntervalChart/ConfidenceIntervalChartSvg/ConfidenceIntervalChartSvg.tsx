@@ -7,13 +7,16 @@ import ChartBase from './ChartBase';
 import { makeChartValues, getConditionNames } from './helpers';
 import { ConfidenceChartSvgProps } from './types';
 import { COLORS } from 'variables/transcriptViewerColors';
+import { useStyles } from './styles';
 
 const CHART_HEIGHT = 183;
 
 const CONDITION_ONE_X_POS = 109;
 const CONDITION_TWO_X_POS = 268;
 
-const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
+const ConfidenceIntervalChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
+  const classes = useStyles();
+
   const chartValues = makeChartValues(data);
 
   const { transcript: selectedTranscript } = useSelector(
@@ -28,6 +31,7 @@ const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
       xmlnsXlink='http://www.w3.org/1999/xlink'
       viewBox='0 0 350 200'
       preserveAspectRatio='xMinYMid meet'
+      className={classes.svg}
       {...props}
     >
       <ChartBase conditionNames={getConditionNames(data)} />
@@ -51,14 +55,14 @@ const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
               x2={CONDITION_TWO_X_POS}
               y2={lineEnd}
               stroke={COLORS[index]}
+              className={classes.line}
               strokeWidth={transcript === selectedTranscript ? 1.5 : 0.2}
-              style={{ transition: 'all .2s' }}
             />
             <polygon
               points={points}
               fill={COLORS[index]}
               opacity={transcript === selectedTranscript ? 0.65 : 0.1}
-              style={{ transition: 'all .2s' }}
+              className={classes.confidencePolygon}
             />
             {/* <Tooltip triggerRef={ref}>
               <text transform='' fontSize={'1.1rem'} fontFamily='Poppins, sans-serif' fill='#336'>
@@ -72,4 +76,4 @@ const ConfidenceChartSvg = ({ data, ...props }: ConfidenceChartSvgProps) => {
   );
 };
 
-export default ConfidenceChartSvg;
+export default ConfidenceIntervalChartSvg;

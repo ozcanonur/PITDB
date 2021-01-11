@@ -4,13 +4,16 @@ import { Tooltip } from 'react-svg-tooltip';
 
 import { selectTranscriptViewerTranscript, selectTranscriptViewerTranscriptColor } from 'actions';
 import { TranscriptSvgProps } from './types';
+import { useStyles } from './styles';
 
 const RAIL_OFFSET = 110;
 const RAIL_LENGTH = 530;
 const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
 
-const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) => {
+const TranscriptViewerSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) => {
+  const classes = useStyles();
+
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
   const { transcriptId, exons } = transcript;
 
@@ -32,25 +35,21 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
     <svg
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 650 28'
-      style={{ direction: 'ltr', overflow: 'clip' }}
+      className={classes.svg}
       // preserveAspectRatio='none'
       {...props}
     >
       <g>
         <text
           transform='translate(10 16.8)'
-          fontSize='0.65rem'
-          fontFamily='Poppins, sans-serif'
-          color='#336'
-          fill='#336'
-          cursor='pointer'
           onClick={selectTranscriptOnClick}
+          className={classes.transcriptText}
         >
           {transcriptId}
         </text>
         {/* This is the selected transcript background */}
         {selectedTranscript === transcriptId ? (
-          <rect x={0} y={4} width={100} height={20} rx={1} fill='rgba(51, 51, 102, 0.1)' />
+          <rect x={0} y={4} width={100} height={20} rx={1} className={classes.selectedTranscriptBgRect} />
         ) : null}
         {/* This is the rail */}
         <g transform='translate(0 5)'>
@@ -61,19 +60,22 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
         {exons?.map(({ start, end }) => {
           const exonStartingPosition = RAIL_OFFSET + increment * (start - minimumPosition);
           const exonWidth = increment * (end - start + 1);
+
           return (
             <g key={String(start + end)} transform='translate(0 8)'>
-              <rect fill={color} ref={ref} x={exonStartingPosition} width={exonWidth} height={EXON_HEIGHT} />
+              <rect
+                fill={color}
+                ref={ref}
+                x={exonStartingPosition}
+                width={exonWidth}
+                height={EXON_HEIGHT}
+                className={classes.exon}
+              />
               <Tooltip triggerRef={ref}>
-                <g filter='drop-shadow(0 5px 10px rgba(154,160,185,.5))' transform='translate(0, -5)'>
+                <g transform='translate(0, -5)'>
                   <rect x={0.25} y={0.25} width={100} height={16} rx={1} fill='#eceef7' />
                   <rect x={10} y={5} width={8} height={8} rx={1} fill={color} />
-                  <text
-                    transform='translate(25 11.4)'
-                    fontSize={'0.65rem'}
-                    fontFamily='Poppins, sans-serif'
-                    fill='#336'
-                  >
+                  <text className={classes.exonTooltipText} transform='translate(25 11.4)'>
                     {`${start} - ${end}`}
                   </text>
                 </g>
@@ -86,4 +88,4 @@ const TranscriptSvg = ({ transcriptData, color, ...props }: TranscriptSvgProps) 
   );
 };
 
-export default TranscriptSvg;
+export default TranscriptViewerSvg;

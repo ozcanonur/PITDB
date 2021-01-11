@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { ConditionsByGeneNameResponse } from './types';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import ConfidenceChartSvg from 'components/Project/TranscriptUsage/ConfidenceChart/ConfidenceChartSvg/ConfidenceChartSvg';
+import ConfidenceIntervalChartSvg from 'components/Project/TranscriptUsage/ConfidenceIntervalChart/ConfidenceIntervalChartSvg/ConfidenceIntervalChartSvg';
 import Loading from 'components/UI/Loading/Loading';
 
 import { fetchFromApi } from 'utils';
@@ -58,7 +58,7 @@ const ConfidenceChart = ({ ...props }) => {
           opacity: loading ? 0 : 1,
         }}
       >
-        <ConfidenceChartSvg style={{ height: '100%', width: '100%' }} data={conditionsData} />
+        <ConfidenceIntervalChartSvg data={conditionsData} />
       </div>
     </ProjectItemCard>
   );
