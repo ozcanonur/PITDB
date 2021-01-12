@@ -2,41 +2,46 @@ import { TranscriptData } from '../types';
 
 // WOOP, I have no idea about the logic here
 // Literal copypasta from Esteban's java
-export const getCDSPosition = (
+export const getCDSPositions = (
   { transcript, minimumPosition, maximumPosition }: TranscriptData,
   pixelPerValue: number,
   railOffset: number
 ) => {
-  let start = minimumPosition;
-  let end = maximumPosition;
-  let startSet = false;
-
-  let posOnTranscript = 1;
-
   const { cds, exons } = transcript;
 
-  if (!cds || !exons) return { start: 0, end: 0 };
+  if (!cds || cds.length === 0 || !exons) return [];
 
-  const { start: sequenceStart, end: sequenceEnd } = cds;
+  const cdsPositions: { cdsStart: number; cdsWidth: number }[] = [];
+  cds.forEach((e) => {
+    let start = minimumPosition;
+    let end = maximumPosition;
+    let startSet = false;
 
-  for (const exon of exons) {
-    const posOnGenome = exon.start;
-    const exonLength = exon.end - exon.start + 1;
-    if (posOnTranscript + exonLength > sequenceStart && !startSet) {
-      start = posOnGenome + sequenceStart - posOnTranscript + 1;
-      startSet = true;
+    let posOnTranscript = 1;
+
+    const { start: sequenceStart, end: sequenceEnd } = e;
+
+    for (const exon of exons) {
+      const posOnGenome = exon.start;
+      const exonLength = exon.end - exon.start + 1;
+      if (posOnTranscript + exonLength > sequenceStart && !startSet) {
+        start = posOnGenome + sequenceStart - posOnTranscript + 1;
+        startSet = true;
+      }
+      if (posOnTranscript + exonLength > sequenceEnd) {
+        end = posOnGenome + sequenceEnd - posOnTranscript + 1;
+        break;
+      }
+      posOnTranscript += exonLength;
     }
-    if (posOnTranscript + exonLength > sequenceEnd) {
-      end = posOnGenome + sequenceEnd - posOnTranscript + 1;
-      break;
-    }
-    posOnTranscript += exonLength;
-  }
 
-  const width = pixelPerValue * (end - start + 1);
-  start = railOffset + pixelPerValue * (start - minimumPosition + 1);
+    const width = pixelPerValue * (end - start + 1);
+    start = railOffset + pixelPerValue * (start - minimumPosition + 1);
 
-  return { cdsStart: start, cdsWidth: width };
+    cdsPositions.push({ cdsStart: start, cdsWidth: width });
+  });
+
+  return cdsPositions;
 };
 
 // WOOP, I have no idea about the logic here also
@@ -48,7 +53,7 @@ export const getMutationPosition = (
 ) => {
   const { mutations, exons } = transcript;
 
-  const result: number[] = [];
+  const mutationPositions: number[] = [];
 
   mutations.forEach(({ pos }) => {
     let start = minimumPosition;
@@ -68,8 +73,8 @@ export const getMutationPosition = (
 
     start = railOffset + pixelPerValue * (start - minimumPosition + 1);
 
-    result.push(start);
+    mutationPositions.push(start);
   });
 
-  return result;
+  return mutationPositions;
 };

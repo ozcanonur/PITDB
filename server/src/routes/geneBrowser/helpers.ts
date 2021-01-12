@@ -56,10 +56,14 @@ export const parseTranscriptsForViewer = (
         };
       });
 
+      const parsedCds = Object.keys(CDS)
+        .map((key) => CDS[key])
+        .sort((x, y) => x.start - y.start);
+
       return {
         transcriptId: transcriptID,
         exons: exons.map(([start, end]) => ({ start, end })),
-        cds: CDS && Object.keys(CDS).length > 0 ? CDS[Object.keys(CDS)[0]] : null,
+        cds: parsedCds,
         mutations,
         conditions: parsedConditions,
       };

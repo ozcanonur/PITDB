@@ -4,7 +4,7 @@ import flatten from 'flat';
 import { min, max } from 'lodash';
 
 import { TranscriptSvgProps } from './types';
-import { getCDSPosition, getMutationPosition } from './helpers';
+import { getCDSPositions, getMutationPosition } from './helpers';
 import { useStyles } from './styles';
 
 const RAIL_OFFSET = 110;
@@ -29,7 +29,7 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
   const minExonStart: number = min(Object.values(flatten(exons))) || 0;
   const maxExonStart: number = max(Object.values(flatten(exons))) || 0;
 
-  const { cdsStart, cdsWidth } = getCDSPosition(transcriptData, pixelPerValue, RAIL_OFFSET);
+  const cdsPositions = getCDSPositions(transcriptData, pixelPerValue, RAIL_OFFSET);
   const mutationPositions = getMutationPosition(transcriptData, pixelPerValue, RAIL_OFFSET);
 
   const textRef = createRef<SVGTextElement>();
@@ -37,7 +37,12 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
   const cdsRef = createRef<SVGRectElement>();
 
   return (
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 650 35' className={classes.svg} {...props}>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox={`0 0 650 ${26 + cdsPositions.length * 6}`}
+      className={classes.svg}
+      {...props}
+    >
       {/* These are the condition names to the left of the transcript text */}
       <g>
         {conditions.map(({ condition, mean }, index) => (
@@ -98,10 +103,10 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
                 />
                 <Tooltip triggerRef={exonRef}>
                   <g transform='translate(0, -5)'>
-                    <rect x={0.25} y={0.25} width={105} height={16} rx={1} fill='#eceef7' />
+                    <rect x={0.25} y={0.25} width={120} height={16} rx={1} fill='#eceef7' />
                     <rect x={10} y={5} width={8} height={8} rx={1} fill='#336' />
                     <text className={classes.tooltipText} transform='translate(25 11.4)'>
-                      {`${start} - ${end}`}
+                      {`Exon: ${start} - ${end}`}
                     </text>
                   </g>
                 </Tooltip>
@@ -109,26 +114,32 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
             );
           })}
         </g>
-        {/* This is the CDS */}
-        <g transform='translate(0 20)'>
-          <rect
-            className={classes.cds}
-            x={cdsStart}
-            width={cdsWidth}
-            height={CDS_HEIGHT}
-            rx={0.5}
-            ref={cdsRef}
-          />
-          <Tooltip triggerRef={cdsRef}>
-            <g transform='translate(0, -5)'>
-              <rect x={0.25} y={0.25} width={105} height={16} rx={1} fill='#eceef7' />
-              <rect x={10} y={5} width={8} height={8} rx={1} fill='#FFDE4D' />
-              <text className={classes.tooltipText} transform='translate(25 11.4)'>
-                CDS
-              </text>
+        {/* These are the CDS */}
+        {cdsPositions.map(({ cdsStart, cdsWidth }, index) => {
+          // @ts-ignore
+          const { start: actualStart, end: actualEnd } = transcriptData.transcript.cds[index];
+          return (
+            <g key={cdsStart + cdsWidth} transform={`translate(0 ${20 + index * 6})`}>
+              <rect
+                className={classes.cds}
+                x={cdsStart}
+                width={cdsWidth}
+                height={CDS_HEIGHT}
+                rx={0.5}
+                ref={cdsRef}
+              />
+              <Tooltip triggerRef={cdsRef}>
+                <g transform='translate(0, -5)'>
+                  <rect x={0.25} y={0.25} width={85} height={16} rx={1} fill='#eceef7' />
+                  <rect x={10} y={5} width={8} height={8} rx={1} fill='#FFDE4D' />
+                  <text className={classes.tooltipText} transform='translate(25 11.4)'>
+                    {`CDS: ${actualStart} - ${actualEnd}`}
+                  </text>
+                </g>
+              </Tooltip>
             </g>
-          </Tooltip>
-        </g>
+          );
+        })}
         {/* These are the mutations */}
         <g transform='translate(0 8)'>
           {mutationPositions.map((pos) => (

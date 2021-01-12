@@ -7,7 +7,7 @@ const GenericLegend = ({ items, colors, direction = 'vertical' }: GenericLegendP
   return (
     <div className={classes.legend} style={{ flexDirection: direction === 'vertical' ? 'column' : 'row' }}>
       {items.map((item, index) => (
-        <div>
+        <div key={item}>
           <div style={{ backgroundColor: colors[index] }} />
           <p>{item}</p>
         </div>

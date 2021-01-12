@@ -9,7 +9,7 @@ export type Transcript = {
     start: number;
     end: number;
     type: string;
-  };
+  }[];
   mutations: {
     transcript: string;
     pos: number;
