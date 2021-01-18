@@ -20,6 +20,9 @@ export type Transcript = {
     condition: string;
     mean: number;
   }[];
+  seq: string;
+  start: number;
+  end: number;
 };
 
 export type TranscriptData = {

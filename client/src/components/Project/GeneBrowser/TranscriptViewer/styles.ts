@@ -64,4 +64,39 @@ export const useStyles = makeStyles((theme) => ({
     top: '50%',
     transform: 'translate(-50%, -50%)',
   },
+  detailedTranscriptContainer: {
+    direction: 'ltr',
+    overflow: 'auto',
+    width: 0,
+    marginBottom: '2rem',
+    minWidth: '100%',
+
+    '&::-webkit-scrollbar': {
+      width: '10px',
+    },
+
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#ccc',
+      borderRadius: '50px',
+      border: '5px solid white',
+    },
+  },
 }));
+
+/* *::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: '#f4f6ff';
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #858592;
+  border-radius: 2px;
+  border: 3px solid white;
+} */

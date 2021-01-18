@@ -6,7 +6,7 @@ html {
   height: 100%;
 }
 
-*::-webkit-scrollbar {
+/* *::-webkit-scrollbar {
   width: 10px;
 }
 
@@ -18,7 +18,7 @@ html {
   background-color: #858592;
   border-radius: 2px;
   border: 3px solid white;
-}
+} */
 
 #root {
   height: 100vh;

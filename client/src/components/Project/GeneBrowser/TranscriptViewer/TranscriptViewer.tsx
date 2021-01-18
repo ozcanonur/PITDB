@@ -11,7 +11,9 @@ import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
-import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
+
+// import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
+import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -117,7 +119,7 @@ const TranscriptViewer = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
-          defaultInputValue='BRSK1'
+          defaultInputValue='BIRC2'
           className={classes.singleSelect}
         />
         <div className={classes.filtersSubContainer}>
@@ -161,7 +163,7 @@ const TranscriptViewer = ({ ...props }) => {
         className={classes.transcriptViewerContainer}
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
-        <div className={classes.transcriptRails}>
+        {/* <div className={classes.transcriptRails}>
           {transcriptsData.transcripts.map((transcript) => (
             <TranscriptSvg
               key={transcript.transcriptId}
@@ -172,6 +174,23 @@ const TranscriptViewer = ({ ...props }) => {
               }}
             />
           ))}
+        </div> */}
+        <div className={classes.transcriptRails} style={{ direction: 'ltr' }}>
+          {transcriptsData.transcripts.map((transcript, index) => {
+            if (index > 0) return null;
+
+            return (
+              <div className={classes.detailedTranscriptContainer} key={transcript.transcriptId}>
+                <DetailedTranscriptSvg
+                  transcriptData={{
+                    transcript,
+                    minimumPosition: transcriptsData.minimumPosition,
+                    maximumPosition: transcriptsData.maximumPosition,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </ProjectItemCard>

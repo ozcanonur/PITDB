@@ -38,7 +38,7 @@ export const parseTranscriptsForViewer = (
   let maximumPosition = 0;
 
   const parsedTranscripts = transcripts
-    .map(({ transcriptID, start, end, exons, CDS, TPM }) => {
+    .map(({ transcriptID, start, end, exons, CDS, TPM, seq }) => {
       if (start < minimumPosition) minimumPosition = start;
       if (end > maximumPosition) maximumPosition = end;
 
@@ -66,6 +66,9 @@ export const parseTranscriptsForViewer = (
         cds: parsedCds,
         mutations,
         conditions: parsedConditions,
+        seq,
+        start,
+        end,
       };
     })
     // WOOP, getting mean across all conditions here, PITGUI divides to Nsi/si but we don't
