@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
-import NoResults from 'components/UI/NoResults/NoResults';
+// import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
@@ -12,7 +12,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
-import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
+import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -20,7 +20,7 @@ import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from './types';
 import { setGeneBrowserFilters } from 'actions';
 
-const TranscriptViewer = ({ ...props }) => {
+const DetailedTranscriptViewer = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
@@ -163,29 +163,42 @@ const TranscriptViewer = ({ ...props }) => {
         />
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <NoResults
-        className={classes.noResults}
-        style={{ opacity: !loading && transcriptsData.transcripts.length === 0 ? 1 : 0 }}
-      />
       <div
-        className={classes.transcriptViewerContainer}
+        className={classes.detailedTranscriptViewerContainer}
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
-        <div className={classes.transcriptRails}>
-          {transcriptsData.transcripts.map((transcript) => (
-            <TranscriptSvg
-              key={transcript.transcriptId}
-              transcriptData={{
-                transcript: transcript,
-                minimumPosition: transcriptsData.minimumPosition,
-                maximumPosition: transcriptsData.maximumPosition,
-              }}
-            />
-          ))}
+        <div className={classes.transcriptIdContainer}>
+          {transcriptsData.transcripts.map(({ transcriptId }, index) => {
+            if (index > 1) return null;
+
+            return <p className={classes.transcriptId}>{transcriptId}</p>;
+          })}
+        </div>
+        <div className={classes.detailedTranscripts} style={{ direction: 'ltr' }}>
+          {transcriptsData.transcripts.map((transcript, index) => {
+            if (index > 1) return null;
+
+            return (
+              <div
+                className={classes.detailedTranscriptContainer}
+                key={transcript.transcriptId}
+                // ref={scrollRef}
+                // onScroll={() => console.log(scrollRef.current.scrollLeft)}
+              >
+                <DetailedTranscriptSvg
+                  transcriptData={{
+                    transcript,
+                    minimumPosition: transcriptsData.minimumPosition,
+                    maximumPosition: transcriptsData.maximumPosition,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </ProjectItemCard>
   );
 };
 
-export default TranscriptViewer;
+export default DetailedTranscriptViewer;

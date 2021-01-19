@@ -49,6 +49,20 @@ export const useStyles = makeStyles((theme) => ({
     direction: 'rtl',
     height: 'max-content',
     padding: '1rem 2rem 0.5rem',
+
+    // WOOP, hardcode for testing detailed transcript svg
+    '&::-webkit-scrollbar': {
+      width: '10px',
+    },
+
+    '&::-webkit-scrollbar-track': {
+      background: '#eee',
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(51, 51, 102, 0.8)',
+      border: '1px solid white',
+    },
   },
   loading: {
     position: 'absolute',
@@ -64,39 +78,57 @@ export const useStyles = makeStyles((theme) => ({
     top: '50%',
     transform: 'translate(-50%, -50%)',
   },
-  detailedTranscriptContainer: {
-    direction: 'ltr',
-    overflow: 'auto',
-    width: 0,
-    marginBottom: '2rem',
-    minWidth: '100%',
 
+  detailedTranscriptViewerContainer: {
+    padding: '0 2rem',
+    marginTop: '2rem',
+    display: 'flex',
+  },
+  detailedTranscripts: {
+    display: 'flex',
+    flexDirection: 'column',
+    transform: 'translateZ(0)',
+    width: '100%',
+    overflow: 'auto',
+    direction: 'rtl',
+    height: 'max-content',
+
+    // WOOP, hardcode for testing detailed transcript svg
     '&::-webkit-scrollbar': {
       width: '10px',
     },
 
     '&::-webkit-scrollbar-track': {
-      background: 'transparent',
+      background: '#eee',
     },
 
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgba(51, 51, 102, 0.7)',
-      borderRadius: '50px',
-      border: '5px solid white',
+      backgroundColor: 'rgba(51, 51, 102, 0.8)',
+      border: '1px solid white',
     },
   },
+  detailedTranscriptContainer: {
+    direction: 'ltr',
+    // overflow: 'auto',
+    width: 0,
+    marginBottom: '2rem',
+    // minWidth: '100%',
+    position: 'relative',
+    // display: 'flex',
+  },
+  transcriptIdContainer: {
+    marginRight: '2rem',
+
+    '& > p:first-of-type': {
+      marginTop: '0.8rem',
+    },
+
+    '& > p:not(:last-child)': {
+      marginBottom: '6.3rem',
+    },
+  },
+  transcriptId: {
+    fontSize: '1.6rem',
+    color: theme.palette.primary.main,
+  },
 }));
-
-/* *::-webkit-scrollbar {
-  width: 10px;
-}
-
-*::-webkit-scrollbar-track {
-  background: '#f4f6ff';
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #858592;
-  border-radius: 2px;
-  border: 3px solid white;
-} */

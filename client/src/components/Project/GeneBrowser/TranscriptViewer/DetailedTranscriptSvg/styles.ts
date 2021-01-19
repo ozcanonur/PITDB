@@ -3,16 +3,26 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   svg: {
     direction: 'ltr',
-    height: '5rem',
+    marginRight: '2rem',
   },
   nucleotide: {
-    fontSize: '1.8rem',
     fontFamily: 'Poppins, sans-serif',
     fill: 'white',
+    textAnchor: 'middle',
   },
   codon: {
-    fontSize: '1.8rem',
     fontFamily: 'Poppins, sans-serif',
     fill: '#1b2742',
+    textAnchor: 'middle',
+  },
+  cdsBackground: {
+    fill: theme.palette.secondary.light,
+  },
+  rail: {
+    stroke: '#336',
+    strokeWidth: 2,
+  },
+  cdsDivider: {
+    stroke: '#336',
   },
 }));
