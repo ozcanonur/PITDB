@@ -19,10 +19,10 @@ export const useStyles = makeStyles((theme) => ({
     fill: theme.palette.secondary.light,
   },
   rail: {
-    stroke: '#336',
+    stroke: theme.palette.primary.main,
     strokeWidth: 2,
   },
   cdsDivider: {
-    stroke: '#336',
+    stroke: theme.palette.primary.main,
   },
 }));

@@ -50,7 +50,6 @@ export const useStyles = makeStyles((theme) => ({
     height: 'max-content',
     padding: '1rem 2rem 0.5rem',
 
-    // WOOP, hardcode for testing detailed transcript svg
     '&::-webkit-scrollbar': {
       width: '10px',
     },
@@ -72,12 +71,6 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '3rem',
     transition: 'all .3s ease-in-out',
   },
-  noResults: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
-  },
 
   detailedTranscriptViewerContainer: {
     padding: '0 2rem',
@@ -92,6 +85,7 @@ export const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     direction: 'rtl',
     height: 'max-content',
+    marginTop: '0.8rem',
 
     // WOOP, hardcode for testing detailed transcript svg
     '&::-webkit-scrollbar': {
@@ -117,18 +111,43 @@ export const useStyles = makeStyles((theme) => ({
     // display: 'flex',
   },
   transcriptIdContainer: {
-    marginRight: '2rem',
+    paddingRight: '2rem',
+    paddingLeft: '1rem',
 
-    '& > p:first-of-type': {
+    '& > div:first-of-type': {
       marginTop: '0.8rem',
     },
 
-    '& > p:not(:last-child)': {
-      marginBottom: '6.3rem',
+    '& > div:not(:last-child)': {
+      marginBottom: '5rem',
     },
   },
   transcriptId: {
-    fontSize: '1.6rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  transcriptIdConditions: {
+    display: 'flex',
+    marginRight: '1rem',
+
+    '& > div:not(:last-child)': {
+      marginRight: '0.5rem',
+    },
+  },
+  transcriptIdCondition: {
+    fontSize: '1.4rem',
+    color: 'white',
+    textAlign: 'center',
+
+    padding: '0.8rem 1rem',
+    borderRadius: '0.3rem',
+    width: '4rem',
+
+    boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
+  },
+  transcriptIdText: {
+    fontSize: '1.4rem',
     color: theme.palette.primary.main,
   },
 }));

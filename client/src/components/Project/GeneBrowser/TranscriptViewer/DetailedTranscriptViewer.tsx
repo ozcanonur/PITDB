@@ -168,15 +168,34 @@ const DetailedTranscriptViewer = ({ ...props }) => {
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
         <div className={classes.transcriptIdContainer}>
-          {transcriptsData.transcripts.map(({ transcriptId }, index) => {
-            if (index > 1) return null;
+          {transcriptsData.transcripts.map(({ transcriptId, conditions }) => {
+            // if (index > 2) return null;
 
-            return <p className={classes.transcriptId}>{transcriptId}</p>;
+            // WOOP, hardcoded condition colors
+            // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
+            return (
+              <div key={transcriptId} className={classes.transcriptId}>
+                <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
+                  {conditions.map(({ condition }) => (
+                    <div
+                      key={condition}
+                      className={classes.transcriptIdCondition}
+                      style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
+                    >
+                      {condition}
+                    </div>
+                  ))}
+                </div>
+                <p key={transcriptId} className={classes.transcriptIdText}>
+                  {transcriptId}
+                </p>
+              </div>
+            );
           })}
         </div>
         <div className={classes.detailedTranscripts} style={{ direction: 'ltr' }}>
           {transcriptsData.transcripts.map((transcript, index) => {
-            if (index > 1) return null;
+            // if (index > 2) return null;
 
             return (
               <div

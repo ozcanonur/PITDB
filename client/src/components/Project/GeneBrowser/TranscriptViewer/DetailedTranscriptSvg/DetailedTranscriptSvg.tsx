@@ -22,12 +22,15 @@ const CdsSequence = ({
 
   const { start, sequence } = relativeCdsPositionAndSequence;
 
+  const sequenceArray = sequence.split('');
+
   return (
     <>
-      {sequence.split('').map((codon, index) => {
+      {sequenceArray.map((codon, index) => {
         const fontSize = BOX_HEIGHT / 2;
         const textOffsetX = start * BOX_HEIGHT + index * BOX_HEIGHT * 3 + (BOX_HEIGHT * 3) / 2;
-        const textOffsetY = BOX_HEIGHT + BOX_HEIGHT / 2 + fontSize / 2 - 1;
+        // -2 because reasons that I have no idea about
+        const textOffsetY = BOX_HEIGHT + BOX_HEIGHT / 2 + fontSize / 2 - 2;
 
         const leftDividerPos = start * BOX_HEIGHT + index * BOX_HEIGHT * 3;
         const rightDividerPos = leftDividerPos + BOX_HEIGHT * 3;
@@ -45,13 +48,16 @@ const CdsSequence = ({
               y2={BOX_HEIGHT * 2}
               className={classes.cdsDivider}
             />
-            <line
-              x1={rightDividerPos}
-              x2={rightDividerPos}
-              y1={BOX_HEIGHT}
-              y2={BOX_HEIGHT * 2}
-              stroke='#336'
-            />
+            {index === sequenceArray.length - 1 ? (
+              <line
+                x1={rightDividerPos}
+                x2={rightDividerPos}
+                y1={BOX_HEIGHT}
+                y2={BOX_HEIGHT * 2}
+                className={classes.cdsDivider}
+                strokeWidth={0.8}
+              />
+            ) : null}
           </g>
         );
       })}
@@ -79,7 +85,8 @@ const ExonSequence = ({
 
         const fontSize = BOX_HEIGHT / 2;
         const textOffsetX = offset + index * BOX_HEIGHT + BOX_HEIGHT / 2;
-        const textOffsetY = BOX_HEIGHT / 2 + fontSize / 2 - 1;
+        // -2 because reasons that I have no idea about
+        const textOffsetY = BOX_HEIGHT / 2 + fontSize / 2 - 2;
 
         return (
           <g key={index}>
@@ -113,8 +120,8 @@ const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptS
     >
       {/* This is the rail behind nucleotides */}
       <line
-        x1={0}
-        x2={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
+        x1={(transcript.start - minimumPosition) * BOX_HEIGHT}
+        x2={(transcript.end - minimumPosition + 1) * BOX_HEIGHT}
         y1={BOX_HEIGHT / 2}
         y2={BOX_HEIGHT / 2}
         className={classes.rail}
