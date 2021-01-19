@@ -1,6 +1,6 @@
 // WOOP, I have no idea about the logic here
 
-import { TranscriptData } from '../types';
+import { Transcript, TranscriptData } from '../types';
 
 // Literal copypasta from Esteban's java
 export const getCDSPositions = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
@@ -36,4 +36,32 @@ export const getCDSPositions = ({ transcript, minimumPosition, maximumPosition }
   });
 
   return cdsPositions;
+};
+
+export const getNucleotideColor = (nucleotide: string) => {
+  let color = '#336';
+  if (nucleotide === 'C') color = '#673f7e';
+  else if (nucleotide === 'T') color = '#6b88a2';
+  else if (nucleotide === 'G') color = '#1b2742';
+
+  return color;
+};
+
+export const getNucleotideLetterOffset = (nucleotide: string) => (nucleotide === 'T' ? 10 : 8);
+
+export const parseExons = (transcript: Transcript) => {
+  let lastExonEndedAt = 0;
+  const parsedExons = transcript.exons
+    .sort((x, y) => x.start - y.start)
+    .map(({ start, end }) => {
+      const exonLength = end - start + 1;
+
+      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
+
+      lastExonEndedAt += exonLength;
+
+      return { sequence: exonSequence, start, end };
+    });
+
+  return parsedExons;
 };

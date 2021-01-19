@@ -80,7 +80,7 @@ export const useStyles = makeStyles((theme) => ({
     },
 
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#ccc',
+      backgroundColor: 'rgba(51, 51, 102, 0.7)',
       borderRadius: '50px',
       border: '5px solid white',
     },

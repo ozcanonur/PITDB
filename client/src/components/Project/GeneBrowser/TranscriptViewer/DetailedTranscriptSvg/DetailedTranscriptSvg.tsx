@@ -1,52 +1,73 @@
 import { DetailedTranscriptSvgProps } from './types';
+import { getCDSPositions, getNucleotideColor, getNucleotideLetterOffset, parseExons } from './helpers';
 
+import { findAAFromCodon } from 'utils';
 import { useStyles } from './styles';
-import { Transcript } from '../types';
-import { getCDSPositions } from './helpers';
 
-const getNucleotideColor = (nucleotide: string) => {
-  let color = '#336';
-  if (nucleotide === 'C') color = '#673f7e';
-  else if (nucleotide === 'T') color = '#6b88a2';
-  else if (nucleotide === 'G') color = '#1b2742';
-
-  return color;
-};
-
-const getNucleotideLetterOffset = (nucleotide: string) => (nucleotide === 'T' ? 10 : 8);
-
-const parseExons = (transcript: Transcript) => {
-  let lastExonEndedAt = 0;
-  const parsedExons = transcript.exons
-    .sort((x, y) => x.start - y.start)
-    .map(({ start, end }) => {
-      const exonLength = end - start + 1;
-
-      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
-
-      lastExonEndedAt += exonLength;
-
-      return { sequence: exonSequence, start };
-    });
-
-  return parsedExons;
-};
-
-const parseCDSs = (
-  cdss: {
-    cdsStart: number;
-    cdsEnd: number;
-    sequence: string;
-  }[]
+const getRelativeCdsPositionsAndSequences = (
+  exons: {
+    start: number;
+    end: number;
+  }[],
+  cdsStart: number,
+  cdsEnd: number,
+  sequence: string
 ) => {
-  let parsedCDSs = cdss.sort((x, y) => x.cdsStart - y.cdsStart);
+  const hasCds = [];
 
-  // @ts-ignore
-  parsedCDSs = parsedCDSs.map(({ cdsStart, cdsEnd, sequence }) => {
-    const cdsLength = cdsStart - cdsEnd + 1;
+  let codonsProcessed = 0;
+  let leftover = false;
 
-    console.log(sequence.length);
-  });
+  for (const exon of exons) {
+    if (exon.end < cdsStart) continue;
+
+    if (exon.end > cdsEnd) {
+      // End of the cds
+      hasCds.push({
+        start: exon.start,
+        end: cdsEnd,
+        sequence: sequence.slice(codonsProcessed, (cdsEnd - cdsStart) / 3),
+      });
+
+      // totalLength += sequence.slice(codonsProcessed, (cdsEnd - cdsStart) / 3).length;
+    } else if (cdsStart > exon.start) {
+      // Start of the cds
+      const length = (exon.end - cdsStart + 1) / 3;
+
+      hasCds.push({
+        start: cdsStart,
+        end: exon.end,
+        sequence: sequence.slice(0, length),
+      });
+
+      codonsProcessed += length;
+
+      // If we have a leftover aa
+      // Skip the next aa
+      leftover = length % 3 !== 0;
+      if (leftover) codonsProcessed += 1;
+    } else {
+      // In between
+      const length = (exon.end - exon.start + 1) / 3;
+
+      // If we have a leftover aa
+      leftover = length % 3 !== 0;
+
+      // Skip 3 nucleotides if we had a aa leftover from the prev
+      hasCds.push({
+        start: exon.start + (leftover ? 3 : 0),
+        end: exon.end,
+        sequence: sequence.slice(codonsProcessed, codonsProcessed + length - (leftover ? 1 : 0)),
+      });
+
+      // Skip the next aa if leftover
+      if (leftover) codonsProcessed += 1;
+
+      codonsProcessed += length;
+    }
+  }
+
+  return hasCds;
 };
 
 const ExonSequence = ({
@@ -68,8 +89,32 @@ const ExonSequence = ({
         const color = getNucleotideColor(nucleotide);
         const nucleotideLetterOffset = getNucleotideLetterOffset(nucleotide);
 
+        let aminoacid = '';
+        if (index !== 0 && index % 3 === 0) {
+          aminoacid = findAAFromCodon(sequence.slice(index - 3, index));
+        }
         return (
           <g key={index}>
+            This is to check if codons are correctly positioned
+            {index !== 0 && index % 3 === 0 ? (
+              <>
+                <rect fill='#ccf899' x={offset + index * 30 - 90} y={60} width={90} height={30} />
+                <text
+                  className={classes.codon}
+                  transform={`translate(${offset + index * 30 + nucleotideLetterOffset + 30 - 90} 80)`}
+                >
+                  {aminoacid}
+                </text>
+                <line
+                  x1={offset + index * 30 - 90}
+                  x2={offset + index * 30 - 90}
+                  y1={60}
+                  y2={110}
+                  stroke='#336'
+                />
+                <line x1={offset + index * 30} x2={offset + index * 30} y1={60} y2={110} stroke='#336' />
+              </>
+            ) : null}
             <rect fill={color} x={offset + index * 30} width={30} height={30} />
             <text
               className={classes.nucleotide}
@@ -93,8 +138,6 @@ const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptS
 
   const cdsPositions = getCDSPositions(transcriptData);
 
-  console.log(cdsPositions);
-
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -102,30 +145,74 @@ const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptS
       className={classes.svg}
       width={(maximumPosition - minimumPosition) * 30}
       {...props}
-      overflow='auto'
-      style={{ height: `${3 + 3 * cdsPositions.length}rem` }}
+      style={{ height: `${30 + 30 + 30 * cdsPositions.length}` }}
     >
-      {parsedExons.map((exon, index) => {
-        return <ExonSequence key={index} exon={exon} minimumPosition={minimumPosition} />;
-      })}
+      {/* This is the rail behind nucleotides */}
+      <line x1={0} x2={maximumPosition} y1={15} y2={15} stroke='#336' strokeWidth={2} strokeDasharray='30' />
+      {/* These are the cds */}
       {cdsPositions.map(({ cdsStart, cdsEnd, sequence }, index) => {
+        const relativeExonPositions = parsedExons.map(({ start, end }) => ({
+          start: start - minimumPosition,
+          end: end - minimumPosition,
+        }));
+
+        const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
+          relativeExonPositions,
+          cdsStart - minimumPosition,
+          cdsEnd - minimumPosition,
+          sequence
+        );
+
+        console.log(cdsPositions);
+
         return (
           <g key={index}>
+            {/* This is the bg behind the whole CDS */}
             <rect
-              fill='#F8E799'
-              x={(cdsStart - minimumPosition) * 30}
+              fill='#f8e799'
+              x={(cdsStart - minimumPosition - 1) * 30}
               y={30}
-              width={30 * (cdsEnd - cdsStart + 1)}
+              width={(cdsEnd - cdsPositions[0].cdsStart + 1) * 30}
               height={30}
             />
-            <text
-              className={classes.codon}
-              transform={`translate(${(cdsStart - minimumPosition) * 30 + index * 30 + 40} 51)`}
-            >
-              {sequence.charAt(2)}
-            </text>
+            {/* These are the cds codons */}
+            {relativeCdsPositionsAndSequences.map(({ start, sequence }, index) => {
+              return (
+                <g key={index}>
+                  {sequence.split('').map((codon, index) => {
+                    return (
+                      <g key={index}>
+                        <text className={classes.codon} x={start * 30 + index * 90 + 8} y={51}>
+                          {codon}
+                        </text>
+                        {/* These are the dividers between codons */}
+                        <line
+                          x1={(start - 1) * 30 + index * 90}
+                          x2={(start - 1) * 30 + index * 90}
+                          y1={30}
+                          y2={60}
+                          stroke='#336'
+                        />
+                        <line
+                          x1={(start - 1) * 30 + index * 90 + 90}
+                          x2={(start - 1) * 30 + index * 90 + 90}
+                          y1={30}
+                          y2={60}
+                          strokeWidth={index === 0 ? 0 : 1}
+                          stroke='#336'
+                        />
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
           </g>
         );
+      })}
+      {/* These are the exons */}
+      {parsedExons.map((exon, index) => {
+        return <ExonSequence key={index} exon={exon} minimumPosition={minimumPosition} />;
       })}
     </svg>
   );
