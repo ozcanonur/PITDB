@@ -33,6 +33,7 @@ export interface IAllTranscript extends Document {
       start: number;
       end: number;
       type: string;
+      peptides: { sequence: string; run: string; probability: number; mod: string }[];
     };
   };
   gene: string;

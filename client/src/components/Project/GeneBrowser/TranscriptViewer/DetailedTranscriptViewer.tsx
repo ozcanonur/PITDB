@@ -9,7 +9,7 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
-import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
+// import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
@@ -156,11 +156,6 @@ const DetailedTranscriptViewer = ({ ...props }) => {
             onChangeCommited={onMinQualityChangeCommited}
           />
         </div>
-        <GenericLegend
-          items={['Exon', 'CDS', 'Mutation']}
-          colors={['#336', '#F8E58E', '#C8553D']}
-          direction='vertical'
-        />
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div
@@ -168,8 +163,8 @@ const DetailedTranscriptViewer = ({ ...props }) => {
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
         <div className={classes.transcriptIdContainer}>
-          {transcriptsData.transcripts.map(({ transcriptId, conditions }) => {
-            // if (index > 2) return null;
+          {transcriptsData.transcripts.map(({ transcriptId, conditions }, index) => {
+            if (index > 0) return null;
 
             // WOOP, hardcoded condition colors
             // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
@@ -186,16 +181,14 @@ const DetailedTranscriptViewer = ({ ...props }) => {
                     </div>
                   ))}
                 </div>
-                <p key={transcriptId} className={classes.transcriptIdText}>
-                  {transcriptId}
-                </p>
+                <p className={classes.transcriptIdText}>{transcriptId}</p>
               </div>
             );
           })}
         </div>
         <div className={classes.detailedTranscripts} style={{ direction: 'ltr' }}>
           {transcriptsData.transcripts.map((transcript, index) => {
-            // if (index > 2) return null;
+            if (index > 0) return null;
 
             return (
               <div

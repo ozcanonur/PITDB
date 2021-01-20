@@ -71,6 +71,12 @@ export const useStyles = makeStyles((theme) => ({
     marginTop: '3rem',
     transition: 'all .3s ease-in-out',
   },
+  noResults: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
 
   detailedTranscriptViewerContainer: {
     padding: '0 2rem',

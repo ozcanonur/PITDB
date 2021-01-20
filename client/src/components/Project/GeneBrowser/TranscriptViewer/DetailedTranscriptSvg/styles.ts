@@ -22,7 +22,10 @@ export const useStyles = makeStyles((theme) => ({
     stroke: theme.palette.primary.main,
     strokeWidth: 2,
   },
-  cdsDivider: {
+  divider: {
     stroke: theme.palette.primary.main,
+  },
+  peptide: {
+    fill: 'rgba(200, 85, 61, 0.8)',
   },
 }));

@@ -1,5 +1,6 @@
-// WOOP, I have no idea about the logic here
+// WOOP, I have no idea, actually maybe some bit of an idea about the logic here
 
+import { uniqBy } from 'lodash';
 import { Transcript, TranscriptData } from '../types';
 
 // Literal copypasta from Esteban's java
@@ -76,17 +77,17 @@ export const getRelativeCdsPositionsAndSequences = (
   cdsEnd: number,
   sequence: string
 ) => {
-  const hasCds = [];
+  const relativeCdsPositionsAndSequences = [];
 
   let aasProcessed = 0;
-  let leftover = 0;
+  let leftoverNucleotideCount = 0;
 
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;
 
     if (exon.end > cdsEnd) {
       // End of the cds
-      hasCds.push({
+      relativeCdsPositionsAndSequences.push({
         start: exon.start,
         sequence: sequence.slice(aasProcessed, (cdsEnd - cdsStart) / 3),
       });
@@ -95,40 +96,94 @@ export const getRelativeCdsPositionsAndSequences = (
       // Intersection of the exon and the cds
       const cdsInThisExonLength = exon.end - cdsStart + 1;
 
-      hasCds.push({
+      relativeCdsPositionsAndSequences.push({
         start: cdsStart,
         sequence: sequence.slice(0, Math.floor(cdsInThisExonLength / 3)),
       });
 
       aasProcessed += Math.floor(cdsInThisExonLength / 3);
 
-      // If we have a leftover aa
-      // Skip the next aa
-      leftover = cdsInThisExonLength % 3;
-      if (leftover !== 0) aasProcessed += 1;
+      // If we have leftover nucleotides that couldn't fit aa
+      leftoverNucleotideCount = cdsInThisExonLength % 3;
     } else {
       // We are in between exons
 
-      // We have to skip 3 - leftover if we had ANY leftovers, otherwise don't skip
-      let skip = 0;
-      if (leftover) skip = 3 - leftover;
+      // Add the leftover aa from the previous exon if any
+      let cdsSequence = '';
+      if (leftoverNucleotideCount) {
+        cdsSequence += sequence.charAt(aasProcessed);
+        aasProcessed += 1;
+      }
 
-      // Intersection of the exon and the cds
-      const cdsInThisExonLength = exon.end - exon.start + 1 - skip;
+      // Total space we have to put the sequence in this exon
+      const cdsInThisExonLength = exon.end - exon.start + 1 - leftoverNucleotideCount;
 
-      // Skip remaining nucleotides if we had a aa leftover from the prev
-      hasCds.push({
-        start: exon.start + skip,
-        sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
+      // Add the sequence that 'fits' in the space
+      cdsSequence += sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3));
+
+      // Need to start from -leftover to cover the leftover from the previous exon
+      relativeCdsPositionsAndSequences.push({
+        start: exon.start - leftoverNucleotideCount,
+        sequence: cdsSequence,
       });
 
       aasProcessed += Math.floor(cdsInThisExonLength / 3);
 
-      leftover = cdsInThisExonLength % 3;
-      // Skip the next aa if leftover
-      if (leftover !== 0) aasProcessed += 1;
+      // If we have leftover nucleotides that couldn't fit aa
+      leftoverNucleotideCount = (exon.end - exon.start + 1 - (3 - leftoverNucleotideCount)) % 3;
     }
   }
 
-  return hasCds;
+  return relativeCdsPositionsAndSequences;
+};
+
+const getPeptidePosition = (
+  peptideSequence: string,
+  cdsSequence: string,
+  relativeCdsPositionsAndSequences: {
+    start: number;
+    sequence: string;
+  }[]
+) => {
+  const globalStartPos = cdsSequence.indexOf(peptideSequence);
+  const globalEndPos = cdsSequence.indexOf(peptideSequence) + peptideSequence.length - 1;
+
+  let startPos = 0;
+  let endPos = 0;
+  let coveredSoFar = 0;
+  for (const cds of relativeCdsPositionsAndSequences) {
+    if (startPos && endPos) break;
+
+    // Peptide starts at this exon
+    if (!startPos && globalStartPos < coveredSoFar + cds.sequence.length)
+      startPos = cds.start + (globalStartPos - coveredSoFar) * 3;
+
+    // Peptide ends at this exon
+    if (!endPos && globalEndPos < coveredSoFar + cds.sequence.length)
+      endPos = cds.start + (globalEndPos - coveredSoFar + 1) * 3;
+
+    // Peptide is further down the exons
+    coveredSoFar += cds.sequence.length;
+  }
+
+  return { start: startPos, end: endPos, sequence: peptideSequence };
+};
+
+export const getRelativePeptidePositionsAndSequences = (
+  relativeCdsPositionsAndSequences: {
+    start: number;
+    sequence: string;
+  }[],
+  cdsSequence: string,
+  peptides: { sequence: string }[]
+) => {
+  relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
+
+  const peptideSequences = uniqBy(peptides, 'sequence').map(({ sequence }) => sequence);
+
+  const relativePeptidePositionsAndSequences = peptideSequences.map((peptideSequence) =>
+    getPeptidePosition(peptideSequence, cdsSequence, relativeCdsPositionsAndSequences)
+  );
+
+  return relativePeptidePositionsAndSequences;
 };

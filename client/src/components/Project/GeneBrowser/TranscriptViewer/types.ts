@@ -9,6 +9,9 @@ export type Transcript = {
     start: number;
     end: number;
     type: string;
+    peptides: {
+      sequence: string;
+    }[];
   }[];
   mutations: {
     transcript: string;
