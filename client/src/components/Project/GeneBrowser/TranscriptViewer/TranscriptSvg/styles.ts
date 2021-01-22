@@ -25,6 +25,10 @@ export const useStyles = makeStyles((theme) => ({
   exon: {
     fill: theme.palette.primary.main,
     cursor: 'pointer',
+
+    '&:hover': {
+      fill: '#6B88a2',
+    },
   },
   tooltipText: {
     fontSize: '0.65rem',

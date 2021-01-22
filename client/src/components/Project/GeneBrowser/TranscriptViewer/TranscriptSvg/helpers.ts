@@ -22,8 +22,8 @@ export const getCDSPositions = (
     const { start: sequenceStart, end: sequenceEnd } = e;
 
     for (const exon of exons) {
-      const posOnGenome = exon.start;
-      const exonLength = exon.end - exon.start + 1;
+      const posOnGenome = exon.genomeStart;
+      const exonLength = exon.genomeEnd - exon.genomeStart + 1;
       if (posOnTranscript + exonLength > sequenceStart && !startSet) {
         start = posOnGenome + sequenceStart - posOnTranscript + 1;
         startSet = true;
@@ -62,8 +62,8 @@ export const getMutationPosition = (
     let posOnTranscript = 1;
 
     for (const exon of exons) {
-      const posOnGenome = exon.start;
-      const exonLength = exon.end - exon.start + 1;
+      const posOnGenome = exon.genomeStart;
+      const exonLength = exon.genomeEnd - exon.genomeStart + 1;
       if (posOnTranscript + exonLength > pos && !startSet) {
         start = posOnGenome + pos - posOnTranscript + 1;
         startSet = true;

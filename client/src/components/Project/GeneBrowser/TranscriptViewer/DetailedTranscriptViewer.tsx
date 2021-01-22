@@ -9,7 +9,7 @@ import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
-// import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
+import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
@@ -127,7 +127,7 @@ const DetailedTranscriptViewer = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
-          defaultInputValue='ACAT2'
+          defaultInputValue='AAAS'
           className={classes.singleSelect}
         />
         <div className={classes.filtersSubContainer}>
@@ -155,6 +155,11 @@ const DetailedTranscriptViewer = ({ ...props }) => {
             marks={parseDiscreteSliderMarks(qualityMarks)}
             onChangeCommited={onMinQualityChangeCommited}
           />
+          <GenericLegend
+            items={['Exon', 'CDS', 'Peptide', 'PTM']}
+            colors={['#336', '#F8E58E', '#C8553D', '#297045']}
+            direction='vertical'
+          />
         </div>
       </div>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
@@ -162,26 +167,35 @@ const DetailedTranscriptViewer = ({ ...props }) => {
         className={classes.detailedTranscriptViewerContainer}
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
-        <div className={classes.transcriptIdContainer}>
-          {transcriptsData.transcripts.map(({ transcriptId, conditions }, index) => {
+        <div className={classes.transcriptsInfoContainer}>
+          {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
             if (index > 0) return null;
 
             // WOOP, hardcoded condition colors
             // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
             return (
-              <div key={transcriptId} className={classes.transcriptId}>
-                <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
-                  {conditions.map(({ condition }) => (
-                    <div
-                      key={condition}
-                      className={classes.transcriptIdCondition}
-                      style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
-                    >
-                      {condition}
-                    </div>
+              <div key={transcriptId} className={classes.transcriptInfo}>
+                <div className={classes.transcriptId}>
+                  <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
+                    {conditions.map(({ condition }) => (
+                      <div
+                        key={condition}
+                        className={classes.transcriptIdCondition}
+                        style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
+                      >
+                        {condition}
+                      </div>
+                    ))}
+                  </div>
+                  <p className={classes.transcriptIdText}>{transcriptId}</p>
+                </div>
+                <div className={classes.cdssContainer}>
+                  {cds?.map(({ strand }, index) => (
+                    <p key={index} className={classes.transcriptIdText}>{`CDS, ${
+                      strand === '-' ? 'reverse' : 'forward'
+                    } strand`}</p>
                   ))}
                 </div>
-                <p className={classes.transcriptIdText}>{transcriptId}</p>
               </div>
             );
           })}

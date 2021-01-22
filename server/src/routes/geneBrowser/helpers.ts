@@ -62,7 +62,7 @@ export const parseTranscriptsForViewer = (
 
       return {
         transcriptId: transcriptID,
-        exons: exons.map(([start, end]) => ({ start, end })),
+        exons: exons.map(([start, end]) => ({ genomeStart: start, genomeEnd: end })),
         cds: parsedCds,
         mutations,
         conditions: parsedConditions,
@@ -72,6 +72,7 @@ export const parseTranscriptsForViewer = (
       };
     })
     // WOOP, getting mean across all conditions here, PITGUI divides to Nsi/si but we don't
+    // Give option to sort by condition abundance Nsi/si
     .sort(
       (x, y) =>
         mean(y.conditions.map((condition) => condition.mean)) -

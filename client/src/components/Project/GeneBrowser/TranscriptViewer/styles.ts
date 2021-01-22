@@ -116,7 +116,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     // display: 'flex',
   },
-  transcriptIdContainer: {
+  transcriptsInfoContainer: {
     paddingRight: '2rem',
     paddingLeft: '1rem',
 
@@ -127,6 +127,10 @@ export const useStyles = makeStyles((theme) => ({
     '& > div:not(:last-child)': {
       marginBottom: '5rem',
     },
+  },
+  transcriptInfo: {
+    display: 'flex',
+    flexDirection: 'column',
   },
   transcriptId: {
     display: 'flex',
@@ -155,5 +159,16 @@ export const useStyles = makeStyles((theme) => ({
   transcriptIdText: {
     fontSize: '1.4rem',
     color: theme.palette.primary.main,
+    textAlign: 'right',
+  },
+  cdssContainer: {
+    marginTop: '0.8rem',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+
+    '& > p:not(:last-child)': {
+      marginBottom: '1.2rem',
+    },
   },
 }));

@@ -1,4 +1,4 @@
-// import TranscriptViewer from './TranscriptViewer/TranscriptViewer';
+import TranscriptViewer from './TranscriptViewer/TranscriptViewer';
 import DetailedTranscriptViewer from './TranscriptViewer/DetailedTranscriptViewer';
 
 import { useStyles } from './styles';

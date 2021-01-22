@@ -90,12 +90,12 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
       </g>
       {/* These are the exon boxes */}
       <g transform='translate(0 8)'>
-        {exons.map(({ start, end }) => {
-          const exonStartingPosition = RAIL_OFFSET + pixelPerValue * (start - minimumPosition + 1);
-          const exonWidth = pixelPerValue * (end - start + 1);
+        {exons.map(({ genomeStart, genomeEnd }, index) => {
+          const exonStartingPosition = RAIL_OFFSET + pixelPerValue * (genomeStart - minimumPosition + 1);
+          const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
 
           return (
-            <g key={String(start + end)}>
+            <g key={index}>
               <rect
                 className={classes.exon}
                 ref={exonRef}
@@ -105,11 +105,11 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
                 // onClick={()=>{console.log(`Clicked ${}`)}}
               />
               <Tooltip triggerRef={exonRef}>
-                <g transform='translate(0, -5)'>
+                <g transform='translate(8, -5)'>
                   <rect x={0.25} y={0.25} width={120} height={16} rx={1} fill='#eceef7' />
                   <rect x={10} y={5} width={8} height={8} rx={1} fill='#336' />
                   <text className={classes.tooltipText} transform='translate(25 11.4)'>
-                    {`Exon: ${start} - ${end}`}
+                    {`Exon: ${genomeStart} - ${genomeEnd}`}
                   </text>
                 </g>
               </Tooltip>
@@ -122,7 +122,7 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
         // @ts-ignore
         const { start: actualStart, end: actualEnd } = transcriptData.transcript.cds[index];
         return (
-          <g key={cdsStart + cdsWidth} transform={`translate(0 ${20 + index * 6})`}>
+          <g key={index} transform={`translate(0 ${20 + index * 6})`}>
             <rect
               className={classes.cds}
               x={cdsStart}

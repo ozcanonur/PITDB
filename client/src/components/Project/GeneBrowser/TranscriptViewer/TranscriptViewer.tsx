@@ -127,7 +127,7 @@ const TranscriptViewer = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
-          defaultInputValue='ACAT2'
+          defaultInputValue='AAAS'
           className={classes.singleSelect}
         />
         <div className={classes.filtersSubContainer}>

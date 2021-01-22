@@ -2,7 +2,7 @@ export type GeneNamesResponse = { _id: string }[];
 
 export type Transcript = {
   transcriptId: string;
-  exons: { start: number; end: number }[];
+  exons: { genomeStart: number; genomeEnd: number }[];
   cds?: {
     sequence: string;
     strand: string;
