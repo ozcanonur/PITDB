@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import AOS from 'aos';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
 import Header from 'components/Header/Header';
@@ -8,12 +6,6 @@ import Project from 'components/Project/Project';
 
 const BrowseWrapper = () => {
   const match = useRouteMatch();
-
-  useEffect(() => {
-    AOS.init({
-      duration: 500,
-    });
-  }, []);
 
   return (
     <>

@@ -99,14 +99,16 @@ export const getRelativeCdsPositionsAndSequences = (
     if (exon.end < cdsStart) continue;
 
     if (exon.end > cdsEnd) {
+      const cdsInThisExonLength = cdsEnd - cdsStart + 1 - (3 - (leftoverNucleotideCount || 3));
       // End of the cds
       relativeCdsPositionsAndSequences.push({
-        start: exon.start,
-        sequence: sequence.slice(aasProcessed, (cdsEnd - cdsStart) / 3),
+        start: exon.start - leftoverNucleotideCount,
+        sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
       });
+      break;
     } else if (cdsStart > exon.start) {
       // We are at the start
-      // Intersection of the exon and the cds
+      // Go until
       const cdsInThisExonLength = exon.end - cdsStart + 1;
 
       relativeCdsPositionsAndSequences.push({

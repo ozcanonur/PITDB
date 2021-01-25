@@ -1,5 +1,4 @@
 import TranscriptViewer from './TranscriptViewer/TranscriptViewer';
-import DetailedTranscriptViewer from './TranscriptViewer/DetailedTranscriptViewer';
 
 import { useStyles } from './styles';
 
@@ -8,8 +7,7 @@ const GeneBrowserWrapper = () => {
 
   return (
     <div className={classes.container}>
-      <DetailedTranscriptViewer />
-      {/* <TranscriptViewer /> */}
+      <TranscriptViewer />
     </div>
   );
 };

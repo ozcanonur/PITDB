@@ -13,6 +13,7 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
+  SetGeneBrowserBoxHeight,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -150,11 +151,20 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { gene: 'AAAS', conditions: ['Nsi', 'si'], minQual: 250, minTPM: 0.5 },
+  state: GeneBrowserFilters = { gene: 'ACAT2', conditions: ['Nsi', 'si'], minQual: 250, minTPM: 0.5 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_FILTERS:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
+const geneBrowserBoxHeight = (state = { boxHeight: 30 }, action: SetGeneBrowserBoxHeight) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_BOX_HEIGHT:
       return { ...action.payload };
     default:
       return state;
@@ -173,4 +183,5 @@ export default combineReducers({
   selectedTranscriptViewerTranscript,
   selectedTranscriptViewerTranscriptColor,
   geneBrowserFilters,
+  geneBrowserBoxHeight,
 });

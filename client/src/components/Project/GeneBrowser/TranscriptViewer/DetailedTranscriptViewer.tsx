@@ -1,229 +1,175 @@
-import { useState, useEffect, ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { ActionMeta } from 'react-select';
+import { useState, useRef, memo } from 'react';
+import { useSelector } from 'react-redux';
+import Fade from '@material-ui/core/Fade';
 
-// import NoResults from 'components/UI/NoResults/NoResults';
-import Loading from 'components/UI/Loading/Loading';
-import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
-import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
-import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
-import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
-import { SelectOption } from 'components/UI/MultiSelect/types';
-
+import TranscriptSvg from 'components/Project/GeneBrowser/TranscriptViewer/TranscriptSvg/TranscriptSvg';
 import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
 
-import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
-import { parseDiscreteSliderMarks } from './helpers';
-import { GeneNamesResponse, TranscriptsResponse } from './types';
-import { setGeneBrowserFilters } from 'actions';
+import { TranscriptsResponse } from './types';
 
-const DetailedTranscriptViewer = ({ ...props }) => {
+const Tooltip = ({
+  transcriptsData,
+  scrollPosition,
+  tooltipOpen,
+}: {
+  transcriptsData: TranscriptsResponse;
+  scrollPosition: number;
+  tooltipOpen: boolean;
+}) => {
   const classes = useStyles();
 
-  const { project } = useParams<{ project: string }>();
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
-  const filters = useSelector((state: RootState) => state.geneBrowserFilters);
-  const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
-    transcripts: [],
-    maximumPosition: 0,
-    minimumPosition: 0,
-  });
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    setLoading(true);
-
-    fetchFromApi('/api/gene-browser/transcripts', { project, filters: filters as any }).then(
-      (res: TranscriptsResponse) => {
-        if (!isMounted || !res) return;
-
-        setTranscriptsData(res);
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project, filters]);
-
-  const fetchSingleSelectOptions = async (inputValue: string) => {
-    const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
-      project,
-      searchInput: inputValue,
-    });
-
-    // Single select component accepts data in this format
-    return geneNames.map(({ _id }) => ({ value: _id, label: _id }));
-  };
-
-  const dispatch = useDispatch();
-
-  const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    if (!selectedOption) {
-      setTranscriptsData({
-        transcripts: [],
-        maximumPosition: 0,
-        minimumPosition: 0,
-      });
-      return;
-    }
-
-    dispatch(setGeneBrowserFilters({ ...filters, gene: selectedOption.value }));
-  };
-
-  const tpmMarks = ['0', '0.1', '0.5', '1', '5'];
-
-  const onMinTPMChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMinTPMValue = parseFloat(tpmMarks[value]);
-
-    if (newMinTPMValue === filters.minTPM) return;
-
-    dispatch(setGeneBrowserFilters({ ...filters, minTPM: newMinTPMValue }));
-  };
-
-  const qualityMarks = ['0', '100', '250', '500', '1000'];
-
-  const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMinQualValue = parseFloat(qualityMarks[value]);
-
-    if (newMinQualValue === filters.minQual) return;
-
-    dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
-  };
-
-  const multiSelectOnChange = (
-    selectedOptions: SelectOption[],
-    _actionMeta: ActionMeta<any>,
-    name: string
-  ) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-    dispatch(setGeneBrowserFilters({ ...filters, [name]: newSelectedValues }));
-  };
-
-  // // Just for testing
-  // const scrollRef = useRef(null);
-  // useEffect(() => {
-  //   if (scrollRef && scrollRef.current) {
-  //     // @ts-ignore
-  //     scrollRef.current.scrollLeft = 17444;
-  //   }
-  // }, [scrollRef.current]);
+  const width = (transcriptsData.maximumPosition - transcriptsData.minimumPosition) * boxHeight;
 
   return (
-    <ProjectItemCard
-      name={`Transcript browser for ${filters.gene}`}
-      className={classes.projectItemCard}
-      {...props}
-    >
-      <div className={classes.filtersContainer}>
-        <SingleSelect
-          name='Search gene'
-          options={fetchSingleSelectOptions}
-          onChange={singleSelectOnChange}
-          defaultInputValue='AAAS'
-          className={classes.singleSelect}
-        />
-        <div className={classes.filtersSubContainer}>
-          <MultiSelect
-            name='Condition'
-            options={[
-              { value: 'Nsi', label: 'Nsi' },
-              { value: 'si', label: 'si' },
-            ]}
-            defaultValues={['Nsi', 'si']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'conditions')
-            }
-            className={classes.multiSelect}
-          />
-          <DiscreteSlider
-            name='Min. TPM'
-            defaultValue={0.5}
-            marks={parseDiscreteSliderMarks(tpmMarks)}
-            onChangeCommited={onMinTPMChangeCommited}
-          />
-          <DiscreteSlider
-            name='Min. Quality'
-            defaultValue={250}
-            marks={parseDiscreteSliderMarks(qualityMarks)}
-            onChangeCommited={onMinQualityChangeCommited}
-          />
-          <GenericLegend
-            items={['Exon', 'CDS', 'Peptide', 'PTM']}
-            colors={['#336', '#F8E58E', '#C8553D', '#297045']}
-            direction='vertical'
+    <Fade in={tooltipOpen} timeout={100}>
+      <div className={classes.scrollTooltipContainer}>
+        <div className={classes.transcriptTooltipRails}>
+          {transcriptsData.transcripts.map((transcript) => (
+            <TranscriptSvg
+              key={transcript.transcriptId}
+              transcriptData={{
+                transcript: transcript,
+                minimumPosition: transcriptsData.minimumPosition,
+                maximumPosition: transcriptsData.maximumPosition,
+              }}
+              showTranscriptLabels={false}
+            />
+          ))}
+          <div
+            className={classes.transcriptPositionLine}
+            style={{
+              left: `${(scrollPosition / width) * 100}%`,
+            }}
           />
         </div>
       </div>
-      <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <div
-        className={classes.detailedTranscriptViewerContainer}
-        style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
-      >
-        <div className={classes.transcriptsInfoContainer}>
-          {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
-            if (index > 0) return null;
+    </Fade>
+  );
+};
 
-            // WOOP, hardcoded condition colors
-            // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
-            return (
-              <div key={transcriptId} className={classes.transcriptInfo}>
-                <div className={classes.transcriptId}>
-                  <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
-                    {conditions.map(({ condition }) => (
-                      <div
-                        key={condition}
-                        className={classes.transcriptIdCondition}
-                        style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
-                      >
-                        {condition}
-                      </div>
-                    ))}
+const Transcripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+  const classes = useStyles();
+
+  return (
+    <>
+      {transcriptsData.transcripts.map((transcript, index) => {
+        // if (index > 0) return null;
+
+        return (
+          <div className={classes.detailedTranscriptContainer} key={transcript.transcriptId}>
+            <DetailedTranscriptSvg
+              transcriptData={{
+                transcript,
+                minimumPosition: transcriptsData.minimumPosition,
+                maximumPosition: transcriptsData.maximumPosition,
+              }}
+            />
+          </div>
+        );
+      })}
+    </>
+  );
+});
+
+const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+  const classes = useStyles();
+
+  return (
+    <>
+      {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
+        // if (index > 0) return null;
+
+        const cdsLineCount = cds?.length || 0;
+        const peptideLineCount =
+          (cds && cds?.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) || 0;
+
+        const transcriptInfoHeight = 3 + cdsLineCount * 3 + peptideLineCount * 3;
+
+        // WOOP, hardcoded condition colors
+        // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
+        return (
+          <div
+            key={transcriptId}
+            className={classes.transcriptInfo}
+            style={{ height: `${transcriptInfoHeight}rem` }}
+          >
+            <div className={classes.transcriptId}>
+              <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
+                {conditions.map(({ condition }) => (
+                  <div
+                    key={condition}
+                    className={classes.transcriptIdCondition}
+                    style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
+                  >
+                    {condition}
                   </div>
-                  <p className={classes.transcriptIdText}>{transcriptId}</p>
-                </div>
-                <div className={classes.cdssContainer}>
-                  {cds?.map(({ strand }, index) => (
-                    <p key={index} className={classes.transcriptIdText}>{`CDS, ${
-                      strand === '-' ? 'reverse' : 'forward'
-                    } strand`}</p>
-                  ))}
-                </div>
+                ))}
               </div>
-            );
-          })}
-        </div>
-        <div className={classes.detailedTranscripts} style={{ direction: 'ltr' }}>
-          {transcriptsData.transcripts.map((transcript, index) => {
-            if (index > 0) return null;
+              <p className={classes.transcriptIdText}>{transcriptId}</p>
+            </div>
+            <div className={classes.cdssContainer}>
+              {cds?.map(({ strand }, index) => {
+                const isReverse = strand === '-';
 
-            return (
-              <div
-                className={classes.detailedTranscriptContainer}
-                key={transcript.transcriptId}
-                // ref={scrollRef}
-                // onScroll={() => console.log(scrollRef.current.scrollLeft)}
-              >
-                <DetailedTranscriptSvg
-                  transcriptData={{
-                    transcript,
-                    minimumPosition: transcriptsData.minimumPosition,
-                    maximumPosition: transcriptsData.maximumPosition,
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+                return (
+                  <p key={index} className={classes.transcriptIdText}>{`CDS, ${
+                    isReverse ? 'reverse' : 'forward'
+                  } strand`}</p>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
+const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+  const classes = useStyles();
+
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  const scrollRef = useRef(null);
+
+  let timeout = useRef<NodeJS.Timeout>();
+
+  const handleScroll = () => {
+    if (!scrollRef || !scrollRef.current) return;
+
+    // @ts-ignore
+    clearTimeout(timeout.current);
+
+    // @ts-ignore
+    setScrollPosition(scrollRef.current.scrollLeft);
+
+    setTooltipOpen(true);
+
+    timeout.current = setTimeout(() => {
+      setTooltipOpen(false);
+    }, 500);
+  };
+
+  return (
+    <div className={classes.detailedTranscriptViewerContainer}>
+      <div className={classes.transcriptsInfoContainer}>
+        <TranscriptNames transcriptsData={transcriptsData} />
       </div>
-    </ProjectItemCard>
+      <div style={{ width: '100%', position: 'relative' }}>
+        <div className={classes.detailedTranscripts} ref={scrollRef} onScroll={handleScroll}>
+          <Transcripts transcriptsData={transcriptsData} />
+        </div>
+        <Tooltip
+          transcriptsData={transcriptsData}
+          scrollPosition={scrollPosition}
+          tooltipOpen={tooltipOpen}
+        />
+      </div>
+    </div>
   );
 };
 

@@ -12,6 +12,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
+import DetailedTranscriptViewer from './DetailedTranscriptViewer';
 import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
 
 import { fetchFromApi } from 'utils';
@@ -167,6 +168,9 @@ const TranscriptViewer = ({ ...props }) => {
         className={classes.noResults}
         style={{ opacity: !loading && transcriptsData.transcripts.length === 0 ? 1 : 0 }}
       />
+      <div style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}>
+        <DetailedTranscriptViewer transcriptsData={transcriptsData} />
+      </div>
       <div
         className={classes.transcriptViewerContainer}
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
@@ -180,6 +184,7 @@ const TranscriptViewer = ({ ...props }) => {
                 minimumPosition: transcriptsData.minimumPosition,
                 maximumPosition: transcriptsData.maximumPosition,
               }}
+              showTranscriptLabels={false}
             />
           ))}
         </div>

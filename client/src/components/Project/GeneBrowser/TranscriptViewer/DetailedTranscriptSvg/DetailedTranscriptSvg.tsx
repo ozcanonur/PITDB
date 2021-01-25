@@ -1,38 +1,40 @@
+import { useSelector } from 'react-redux';
+
 import { DetailedTranscriptSvgProps } from './types';
 import {
   getCDSStartsAndEnds,
   getNucleotideColor,
   getRelativeExonPositionsAndSequences,
   getRelativeCdsPositionsAndSequences,
-  // getRelativePeptidePositionsAndSequences,
+  getRelativePeptidePositionsAndSequences,
 } from './helpers';
 
 import { useStyles } from './styles';
-
-const BOX_HEIGHT = 30;
 
 const ExonSequence = ({ exon }: { exon: { sequence: string; start: number } }) => {
   const classes = useStyles();
 
   const { sequence, start } = exon;
 
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+
   return (
     <>
       {sequence.split('').map((nucleotide, index) => {
         const color = getNucleotideColor(nucleotide);
 
-        const fontSize = BOX_HEIGHT / 2;
-        const textOffsetX = start * BOX_HEIGHT + index * BOX_HEIGHT + BOX_HEIGHT / 2;
-        // -2 because reasons that I have no idea about
-        const textOffsetY = BOX_HEIGHT / 2 + fontSize / 2 - 2;
+        const fontSize = boxHeight / 2;
+        const textOffsetX = start * boxHeight + index * boxHeight + boxHeight / 2;
+        // -2 because of reasons that I have no idea about
+        const textOffsetY = boxHeight / 2 + fontSize / 2 - 2;
 
         return (
           <g key={index}>
             <rect
               fill={color}
-              x={start * BOX_HEIGHT + index * BOX_HEIGHT}
-              width={BOX_HEIGHT}
-              height={BOX_HEIGHT}
+              x={start * boxHeight + index * boxHeight}
+              width={boxHeight}
+              height={boxHeight}
             />
             <text className={classes.nucleotide} fontSize={fontSize} x={textOffsetX} y={textOffsetY}>
               {nucleotide}
@@ -54,6 +56,8 @@ const CdsSequence = ({
 }) => {
   const classes = useStyles();
 
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+
   const { start, sequence } = relativeCdsPositionAndSequence;
 
   const sequenceArray = sequence.split('');
@@ -61,13 +65,13 @@ const CdsSequence = ({
   return (
     <>
       {sequenceArray.map((codon, index) => {
-        const fontSize = BOX_HEIGHT / 2;
-        const textOffsetX = start * BOX_HEIGHT + index * BOX_HEIGHT * 3 + (BOX_HEIGHT * 3) / 2;
-        // -2 because reasons that I have no idea about
-        const textOffsetY = BOX_HEIGHT + BOX_HEIGHT / 2 + fontSize / 2 - 2;
+        const fontSize = boxHeight / 2;
+        const textOffsetX = start * boxHeight + index * boxHeight * 3 + (boxHeight * 3) / 2;
+        // -2 because of reasons that I have no idea about
+        const textOffsetY = boxHeight + boxHeight / 2 + fontSize / 2 - 2;
 
-        const leftDividerPos = start * BOX_HEIGHT + index * BOX_HEIGHT * 3;
-        const rightDividerPos = leftDividerPos + BOX_HEIGHT * 3;
+        const leftDividerPos = start * boxHeight + index * boxHeight * 3;
+        const rightDividerPos = leftDividerPos + boxHeight * 3;
 
         return (
           <g key={index}>
@@ -78,16 +82,16 @@ const CdsSequence = ({
             <line
               x1={leftDividerPos}
               x2={leftDividerPos}
-              y1={BOX_HEIGHT}
-              y2={BOX_HEIGHT * 2}
+              y1={boxHeight}
+              y2={boxHeight * 2}
               className={classes.divider}
             />
             {index === sequenceArray.length - 1 ? (
               <line
                 x1={rightDividerPos}
                 x2={rightDividerPos}
-                y1={BOX_HEIGHT}
-                y2={BOX_HEIGHT * 2}
+                y1={boxHeight}
+                y2={boxHeight * 2}
                 className={classes.divider}
                 strokeWidth={0.8}
               />
@@ -99,84 +103,95 @@ const CdsSequence = ({
   );
 };
 
-// const Peptide = ({
-//   relativeCdsPositionAndSequence,
-// }: {
-//   relativeCdsPositionAndSequence: { start: number; end: number; mods: { type: string; pos: number }[] };
-// }) => {
-//   const classes = useStyles();
+const Peptide = ({
+  relativeCdsPositionAndSequence,
+}: {
+  relativeCdsPositionAndSequence: { start: number; end: number; mods: { type: string; pos: number }[] };
+}) => {
+  const classes = useStyles();
 
-//   const { start, end, mods } = relativeCdsPositionAndSequence;
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
-//   // points = `${(testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT * 2},${BOX_HEIGHT * 4} ${
-//   //   (testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT / 2
-//   // },${BOX_HEIGHT * 3} ${(testMod.pos + start + 1) * BOX_HEIGHT - BOX_HEIGHT},${BOX_HEIGHT * 4}`;
+  const { start, end, mods } = relativeCdsPositionAndSequence;
 
-//   console.log(mods);
+  // points = `${(testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT * 2},${BOX_HEIGHT * 4} ${
+  //   (testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT / 2
+  // },${BOX_HEIGHT * 3} ${(testMod.pos + start + 1) * BOX_HEIGHT - BOX_HEIGHT},${BOX_HEIGHT * 4}`;
 
-//   // WOOP, PTMS are A MESS, not working, FIX
-//   return (
-//     <>
-//       {/* {mods.map((mod, index) => {
-//         // console.log((mod.pos - 1) * BOX_HEIGHT);
-//         return (
-//           <rect
-//             key={index}
-//             x={(mod.pos - 1) * BOX_HEIGHT - BOX_HEIGHT * 2}
-//             y={BOX_HEIGHT * 3}
-//             width={BOX_HEIGHT * 3}
-//             height={BOX_HEIGHT}
-//             className={classes.mod}
-//           />
-//         );
-//       })} */}
-//       <rect
-//         className={classes.peptide}
-//         x={start * BOX_HEIGHT}
-//         y={BOX_HEIGHT * 2}
-//         width={(end - start + 1) * BOX_HEIGHT}
-//         height={BOX_HEIGHT}
-//       />
-//       <line
-//         x1={start * BOX_HEIGHT}
-//         x2={start * BOX_HEIGHT}
-//         y1={BOX_HEIGHT * 2}
-//         y2={BOX_HEIGHT * 3}
-//         className={classes.divider}
-//       />
-//       <line
-//         x1={start * BOX_HEIGHT + (end - start + 1) * BOX_HEIGHT}
-//         x2={start * BOX_HEIGHT + (end - start + 1) * BOX_HEIGHT}
-//         y1={BOX_HEIGHT * 2}
-//         y2={BOX_HEIGHT * 3}
-//         className={classes.divider}
-//       />
-//     </>
-//   );
-// };
+  // console.log(mods);
+
+  // WOOP, PTMS are A MESS, not working, FIX
+  return (
+    <>
+      {/* {mods.map((mod, index) => {
+        // console.log((mod.pos - 1) * BOX_HEIGHT);
+        return (
+          <rect
+            key={index}
+            x={(mod.pos - 1) * BOX_HEIGHT - BOX_HEIGHT * 2}
+            y={BOX_HEIGHT * 3}
+            width={BOX_HEIGHT * 3}
+            height={BOX_HEIGHT}
+            className={classes.mod}
+          />
+        );
+      })} */}
+      <rect
+        className={classes.peptide}
+        x={start * boxHeight}
+        y={boxHeight * 2}
+        width={(end - start + 1) * boxHeight}
+        height={boxHeight}
+      />
+      <line
+        x1={start * boxHeight}
+        x2={start * boxHeight}
+        y1={boxHeight * 2}
+        y2={boxHeight * 3}
+        className={classes.divider}
+      />
+      <line
+        x1={start * boxHeight + (end - start + 1) * boxHeight}
+        x2={start * boxHeight + (end - start + 1) * boxHeight}
+        y1={boxHeight * 2}
+        y2={boxHeight * 3}
+        className={classes.divider}
+      />
+    </>
+  );
+};
 
 const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptSvgProps) => {
   const classes = useStyles();
+
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
 
+  const peptideLineCount =
+    (transcript.cds &&
+      transcript.cds.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) ||
+    0;
+  const cdsCount = transcript.cds ? transcript.cds.length : 0;
+  let svgHeight = boxHeight + cdsCount * boxHeight + peptideLineCount * boxHeight;
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       className={classes.svg}
-      width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
-      style={{ height: BOX_HEIGHT + cdsStartAndEndsAndSequences.length * BOX_HEIGHT }}
+      width={(maximumPosition - minimumPosition + 1) * boxHeight}
+      style={{ height: svgHeight }}
       {...props}
     >
       {/* This is the rail behind nucleotides */}
       <line
-        x1={(transcript.start - minimumPosition) * BOX_HEIGHT}
-        x2={(transcript.end - minimumPosition + 1) * BOX_HEIGHT}
-        y1={BOX_HEIGHT / 2}
-        y2={BOX_HEIGHT / 2}
+        x1={(transcript.start - minimumPosition) * boxHeight}
+        x2={(transcript.end - minimumPosition + 1) * boxHeight}
+        y1={boxHeight / 2}
+        y2={boxHeight / 2}
         className={classes.rail}
       />
       {/* These are the exons */}
@@ -195,22 +210,22 @@ const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptS
           isReverse
         );
 
-        // const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
-        //   relativeCdsPositionsAndSequences,
-        //   sequence,
-        //   // @ts-ignore
-        //   transcript.cds[0].peptides
-        // );
+        const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
+          relativeCdsPositionsAndSequences,
+          sequence,
+          // @ts-ignore
+          transcript.cds[cdsIndex].peptides
+        );
 
         return (
-          <g key={cdsIndex} transform={`translate(0 ${cdsIndex * BOX_HEIGHT})`}>
+          <g key={cdsIndex} transform={`translate(0 ${cdsIndex * boxHeight})`}>
             {/* This is the bg behind the whole CDS */}
             <rect
               className={classes.cdsBackground}
-              x={cdsStart * BOX_HEIGHT}
-              y={BOX_HEIGHT}
-              width={(cdsEnd - cdsStart + 1) * BOX_HEIGHT}
-              height={BOX_HEIGHT}
+              x={cdsStart * boxHeight}
+              y={boxHeight}
+              width={(cdsEnd - cdsStart + 1) * boxHeight}
+              height={boxHeight}
             />
             {/* These are the cds codons */}
             {relativeCdsPositionsAndSequences.map((relativeCdsPositionAndSequence, index) => (
@@ -219,9 +234,11 @@ const DetailedTranscriptSvg = ({ transcriptData, ...props }: DetailedTranscriptS
               </g>
             ))}
             {/* These are the peptides */}
-            {/* {relativePeptidePositionsAndSequences.map((relativeCdsPositionAndSequence, index) => (
-              <Peptide key={index} relativeCdsPositionAndSequence={relativeCdsPositionAndSequence} />
-            ))} */}
+            {relativePeptidePositionsAndSequences.map((relativePeptidePositionAndSequence, index) => (
+              <g key={index}>
+                <Peptide relativeCdsPositionAndSequence={relativePeptidePositionAndSequence} />
+              </g>
+            ))}
           </g>
         );
       })}

@@ -79,8 +79,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   detailedTranscriptViewerContainer: {
-    padding: '0 2rem',
-    marginTop: '2rem',
+    padding: '2rem',
     display: 'flex',
   },
   detailedTranscripts: {
@@ -89,43 +88,35 @@ export const useStyles = makeStyles((theme) => ({
     transform: 'translateZ(0)',
     width: '100%',
     overflow: 'auto',
-    direction: 'rtl',
+    direction: 'ltr',
     height: 'max-content',
     marginTop: '0.8rem',
 
-    // WOOP, hardcode for testing detailed transcript svg
-    '&::-webkit-scrollbar': {
-      width: '10px',
-    },
-
-    '&::-webkit-scrollbar-track': {
-      background: '#eee',
-    },
-
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'rgba(51, 51, 102, 0.8)',
-      border: '1px solid white',
+    '& div:nth-child(2) > div': {
+      backgroundColor: '#336 !important',
     },
   },
   detailedTranscriptContainer: {
     direction: 'ltr',
-    // overflow: 'auto',
     width: 0,
     marginBottom: '2rem',
-    // minWidth: '100%',
     position: 'relative',
-    // display: 'flex',
   },
   transcriptsInfoContainer: {
     paddingRight: '2rem',
     paddingLeft: '1rem',
+    paddingTop: '0.8rem',
 
-    '& > div:first-of-type': {
-      marginTop: '0.8rem',
+    '& > div:not(:last-of-type)': {
+      marginBottom: '2.1rem',
     },
 
-    '& > div:not(:last-child)': {
-      marginBottom: '5rem',
+    '& > div:last-of-type': {
+      marginBottom: '2.3rem',
+    },
+
+    '& > p:last-of-type': {
+      marginTop: '1.6rem',
     },
   },
   transcriptInfo: {
@@ -170,5 +161,35 @@ export const useStyles = makeStyles((theme) => ({
     '& > p:not(:last-child)': {
       marginBottom: '1.2rem',
     },
+  },
+  scrollLabelText: {
+    fontSize: '1.4rem',
+    color: theme.palette.primary.main,
+    textAlign: 'right',
+  },
+  scrollTooltipContainer: {
+    position: 'absolute',
+    bottom: '2.3rem',
+    backgroundColor: 'white',
+    boxShadow: '0 5px 10px rgba(154,160,185,.15), 0 15px 40px rgba(166,173,201,.2)',
+    borderRadius: '4px',
+    padding: '1rem',
+  },
+  transcriptTooltipRails: {
+    display: 'flex',
+    flexDirection: 'column',
+    transform: 'translateZ(0)',
+    width: '40rem',
+    overflow: 'auto',
+    direction: 'rtl',
+    height: 'max-content',
+  },
+  transcriptPositionLine: {
+    backgroundColor: 'rgba(217, 33, 122, 0.5)',
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+    height: '100%',
+    width: '2px',
   },
 }));

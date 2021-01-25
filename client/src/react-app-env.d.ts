@@ -31,4 +31,5 @@ interface RootState {
     color: string;
   };
   geneBrowserFilters: import('components/Project/GeneBrowser/TranscriptViewer/types').GeneBrowserFilters;
+  geneBrowserBoxHeight: { boxHeight: number };
 }

@@ -10,6 +10,8 @@ import {
   SelectTranscriptUsageAction,
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
+  SetGeneBrowserFiltersAction,
+  SetGeneBrowserBoxHeight,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
@@ -110,9 +112,18 @@ export const selectTranscriptViewerTranscriptColor = (
   };
 };
 
-export const setGeneBrowserFilters = (filters: GeneBrowserFilters) => {
+export const setGeneBrowserFilters = (filters: GeneBrowserFilters): SetGeneBrowserFiltersAction => {
   return {
     type: ACTION.SET_GENE_BROWSER_FILTERS,
     payload: filters,
+  };
+};
+
+export const setGeneBrowserBoxHeight = (boxHeight: number): SetGeneBrowserBoxHeight => {
+  return {
+    type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT,
+    payload: {
+      boxHeight,
+    },
   };
 };

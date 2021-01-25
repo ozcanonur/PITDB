@@ -7,7 +7,7 @@ import { TranscriptSvgProps } from './types';
 import { getCDSPositions, getMutationPosition } from './helpers';
 import { useStyles } from './styles';
 
-const RAIL_OFFSET = 110;
+const RAIL_OFFSET = 0;
 const RAIL_LENGTH = 540;
 const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
@@ -15,7 +15,7 @@ const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
 const MUTATION_WIDTH = 1;
 
-const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
+const TranscriptSvg = ({ transcriptData, showTranscriptLabels, ...props }: TranscriptSvgProps) => {
   const classes = useStyles();
 
   const {
@@ -36,47 +36,49 @@ const TranscriptSvg = ({ transcriptData, ...props }: TranscriptSvgProps) => {
   const exonRef = createRef<SVGRectElement>();
   const cdsRef = createRef<SVGRectElement>();
 
-  // if (transcriptId === 'ENST00000227758.6') console.log(exonSequences);
-
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      viewBox={`0 0 650 ${26 + cdsPositions.length * 6}`}
+      viewBox={`0 0 540 ${26 + cdsPositions.length * 6}`}
       className={classes.svg}
       {...props}
     >
-      {/* These are the condition names to the left of the transcript text */}
-      {conditions.map(({ condition, mean }, index) => (
-        <g key={condition} transform={`translate(${index * 17}, 4)`} className={classes.textContainer}>
-          <rect
-            width={15}
-            height={12}
-            rx={1}
-            fill={['#336', '#6b88a2'][index]}
-            transform='translate(0 3.5)'
-          />
-          <text
-            transform={`translate(${-condition.length * 3 + 11.7} 12.3)`}
-            className={classes.conditionText}
-            ref={textRef}
-          >
-            {condition}
-          </text>
-          <Tooltip triggerRef={textRef}>
-            <g transform='translate(0, -5)'>
-              <rect x={0.25} y={0.25} width={86} height={16} rx={1} fill='#eceef7' />
-              <rect x={10} y={5} width={8} height={8} rx={1} fill={['#336', '#6b88a2'][index]} />
-              <text className={classes.tooltipText} transform='translate(25 11.4)'>
-                {`Avg. TPM: ${mean.toFixed(4)}`}
+      {showTranscriptLabels ? (
+        <>
+          {/* These are the condition names to the left of the transcript text */}
+          {conditions.map(({ condition, mean }, index) => (
+            <g key={condition} transform={`translate(${index * 17}, 4)`} className={classes.textContainer}>
+              <rect
+                width={15}
+                height={12}
+                rx={1}
+                fill={['#336', '#6b88a2'][index]}
+                transform='translate(0 3.5)'
+              />
+              <text
+                transform={`translate(${-condition.length * 3 + 11.7} 12.3)`}
+                className={classes.conditionText}
+                ref={textRef}
+              >
+                {condition}
               </text>
+              <Tooltip triggerRef={textRef}>
+                <g transform='translate(0, -5)'>
+                  <rect x={0.25} y={0.25} width={86} height={16} rx={1} fill='#eceef7' />
+                  <rect x={10} y={5} width={8} height={8} rx={1} fill={['#336', '#6b88a2'][index]} />
+                  <text className={classes.tooltipText} transform='translate(25 11.4)'>
+                    {`Avg. TPM: ${mean.toFixed(4)}`}
+                  </text>
+                </g>
+              </Tooltip>
             </g>
-          </Tooltip>
-        </g>
-      ))}
-      {/* This is the transcript text */}
-      <text className={classes.transcriptText} transform='translate(40 16)'>
-        {transcriptId}
-      </text>
+          ))}
+          {/* This is the transcript text */}
+          <text className={classes.transcriptText} transform='translate(40 16)'>
+            {transcriptId}
+          </text>
+        </>
+      ) : null}
       {/* This is the rail */}
       <g transform='translate(0 5)'>
         <rect
