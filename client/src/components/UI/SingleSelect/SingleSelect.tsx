@@ -1,5 +1,6 @@
 import { components } from 'react-select';
 import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 import debounce from 'debounce-promise';
@@ -20,20 +21,16 @@ const CustomDropdownIndicator = ({ ...props }: any) => {
         style={{ fontSize: '1.8rem', color: 'rgba(51, 51, 102, 0.85)', marginRight: '0.5rem' }}
         onClick={clearValue}
       />
-      <DropdownIndicator {...props} data-test='singleSelect-dropdown'>
+      <DropdownIndicator {...props}>
         <SearchIcon style={{ fontSize: '1.8rem' }} />
       </DropdownIndicator>
     </>
   );
 };
 
-const CustomMenuList = (props: any) => (
-  <MenuList {...props} data-test='singleSelect-menuList'>
-    {props.children}
-  </MenuList>
-);
+const CustomMenuList = (props: any) => <MenuList {...props}>{props.children}</MenuList>;
 
-const CustomMenu = ({ ...props }: any) => <Menu {...props} data-test='menu' className='menu' />;
+const CustomMenu = ({ ...props }: any) => <Menu {...props} className='menu' />;
 
 const SingleSelect = ({
   singleSelectProps,
@@ -41,6 +38,7 @@ const SingleSelect = ({
   options,
   onChange,
   defaultInputValue,
+  isAsync = true,
   ...props
 }: SingleSelectProps) => {
   // For menu close animation
@@ -65,31 +63,48 @@ const SingleSelect = ({
 
   return (
     <div {...props}>
-      <AsyncSelect
-        name={name}
-        components={{
-          DropdownIndicator: CustomDropdownIndicator,
-          MenuList: CustomMenuList,
-          Menu: CustomMenu,
-        }}
-        cacheOptions
-        defaultOptions
-        loadOptions={debouncedOptions}
-        styles={singleSelectStyles}
-        placeholder={name}
-        closeMenuOnSelect={false}
-        onChange={onChange}
-        escapeClearsValue
-        isClearable
-        blurInputOnSelect
-        defaultInputValue={defaultInputValue}
-        aria-label={`${name} single-select`}
-        // menuIsOpen
-        // For menu close animation
-        id={uniqueId}
-        onMenuClose={onMenuClose}
-        {...singleSelectProps}
-      />
+      {isAsync ? (
+        <AsyncSelect
+          name={name}
+          components={{
+            DropdownIndicator: CustomDropdownIndicator,
+            MenuList: CustomMenuList,
+            Menu: CustomMenu,
+          }}
+          cacheOptions
+          loadOptions={debouncedOptions}
+          styles={singleSelectStyles}
+          placeholder={name}
+          closeMenuOnSelect={false}
+          onChange={onChange}
+          escapeClearsValue
+          isClearable
+          blurInputOnSelect
+          defaultInputValue={defaultInputValue}
+          aria-label={`${name} single-select`}
+          // For menu close animation
+          id={uniqueId}
+          onMenuClose={onMenuClose}
+          {...singleSelectProps}
+        />
+      ) : (
+        <Select
+          name={name}
+          components={{
+            MenuList: CustomMenuList,
+            Menu: CustomMenu,
+          }}
+          defaultValue={{ value: defaultInputValue, label: defaultInputValue }}
+          aria-label={`${name} single-select`}
+          styles={singleSelectStyles}
+          options={options}
+          placeholder={name}
+          onChange={onChange}
+          // For menu close animation
+          id={uniqueId}
+          onMenuClose={onMenuClose}
+        />
+      )}
     </div>
   );
 };

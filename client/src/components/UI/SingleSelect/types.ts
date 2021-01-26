@@ -7,4 +7,5 @@ export interface SingleSelectProps {
   singleSelectProps?: any;
   className?: string;
   defaultInputValue?: string;
+  isAsync?: boolean;
 }

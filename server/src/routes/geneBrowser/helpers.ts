@@ -32,7 +32,8 @@ export const parseMutations = (mutations: IMutation[]) => {
 
 export const parseTranscriptsForViewer = (
   transcripts: IAllTranscript[],
-  parsedMutations: ParsedMutation[]
+  parsedMutations: ParsedMutation[],
+  condition: string
 ) => {
   let minimumPosition = Number.MAX_VALUE;
   let maximumPosition = 0;
@@ -48,13 +49,15 @@ export const parseTranscriptsForViewer = (
         (mutation) => mutation.transcript.replace('_', '.') === transcriptID
       );
 
-      const parsedConditions = Object.entries(TPM).map(([condition, values]) => {
-        const meanValue = mean(Object.values(values));
-        return {
-          condition,
-          mean: meanValue,
-        };
-      });
+      const parsedConditions = Object.entries(TPM)
+        .filter(([thisCondition]) => thisCondition === condition)
+        .map(([condition, values]) => {
+          const meanValue = mean(Object.values(values));
+          return {
+            condition,
+            mean: meanValue,
+          };
+        });
 
       const parsedCds = CDS
         ? Object.keys(CDS)
@@ -73,8 +76,6 @@ export const parseTranscriptsForViewer = (
         end,
       };
     })
-    // WOOP, getting mean across all conditions here, PITGUI divides to Nsi/si but we don't
-    // Give option to sort by condition abundance Nsi/si
     .sort(
       (x, y) =>
         mean(y.conditions.map((condition) => condition.mean)) -

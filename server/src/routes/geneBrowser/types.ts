@@ -1,6 +1,6 @@
 export type GeneBrowserFilters = {
   gene: string;
-  conditions: string[];
+  condition: string;
   minTPM: number;
   minQual: number;
 };

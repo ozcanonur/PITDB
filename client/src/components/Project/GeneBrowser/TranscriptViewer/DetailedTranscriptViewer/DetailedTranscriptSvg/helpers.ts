@@ -96,7 +96,7 @@ export const getRelativeCdsPositionsAndSequences = (
   if (isReverse) sequence = sequence.split('').reverse().join('');
 
   if (isReverse) {
-    console.log(cdsStart, cdsEnd);
+    // console.log(cdsStart, cdsEnd);
   }
 
   for (const exon of exons) {
@@ -167,7 +167,7 @@ export const getRelativeCdsPositionsAndSequences = (
   }
 
   if (isReverse) {
-    console.log(relativeCdsPositionsAndSequences);
+    // console.log(relativeCdsPositionsAndSequences);
   }
 
   return relativeCdsPositionsAndSequences;

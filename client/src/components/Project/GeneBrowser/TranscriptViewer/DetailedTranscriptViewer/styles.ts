@@ -25,7 +25,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   transcriptsInfoContainer: {
     paddingRight: '2rem',
-    paddingLeft: '1rem',
     paddingTop: '0.8rem',
 
     '& > div:not(:last-of-type)': {

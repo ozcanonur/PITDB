@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme) => ({
   projectItemCard: {
     position: 'relative',
     width: '100%',
-    minHeight: '60rem',
+    minHeight: '48rem',
   },
   filtersContainer: {
     position: 'relative',

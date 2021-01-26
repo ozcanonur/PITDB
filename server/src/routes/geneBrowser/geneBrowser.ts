@@ -17,7 +17,7 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   const parsedFilters = JSON.parse(filters) as GeneBrowserFilters;
-  const { gene, conditions, minTPM, minQual } = parsedFilters;
+  const { gene, condition, minTPM, minQual } = parsedFilters;
 
   try {
     const transcripts = await AllTranscript.find({ project, gene });
@@ -25,14 +25,13 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     // Filter by selected conditions and min TPM
     const filteredTranscripts = transcripts.filter(
       ({ TPM }) =>
-        conditions.some((condition) => Object.keys(TPM).includes(condition)) &&
-        Object.values(flatten(TPM)).every((value) => value >= minTPM)
+        Object.keys(TPM).includes(condition) && Object.values(flatten(TPM)).every((value) => value >= minTPM)
     );
 
     const mutations = await Mutation.find({ gene });
     const parsedMutations = parseMutations(mutations);
 
-    const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations);
+    const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations, condition);
 
     res.send(parsedTranscripts);
   } catch (error) {

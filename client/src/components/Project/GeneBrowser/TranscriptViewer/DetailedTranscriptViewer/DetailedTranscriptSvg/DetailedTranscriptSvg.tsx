@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { VariableSizeList as List } from 'react-window';
 
 import { DetailedTranscriptSvgProps } from './types';
 import {

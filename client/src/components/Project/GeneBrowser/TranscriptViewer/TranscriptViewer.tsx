@@ -99,13 +99,8 @@ const TranscriptViewer = ({ ...props }) => {
     dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
   };
 
-  const multiSelectOnChange = (
-    selectedOptions: SelectOption[],
-    _actionMeta: ActionMeta<any>,
-    name: string
-  ) => {
-    const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-    dispatch(setGeneBrowserFilters({ ...filters, [name]: newSelectedValues }));
+  const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
   };
 
   return (
@@ -122,17 +117,16 @@ const TranscriptViewer = ({ ...props }) => {
           defaultInputValue='AAAS'
           className={classes.singleSelect}
         />
-        <MultiSelect
+        <SingleSelect
           name='Condition'
+          onChange={conditionFilterOnChange}
+          className={classes.singleSelect}
+          isAsync={false}
           options={[
             { value: 'Nsi', label: 'Nsi' },
             { value: 'si', label: 'si' },
           ]}
-          defaultValues={['Nsi', 'si']}
-          onChange={(selectedOptions, _actionMeta) =>
-            multiSelectOnChange(selectedOptions, _actionMeta, 'conditions')
-          }
-          className={classes.multiSelect}
+          defaultInputValue='Nsi'
         />
         <DiscreteSlider
           name='Min. TPM'
