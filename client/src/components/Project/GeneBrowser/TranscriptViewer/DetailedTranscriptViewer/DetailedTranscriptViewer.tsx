@@ -1,52 +1,53 @@
 import { useState, useRef, memo } from 'react';
 import { useSelector } from 'react-redux';
-import Fade from '@material-ui/core/Fade';
 
 import TranscriptSvg from 'components/Project/GeneBrowser/TranscriptViewer/TranscriptSvg/TranscriptSvg';
 import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
 
 import { useStyles } from './styles';
-import { TranscriptsResponse } from './types';
+import { TranscriptsResponse } from '../types';
 
 const Tooltip = ({
   transcriptsData,
   scrollPosition,
-  tooltipOpen,
 }: {
   transcriptsData: TranscriptsResponse;
   scrollPosition: number;
-  tooltipOpen: boolean;
 }) => {
   const classes = useStyles();
 
   const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
-  const width = (transcriptsData.maximumPosition - transcriptsData.minimumPosition) * boxHeight;
+  const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
+  const widthOnScreen = maxTranscriptWidth * boxHeight;
+
+  const currentGenomePosition = Math.floor(
+    transcriptsData.minimumPosition + maxTranscriptWidth * (scrollPosition / widthOnScreen)
+  );
 
   return (
-    <Fade in={tooltipOpen} timeout={100}>
-      <div className={classes.scrollTooltipContainer}>
-        <div className={classes.transcriptTooltipRails}>
-          {transcriptsData.transcripts.map((transcript) => (
-            <TranscriptSvg
-              key={transcript.transcriptId}
-              transcriptData={{
-                transcript: transcript,
-                minimumPosition: transcriptsData.minimumPosition,
-                maximumPosition: transcriptsData.maximumPosition,
-              }}
-              showTranscriptLabels={false}
-            />
-          ))}
-          <div
-            className={classes.transcriptPositionLine}
-            style={{
-              left: `${(scrollPosition / width) * 100}%`,
+    <div className={classes.scrollTooltipContainer}>
+      <div className={classes.transcriptTooltipRails}>
+        {transcriptsData.transcripts.map((transcript) => (
+          <TranscriptSvg
+            key={transcript.transcriptId}
+            transcriptData={{
+              transcript: transcript,
+              minimumPosition: transcriptsData.minimumPosition,
+              maximumPosition: transcriptsData.maximumPosition,
             }}
+            showTranscriptLabels={false}
           />
-        </div>
+        ))}
+        <div
+          className={classes.transcriptPositionLine}
+          style={{
+            left: `${(scrollPosition / widthOnScreen) * 100}%`,
+          }}
+        />
       </div>
-    </Fade>
+      <p className={classes.tooltipPositionText}>{`Current position: ${currentGenomePosition}`}</p>
+    </div>
   );
 };
 
@@ -159,15 +160,11 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
       <div className={classes.transcriptsInfoContainer}>
         <TranscriptNames transcriptsData={transcriptsData} />
       </div>
-      <div style={{ width: '100%', position: 'relative' }}>
+      <div style={{ width: '100%', transform: 'translateZ(0)' }}>
         <div className={classes.detailedTranscripts} ref={scrollRef} onScroll={handleScroll}>
           <Transcripts transcriptsData={transcriptsData} />
+          {tooltipOpen ? <Tooltip transcriptsData={transcriptsData} scrollPosition={scrollPosition} /> : null}
         </div>
-        <Tooltip
-          transcriptsData={transcriptsData}
-          scrollPosition={scrollPosition}
-          tooltipOpen={tooltipOpen}
-        />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
 
 import { uniqBy } from 'lodash';
-import { TranscriptData } from '../types';
+import { TranscriptData } from '../../types';
 
 // Literal copypasta from Esteban's java
 export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
@@ -95,16 +95,34 @@ export const getRelativeCdsPositionsAndSequences = (
 
   if (isReverse) sequence = sequence.split('').reverse().join('');
 
+  if (isReverse) {
+    console.log(cdsStart, cdsEnd);
+  }
+
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;
 
     if (exon.end > cdsEnd) {
       const cdsInThisExonLength = cdsEnd - cdsStart + 1 - (3 - (leftoverNucleotideCount || 3));
       // End of the cds
+      // WOOP, this is just wrong
+      // if (isReverse) {
+      //   relativeCdsPositionsAndSequences.push({
+      //     start: cdsStart - leftoverNucleotideCount,
+      //     sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
+      //   });
+      // } else {
+      //   relativeCdsPositionsAndSequences.push({
+      //     start: exon.start - leftoverNucleotideCount,
+      //     sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
+      //   });
+      // }
+
       relativeCdsPositionsAndSequences.push({
         start: exon.start - leftoverNucleotideCount,
         sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
       });
+
       break;
     } else if (cdsStart > exon.start) {
       // We are at the start
@@ -146,6 +164,10 @@ export const getRelativeCdsPositionsAndSequences = (
       // If we have leftover nucleotides that couldn't fit aa
       leftoverNucleotideCount = (exon.end - exon.start + 1 - (3 - (leftoverNucleotideCount || 3))) % 3;
     }
+  }
+
+  if (isReverse) {
+    console.log(relativeCdsPositionsAndSequences);
   }
 
   return relativeCdsPositionsAndSequences;

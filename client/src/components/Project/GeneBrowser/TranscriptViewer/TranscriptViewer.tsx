@@ -12,8 +12,8 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
-import DetailedTranscriptViewer from './DetailedTranscriptViewer';
-import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
+import DetailedTranscriptViewer from './DetailedTranscriptViewer/DetailedTranscriptViewer';
+// import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -108,15 +108,6 @@ const TranscriptViewer = ({ ...props }) => {
     dispatch(setGeneBrowserFilters({ ...filters, [name]: newSelectedValues }));
   };
 
-  // // Just for testing
-  // const scrollRef = useRef(null);
-  // useEffect(() => {
-  //   if (scrollRef && scrollRef.current) {
-  //     // @ts-ignore
-  //     scrollRef.current.scrollLeft = 17444;
-  //   }
-  // }, [scrollRef.current]);
-
   return (
     <ProjectItemCard
       name={`Transcript browser for ${filters.gene}`}
@@ -131,47 +122,44 @@ const TranscriptViewer = ({ ...props }) => {
           defaultInputValue='AAAS'
           className={classes.singleSelect}
         />
-        <div className={classes.filtersSubContainer}>
-          <MultiSelect
-            name='Condition'
-            options={[
-              { value: 'Nsi', label: 'Nsi' },
-              { value: 'si', label: 'si' },
-            ]}
-            defaultValues={['Nsi', 'si']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'conditions')
-            }
-            className={classes.multiSelect}
-          />
-          <DiscreteSlider
-            name='Min. TPM'
-            defaultValue={0.5}
-            marks={parseDiscreteSliderMarks(tpmMarks)}
-            onChangeCommited={onMinTPMChangeCommited}
-          />
-          <DiscreteSlider
-            name='Min. Quality'
-            defaultValue={250}
-            marks={parseDiscreteSliderMarks(qualityMarks)}
-            onChangeCommited={onMinQualityChangeCommited}
-          />
-        </div>
+        <MultiSelect
+          name='Condition'
+          options={[
+            { value: 'Nsi', label: 'Nsi' },
+            { value: 'si', label: 'si' },
+          ]}
+          defaultValues={['Nsi', 'si']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'conditions')
+          }
+          className={classes.multiSelect}
+        />
+        <DiscreteSlider
+          name='Min. TPM'
+          defaultValue={0.5}
+          marks={parseDiscreteSliderMarks(tpmMarks)}
+          onChangeCommited={onMinTPMChangeCommited}
+        />
+        <DiscreteSlider
+          name='Min. Quality'
+          defaultValue={250}
+          marks={parseDiscreteSliderMarks(qualityMarks)}
+          onChangeCommited={onMinQualityChangeCommited}
+        />
         <GenericLegend
           items={['Exon', 'CDS', 'Mutation']}
           colors={['#336', '#F8E58E', '#C8553D']}
           direction='vertical'
         />
       </div>
-      <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <NoResults
-        className={classes.noResults}
-        style={{ opacity: !loading && transcriptsData.transcripts.length === 0 ? 1 : 0 }}
-      />
-      <div style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}>
+      {loading ? (
+        <Loading className={classes.loading} />
+      ) : transcriptsData.transcripts.length === 0 ? (
+        <NoResults className={classes.noResults} />
+      ) : (
         <DetailedTranscriptViewer transcriptsData={transcriptsData} />
-      </div>
-      <div
+      )}
+      {/* <div
         className={classes.transcriptViewerContainer}
         style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
       >
@@ -188,7 +176,7 @@ const TranscriptViewer = ({ ...props }) => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
     </ProjectItemCard>
   );
 };

@@ -56,9 +56,11 @@ export const parseTranscriptsForViewer = (
         };
       });
 
-      const parsedCds = Object.keys(CDS)
-        .map((key) => CDS[key])
-        .sort((x, y) => x.start - y.start);
+      const parsedCds = CDS
+        ? Object.keys(CDS)
+            .map((key) => CDS[key])
+            .sort((x, y) => x.start - y.start)
+        : [];
 
       return {
         transcriptId: transcriptID,

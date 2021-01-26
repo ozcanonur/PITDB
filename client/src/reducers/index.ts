@@ -151,7 +151,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { gene: 'ACAT2', conditions: ['Nsi', 'si'], minQual: 250, minTPM: 0.5 },
+  state: GeneBrowserFilters = { gene: 'GPT2', conditions: ['Nsi', 'si'], minQual: 250, minTPM: 0.5 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {
