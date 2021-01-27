@@ -5,7 +5,6 @@ import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
-// import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 
@@ -155,16 +154,6 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectTranscriptViewerTranscriptColor(COLORS[0]));
   };
 
-  // // WOOP, there is no peptide evidence yet, hard coded it
-  // const multiSelectOnChange = (
-  //   selectedOptions: SelectOption[],
-  //   _actionMeta: ActionMeta<any>,
-  //   name: string
-  // ) => {
-  //   const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-  //   dispatch(setTranscriptUsageFilters({ ...filters, [name]: newSelectedValues }));
-  // };
-
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: TranscriptUsageGeneNamesResponse = await fetchFromApi(
       '/api/transcript-usages/gene-names',
@@ -201,26 +190,12 @@ const SplicingEventsTable = ({ ...props }) => {
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.multiSelectContainer}>
-          {/* <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['false', 'true']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
-            }
-            className={classes.multiSelect}
-          /> */}
-          <DiscreteSlider
-            name='Max. p value'
-            defaultValue={0.05}
-            marks={parseDiscreteSliderMarks(pValueMarks)}
-            onChangeCommited={onPValueChangeCommited}
-          />
-        </div>
+        <DiscreteSlider
+          name='Max. p value'
+          defaultValue={0.05}
+          marks={parseDiscreteSliderMarks(pValueMarks)}
+          onChangeCommited={onPValueChangeCommited}
+        />
       </div>
       <Table
         tableData={tableData}

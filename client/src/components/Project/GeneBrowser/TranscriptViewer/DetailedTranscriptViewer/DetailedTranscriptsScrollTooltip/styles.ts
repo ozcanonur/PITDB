@@ -36,6 +36,9 @@ export const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   mutation: {
-    fill: '#C8553D',
+    fill: '#ED0909',
+  },
+  peptide: {
+    fill: 'rgba(200, 85, 61, 0.6)',
   },
 }));

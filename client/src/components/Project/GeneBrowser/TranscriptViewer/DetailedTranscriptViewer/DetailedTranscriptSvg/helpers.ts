@@ -86,42 +86,30 @@ export const getRelativeCdsPositionsAndSequences = (
   }[],
   cdsStart: number,
   cdsEnd: number,
-  sequence: string,
-  isReverse: boolean
+  sequence: string
 ) => {
   let aasProcessed = 0;
   let leftoverNucleotideCount = 0;
   const relativeCdsPositionsAndSequences = [];
 
-  if (isReverse) sequence = sequence.split('').reverse().join('');
-
-  if (isReverse) {
-    // console.log(cdsStart, cdsEnd);
-  }
-
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;
 
     if (exon.end > cdsEnd) {
+      // We are at the end
       const cdsInThisExonLength = cdsEnd - cdsStart + 1 - (3 - (leftoverNucleotideCount || 3));
-      // End of the cds
-      // WOOP, this is just wrong
-      // if (isReverse) {
-      //   relativeCdsPositionsAndSequences.push({
-      //     start: cdsStart - leftoverNucleotideCount,
-      //     sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
-      //   });
-      // } else {
-      //   relativeCdsPositionsAndSequences.push({
-      //     start: exon.start - leftoverNucleotideCount,
-      //     sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
-      //   });
-      // }
 
-      relativeCdsPositionsAndSequences.push({
-        start: exon.start - leftoverNucleotideCount,
-        sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
-      });
+      if (cdsStart > exon.start) {
+        relativeCdsPositionsAndSequences.push({
+          start: cdsStart - leftoverNucleotideCount,
+          sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
+        });
+      } else {
+        relativeCdsPositionsAndSequences.push({
+          start: exon.start - leftoverNucleotideCount,
+          sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
+        });
+      }
 
       break;
     } else if (cdsStart > exon.start) {
@@ -164,10 +152,6 @@ export const getRelativeCdsPositionsAndSequences = (
       // If we have leftover nucleotides that couldn't fit aa
       leftoverNucleotideCount = (exon.end - exon.start + 1 - (3 - (leftoverNucleotideCount || 3))) % 3;
     }
-  }
-
-  if (isReverse) {
-    // console.log(relativeCdsPositionsAndSequences);
   }
 
   return relativeCdsPositionsAndSequences;

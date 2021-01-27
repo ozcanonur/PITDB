@@ -1,17 +1,16 @@
-import { TranscriptData } from '../types';
+import { TranscriptData } from '../../types';
 
 // WOOP, I have no idea about the logic here
 // Literal copypasta from Esteban's java
 export const getCDSPositions = (
   { transcript, minimumPosition, maximumPosition }: TranscriptData,
-  pixelPerValue: number,
-  railOffset: number
+  pixelPerValue: number
 ) => {
   const { cds, exons } = transcript;
 
   if (!cds || cds.length === 0 || !exons) return [];
 
-  const cdsPositions: { cdsStart: number; cdsWidth: number }[] = [];
+  const cdsPositions: { cdsStart: number; cdsWidth: number; cdsEnd: number; sequence: string }[] = [];
   cds.forEach((e) => {
     let start = minimumPosition;
     let end = maximumPosition;
@@ -19,7 +18,7 @@ export const getCDSPositions = (
 
     let posOnTranscript = 1;
 
-    const { start: sequenceStart, end: sequenceEnd } = e;
+    const { start: sequenceStart, end: sequenceEnd, sequence } = e;
 
     for (const exon of exons) {
       const posOnGenome = exon.genomeStart;
@@ -36,9 +35,14 @@ export const getCDSPositions = (
     }
 
     const width = pixelPerValue * (end - start + 1);
-    start = railOffset + pixelPerValue * (start - minimumPosition + 1);
+    start = pixelPerValue * (start - minimumPosition + 1);
 
-    cdsPositions.push({ cdsStart: start, cdsWidth: width });
+    cdsPositions.push({
+      cdsStart: Math.floor(start),
+      cdsEnd: end - minimumPosition,
+      cdsWidth: Math.floor(width),
+      sequence,
+    });
   });
 
   return cdsPositions;
@@ -48,8 +52,7 @@ export const getCDSPositions = (
 // Literal copypasta from above
 export const getMutationPosition = (
   { transcript, minimumPosition }: TranscriptData,
-  pixelPerValue: number,
-  railOffset: number
+  pixelPerValue: number
 ) => {
   const { mutations, exons } = transcript;
 
@@ -71,7 +74,7 @@ export const getMutationPosition = (
       posOnTranscript += exonLength;
     }
 
-    start = railOffset + pixelPerValue * (start - minimumPosition + 1);
+    start = pixelPerValue * (start - minimumPosition + 1);
 
     mutationPositions.push(start);
   });

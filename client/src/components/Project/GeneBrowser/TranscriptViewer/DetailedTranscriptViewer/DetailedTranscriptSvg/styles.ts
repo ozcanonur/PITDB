@@ -6,12 +6,10 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '2rem',
   },
   nucleotide: {
-    fontFamily: 'Poppins, sans-serif',
     fill: 'white',
     textAnchor: 'middle',
   },
   codon: {
-    fontFamily: 'Poppins, sans-serif',
     fill: '#1b2742',
     textAnchor: 'middle',
   },
@@ -24,6 +22,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   divider: {
     stroke: theme.palette.primary.main,
+    strokeWidth: 0.8,
   },
   peptide: {
     fill: 'rgba(200, 85, 61, 0.6)',

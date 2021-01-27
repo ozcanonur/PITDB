@@ -12,7 +12,10 @@ export const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     padding: '1rem 2rem',
     paddingTop: '2rem',
-    justifyContent: 'space-between',
+
+    '& > div:not(:last-child)': {
+      marginRight: '6rem',
+    },
   },
   singleSelect: {
     display: 'flex',

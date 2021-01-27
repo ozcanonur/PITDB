@@ -12,6 +12,7 @@ import {
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
   SetGeneBrowserBoxHeight,
+  SetGeneBrowserScrollPosition,
 } from './types';
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
@@ -124,6 +125,15 @@ export const setGeneBrowserBoxHeight = (boxHeight: number): SetGeneBrowserBoxHei
     type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT,
     payload: {
       boxHeight,
+    },
+  };
+};
+
+export const setGeneBrowserScrollPosition = (scrollPosition: number): SetGeneBrowserScrollPosition => {
+  return {
+    type: ACTION.SET_GENE_BROWSER_SCROLL_POSITION,
+    payload: {
+      scrollPosition,
     },
   };
 };

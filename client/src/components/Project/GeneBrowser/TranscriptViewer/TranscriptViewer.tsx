@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
@@ -7,13 +7,12 @@ import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
-import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 import DetailedTranscriptViewer from './DetailedTranscriptViewer/DetailedTranscriptViewer';
-// import TranscriptSvg from './TranscriptSvg/TranscriptSvg';
+import DetailedTranscriptsScrollTooltip from './DetailedTranscriptViewer/DetailedTranscriptsScrollTooltip/DetailedTranscriptsScrollTooltip';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -33,6 +32,7 @@ const TranscriptViewer = ({ ...props }) => {
     minimumPosition: 0,
   });
   const [loading, setLoading] = useState(false);
+  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   useEffect(() => {
     let isMounted = true;
@@ -100,8 +100,54 @@ const TranscriptViewer = ({ ...props }) => {
   };
 
   const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+    if (selectedOption.value === filters.condition) return;
+
     dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
   };
+
+  const TranscriptsOverview = useMemo(
+    () => {
+      return (
+        <div className={classes.transcriptsOverviewContainer}>
+          {transcriptsData.transcripts.map((transcript) => (
+            <div className={classes.transcriptOverview} key={transcript.transcriptId}>
+              <div className={classes.transcriptIdContainer} style={{ width: '23.5rem' }}>
+                <div
+                  className={classes.transcriptIdCondition}
+                  style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+                >
+                  {filters.condition}
+                </div>
+                <p className={classes.transcriptId}>{transcript.transcriptId}</p>
+              </div>
+              <DetailedTranscriptsScrollTooltip
+                transcriptData={{
+                  transcript: transcript,
+                  minimumPosition: transcriptsData.minimumPosition,
+                  maximumPosition: transcriptsData.maximumPosition,
+                }}
+                style={{ width: '134rem' }}
+              />
+            </div>
+          ))}
+          {/* WOOP, hardcoded */}
+          <div
+            style={{
+              position: 'absolute',
+              height: '100%',
+              left: '27.2rem',
+              top: 0,
+              width: 'calc(134rem + 3px)',
+            }}
+          >
+            <div className={classes.transcriptPositionLine} style={{ left: `${scrollPosition}%` }} />
+          </div>
+        </div>
+      );
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transcriptsData, scrollPosition]
+  );
 
   return (
     <ProjectItemCard
@@ -114,7 +160,7 @@ const TranscriptViewer = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
-          defaultInputValue='AAAS'
+          defaultInputValue='ACAT2'
           className={classes.singleSelect}
         />
         <SingleSelect
@@ -141,11 +187,12 @@ const TranscriptViewer = ({ ...props }) => {
           onChangeCommited={onMinQualityChangeCommited}
         />
         <GenericLegend
-          items={['Exon', 'CDS', 'Mutation']}
-          colors={['#336', '#F8E58E', '#C8553D']}
+          items={['Exon', 'CDS', 'Peptide', 'Mutation']}
+          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909']}
           direction='vertical'
         />
       </div>
+      {TranscriptsOverview}
       {loading ? (
         <Loading className={classes.loading} />
       ) : transcriptsData.transcripts.length === 0 ? (
@@ -153,24 +200,6 @@ const TranscriptViewer = ({ ...props }) => {
       ) : (
         <DetailedTranscriptViewer transcriptsData={transcriptsData} />
       )}
-      {/* <div
-        className={classes.transcriptViewerContainer}
-        style={{ opacity: !loading && transcriptsData.transcripts.length !== 0 ? 1 : 0 }}
-      >
-        <div className={classes.transcriptRails}>
-          {transcriptsData.transcripts.map((transcript) => (
-            <TranscriptSvg
-              key={transcript.transcriptId}
-              transcriptData={{
-                transcript: transcript,
-                minimumPosition: transcriptsData.minimumPosition,
-                maximumPosition: transcriptsData.maximumPosition,
-              }}
-              showTranscriptLabels={false}
-            />
-          ))}
-        </div>
-      </div> */}
     </ProjectItemCard>
   );
 };

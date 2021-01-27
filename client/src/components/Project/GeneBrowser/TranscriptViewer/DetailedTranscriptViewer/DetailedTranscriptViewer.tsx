@@ -1,48 +1,49 @@
-import { useState, useRef, memo } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useRef, memo, useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import TranscriptSvg from 'components/Project/GeneBrowser/TranscriptViewer/TranscriptSvg/TranscriptSvg';
+import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/TranscriptViewer/DetailedTranscriptViewer/DetailedTranscriptsScrollTooltip/DetailedTranscriptsScrollTooltip';
 import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
 
 import { useStyles } from './styles';
 import { TranscriptsResponse } from '../types';
+import { setGeneBrowserScrollPosition } from 'actions';
 
-const Tooltip = ({
-  transcriptsData,
-  scrollPosition,
-}: {
-  transcriptsData: TranscriptsResponse;
-  scrollPosition: number;
-}) => {
+const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-  const widthOnScreen = maxTranscriptWidth * boxHeight;
 
   const currentGenomePosition = Math.floor(
-    transcriptsData.minimumPosition + maxTranscriptWidth * (scrollPosition / widthOnScreen)
+    transcriptsData.minimumPosition + (maxTranscriptWidth * scrollPosition) / 100
   );
 
-  return (
-    <div className={classes.scrollTooltipContainer}>
-      <div className={classes.transcriptTooltipRails}>
+  const TranscriptsSvg = useMemo(() => {
+    return (
+      <>
         {transcriptsData.transcripts.map((transcript) => (
-          <TranscriptSvg
+          <DetailedTranscriptsScrollTooltip
             key={transcript.transcriptId}
             transcriptData={{
               transcript: transcript,
               minimumPosition: transcriptsData.minimumPosition,
               maximumPosition: transcriptsData.maximumPosition,
             }}
-            showTranscriptLabels={false}
           />
         ))}
+      </>
+    );
+  }, [transcriptsData]);
+
+  return (
+    <div className={classes.scrollTooltipContainer}>
+      <div className={classes.transcriptTooltipRails}>
+        {TranscriptsSvg}
         <div
           className={classes.transcriptPositionLine}
           style={{
-            left: `${(scrollPosition / widthOnScreen) * 100}%`,
+            left: `${scrollPosition}%`,
           }}
         />
       </div>
@@ -133,11 +134,13 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
   const classes = useStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
   const scrollRef = useRef(null);
 
   let timeout = useRef<NodeJS.Timeout>();
+
+  const dispatch = useDispatch();
 
   const handleScroll = () => {
     if (!scrollRef || !scrollRef.current) return;
@@ -145,8 +148,11 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
     // @ts-ignore
     clearTimeout(timeout.current);
 
+    const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
+    const widthOnScreen = maxTranscriptWidth * boxHeight;
+
     // @ts-ignore
-    setScrollPosition(scrollRef.current.scrollLeft);
+    dispatch(setGeneBrowserScrollPosition((scrollRef.current.scrollLeft / widthOnScreen) * 100));
 
     setTooltipOpen(true);
 
@@ -163,7 +169,7 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
       <div style={{ width: '100%', transform: 'translateZ(0)' }}>
         <div className={classes.detailedTranscripts} ref={scrollRef} onScroll={handleScroll}>
           <Transcripts transcriptsData={transcriptsData} />
-          {tooltipOpen ? <Tooltip transcriptsData={transcriptsData} scrollPosition={scrollPosition} /> : null}
+          {tooltipOpen ? <Tooltip transcriptsData={transcriptsData} /> : null}
         </div>
       </div>
     </div>
