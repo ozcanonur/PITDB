@@ -1,5 +1,6 @@
-import { Fragment, memo } from 'react';
+import { Fragment, memo, createRef } from 'react';
 import { useSelector } from 'react-redux';
+import { Tooltip } from 'react-svg-tooltip';
 
 import { DetailedTranscriptSvgProps } from './types';
 import {
@@ -114,28 +115,42 @@ const Peptide = ({
 
   const { start, end, mods } = relativeCdsPositionAndSequence;
 
-  // points = `${(testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT * 2},${BOX_HEIGHT * 4} ${
-  //   (testMod.pos + start - 1) * BOX_HEIGHT - BOX_HEIGHT / 2
-  // },${BOX_HEIGHT * 3} ${(testMod.pos + start + 1) * BOX_HEIGHT - BOX_HEIGHT},${BOX_HEIGHT * 4}`;
+  const modRef = createRef<SVGRectElement>();
 
+  // const testMod = mods[0];
+  // const points = `${(testMod.pos + start - 1) * boxHeight - boxHeight * 2},${boxHeight * 4} ${
+  //   (testMod.pos + start - 1) * boxHeight - boxHeight / 2
+  // },${boxHeight * 3} ${(boxHeight.pos + start + 1) * boxHeight - boxHeight},${boxHeight * 4}`;
   // console.log(mods);
 
   // WOOP, PTMS are A MESS, not working, FIX
   return (
     <>
-      {/* {mods.map((mod, index) => {
-        // console.log((mod.pos - 1) * BOX_HEIGHT);
+      {mods.map((mod, index) => {
         return (
-          <rect
-            key={index}
-            x={(mod.pos - 1) * BOX_HEIGHT - BOX_HEIGHT * 2}
-            y={BOX_HEIGHT * 3}
-            width={BOX_HEIGHT * 3}
-            height={BOX_HEIGHT}
-            className={classes.mod}
-          />
+          <Fragment key={index}>
+            <rect
+              x={(start + mod.pos * 3) * boxHeight - boxHeight / 2}
+              y={boxHeight * 3}
+              width={boxHeight}
+              height={boxHeight}
+              className={classes.mod}
+              ref={modRef}
+            />
+            <Tooltip triggerRef={modRef}>
+              <rect x={0.25} y={0.25} width={`${mod.type.length + 5}ch`} height={30} rx={1} fill='#eceef7' />
+              <text
+                transform='translate(15 19)'
+                fontSize={'1.4rem'}
+                fontFamily='Poppins, sans-serif'
+                fill='#336'
+              >
+                {mod.type.slice(1, mod.type.length - 1)}
+              </text>
+            </Tooltip>
+          </Fragment>
         );
-      })} */}
+      })}
       <rect
         className={classes.peptide}
         x={start * boxHeight}
@@ -161,7 +176,7 @@ const Peptide = ({
   );
 };
 
-const DetailedTranscriptSvg = memo(({ transcriptData, ...props }: DetailedTranscriptSvgProps) => {
+const DetailedTranscript = memo(({ transcriptData, ...props }: DetailedTranscriptSvgProps) => {
   const classes = useStyles();
 
   const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
@@ -176,7 +191,8 @@ const DetailedTranscriptSvg = memo(({ transcriptData, ...props }: DetailedTransc
       transcript.cds.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) ||
     0;
   const cdsCount = transcript.cds ? transcript.cds.length : 0;
-  const svgHeight = boxHeight + cdsCount * boxHeight + peptideLineCount * boxHeight;
+  const svgHeight =
+    boxHeight + boxHeight + cdsCount * boxHeight + peptideLineCount * boxHeight + boxHeight / 2;
 
   return (
     <svg
@@ -199,12 +215,13 @@ const DetailedTranscriptSvg = memo(({ transcriptData, ...props }: DetailedTransc
         <ExonSequence key={index} exon={exon} />
       ))}
       {/* These are the CDSs */}
-      {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence }, cdsIndex) => {
+      {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, cdsIndex) => {
         const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
           exonPositions,
           cdsStart,
           cdsEnd,
-          sequence
+          sequence,
+          isReverse
         );
 
         const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
@@ -243,4 +260,4 @@ const DetailedTranscriptSvg = memo(({ transcriptData, ...props }: DetailedTransc
   );
 });
 
-export default DetailedTranscriptSvg;
+export default DetailedTranscript;

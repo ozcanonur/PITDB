@@ -2,7 +2,7 @@
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
 
 import { uniqBy } from 'lodash';
-import { TranscriptData } from '../../types';
+import { TranscriptData } from '../types';
 
 // Literal copypasta from Esteban's java
 export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
@@ -86,11 +86,14 @@ export const getRelativeCdsPositionsAndSequences = (
   }[],
   cdsStart: number,
   cdsEnd: number,
-  sequence: string
+  sequence: string,
+  isReverse: boolean
 ) => {
   let aasProcessed = 0;
   let leftoverNucleotideCount = 0;
   const relativeCdsPositionsAndSequences = [];
+
+  if (isReverse) sequence = sequence.split('').reverse().join('');
 
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;

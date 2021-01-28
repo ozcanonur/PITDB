@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
@@ -11,8 +11,8 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
-import DetailedTranscriptViewer from './DetailedTranscriptViewer/DetailedTranscriptViewer';
-import DetailedTranscriptsScrollTooltip from './DetailedTranscriptViewer/DetailedTranscriptsScrollTooltip/DetailedTranscriptsScrollTooltip';
+import Transcripts from './Transcripts/Transcripts';
+import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -20,7 +20,7 @@ import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from './types';
 import { setGeneBrowserFilters } from 'actions';
 
-const TranscriptViewer = ({ ...props }) => {
+const GeneBrowser = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
@@ -32,7 +32,6 @@ const TranscriptViewer = ({ ...props }) => {
     minimumPosition: 0,
   });
   const [loading, setLoading] = useState(false);
-  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   useEffect(() => {
     let isMounted = true;
@@ -105,50 +104,6 @@ const TranscriptViewer = ({ ...props }) => {
     dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
   };
 
-  const TranscriptsOverview = useMemo(
-    () => {
-      return (
-        <div className={classes.transcriptsOverviewContainer}>
-          {transcriptsData.transcripts.map((transcript) => (
-            <div className={classes.transcriptOverview} key={transcript.transcriptId}>
-              <div className={classes.transcriptIdContainer} style={{ width: '23.5rem' }}>
-                <div
-                  className={classes.transcriptIdCondition}
-                  style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
-                >
-                  {filters.condition}
-                </div>
-                <p className={classes.transcriptId}>{transcript.transcriptId}</p>
-              </div>
-              <DetailedTranscriptsScrollTooltip
-                transcriptData={{
-                  transcript: transcript,
-                  minimumPosition: transcriptsData.minimumPosition,
-                  maximumPosition: transcriptsData.maximumPosition,
-                }}
-                style={{ width: '134rem' }}
-              />
-            </div>
-          ))}
-          {/* WOOP, hardcoded */}
-          <div
-            style={{
-              position: 'absolute',
-              height: '100%',
-              left: '27.2rem',
-              top: 0,
-              width: 'calc(134rem + 3px)',
-            }}
-          >
-            <div className={classes.transcriptPositionLine} style={{ left: `${scrollPosition}%` }} />
-          </div>
-        </div>
-      );
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transcriptsData, scrollPosition]
-  );
-
   return (
     <ProjectItemCard
       name={`Transcript browser for ${filters.gene}`}
@@ -163,6 +118,7 @@ const TranscriptViewer = ({ ...props }) => {
           defaultInputValue='ACAT2'
           className={classes.singleSelect}
         />
+        {/* WOOP, hardcode conditions */}
         <SingleSelect
           name='Condition'
           onChange={conditionFilterOnChange}
@@ -172,7 +128,7 @@ const TranscriptViewer = ({ ...props }) => {
             { value: 'Nsi', label: 'Nsi' },
             { value: 'si', label: 'si' },
           ]}
-          defaultInputValue='Nsi'
+          defaultInputValue={filters.condition}
         />
         <DiscreteSlider
           name='Min. TPM'
@@ -187,21 +143,23 @@ const TranscriptViewer = ({ ...props }) => {
           onChangeCommited={onMinQualityChangeCommited}
         />
         <GenericLegend
-          items={['Exon', 'CDS', 'Peptide', 'Mutation']}
-          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909']}
+          items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
+          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', 'rgba(40, 82, 56, 0.7)']}
           direction='vertical'
         />
       </div>
-      {TranscriptsOverview}
       {loading ? (
         <Loading className={classes.loading} />
       ) : transcriptsData.transcripts.length === 0 ? (
         <NoResults className={classes.noResults} />
       ) : (
-        <DetailedTranscriptViewer transcriptsData={transcriptsData} />
+        <>
+          <Transcripts transcriptsData={transcriptsData} />
+          <DetailedTranscripts transcriptsData={transcriptsData} />
+        </>
       )}
     </ProjectItemCard>
   );
 };
 
-export default TranscriptViewer;
+export default GeneBrowser;

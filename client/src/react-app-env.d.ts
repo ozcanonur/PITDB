@@ -30,7 +30,7 @@ interface RootState {
   selectedTranscriptViewerTranscriptColor: {
     color: string;
   };
-  geneBrowserFilters: import('components/Project/GeneBrowser/TranscriptViewer/types').GeneBrowserFilters;
+  geneBrowserFilters: import('components/Project/GeneBrowser/GeneBrowser/types').GeneBrowserFilters;
   geneBrowserBoxHeight: { boxHeight: number };
   geneBrowserScrollPosition: { scrollPosition: number };
 }

@@ -1,8 +1,8 @@
-import { useState, useRef, memo, useMemo } from 'react';
+import { useState, useRef, memo, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/TranscriptViewer/DetailedTranscriptViewer/DetailedTranscriptsScrollTooltip/DetailedTranscriptsScrollTooltip';
-import DetailedTranscriptSvg from './DetailedTranscriptSvg/DetailedTranscriptSvg';
+import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
+import DetailedTranscriptSvg from '../DetailedTranscript/DetailedTranscriptSvg';
 
 import { useStyles } from './styles';
 import { TranscriptsResponse } from '../types';
@@ -130,7 +130,7 @@ const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResp
   );
 };
 
-const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -161,12 +161,19 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
     }, 500);
   };
 
+  useEffect(() => {
+    return () => {
+      dispatch(setGeneBrowserScrollPosition(0));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className={classes.detailedTranscriptViewerContainer}>
       <div className={classes.transcriptsInfoContainer}>
         <TranscriptNames transcriptsData={transcriptsData} />
       </div>
-      <div style={{ width: '100%', transform: 'translateZ(0)' }}>
+      <div style={{ transform: 'translateZ(0)', flexGrow: 1 }}>
         <div className={classes.detailedTranscripts} ref={scrollRef} onScroll={handleScroll}>
           <Transcripts transcriptsData={transcriptsData} />
           {tooltipOpen ? <Tooltip transcriptsData={transcriptsData} /> : null}
@@ -176,4 +183,4 @@ const DetailedTranscriptViewer = ({ transcriptsData }: { transcriptsData: Transc
   );
 };
 
-export default DetailedTranscriptViewer;
+export default DetailedTranscripts;

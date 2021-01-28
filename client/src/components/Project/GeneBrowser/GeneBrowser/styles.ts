@@ -10,8 +10,9 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: '1rem 2rem',
+    padding: '0 2rem',
     paddingTop: '2rem',
+    paddingBottom: '3.5rem',
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',
@@ -74,81 +75,17 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   transcriptPositionLine: {
-    backgroundColor: 'rgba(217, 33, 122, 0.5)',
+    backgroundColor: 'rgba(217, 33, 122, 0.7)',
     position: 'absolute',
     left: 0,
     bottom: 0,
-    height: '100%',
-    width: '3px',
+    width: '2px',
+  },
+  transcriptPositionText: {
+    fontSize: '1.4rem',
+    color: theme.palette.primary.main,
+    position: 'absolute',
+    top: '-2rem',
+    marginLeft: '1rem',
   },
 }));
-
-// transcriptRails: {
-//   display: 'flex',
-//   flexDirection: 'column',
-//   transform: 'translateZ(0)',
-//   width: '100%',
-//   overflow: 'auto',
-//   direction: 'rtl',
-//   height: 'max-content',
-//   padding: '1rem 2rem 0.5rem',
-// },
-// transcriptsInfoContainer: {
-//   paddingRight: '2rem',
-//   paddingTop: '0.8rem',
-
-//   '& > div:not(:last-of-type)': {
-//     marginBottom: '2.1rem',
-//   },
-
-//   '& > div:last-of-type': {
-//     marginBottom: '2.3rem',
-//   },
-
-//   '& > p:last-of-type': {
-//     marginTop: '1.6rem',
-//   },
-// },
-// transcriptInfo: {
-//   display: 'flex',
-//   flexDirection: 'column',
-// },
-// transcriptId: {
-//   display: 'flex',
-//   alignItems: 'center',
-//   justifyContent: 'space-between',
-// },
-// transcriptIdConditions: {
-//   display: 'flex',
-//   marginRight: '1rem',
-
-//   '& > div:not(:last-child)': {
-//     marginRight: '0.5rem',
-//   },
-// },
-// transcriptIdCondition: {
-//   fontSize: '1.4rem',
-//   color: 'white',
-//   textAlign: 'center',
-
-//   boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
-// },
-// transcriptIdText: {
-//   fontSize: '1.4rem',
-//   color: theme.palette.primary.main,
-//   textAlign: 'right',
-// },
-// transcriptNamesContainer: {
-//   display: 'flex',
-//   flexDirection: 'column',
-//   marginRight: '2rem',
-//   marginTop: '1.7rem',
-
-//   '& > div:not(:last-child)': {
-//     marginBottom: '3.6rem',
-//   },
-// },
-// transcriptOverviewContainer: {
-//   padding: '0 2rem',
-//   display: 'flex',
-// },

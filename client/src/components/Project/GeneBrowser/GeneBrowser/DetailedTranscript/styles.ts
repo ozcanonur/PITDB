@@ -29,5 +29,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   mod: {
     fill: 'rgba(40, 82, 56, 0.7)',
+    cursor: 'pointer',
   },
 }));

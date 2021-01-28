@@ -20,7 +20,7 @@ export const useStyles = makeStyles((theme) => ({
   detailedTranscriptContainer: {
     direction: 'ltr',
     width: 0,
-    marginBottom: '2rem',
+    // marginBottom: '2rem',
     position: 'relative',
   },
   transcriptsInfoContainer: {
@@ -28,12 +28,12 @@ export const useStyles = makeStyles((theme) => ({
     paddingTop: '0.8rem',
 
     '& > div:not(:last-of-type)': {
-      marginBottom: '2.1rem',
+      marginBottom: '4.6rem',
     },
 
-    '& > div:last-of-type': {
-      marginBottom: '2.3rem',
-    },
+    // '& > div:last-of-type': {
+    //   marginBottom: '2.3rem',
+    // },
 
     '& > p:last-of-type': {
       marginTop: '1.6rem',

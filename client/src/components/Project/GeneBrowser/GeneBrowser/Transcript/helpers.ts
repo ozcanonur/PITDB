@@ -1,4 +1,4 @@
-import { TranscriptData } from '../../types';
+import { TranscriptData } from '../types';
 
 // WOOP, I have no idea about the logic here
 // Literal copypasta from Esteban's java
