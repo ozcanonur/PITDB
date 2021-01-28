@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { TranscriptsResponse } from '../types';
+import { TranscriptsResponse } from '../../types';
 import { useStyles } from './styles';
 
 import Transcript from '../Transcript/Transcript';

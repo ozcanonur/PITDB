@@ -19,7 +19,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   detailedTranscriptContainer: {
     direction: 'ltr',
-    width: 0,
+    width: '100%',
     // marginBottom: '2rem',
     position: 'relative',
   },

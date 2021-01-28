@@ -1,10 +1,41 @@
 /* eslint-disable no-loop-func */
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
 
-import { uniqBy } from 'lodash';
 import { TranscriptData } from '../../types';
 
-// Literal copypasta from Esteban's java
+export const getNucleotideColor = (nucleotide: string) => {
+  let color = '#336';
+  if (nucleotide === 'C') color = '#673f7e';
+  else if (nucleotide === 'T') color = '#6b88a2';
+  else if (nucleotide === 'G') color = '#2F2C38';
+
+  return color;
+};
+
+export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptData) => {
+  const { transcript, minimumPosition } = transcriptData;
+
+  let lastExonEndedAt = 0;
+  const parsedExons = transcript.exons
+    .sort((x, y) => x.genomeStart - y.genomeEnd)
+    .map(({ genomeStart, genomeEnd }) => {
+      const exonLength = genomeEnd - genomeStart + 1;
+
+      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
+
+      lastExonEndedAt += exonLength;
+
+      return {
+        sequence: exonSequence,
+        start: genomeStart - minimumPosition,
+        end: genomeEnd - minimumPosition,
+        length: exonLength,
+      };
+    });
+
+  return parsedExons;
+};
+
 export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
   const { cds, exons } = transcript;
 
@@ -45,39 +76,6 @@ export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPositi
   return cdsPositions;
 };
 
-export const getNucleotideColor = (nucleotide: string) => {
-  let color = '#336';
-  if (nucleotide === 'C') color = '#673f7e';
-  else if (nucleotide === 'T') color = '#6b88a2';
-  else if (nucleotide === 'G') color = '#2F2C38';
-
-  return color;
-};
-
-export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptData) => {
-  const { transcript, minimumPosition } = transcriptData;
-
-  let lastExonEndedAt = 0;
-  const parsedExons = transcript.exons
-    .sort((x, y) => x.genomeStart - y.genomeEnd)
-    .map(({ genomeStart, genomeEnd }) => {
-      const exonLength = genomeEnd - genomeStart + 1;
-
-      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
-
-      lastExonEndedAt += exonLength;
-
-      return {
-        sequence: exonSequence,
-        start: genomeStart - minimumPosition,
-        end: genomeEnd - minimumPosition,
-        length: exonLength,
-      };
-    });
-
-  return parsedExons;
-};
-
 // WOOP, this is an actual mess, needs some refactoring
 export const getRelativeCdsPositionsAndSequences = (
   exons: {
@@ -105,11 +103,13 @@ export const getRelativeCdsPositionsAndSequences = (
       if (cdsStart > exon.start) {
         relativeCdsPositionsAndSequences.push({
           start: cdsStart - leftoverNucleotideCount,
+          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       } else {
         relativeCdsPositionsAndSequences.push({
           start: exon.start - leftoverNucleotideCount,
+          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       }
@@ -122,6 +122,7 @@ export const getRelativeCdsPositionsAndSequences = (
 
       relativeCdsPositionsAndSequences.push({
         start: cdsStart,
+        end: exon.end,
         sequence: sequence.slice(0, Math.floor(cdsInThisExonLength / 3)),
       });
 
@@ -147,6 +148,7 @@ export const getRelativeCdsPositionsAndSequences = (
       // Need to start from -leftover to cover the leftover from the previous exon
       relativeCdsPositionsAndSequences.push({
         start: exon.start - leftoverNucleotideCount,
+        end: exon.end,
         sequence: cdsSequence,
       });
 
@@ -158,70 +160,4 @@ export const getRelativeCdsPositionsAndSequences = (
   }
 
   return relativeCdsPositionsAndSequences;
-};
-
-const getPeptidePosition = (
-  { sequence: peptideSequence, mod }: { sequence: string; mod: string },
-  cdsSequence: string,
-  relativeCdsPositionsAndSequences: {
-    start: number;
-    sequence: string;
-  }[]
-) => {
-  const globalStartPos = cdsSequence.indexOf(peptideSequence);
-  const globalEndPos = cdsSequence.indexOf(peptideSequence) + peptideSequence.length - 1;
-
-  mod = mod.replaceAll('_', '');
-  const mods = mod.match(/\((.*?)\)\)/g) || [];
-
-  const modPositions: { type: string; pos: number }[] = [];
-  let tempMod = mod;
-  for (let i = 0; i < mods.length; i++) {
-    tempMod = tempMod.replace(mods[i - 1], '');
-    modPositions.push({ type: mods[i], pos: tempMod.indexOf(mods[i]) });
-  }
-
-  let startPos = 0;
-  let endPos = 0;
-  let coveredSoFar = 0;
-  for (const cds of relativeCdsPositionsAndSequences) {
-    // if (startPos && endPos) break;
-
-    // Peptide starts at this exon
-    if (!startPos && globalStartPos < coveredSoFar + cds.sequence.length)
-      startPos = cds.start + (globalStartPos - coveredSoFar) * 3;
-
-    // Peptide ends at this exon
-    if (!endPos && globalEndPos < coveredSoFar + cds.sequence.length)
-      endPos = cds.start + (globalEndPos - coveredSoFar + 1) * 3 - 1;
-
-    // modPositions.forEach((modPosition) => {
-    //   if (modPosition.pos > coveredSoFar + cds.sequence.length) modPosition.pos += cds.sequence.length * 3;
-    //   else if (modPosition.pos < coveredSoFar + cds.sequence.length) modPosition.pos = modPosition.pos * 3;
-    // });
-
-    // Peptide is further down the exons
-    coveredSoFar += cds.sequence.length;
-  }
-
-  return { start: startPos, end: endPos, mods: modPositions };
-};
-
-export const getRelativePeptidePositionsAndSequences = (
-  relativeCdsPositionsAndSequences: {
-    start: number;
-    sequence: string;
-  }[],
-  cdsSequence: string,
-  peptides: { sequence: string; mod: string }[]
-) => {
-  relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
-
-  peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
-
-  const relativePeptidePositionsAndSequences = peptides.map((peptide) =>
-    getPeptidePosition(peptide, cdsSequence, relativeCdsPositionsAndSequences)
-  );
-
-  return relativePeptidePositionsAndSequences;
 };

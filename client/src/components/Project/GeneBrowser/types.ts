@@ -1,4 +1,13 @@
+import { SVGAttributes } from 'react';
+
 export type GeneNamesResponse = { _id: string }[];
+
+export type GeneBrowserFilters = {
+  gene: string;
+  condition: string;
+  minTPM: number;
+  minQual: number;
+};
 
 export type Transcript = {
   transcriptId: string;
@@ -28,21 +37,18 @@ export type Transcript = {
   end: number;
 };
 
-export type TranscriptData = {
-  transcript: Transcript;
-  minimumPosition: number;
-  maximumPosition: number;
-};
-
 export type TranscriptsResponse = {
   transcripts: Transcript[];
   minimumPosition: number;
   maximumPosition: number;
 };
 
-export type GeneBrowserFilters = {
-  gene: string;
-  condition: string;
-  minTPM: number;
-  minQual: number;
+export type TranscriptData = {
+  transcript: Transcript;
+  minimumPosition: number;
+  maximumPosition: number;
 };
+
+export interface TranscriptProps extends SVGAttributes<SVGElement> {
+  transcriptData: TranscriptData;
+}

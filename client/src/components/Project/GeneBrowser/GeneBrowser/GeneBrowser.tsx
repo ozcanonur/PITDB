@@ -17,7 +17,7 @@ import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 import { parseDiscreteSliderMarks } from './helpers';
-import { GeneNamesResponse, TranscriptsResponse } from './types';
+import { GeneNamesResponse, TranscriptsResponse } from '../types';
 import { setGeneBrowserFilters } from 'actions';
 
 const GeneBrowser = ({ ...props }) => {

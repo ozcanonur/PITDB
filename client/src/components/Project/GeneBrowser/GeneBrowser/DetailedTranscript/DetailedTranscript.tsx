@@ -2,7 +2,7 @@ import { Fragment, memo, createRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Tooltip } from 'react-svg-tooltip';
 
-import { DetailedTranscriptSvgProps } from './types';
+import { TranscriptProps } from '../../types';
 import {
   getCDSStartsAndEnds,
   getNucleotideColor,
@@ -176,7 +176,7 @@ const Peptide = ({
   );
 };
 
-const DetailedTranscript = memo(({ transcriptData, ...props }: DetailedTranscriptSvgProps) => {
+const DetailedTranscript = memo(({ transcriptData, ...props }: TranscriptProps) => {
   const classes = useStyles();
 
   const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);

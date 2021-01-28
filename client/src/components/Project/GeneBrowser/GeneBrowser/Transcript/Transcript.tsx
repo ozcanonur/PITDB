@@ -2,7 +2,7 @@ import { createRef } from 'react';
 import flatten from 'flat';
 import { min, max } from 'lodash';
 
-import { TranscriptSvgProps } from './types';
+import { TranscriptProps } from '../../types';
 import { getMutationPosition } from './helpers';
 import {
   getRelativePeptidePositionsAndSequences,
@@ -19,7 +19,7 @@ const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
 const MUTATION_WIDTH = 1;
 
-const Transcript = ({ transcriptData, ...props }: TranscriptSvgProps) => {
+const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const classes = useStyles();
 
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
