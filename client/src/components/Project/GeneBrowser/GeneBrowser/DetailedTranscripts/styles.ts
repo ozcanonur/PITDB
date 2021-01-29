@@ -24,8 +24,9 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
   },
   transcriptsInfoContainer: {
-    paddingRight: '2rem',
+    marginRight: '2rem',
     paddingTop: '0.8rem',
+    width: '24rem',
 
     '& > div:not(:last-of-type)': {
       marginBottom: '4.6rem',

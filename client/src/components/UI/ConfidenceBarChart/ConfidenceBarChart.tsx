@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
-import { mean } from 'lodash';
+import mean from 'lodash/mean';
 
 import { getMaxCount, getValuesForCondition } from './helpers';
 import { getCi } from 'components/Project/TranscriptUsage/ConfidenceIntervalChart/ConfidenceIntervalChartSvg/helpers';

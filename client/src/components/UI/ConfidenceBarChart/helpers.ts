@@ -1,4 +1,4 @@
-import { max } from 'lodash';
+import max from 'lodash/max';
 import { BarChartData } from './types';
 
 export const getValuesForCondition = (condition: {

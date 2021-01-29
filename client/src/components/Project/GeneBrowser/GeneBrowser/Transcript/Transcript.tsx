@@ -1,6 +1,7 @@
 import { createRef } from 'react';
 import flatten from 'flat';
-import { min, max } from 'lodash';
+import min from 'lodash/min';
+import max from 'lodash/max';
 
 import { TranscriptProps } from '../../types';
 import { getMutationPosition } from './helpers';
@@ -47,9 +48,9 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
       {/* This is the rail */}
       <g transform='translate(0 5)'>
         <rect
-          x={Math.floor(pixelPerValue * (minExonStart - minimumPosition))}
+          x={pixelPerValue * (minExonStart - minimumPosition)}
           y={8}
-          width={Math.floor(pixelPerValue * (maxExonStart - minExonStart))}
+          width={pixelPerValue * (maxExonStart - minExonStart)}
           height={RAIL_HEIGHT}
           className={classes.rail}
         />
@@ -57,8 +58,8 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
       {/* These are the exon boxes */}
       <g transform='translate(0 8)'>
         {transcript.exons.map(({ genomeStart, genomeEnd }, index) => {
-          const exonStartingPosition = Math.floor(pixelPerValue * (genomeStart - minimumPosition + 1));
-          const exonWidth = Math.floor(pixelPerValue * (genomeEnd - genomeStart + 1));
+          const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
+          const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
 
           return (
             <g key={index}>
@@ -114,9 +115,9 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
       })}
       {/* These are the mutations */}
       <g transform='translate(0 8)'>
-        {mutationPositions.map((pos) => (
+        {mutationPositions.map((pos, index) => (
           <rect
-            key={pos}
+            key={index}
             className={classes.mutation}
             x={pos}
             width={MUTATION_WIDTH}

@@ -1,13 +1,13 @@
-import { useState, useRef, memo, useMemo, useEffect } from 'react';
+import { useState, useRef, memo, useMemo, useEffect, SyntheticEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
-import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import DetailedTranscriptVirtual from '../DetailedTranscriptVirtual/DetailedTranscriptVirtual';
 
 import { useStyles } from './styles';
 import { TranscriptsResponse } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
+import React from 'react';
 
 const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
@@ -53,37 +53,13 @@ const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) 
   );
 };
 
-const Transcripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
-  const classes = useStyles();
-
-  return (
-    <>
-      {transcriptsData.transcripts.map((transcript, index) => {
-        if (index > 0) return null;
-
-        return (
-          <div className={classes.detailedTranscriptContainer} key={transcript.transcriptId}>
-            <DetailedTranscriptVirtual
-              transcriptData={{
-                transcript,
-                minimumPosition: transcriptsData.minimumPosition,
-                maximumPosition: transcriptsData.maximumPosition,
-              }}
-            />
-          </div>
-        );
-      })}
-    </>
-  );
-});
-
 const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
   return (
     <>
       {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
-        if (index > 0) return null;
+        // if (index > 0) return null;
 
         const cdsLineCount = cds?.length || 0;
         const peptideLineCount =
@@ -134,33 +110,24 @@ const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResp
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+  // const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const scrollRef = useRef(null);
+  // let timeout = useRef<NodeJS.Timeout>();
 
-  let timeout = useRef<NodeJS.Timeout>();
+  // const handleScroll = () => {
+  //   if (!scrollRef || !scrollRef.current) return;
+
+  //   // @ts-ignore
+  //   clearTimeout(timeout.current);
+
+  //   setTooltipOpen(true);
+
+  //   timeout.current = setTimeout(() => {
+  //     setTooltipOpen(false);
+  //   }, 500);
+  // };
 
   const dispatch = useDispatch();
-
-  const handleScroll = () => {
-    if (!scrollRef || !scrollRef.current) return;
-
-    // @ts-ignore
-    clearTimeout(timeout.current);
-
-    const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-    const widthOnScreen = maxTranscriptWidth * boxHeight;
-
-    // @ts-ignore
-    dispatch(setGeneBrowserScrollPosition((scrollRef.current.scrollLeft / widthOnScreen) * 100));
-
-    setTooltipOpen(true);
-
-    timeout.current = setTimeout(() => {
-      setTooltipOpen(false);
-    }, 500);
-  };
 
   useEffect(() => {
     return () => {
@@ -169,16 +136,73 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const scrollMes = document.querySelectorAll('[data-scroll]');
+
+    if (scrollMes.length === 0) return;
+
+    const scrollLeft = e.currentTarget.scrollLeft;
+
+    for (let i = 0; i < scrollMes.length; i++) {
+      const scrollMe = scrollMes[i];
+      scrollMe.scrollTo({ left: scrollLeft });
+    }
+
+    const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
+    const widthOnScreen = maxTranscriptWidth * 30;
+
+    dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+  };
+
   return (
     <div className={classes.detailedTranscriptViewerContainer}>
       <div className={classes.transcriptsInfoContainer}>
         <TranscriptNames transcriptsData={transcriptsData} />
       </div>
-      <div style={{ transform: 'translateZ(0)', flexGrow: 1 }}>
-        <div className={classes.detailedTranscripts} ref={scrollRef} onScroll={handleScroll}>
-          <Transcripts transcriptsData={transcriptsData} />
+      <div
+        style={{
+          transform: 'translateZ(0)',
+          width: 'calc((100% - 24rem) - 2rem)',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div className={classes.detailedTranscripts}>
+          {transcriptsData.transcripts.map((transcript, index) => {
+            // if (index > 0) return null;
+
+            return (
+              <div className={classes.detailedTranscriptContainer} key={transcript.transcriptId}>
+                <DetailedTranscriptVirtual
+                  transcriptData={{
+                    transcript,
+                    minimumPosition: transcriptsData.minimumPosition,
+                    maximumPosition: transcriptsData.maximumPosition,
+                  }}
+                />
+              </div>
+            );
+          })}
           {false ? <Tooltip transcriptsData={transcriptsData} /> : null}
         </div>
+      </div>
+      <div
+        style={{
+          width: 'calc((100% - 28rem) - 2rem)',
+          position: 'absolute',
+          bottom: 0,
+          left: '28rem',
+          height: 18,
+          overflow: 'auto',
+        }}
+        onScroll={handleScroll}
+      >
+        <div
+          style={{
+            width: (transcriptsData.maximumPosition - transcriptsData.minimumPosition + 1) * 30,
+            height: 1,
+          }}
+        />
       </div>
     </div>
   );

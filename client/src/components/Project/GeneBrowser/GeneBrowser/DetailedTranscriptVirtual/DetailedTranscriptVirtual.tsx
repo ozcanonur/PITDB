@@ -1,10 +1,9 @@
-import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
+import { forwardRef, useMemo } from 'react';
+
+import { FixedSizeList as VirtualizedList, ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
-import { Fragment } from 'react';
-import { TranscriptProps } from '../../types';
-
+import { TranscriptData } from '../../types';
 import {
   getRelativeExonPositionsAndSequences,
   getNucleotideColor,
@@ -59,7 +58,17 @@ const Nucleotide = ({ index, style, data }: ListChildComponentProps) => {
 
   const indexBelongsTo = exonPositions.find(({ start, end }) => index >= start && index <= end);
 
-  if (!indexBelongsTo) return null;
+  if (!indexBelongsTo)
+    return (
+      <line
+        x1={index * BOX_HEIGHT}
+        x2={(index + 1) * BOX_HEIGHT}
+        y1={BOX_HEIGHT / 2}
+        y2={BOX_HEIGHT / 2}
+        stroke='#336'
+        strokeWidth={2}
+      />
+    );
 
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
 
@@ -72,7 +81,7 @@ const Nucleotide = ({ index, style, data }: ListChildComponentProps) => {
   return (
     <g style={style}>
       <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
-      <text x={textOffsetX} y={textOffsetY} className={classes.nucleotide} fontSize={BOX_HEIGHT / 2}>
+      <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
         {nucleotide}
       </text>
     </g>
@@ -98,7 +107,9 @@ const CDS = ({ index, style, data }: ListChildComponentProps) => {
 
   // Only put yellow box if CDS exists but no aminoacid
   if (!indexBelongsTo)
-    return <rect fill='#FFDE4D' x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />;
+    return (
+      <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+    );
 
   const { start, sequence } = indexBelongsTo;
 
@@ -106,7 +117,7 @@ const CDS = ({ index, style, data }: ListChildComponentProps) => {
 
   return (
     <g style={style}>
-      <rect fill='#FFDE4D' x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+      <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
       {(index - start) % 3 === 0 ? (
         <line
           x1={index * BOX_HEIGHT}
@@ -129,77 +140,86 @@ const CDS = ({ index, style, data }: ListChildComponentProps) => {
   );
 };
 
-const DetailedTranscriptVirtual = ({ transcriptData, ...props }: TranscriptProps) => {
+const DetailedTranscriptVirtual = ({ transcriptData }: { transcriptData: TranscriptData }) => {
   const classes = useStyles();
 
   const { minimumPosition, maximumPosition } = transcriptData;
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
-
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
 
-  const { cdsStart, cdsEnd, sequence, isReverse } = cdsStartAndEndsAndSequences[0];
-
-  const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
-    exonPositions,
-    cdsStart,
-    cdsEnd,
-    sequence,
-    isReverse
+  const OuterElementType = useMemo(
+    () => forwardRef((props, ref: any) => <div data-scroll {...props} ref={ref} />),
+    []
   );
 
-  console.log(relativeCdsPositionsAndSequences);
-
   return (
-    <div className={classes.detailedTranscriptContainer} style={{ height: '135px' }}>
+    <div
+      className={classes.detailedTranscriptContainer}
+      style={{ height: BOX_HEIGHT * 2 + cdsStartAndEndsAndSequences.length * BOX_HEIGHT }}
+    >
       <AutoSizer>
-        {({ height, width }) => (
-          <ScrollSync>
-            <>
-              <ScrollSyncPane>
-                <List
-                  height={height / 3}
-                  itemCount={maximumPosition - minimumPosition + 1}
-                  itemSize={BOX_HEIGHT}
-                  layout='horizontal'
-                  width={width}
-                  innerElementType='svg'
-                  itemData={exonPositions}
-                  style={{ overflowY: 'hidden' }}
-                >
-                  {Nucleotide2}
-                </List>
-              </ScrollSyncPane>
-              <ScrollSyncPane>
-                <List
-                  height={height / 3}
-                  itemCount={maximumPosition - minimumPosition + 1}
-                  itemSize={BOX_HEIGHT}
-                  layout='horizontal'
-                  width={width}
-                  innerElementType='svg'
-                  itemData={exonPositions}
-                  style={{ overflowY: 'hidden' }}
-                >
-                  {Nucleotide}
-                </List>
-              </ScrollSyncPane>
-              <ScrollSyncPane>
-                <List
-                  height={height / 3}
+        {({ width }) => (
+          <>
+            {/* This is to check indexes for accurate cds/peptide positioning */}
+            <VirtualizedList
+              height={BOX_HEIGHT}
+              itemCount={maximumPosition - minimumPosition + 1}
+              itemSize={BOX_HEIGHT}
+              layout='horizontal'
+              width={width}
+              innerElementType='svg'
+              itemData={exonPositions}
+              style={{ overflow: 'hidden' }}
+              outerElementType={OuterElementType}
+              overscanCount={60}
+            >
+              {Nucleotide2}
+            </VirtualizedList>
+            {/* These are the exons */}
+            <VirtualizedList
+              height={BOX_HEIGHT}
+              itemCount={maximumPosition - minimumPosition + 1}
+              itemSize={BOX_HEIGHT}
+              layout='horizontal'
+              width={width}
+              innerElementType='svg'
+              itemData={exonPositions}
+              style={{ overflow: 'hidden' }}
+              outerElementType={OuterElementType}
+              overscanCount={60}
+            >
+              {Nucleotide}
+            </VirtualizedList>
+            {/* These are the CDSs */}
+            {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
+              const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
+                exonPositions,
+                cdsStart,
+                cdsEnd,
+                sequence,
+                isReverse
+              );
+
+              return (
+                <VirtualizedList
+                  key={index}
+                  height={BOX_HEIGHT}
                   itemCount={maximumPosition - minimumPosition + 1}
                   itemSize={BOX_HEIGHT}
                   layout='horizontal'
                   width={width}
                   innerElementType='svg'
                   itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
-                  style={{ overflowY: 'hidden' }}
+                  style={{ overflow: 'hidden' }}
+                  outerElementType={OuterElementType}
+                  overscanCount={60}
                 >
                   {CDS}
-                </List>
-              </ScrollSyncPane>
-            </>
-          </ScrollSync>
+                </VirtualizedList>
+              );
+            })}
+          </>
         )}
       </AutoSizer>
     </div>

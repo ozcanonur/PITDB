@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
 
-import { uniqBy } from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import { TranscriptData } from '../../types';
 
 // Literal copypasta from Esteban's java
