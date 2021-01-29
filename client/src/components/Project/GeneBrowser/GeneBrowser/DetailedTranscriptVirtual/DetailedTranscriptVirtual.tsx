@@ -1,6 +1,10 @@
-import { forwardRef, useMemo } from 'react';
-
-import { FixedSizeList as VirtualizedList, ListChildComponentProps } from 'react-window';
+import { memo } from 'react';
+import {
+  FixedSizeList,
+  FixedSizeList as VirtualizedList,
+  ListChildComponentProps,
+  areEqual,
+} from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import { TranscriptData } from '../../types';
@@ -14,7 +18,7 @@ import { useStyles } from './styles';
 
 const BOX_HEIGHT = 30;
 
-const Nucleotide2 = ({ index, style, data }: ListChildComponentProps) => {
+const Nucleotide2 = memo(({ index, style, data }: ListChildComponentProps) => {
   const classes = useStyles();
 
   const exonPositions: {
@@ -44,9 +48,9 @@ const Nucleotide2 = ({ index, style, data }: ListChildComponentProps) => {
       </text>
     </g>
   );
-};
+}, areEqual);
 
-const Nucleotide = ({ index, style, data }: ListChildComponentProps) => {
+const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   const classes = useStyles();
 
   const exonPositions: {
@@ -86,9 +90,9 @@ const Nucleotide = ({ index, style, data }: ListChildComponentProps) => {
       </text>
     </g>
   );
-};
+}, areEqual);
 
-const CDS = ({ index, style, data }: ListChildComponentProps) => {
+const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
   const classes = useStyles();
 
   const cdsPositions: {
@@ -138,20 +142,21 @@ const CDS = ({ index, style, data }: ListChildComponentProps) => {
       ) : null}
     </g>
   );
-};
+}, areEqual);
 
-const DetailedTranscriptVirtual = ({ transcriptData }: { transcriptData: TranscriptData }) => {
+const DetailedTranscriptVirtual = ({
+  transcriptData,
+  refs,
+}: {
+  transcriptData: TranscriptData;
+  refs: React.RefObject<FixedSizeList>[];
+}) => {
   const classes = useStyles();
 
   const { minimumPosition, maximumPosition } = transcriptData;
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
-
-  const OuterElementType = useMemo(
-    () => forwardRef((props, ref: any) => <div data-scroll {...props} ref={ref} />),
-    []
-  );
 
   return (
     <div
@@ -171,8 +176,7 @@ const DetailedTranscriptVirtual = ({ transcriptData }: { transcriptData: Transcr
               innerElementType='svg'
               itemData={exonPositions}
               style={{ overflow: 'hidden' }}
-              outerElementType={OuterElementType}
-              overscanCount={60}
+              ref={refs[0]}
             >
               {Nucleotide2}
             </VirtualizedList>
@@ -186,8 +190,7 @@ const DetailedTranscriptVirtual = ({ transcriptData }: { transcriptData: Transcr
               innerElementType='svg'
               itemData={exonPositions}
               style={{ overflow: 'hidden' }}
-              outerElementType={OuterElementType}
-              overscanCount={60}
+              ref={refs[1]}
             >
               {Nucleotide}
             </VirtualizedList>
@@ -212,8 +215,7 @@ const DetailedTranscriptVirtual = ({ transcriptData }: { transcriptData: Transcr
                   innerElementType='svg'
                   itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
                   style={{ overflow: 'hidden' }}
-                  outerElementType={OuterElementType}
-                  overscanCount={60}
+                  ref={refs[2 + index]}
                 >
                   {CDS}
                 </VirtualizedList>

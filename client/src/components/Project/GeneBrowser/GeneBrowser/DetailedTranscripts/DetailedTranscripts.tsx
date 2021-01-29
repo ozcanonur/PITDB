@@ -1,4 +1,4 @@
-import { useState, useRef, memo, useMemo, useEffect, SyntheticEvent } from 'react';
+import { useMemo, useEffect, createRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
@@ -8,6 +8,10 @@ import { useStyles } from './styles';
 import { TranscriptsResponse } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
 import React from 'react';
+import { FixedSizeList } from 'react-window';
+import { range } from 'lodash';
+
+const BOX_HEIGHT = 30;
 
 const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
@@ -122,6 +126,11 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
 
   //   setTooltipOpen(true);
 
+  // const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
+  // const widthOnScreen = maxTranscriptWidth * 30;
+
+  // dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+
   //   timeout.current = setTimeout(() => {
   //     setTooltipOpen(false);
   //   }, 500);
@@ -136,22 +145,34 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Calculate how many refs per transcripts we need.
+  const refCounts = transcriptsData.transcripts.map(({ cds }) => {
+    // Exon index check line + exon line
+    if (!cds) return 1 + 1;
+
+    let totalCdssLineCount = cds.length;
+    cds.forEach((e) => {
+      if (e.peptides) totalCdssLineCount += 1;
+    });
+
+    return 1 + 1 + totalCdssLineCount;
+  });
+
+  const refs = refCounts.map((count) => range(0, count).map(() => createRef<FixedSizeList>()));
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const scrollMes = document.querySelectorAll('[data-scroll]');
-
-    if (scrollMes.length === 0) return;
-
     const scrollLeft = e.currentTarget.scrollLeft;
 
-    for (let i = 0; i < scrollMes.length; i++) {
-      const scrollMe = scrollMes[i];
-      scrollMe.scrollTo({ left: scrollLeft });
-    }
-
     const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-    const widthOnScreen = maxTranscriptWidth * 30;
+    const widthOnScreen = maxTranscriptWidth * BOX_HEIGHT;
 
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+
+    refs.forEach((ref) =>
+      ref.forEach((subRef) => {
+        if (subRef.current) subRef.current.scrollTo(scrollLeft);
+      })
+    );
   };
 
   return (
@@ -179,6 +200,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
                     minimumPosition: transcriptsData.minimumPosition,
                     maximumPosition: transcriptsData.maximumPosition,
                   }}
+                  refs={refs[index]}
                 />
               </div>
             );
@@ -186,21 +208,11 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           {false ? <Tooltip transcriptsData={transcriptsData} /> : null}
         </div>
       </div>
-      <div
-        style={{
-          width: 'calc((100% - 28rem) - 2rem)',
-          position: 'absolute',
-          bottom: 0,
-          left: '28rem',
-          height: 18,
-          overflow: 'auto',
-        }}
-        onScroll={handleScroll}
-      >
+      <div className={classes.scrollBarContainer} onScroll={handleScroll}>
         <div
+          className={classes.scrollBar}
           style={{
-            width: (transcriptsData.maximumPosition - transcriptsData.minimumPosition + 1) * 30,
-            height: 1,
+            width: (transcriptsData.maximumPosition - transcriptsData.minimumPosition + 1) * BOX_HEIGHT,
           }}
         />
       </div>

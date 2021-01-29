@@ -119,4 +119,15 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     marginTop: '0.5rem',
   },
+  scrollBarContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: '28rem',
+    height: 18,
+    overflow: 'auto',
+    width: 'calc((100% - 28rem) - 2rem)',
+  },
+  scrollBar: {
+    height: 1,
+  },
 }));
