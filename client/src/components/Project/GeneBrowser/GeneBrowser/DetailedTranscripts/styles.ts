@@ -2,26 +2,24 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   detailedTranscriptViewerContainer: {
-    padding: '2rem',
-    paddingTop: '3rem',
+    padding: '0 2rem',
+    paddingBottom: '4rem',
     display: 'flex',
     overflow: 'auto',
+    position: 'relative',
+    marginTop: '4rem',
   },
   detailedTranscripts: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    overflow: 'auto',
     direction: 'ltr',
     height: 'max-content',
-    marginTop: '0.8rem',
     position: 'relative',
-  },
-  detailedTranscriptContainer: {
-    direction: 'ltr',
-    width: '100%',
-    // marginBottom: '2rem',
-    position: 'relative',
+
+    '& > div:not(:last-child)': {
+      marginBottom: '2rem',
+    },
   },
   transcriptsInfoContainer: {
     marginRight: '2rem',
@@ -31,10 +29,6 @@ export const useStyles = makeStyles((theme) => ({
     '& > div:not(:last-of-type)': {
       marginBottom: '4.6rem',
     },
-
-    // '& > div:last-of-type': {
-    //   marginBottom: '2.3rem',
-    // },
 
     '& > p:last-of-type': {
       marginTop: '1.6rem',
@@ -119,15 +113,23 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     marginTop: '0.5rem',
   },
-  scrollBarContainer: {
+  scrollContainer: {
     position: 'absolute',
-    bottom: 0,
     left: '28rem',
-    height: 18,
     overflow: 'auto',
-    width: 'calc((100% - 28rem) - 2rem)',
+    width: 'calc(100% - 30rem)',
+    height: 'auto',
+    bottom: 0,
   },
-  scrollBar: {
+  scrollDragContainer: {
+    position: 'absolute',
+    left: '28rem',
+    width: 'calc(100% - 30rem)',
+    top: 0,
+    zIndex: 9999,
+    height: 'calc(100% - 18px)',
+  },
+  scroll: {
     height: 1,
   },
 }));

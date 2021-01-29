@@ -28,7 +28,7 @@ const PositionLine = ({
         height: '100%',
         left: '28rem',
         top: 0,
-        width: 'calc(100% - 28rem - 2rem)',
+        width: 'calc(100% - 30rem)',
       }}
     >
       <div
@@ -62,7 +62,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
     <div className={classes.transcriptsOverviewContainer}>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
-          <div className={classes.transcriptIdContainer} style={{ width: '28rem' }}>
+          <div className={classes.transcriptIdContainer} style={{ minWidth: '24rem' }}>
             <div
               className={classes.transcriptIdCondition}
               style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
@@ -77,7 +77,6 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
               minimumPosition: transcriptsData.minimumPosition,
               maximumPosition: transcriptsData.maximumPosition,
             }}
-            style={{ flexGrow: 1 }}
           />
         </div>
       ))}

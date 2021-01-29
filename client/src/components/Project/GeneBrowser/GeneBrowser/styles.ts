@@ -5,6 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     width: '100%',
     minHeight: '48rem',
+    paddingBottom: '2rem',
   },
   filtersContainer: {
     position: 'relative',

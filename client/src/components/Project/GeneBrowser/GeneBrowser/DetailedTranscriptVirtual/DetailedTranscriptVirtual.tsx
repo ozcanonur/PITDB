@@ -6,6 +6,7 @@ import {
   areEqual,
 } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { useSelector } from 'react-redux';
 
 import { TranscriptData } from '../../types';
 import {
@@ -153,77 +154,87 @@ const DetailedTranscriptVirtual = ({
 }) => {
   const classes = useStyles();
 
-  const { minimumPosition, maximumPosition } = transcriptData;
+  const { minimumPosition, maximumPosition, transcript } = transcriptData;
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
 
-  return (
-    <div
-      className={classes.detailedTranscriptContainer}
-      style={{ height: BOX_HEIGHT * 2 + cdsStartAndEndsAndSequences.length * BOX_HEIGHT }}
-    >
-      <AutoSizer>
-        {({ width }) => (
-          <>
-            {/* This is to check indexes for accurate cds/peptide positioning */}
-            <VirtualizedList
-              height={BOX_HEIGHT}
-              itemCount={maximumPosition - minimumPosition + 1}
-              itemSize={BOX_HEIGHT}
-              layout='horizontal'
-              width={width}
-              innerElementType='svg'
-              itemData={exonPositions}
-              style={{ overflow: 'hidden' }}
-              ref={refs[0]}
-            >
-              {Nucleotide2}
-            </VirtualizedList>
-            {/* These are the exons */}
-            <VirtualizedList
-              height={BOX_HEIGHT}
-              itemCount={maximumPosition - minimumPosition + 1}
-              itemSize={BOX_HEIGHT}
-              layout='horizontal'
-              width={width}
-              innerElementType='svg'
-              itemData={exonPositions}
-              style={{ overflow: 'hidden' }}
-              ref={refs[1]}
-            >
-              {Nucleotide}
-            </VirtualizedList>
-            {/* These are the CDSs */}
-            {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
-              const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
-                exonPositions,
-                cdsStart,
-                cdsEnd,
-                sequence,
-                isReverse
-              );
+  const filters = useSelector((state: RootState) => state.geneBrowserFilters);
 
-              return (
-                <VirtualizedList
-                  key={index}
-                  height={BOX_HEIGHT}
-                  itemCount={maximumPosition - minimumPosition + 1}
-                  itemSize={BOX_HEIGHT}
-                  layout='horizontal'
-                  width={width}
-                  innerElementType='svg'
-                  itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
-                  style={{ overflow: 'hidden' }}
-                  ref={refs[2 + index]}
-                >
-                  {CDS}
-                </VirtualizedList>
-              );
-            })}
-          </>
-        )}
-      </AutoSizer>
+  return (
+    <div className={classes.detailedTranscriptContainer}>
+      <div className={classes.transcriptLabelContainer}>
+        <div
+          className={classes.transcriptLabelCondition}
+          style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+        >
+          {filters.condition}
+        </div>
+        <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
+      </div>
+      <div style={{ height: BOX_HEIGHT * 2 + cdsStartAndEndsAndSequences.length * BOX_HEIGHT, flexGrow: 1 }}>
+        <AutoSizer>
+          {({ width }) => (
+            <>
+              {/* This is to check indexes for accurate cds/peptide positioning */}
+              <VirtualizedList
+                height={BOX_HEIGHT}
+                itemCount={maximumPosition - minimumPosition + 1}
+                itemSize={BOX_HEIGHT}
+                layout='horizontal'
+                width={width}
+                innerElementType='svg'
+                itemData={exonPositions}
+                style={{ overflow: 'hidden' }}
+                ref={refs[0]}
+              >
+                {Nucleotide2}
+              </VirtualizedList>
+              {/* These are the exons */}
+              <VirtualizedList
+                height={BOX_HEIGHT}
+                itemCount={maximumPosition - minimumPosition + 1}
+                itemSize={BOX_HEIGHT}
+                layout='horizontal'
+                width={width}
+                innerElementType='svg'
+                itemData={exonPositions}
+                style={{ overflow: 'hidden' }}
+                ref={refs[1]}
+              >
+                {Nucleotide}
+              </VirtualizedList>
+              {/* These are the CDSs */}
+              {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
+                const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
+                  exonPositions,
+                  cdsStart,
+                  cdsEnd,
+                  sequence,
+                  isReverse
+                );
+
+                return (
+                  <VirtualizedList
+                    key={index}
+                    height={BOX_HEIGHT}
+                    itemCount={maximumPosition - minimumPosition + 1}
+                    itemSize={BOX_HEIGHT}
+                    layout='horizontal'
+                    width={width}
+                    innerElementType='svg'
+                    itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
+                    style={{ overflow: 'hidden' }}
+                    ref={refs[2 + index]}
+                  >
+                    {CDS}
+                  </VirtualizedList>
+                );
+              })}
+            </>
+          )}
+        </AutoSizer>
+      </div>
     </div>
   );
 };

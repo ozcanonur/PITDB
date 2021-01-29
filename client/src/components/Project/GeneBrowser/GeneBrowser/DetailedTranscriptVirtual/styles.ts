@@ -31,12 +31,32 @@ export const useStyles = makeStyles((theme) => ({
     fill: 'rgba(40, 82, 56, 0.7)',
     cursor: 'pointer',
   },
-
-  detailedTranscriptContainer: {
-    width: '100%',
-  },
   emptyNucleotideLine: {
     stroke: theme.palette.primary.main,
     strokeWidth: 2,
+  },
+  detailedTranscriptContainer: {
+    display: 'flex',
+  },
+  transcriptLabelContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginRight: '2rem',
+    alignItems: 'flex-start',
+    paddingTop: '0.85rem',
+    minWidth: '24rem',
+  },
+  transcriptLabelCondition: {
+    marginRight: '5.5rem',
+    padding: '0.8rem 1rem',
+    borderRadius: '0.3rem',
+    width: '4rem',
+    color: 'white',
+    fontSize: '1.4rem',
+    textAlign: 'center',
+  },
+  transcriptLabelId: {
+    fontSize: '1.4rem',
+    color: theme.palette.primary.main,
   },
 }));

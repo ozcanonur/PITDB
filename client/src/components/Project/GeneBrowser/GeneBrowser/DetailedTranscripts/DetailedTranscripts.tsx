@@ -1,5 +1,6 @@
-import { useMemo, useEffect, createRef } from 'react';
+import { useMemo, useEffect, createRef, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
 import DetailedTranscriptVirtual from '../DetailedTranscriptVirtual/DetailedTranscriptVirtual';
@@ -57,59 +58,59 @@ const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) 
   );
 };
 
-const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
-  const classes = useStyles();
+// const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+//   const classes = useStyles();
 
-  return (
-    <>
-      {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
-        // if (index > 0) return null;
+//   return (
+//     <>
+//       {transcriptsData.transcripts.map(({ transcriptId, conditions, cds }, index) => {
+//         if (index > 0) return null;
 
-        const cdsLineCount = cds?.length || 0;
-        const peptideLineCount =
-          (cds && cds?.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) || 0;
+//         const cdsLineCount = cds?.length || 0;
+//         const peptideLineCount =
+//           (cds && cds?.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) || 0;
 
-        const transcriptInfoHeight = 3 + cdsLineCount * 3 + peptideLineCount * 3;
+//         const transcriptInfoHeight = 3 + cdsLineCount * 3 + peptideLineCount * 3;
 
-        // WOOP, hardcoded condition colors
-        // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
-        return (
-          <div
-            key={transcriptId}
-            className={classes.transcriptInfo}
-            style={{ height: `${transcriptInfoHeight}rem` }}
-          >
-            <div className={classes.transcriptId}>
-              <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
-                {conditions.map(({ condition }) => (
-                  <div
-                    key={condition}
-                    className={classes.transcriptIdCondition}
-                    style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
-                  >
-                    {condition}
-                  </div>
-                ))}
-              </div>
-              <p className={classes.transcriptIdText}>{transcriptId}</p>
-            </div>
-            <div className={classes.cdssContainer}>
-              {cds?.map(({ strand }, index) => {
-                const isReverse = strand === '-';
+//         // WOOP, hardcoded condition colors
+//         // WOOP, hardcoded condition number on width 8.5rem => 4rem each with 0.5 margin between
+//         return (
+//           <div
+//             key={transcriptId}
+//             className={classes.transcriptInfo}
+//             style={{ height: `${transcriptInfoHeight}rem` }}
+//           >
+//             <div className={classes.transcriptId}>
+//               <div className={classes.transcriptIdConditions} style={{ width: '8.5rem' }}>
+//                 {conditions.map(({ condition }) => (
+//                   <div
+//                     key={condition}
+//                     className={classes.transcriptIdCondition}
+//                     style={{ backgroundColor: condition === 'Nsi' ? '#336' : '#6b88a2' }}
+//                   >
+//                     {condition}
+//                   </div>
+//                 ))}
+//               </div>
+//               <p className={classes.transcriptIdText}>{transcriptId}</p>
+//             </div>
+//             <div className={classes.cdssContainer}>
+//               {cds?.map(({ strand }, index) => {
+//                 const isReverse = strand === '-';
 
-                return (
-                  <p key={index} className={classes.transcriptIdText}>{`CDS, ${
-                    isReverse ? 'reverse' : 'forward'
-                  } strand`}</p>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-    </>
-  );
-};
+//                 return (
+//                   <p key={index} className={classes.transcriptIdText}>{`CDS, ${
+//                     isReverse ? 'reverse' : 'forward'
+//                   } strand`}</p>
+//                 );
+//               })}
+//             </div>
+//           </div>
+//         );
+//       })}
+//     </>
+//   );
+// };
 
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
@@ -136,6 +137,8 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   //   }, 500);
   // };
 
+  const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -145,11 +148,15 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Calculate how many refs per transcripts we need.
-  const refCounts = transcriptsData.transcripts.map(({ cds }) => {
+  /* We are going to pass down refs to the detailed transcript children virtualized lists
+   * So that we can control their scroll status from this component
+   * First, calculate how many refs per transcripts we need
+   */
+  const refCounts = transcripts.map(({ cds }) => {
     // Exon index check line + exon line
     if (!cds) return 1 + 1;
 
+    // Add cds lines and 1 more per cds line if the cds has peptides
     let totalCdssLineCount = cds.length;
     cds.forEach((e) => {
       if (e.peptides) totalCdssLineCount += 1;
@@ -158,61 +165,93 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     return 1 + 1 + totalCdssLineCount;
   });
 
-  const refs = refCounts.map((count) => range(0, count).map(() => createRef<FixedSizeList>()));
+  // Generate the refs
+  const virtualizedListRefsList = refCounts.map((count) =>
+    range(0, count).map(() => createRef<FixedSizeList>())
+  );
+
+  const dragScrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleDragScroll = (scrollLeft: number) => {
+    const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
+    dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+
+    // Scroll all the children transcript virtualized lists
+    virtualizedListRefsList.forEach((virtualizedListRefs) =>
+      virtualizedListRefs.forEach((ref) => {
+        if (ref.current) ref.current.scrollTo(scrollLeft);
+      })
+    );
+
+    // Also scroll regular scroll element
+    // Second if check is to avoid cycles
+    if (!scrollRef.current || scrollRef.current.scrollLeft === scrollLeft) return;
+    scrollRef.current.scrollTo({ left: scrollLeft });
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     const scrollLeft = e.currentTarget.scrollLeft;
 
-    const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-    const widthOnScreen = maxTranscriptWidth * BOX_HEIGHT;
-
+    const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
-    refs.forEach((ref) =>
-      ref.forEach((subRef) => {
-        if (subRef.current) subRef.current.scrollTo(scrollLeft);
+    // Scroll all the children transcript virtualized lists
+    virtualizedListRefsList.forEach((virtualizedListRefs) =>
+      virtualizedListRefs.forEach((ref) => {
+        if (ref.current) ref.current.scrollTo(scrollLeft);
       })
     );
+
+    // Also scroll drag scroll element
+    // Second if check is to avoid cycles
+    if (!dragScrollRef.current || dragScrollRef.current.scrollLeft === scrollLeft) return;
+    dragScrollRef.current.scrollTo({ left: scrollLeft });
   };
 
   return (
     <div className={classes.detailedTranscriptViewerContainer}>
-      <div className={classes.transcriptsInfoContainer}>
-        <TranscriptNames transcriptsData={transcriptsData} />
-      </div>
-      <div
-        style={{
-          transform: 'translateZ(0)',
-          width: 'calc((100% - 24rem) - 2rem)',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        <div className={classes.detailedTranscripts}>
-          {transcriptsData.transcripts.map((transcript, index) => {
-            // if (index > 0) return null;
+      <div className={classes.detailedTranscripts}>
+        {transcripts.map((transcript, index) => {
+          if (index > 1) return null;
 
-            return (
-              <div className={classes.detailedTranscriptContainer} key={transcript.transcriptId}>
-                <DetailedTranscriptVirtual
-                  transcriptData={{
-                    transcript,
-                    minimumPosition: transcriptsData.minimumPosition,
-                    maximumPosition: transcriptsData.maximumPosition,
-                  }}
-                  refs={refs[index]}
-                />
-              </div>
-            );
-          })}
-          {false ? <Tooltip transcriptsData={transcriptsData} /> : null}
-        </div>
+          return (
+            <DetailedTranscriptVirtual
+              key={transcript.transcriptId}
+              transcriptData={{
+                transcript,
+                minimumPosition,
+                maximumPosition,
+              }}
+              refs={virtualizedListRefsList[index]}
+            />
+          );
+        })}
       </div>
-      <div className={classes.scrollBarContainer} onScroll={handleScroll}>
+      {/* This is for the drag scroll on the transcripts */}
+      <ScrollContainer
+        className={`${classes.scrollDragContainer} scroll-container`}
+        onScroll={handleDragScroll}
+        horizontal={true}
+        vertical={false}
+        activationDistance={0}
+        innerRef={dragScrollRef}
+      >
         <div
-          className={classes.scrollBar}
+          className={classes.scroll}
           style={{
-            width: (transcriptsData.maximumPosition - transcriptsData.minimumPosition + 1) * BOX_HEIGHT,
+            width: (maximumPosition - minimumPosition + 1) * BOX_HEIGHT,
+          }}
+        />
+      </ScrollContainer>
+      {/* This is for the regular scroll on the transcripts
+       *  We have to do this because hideScrollbars={true} on ScrollContainer library is buggy
+       */}
+      <div className={classes.scrollContainer} onScroll={handleScroll} ref={scrollRef}>
+        <div
+          className={classes.scroll}
+          style={{
+            width: (maximumPosition - minimumPosition + 1) * BOX_HEIGHT,
           }}
         />
       </div>
@@ -221,3 +260,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
 };
 
 export default DetailedTranscripts;
+
+// {
+//   false ? <Tooltip transcriptsData={transcriptsData} /> : null;
+// }
