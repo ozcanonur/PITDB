@@ -55,6 +55,11 @@ export interface TranscriptProps extends SVGAttributes<SVGElement> {
   transcriptData: TranscriptData;
 }
 
+export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
+  handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
+  width: number;
+}
+
 export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
   transcriptData: TranscriptData;
   refs: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] };

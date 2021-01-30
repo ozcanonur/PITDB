@@ -1,61 +1,17 @@
-import { useMemo, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useRef, forwardRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
-import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
+import ScrollTooltip from './ScrollTooltip';
 
 import { useStyles } from './styles';
-import { TranscriptsResponse } from '../../types';
+import { TranscriptsResponse, RegularScrollProps } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
-import React from 'react';
+
 import { makeVirtualizedListRefsList, scrollVirtualRefs } from './helpers';
 
 const BOX_HEIGHT = 30;
-
-const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
-  const classes = useStyles();
-
-  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
-
-  const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-
-  const currentGenomePosition = Math.floor(
-    transcriptsData.minimumPosition + (maxTranscriptWidth * scrollPosition) / 100
-  );
-
-  const TranscriptsSvg = useMemo(() => {
-    return (
-      <>
-        {transcriptsData.transcripts.map((transcript) => (
-          <DetailedTranscriptsScrollTooltip
-            key={transcript.transcriptId}
-            transcriptData={{
-              transcript: transcript,
-              minimumPosition: transcriptsData.minimumPosition,
-              maximumPosition: transcriptsData.maximumPosition,
-            }}
-          />
-        ))}
-      </>
-    );
-  }, [transcriptsData]);
-
-  return (
-    <div className={classes.scrollTooltipContainer}>
-      <div className={classes.transcriptTooltipRails}>
-        {TranscriptsSvg}
-        <div
-          className={classes.transcriptPositionLine}
-          style={{
-            left: `${scrollPosition}%`,
-          }}
-        />
-      </div>
-      <p className={classes.tooltipPositionText}>{`Current position: ${currentGenomePosition}`}</p>
-    </div>
-  );
-};
 
 // const TranscriptNames = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
 //   const classes = useStyles();
@@ -111,30 +67,41 @@ const Tooltip = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) 
 //   );
 // };
 
-const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const RegularScroll = forwardRef(({ handleScroll, width, children }: RegularScrollProps, ref: any) => {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
   const classes = useStyles();
 
-  // const [tooltipOpen, setTooltipOpen] = useState(false);
+  let timeout = useRef<NodeJS.Timeout>();
 
-  // let timeout = useRef<NodeJS.Timeout>();
+  const onScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    handleScroll(e);
 
-  // const handleScroll = () => {
-  //   if (!scrollRef || !scrollRef.current) return;
+    // @ts-ignore
+    clearTimeout(timeout.current);
 
-  //   // @ts-ignore
-  //   clearTimeout(timeout.current);
+    setTooltipOpen(true);
 
-  //   setTooltipOpen(true);
+    timeout.current = setTimeout(() => {
+      setTooltipOpen(false);
+    }, 500);
+  };
 
-  // const maxTranscriptWidth = transcriptsData.maximumPosition - transcriptsData.minimumPosition;
-  // const widthOnScreen = maxTranscriptWidth * 30;
+  return (
+    <div className={classes.scrollContainer} onScroll={onScroll} ref={ref}>
+      <div
+        className={classes.scroll}
+        style={{
+          width,
+        }}
+      />
+      <div style={{ display: tooltipOpen ? 'inherit' : 'none' }}>{children}</div>
+    </div>
+  );
+});
 
-  // dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
-
-  //   timeout.current = setTimeout(() => {
-  //     setTooltipOpen(false);
-  //   }, 500);
-  // };
+const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+  const classes = useStyles();
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
 
@@ -203,7 +170,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           );
         })}
       </div>
-      {/* This is for the drag scroll on the transcripts */}
+      {/* This is for drag scroll on the transcripts */}
       <ScrollContainer
         className={`${classes.scrollDragContainer} scroll-container`}
         onScroll={handleDragScroll}
@@ -219,23 +186,18 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           }}
         />
       </ScrollContainer>
-      {/* This is for the regular scroll on the transcripts
+      {/* This is for regular scroll on the transcripts
        *  We have to do this because hideScrollbars={true} on ScrollContainer library is buggy
        */}
-      <div className={classes.scrollContainer} onScroll={handleScroll} ref={scrollRef}>
-        <div
-          className={classes.scroll}
-          style={{
-            width: (maximumPosition - minimumPosition + 1) * BOX_HEIGHT,
-          }}
-        />
-      </div>
+      <RegularScroll
+        handleScroll={handleScroll}
+        ref={scrollRef}
+        width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
+      >
+        <ScrollTooltip transcriptsData={transcriptsData} />
+      </RegularScroll>
     </div>
   );
 };
 
 export default DetailedTranscripts;
-
-// {
-//   false ? <Tooltip transcriptsData={transcriptsData} /> : null;
-// }

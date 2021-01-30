@@ -116,6 +116,9 @@ const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
 
   const aminoacid = sequence.slice((index - start - 1) / 3, (index - start - 1) / 3 + 1);
 
+  const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
+  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
+
   return (
     <g style={style}>
       <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
@@ -128,12 +131,7 @@ const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
           className={classes.divider}
         />
       ) : (index - start) % 3 === 1 ? (
-        <text
-          x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
-          y={BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3}
-          fontSize={BOX_HEIGHT / 2}
-          className={classes.aminoacid}
-        >
+        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.aminoacid}>
           {aminoacid}
         </text>
       ) : null}
@@ -190,16 +188,27 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
   const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
 
+  // WOOP, hardcoded conditions
   return (
     <div className={classes.detailedTranscriptContainer} {...props}>
       <div className={classes.transcriptLabelContainer}>
-        <div
-          className={classes.transcriptLabelCondition}
-          style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
-        >
-          {filters.condition}
+        <div className={classes.transcriptNameContainer}>
+          <div
+            className={classes.transcriptLabelCondition}
+            style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+          >
+            {filters.condition}
+          </div>
+          <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
         </div>
-        <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
+        {transcript.cds?.map(({ strand, peptides }) => (
+          <>
+            <p className={classes.transcriptProperty}>{`CDS, ${
+              strand === '-' ? 'reverse' : 'forward'
+            } strand`}</p>
+            {peptides ? <p className={classes.transcriptProperty}>Peptides</p> : null}
+          </>
+        ))}
       </div>
       <div style={{ height: transcriptVisualLineCount * BOX_HEIGHT, flexGrow: 1 }}>
         <AutoSizer>

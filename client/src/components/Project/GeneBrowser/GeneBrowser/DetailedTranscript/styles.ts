@@ -21,7 +21,7 @@ export const useStyles = makeStyles((theme) => ({
     strokeWidth: 0.8,
   },
   peptide: {
-    fill: 'rgba(200, 85, 61, 0.6)',
+    fill: 'rgba(200, 85, 61, 0.7)',
   },
   mod: {
     fill: 'rgba(40, 82, 56, 0.7)',
@@ -32,24 +32,35 @@ export const useStyles = makeStyles((theme) => ({
   },
   transcriptLabelContainer: {
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
     marginRight: '2rem',
+  },
+  transcriptNameContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+
     alignItems: 'flex-start',
-    paddingTop: '0.85rem',
     minWidth: '24rem',
   },
   transcriptLabelCondition: {
-    marginRight: '5.5rem',
     padding: '0.8rem 1rem',
     borderRadius: '0.3rem',
-    width: '4rem',
     color: 'white',
     fontSize: '1.4rem',
     textAlign: 'center',
+    height: 30,
   },
   transcriptLabelId: {
     fontSize: '1.4rem',
     color: theme.palette.primary.main,
+    paddingTop: '0.7rem',
+  },
+  transcriptProperty: {
+    fontSize: '1.4rem',
+    textAlign: 'right',
+    color: theme.palette.primary.main,
+    height: 30,
+    paddingTop: '0.7rem',
   },
   virtualizedList: {
     overflow: 'hidden !important',

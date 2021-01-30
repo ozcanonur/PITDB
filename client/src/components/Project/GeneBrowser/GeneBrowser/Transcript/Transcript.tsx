@@ -41,25 +41,29 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
 
   const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
 
+  // There are 2 px space between 'lines' hence transcriptVisualLineCount * 2
+  const svgVerticalViewbox =
+    EXON_HEIGHT + (transcriptVisualLineCount - 1) * CDS_HEIGHT + transcriptVisualLineCount * 2;
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      viewBox={`0 0 540 ${26 + (transcriptVisualLineCount - 1) * 6}`}
+      viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`}
       className={classes.svg}
       {...props}
     >
       {/* This is the rail */}
-      <g transform='translate(0 5)'>
+      <g>
         <rect
           x={pixelPerValue * (minExonStart - minimumPosition)}
-          y={8}
+          y={4.5}
           width={pixelPerValue * (maxExonStart - minExonStart)}
           height={RAIL_HEIGHT}
           className={classes.rail}
         />
       </g>
       {/* These are the exon boxes */}
-      <g transform='translate(0 8)'>
+      <g>
         {transcript.exons.map(({ genomeStart, genomeEnd }, index) => {
           const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
           const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
@@ -100,13 +104,14 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
         // Need to move by 6 more if previous Cds had a peptide line
         // @ts-ignore
         const previousCdsHadPeptides = index === 0 ? false : Boolean(transcript.cds[index - 1].peptides);
-        const translateYAmount = previousCdsHadPeptides ? index * 6 + 6 : index * 6;
+        const translateYAmount = previousCdsHadPeptides ? index * 6 + 18 : index * 6 + 12;
 
         return (
-          <g key={index} transform={`translate(0 ${20 + translateYAmount})`}>
+          <g key={index}>
             <rect
               className={classes.cds}
               x={cdsStart * pixelPerValue}
+              y={translateYAmount}
               width={(cdsEnd - cdsStart + 1) * pixelPerValue}
               height={CDS_HEIGHT}
               ref={cdsRef}
@@ -116,7 +121,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
                 key={index}
                 className={classes.peptide}
                 x={start * pixelPerValue}
-                y={CDS_HEIGHT + 2}
+                y={CDS_HEIGHT + translateYAmount + 2}
                 width={(end - start + 1) * pixelPerValue}
                 height={CDS_HEIGHT}
               />
@@ -125,7 +130,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
         );
       })}
       {/* These are the mutations */}
-      <g transform='translate(0 8)'>
+      <g>
         {mutationPositions.map((pos, index) => (
           <rect
             key={index}

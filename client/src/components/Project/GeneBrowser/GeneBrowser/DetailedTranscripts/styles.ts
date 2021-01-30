@@ -8,6 +8,7 @@ export const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     position: 'relative',
     marginTop: '4rem',
+    transform: 'translateZ(0)',
   },
   detailedTranscripts: {
     display: 'flex',
@@ -86,7 +87,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     bottom: '2.3rem',
     backgroundColor: 'white',
-    boxShadow: '0 5px 10px rgba(154,160,185,.15), 0 15px 40px rgba(166,173,201,.2)',
+    boxShadow: '5px 5px 10px 10px rgba(154,160,185,.15), 15px 15px 40px 10px rgba(166,173,201,.2)',
     borderRadius: '4px',
     padding: '1rem',
   },
@@ -131,5 +132,10 @@ export const useStyles = makeStyles((theme) => ({
   },
   scroll: {
     height: 1,
+  },
+  tooltipTranscripts: {
+    '& > svg:not(:last-child)': {
+      marginBottom: '0.5rem',
+    },
   },
 }));

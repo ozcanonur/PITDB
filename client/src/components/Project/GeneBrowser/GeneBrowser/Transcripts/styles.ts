@@ -50,20 +50,24 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     padding: '0 2rem',
+
+    '& > div:not(:last-child)': {
+      marginBottom: '2rem',
+    },
   },
   transcriptOverview: {
     display: 'flex',
-    alignItems: 'center',
   },
   transcriptId: {
     fontSize: '1.4rem',
     color: theme.palette.primary.main,
+    marginTop: '0.25vw',
   },
   transcriptIdContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     marginRight: '2rem',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   transcriptIdCondition: {
     marginRight: '5.5rem',
