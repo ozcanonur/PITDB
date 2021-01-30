@@ -1,5 +1,5 @@
 import { HTMLAttributes, SVGAttributes } from 'react';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
 
@@ -66,3 +66,30 @@ export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> 
 }
 
 export type VirtualRef = React.RefObject<FixedSizeList>;
+
+export type RelativeExonPositionsAndSequences = {
+  sequence: string;
+  start: number;
+  end: number;
+  length: number;
+}[];
+
+export type RelativeCdsPositionsAndSequences = {
+  start: number;
+  end: number;
+  sequence: string;
+}[];
+
+export type RelativePeptidePositionsAndSequences = {
+  start: number;
+  end: number;
+  mods: {
+    type: string;
+    pos: number;
+  }[];
+}[];
+
+export interface VirtualListChildComponentProps extends ListChildComponentProps {
+  renderedRange?: { start: number; stop: number };
+  scrollDirection?: 'forward' | 'backward';
+}

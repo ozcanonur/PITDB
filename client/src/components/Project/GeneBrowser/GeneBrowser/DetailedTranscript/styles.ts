@@ -30,6 +30,9 @@ export const useStyles = makeStyles((theme) => ({
   detailedTranscriptContainer: {
     display: 'flex',
   },
+  detailedTranscript: {
+    flexGrow: 1,
+  },
   transcriptLabelContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -64,5 +67,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   virtualizedList: {
     overflow: 'hidden !important',
+  },
+  nucleotideContainer: {
+    animation: 'bounce 1s',
   },
 }));

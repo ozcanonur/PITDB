@@ -155,7 +155,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     <div className={classes.detailedTranscriptViewerContainer}>
       <div className={classes.detailedTranscripts}>
         {transcripts.map((transcript, index) => {
-          if (index > 1) return null;
+          // if (index > 1) return null;
 
           return (
             <DetailedTranscript

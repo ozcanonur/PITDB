@@ -129,6 +129,7 @@ export const useStyles = makeStyles((theme) => ({
     top: 0,
     zIndex: 9999,
     height: 'calc(100% - 18px)',
+    cursor: 'grab',
   },
   scroll: {
     height: 1,
