@@ -6,6 +6,7 @@ import max from 'lodash/max';
 import { TranscriptProps } from '../../types';
 import { getMutationPosition } from './helpers';
 import {
+  getTranscriptVisualLineCount,
   getRelativePeptidePositionsAndSequences,
   getRelativeCdsPositionsAndSequences,
   getRelativeExonPositionsAndSequences,
@@ -38,10 +39,12 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
 
+  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      viewBox={`0 0 540 ${26 + cdsPositions.length * 6}`}
+      viewBox={`0 0 540 ${26 + (transcriptVisualLineCount - 1) * 6}`}
       className={classes.svg}
       {...props}
     >
@@ -84,15 +87,23 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
           isReverse
         );
 
+        // @ts-ignore
+        const peptides = transcript.cds[index].peptides;
+
         const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
           relativeCdsPositionsAndSequences,
           sequence,
           // @ts-ignore
-          transcript.cds[index].peptides
+          peptides
         );
 
+        // Need to move by 6 more if previous Cds had a peptide line
+        // @ts-ignore
+        const previousCdsHadPeptides = index === 0 ? false : Boolean(transcript.cds[index - 1].peptides);
+        const translateYAmount = previousCdsHadPeptides ? index * 6 + 6 : index * 6;
+
         return (
-          <g key={index} transform={`translate(0 ${20 + index * 6})`}>
+          <g key={index} transform={`translate(0 ${20 + translateYAmount})`}>
             <rect
               className={classes.cds}
               x={cdsStart * pixelPerValue}

@@ -1,263 +1,298 @@
-import { Fragment, memo, createRef } from 'react';
+import React, { memo, Fragment } from 'react';
+import { FixedSizeList as VirtualizedList, ListChildComponentProps, areEqual } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { useSelector } from 'react-redux';
-import { Tooltip } from 'react-svg-tooltip';
 
-import { TranscriptProps } from '../../types';
+import { DetailedTranscriptProps } from '../../types';
 import {
-  getCDSStartsAndEnds,
-  getNucleotideColor,
+  getTranscriptVisualLineCount,
   getRelativeExonPositionsAndSequences,
+  getNucleotideColor,
+  getCDSStartsAndEnds,
   getRelativeCdsPositionsAndSequences,
   getRelativePeptidePositionsAndSequences,
 } from './helpers';
-
 import { useStyles } from './styles';
 
-const ExonSequence = ({ exon }: { exon: { sequence: string; start: number } }) => {
+const BOX_HEIGHT = 30;
+
+// const Nucleotide2 = memo(({ index, style, data }: ListChildComponentProps) => {
+//   const classes = useStyles();
+
+//   const exonPositions: {
+//     sequence: string;
+//     start: number;
+//     end: number;
+//     length: number;
+//   }[] = data;
+
+//   const indexBelongsTo = exonPositions.find(({ start, end }) => index >= start && index <= end);
+
+//   if (!indexBelongsTo) return null;
+
+//   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
+
+//   const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
+//   const nucleotideColor = getNucleotideColor(nucleotide);
+
+//   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
+//   const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
+
+//   return (
+//     <g style={style}>
+//       <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+//       <text x={textOffsetX} y={textOffsetY} className={classes.nucleotide} fontSize={BOX_HEIGHT / 3}>
+//         {index}
+//       </text>
+//     </g>
+//   );
+// }, areEqual);
+
+const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   const classes = useStyles();
 
-  const { sequence, start } = exon;
-
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-
-  return (
-    <>
-      {sequence.split('').map((nucleotide, index) => {
-        const color = getNucleotideColor(nucleotide);
-
-        const fontSize = boxHeight / 2;
-        const textOffsetX = start * boxHeight + index * boxHeight + boxHeight / 2;
-        // -2 because of reasons that I have no idea about
-        const textOffsetY = boxHeight / 2 + fontSize / 2 - 2;
-
-        return (
-          <Fragment key={index}>
-            <rect
-              fill={color}
-              x={start * boxHeight + index * boxHeight}
-              width={boxHeight}
-              height={boxHeight}
-            />
-            <text className={classes.nucleotide} fontSize={fontSize} x={textOffsetX} y={textOffsetY}>
-              {nucleotide}
-            </text>
-          </Fragment>
-        );
-      })}
-    </>
-  );
-};
-
-const CdsSequence = ({
-  relativeCdsPositionAndSequence,
-}: {
-  relativeCdsPositionAndSequence: {
-    start: number;
+  const exonPositions: {
     sequence: string;
-  };
-}) => {
-  const classes = useStyles();
+    start: number;
+    end: number;
+    length: number;
+  }[] = data;
 
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+  const indexBelongsTo = exonPositions.find(({ start, end }) => index >= start && index <= end);
 
-  const { start, sequence } = relativeCdsPositionAndSequence;
+  if (!indexBelongsTo)
+    return (
+      <line
+        x1={index * BOX_HEIGHT}
+        x2={(index + 1) * BOX_HEIGHT}
+        y1={BOX_HEIGHT / 2}
+        y2={BOX_HEIGHT / 2}
+        className={classes.rail}
+      />
+    );
 
-  const sequenceArray = sequence.split('');
+  const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
+
+  const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
+  const nucleotideColor = getNucleotideColor(nucleotide);
+
+  const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
+  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
 
   return (
-    <>
-      {sequenceArray.map((codon, index) => {
-        const fontSize = boxHeight / 2;
-        const textOffsetX = start * boxHeight + index * boxHeight * 3 + (boxHeight * 3) / 2;
-        // -2 because of reasons that I have no idea about
-        const textOffsetY = boxHeight + boxHeight / 2 + fontSize / 2 - 2;
+    <g style={style}>
+      <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+      <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+        {nucleotide}
+      </text>
+    </g>
+  );
+}, areEqual);
 
-        const leftDividerPos = start * boxHeight + index * boxHeight * 3;
-        const rightDividerPos = leftDividerPos + boxHeight * 3;
+const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
+  const classes = useStyles();
 
-        return (
-          <Fragment key={index}>
-            <text className={classes.codon} x={textOffsetX} y={textOffsetY} fontSize={fontSize}>
-              {codon}
-            </text>
-            {/* These are the dividers between codons */}
+  const cdsPositions: {
+    start: number;
+    end: number;
+    sequence: string;
+  }[] = data.relativeCdsPositionsAndSequences;
+
+  const { cdsStart, cdsEnd } = data;
+
+  // Put nothing if no cds in this box at all
+  const isCds = index >= cdsStart && index <= cdsEnd;
+  if (!isCds) return null;
+
+  const indexBelongsTo = cdsPositions.find(({ start, end }) => index >= start && index <= end);
+
+  // Only put yellow box if CDS exists but no aminoacid
+  if (!indexBelongsTo)
+    return (
+      <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+    );
+
+  const { start, sequence } = indexBelongsTo;
+
+  const aminoacid = sequence.slice((index - start - 1) / 3, (index - start - 1) / 3 + 1);
+
+  return (
+    <g style={style}>
+      <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+      {(index - start) % 3 === 0 ? (
+        <line
+          x1={index * BOX_HEIGHT}
+          x2={index * BOX_HEIGHT}
+          y1={0}
+          y2={BOX_HEIGHT}
+          className={classes.divider}
+        />
+      ) : (index - start) % 3 === 1 ? (
+        <text
+          x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
+          y={BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3}
+          fontSize={BOX_HEIGHT / 2}
+          className={classes.aminoacid}
+        >
+          {aminoacid}
+        </text>
+      ) : null}
+    </g>
+  );
+}, areEqual);
+
+const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
+  const classes = useStyles();
+
+  const relativePeptidePositionsAndSequences: {
+    start: number;
+    end: number;
+    mods: {
+      type: string;
+      pos: number;
+    }[];
+  }[] = data;
+
+  const indexBelongsTo = relativePeptidePositionsAndSequences.filter(
+    ({ start, end }) => index >= start && index <= end
+  );
+
+  if (!indexBelongsTo) return null;
+
+  return (
+    <g style={style}>
+      {indexBelongsTo.map(({ start, end }, iterationIndex) => (
+        <Fragment key={iterationIndex}>
+          <rect className={classes.peptide} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+          {index === start || index === end + 1 ? (
             <line
-              x1={leftDividerPos}
-              x2={leftDividerPos}
-              y1={boxHeight}
-              y2={boxHeight * 2}
               className={classes.divider}
+              x1={index * BOX_HEIGHT}
+              x2={index * BOX_HEIGHT}
+              y1={0}
+              y2={BOX_HEIGHT}
             />
-            {index === sequenceArray.length - 1 ? (
-              <line
-                x1={rightDividerPos}
-                x2={rightDividerPos}
-                y1={boxHeight}
-                y2={boxHeight * 2}
-                className={classes.divider}
-              />
-            ) : null}
-          </Fragment>
-        );
-      })}
-    </>
+          ) : null}
+        </Fragment>
+      ))}
+    </g>
   );
-};
+}, areEqual);
 
-const Peptide = ({
-  relativeCdsPositionAndSequence,
-}: {
-  relativeCdsPositionAndSequence: { start: number; end: number; mods: { type: string; pos: number }[] };
-}) => {
+const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
 
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+  const filters = useSelector((state: RootState) => state.geneBrowserFilters);
 
-  const { start, end, mods } = relativeCdsPositionAndSequence;
-
-  const modRef = createRef<SVGRectElement>();
-
-  // const testMod = mods[0];
-  // const points = `${(testMod.pos + start - 1) * boxHeight - boxHeight * 2},${boxHeight * 4} ${
-  //   (testMod.pos + start - 1) * boxHeight - boxHeight / 2
-  // },${boxHeight * 3} ${(boxHeight.pos + start + 1) * boxHeight - boxHeight},${boxHeight * 4}`;
-  // console.log(mods);
-
-  // WOOP, PTMS are A MESS, not working, FIX
-  return (
-    <>
-      {mods.map((mod, index) => {
-        return (
-          <Fragment key={index}>
-            <rect
-              x={(start + mod.pos * 3) * boxHeight - boxHeight / 2}
-              y={boxHeight * 3}
-              width={boxHeight}
-              height={boxHeight}
-              className={classes.mod}
-              ref={modRef}
-            />
-            <Tooltip triggerRef={modRef}>
-              <rect x={0.25} y={0.25} width={`${mod.type.length + 5}ch`} height={30} rx={1} fill='#eceef7' />
-              <text
-                transform='translate(15 19)'
-                fontSize={'1.4rem'}
-                fontFamily='Poppins, sans-serif'
-                fill='#336'
-              >
-                {mod.type.slice(1, mod.type.length - 1)}
-              </text>
-            </Tooltip>
-          </Fragment>
-        );
-      })}
-      <rect
-        className={classes.peptide}
-        x={start * boxHeight}
-        y={boxHeight * 2}
-        width={(end - start + 1) * boxHeight}
-        height={boxHeight}
-      />
-      <line
-        x1={start * boxHeight}
-        x2={start * boxHeight}
-        y1={boxHeight * 2}
-        y2={boxHeight * 3}
-        className={classes.divider}
-      />
-      <line
-        x1={start * boxHeight + (end - start + 1) * boxHeight}
-        x2={start * boxHeight + (end - start + 1) * boxHeight}
-        y1={boxHeight * 2}
-        y2={boxHeight * 3}
-        className={classes.divider}
-      />
-    </>
-  );
-};
-
-const DetailedTranscript = memo(({ transcriptData, ...props }: TranscriptProps) => {
-  const classes = useStyles();
-
-  const { boxHeight } = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-
-  const { transcript, minimumPosition, maximumPosition } = transcriptData;
+  const { minimumPosition, maximumPosition, transcript } = transcriptData;
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
-
-  const peptideLineCount =
-    (transcript.cds &&
-      transcript.cds.map(({ peptides }) => peptides).filter((e) => e !== undefined).length) ||
-    0;
-  const cdsCount = transcript.cds ? transcript.cds.length : 0;
-  const svgHeight =
-    boxHeight + boxHeight + cdsCount * boxHeight + peptideLineCount * boxHeight + boxHeight / 2;
+  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
 
   return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      className={classes.svg}
-      width={(maximumPosition - minimumPosition + 1) * boxHeight}
-      height={svgHeight}
-      {...props}
-    >
-      {/* This is the rail behind nucleotides */}
-      <line
-        x1={(transcript.start - minimumPosition) * boxHeight}
-        x2={(transcript.end - minimumPosition + 1) * boxHeight}
-        y1={boxHeight / 2}
-        y2={boxHeight / 2}
-        className={classes.rail}
-      />
-      {/* These are the exons */}
-      {exonPositions.map((exon, index) => (
-        <ExonSequence key={index} exon={exon} />
-      ))}
-      {/* These are the CDSs */}
-      {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, cdsIndex) => {
-        const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
-          exonPositions,
-          cdsStart,
-          cdsEnd,
-          sequence,
-          isReverse
-        );
+    <div className={classes.detailedTranscriptContainer} {...props}>
+      <div className={classes.transcriptLabelContainer}>
+        <div
+          className={classes.transcriptLabelCondition}
+          style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+        >
+          {filters.condition}
+        </div>
+        <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
+      </div>
+      <div style={{ height: transcriptVisualLineCount * BOX_HEIGHT, flexGrow: 1 }}>
+        <AutoSizer>
+          {({ width }) => (
+            <>
+              {/* This is to check indexes for accurate cds/peptide positioning */}
+              {/* <VirtualizedList
+                height={BOX_HEIGHT}
+                itemCount={maximumPosition - minimumPosition + 1}
+                itemSize={BOX_HEIGHT}
+                layout='horizontal'
+                width={width}
+                innerElementType='svg'
+                itemData={exonPositions}
+                className={classes.virtualizedList}
+                ref={refs.exonLineRef}
+              >
+                {Nucleotide2}
+              </VirtualizedList> */}
+              {/* These are the exons */}
+              <VirtualizedList
+                height={BOX_HEIGHT}
+                itemCount={maximumPosition - minimumPosition + 1}
+                itemSize={BOX_HEIGHT}
+                layout='horizontal'
+                width={width}
+                innerElementType='svg'
+                itemData={exonPositions}
+                className={classes.virtualizedList}
+                ref={refs.exonRef}
+              >
+                {Nucleotide}
+              </VirtualizedList>
+              {/* These are the CDSs */}
+              {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
+                const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
+                  exonPositions,
+                  cdsStart,
+                  cdsEnd,
+                  sequence,
+                  isReverse
+                );
 
-        const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
-          relativeCdsPositionsAndSequences,
-          sequence,
-          // @ts-ignore
-          transcript.cds[cdsIndex].peptides
-        );
+                const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
+                  relativeCdsPositionsAndSequences,
+                  sequence,
+                  // @ts-ignore
+                  transcript.cds[index].peptides
+                );
 
-        return (
-          <g key={cdsIndex} transform={`translate(0 ${cdsIndex * boxHeight})`}>
-            {/* This is the bg behind the whole CDS */}
-            <rect
-              className={classes.cdsBackground}
-              x={cdsStart * boxHeight}
-              y={boxHeight}
-              width={(cdsEnd - cdsStart + 1) * boxHeight}
-              height={boxHeight}
-            />
-            {/* These are the cds 'aminoacids' */}
-            {relativeCdsPositionsAndSequences.map((relativeCdsPositionAndSequence, index) => (
-              <Fragment key={index}>
-                <CdsSequence relativeCdsPositionAndSequence={relativeCdsPositionAndSequence} />
-              </Fragment>
-            ))}
-            {/* These are the peptides */}
-            {relativePeptidePositionsAndSequences.map((relativePeptidePositionAndSequence, index) => (
-              <Fragment key={index}>
-                <Peptide relativeCdsPositionAndSequence={relativePeptidePositionAndSequence} />
-              </Fragment>
-            ))}
-          </g>
-        );
-      })}
-    </svg>
+                return (
+                  <Fragment key={index}>
+                    <VirtualizedList
+                      height={BOX_HEIGHT}
+                      itemCount={maximumPosition - minimumPosition + 1}
+                      itemSize={BOX_HEIGHT}
+                      layout='horizontal'
+                      width={width}
+                      innerElementType='svg'
+                      itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
+                      className={classes.virtualizedList}
+                      ref={
+                        refs.cdsRefs && refs.cdsRefs[index].length > 0 ? refs.cdsRefs[index][0] : undefined
+                      }
+                    >
+                      {CDS}
+                    </VirtualizedList>
+                    {relativePeptidePositionsAndSequences.length > 0 ? (
+                      <VirtualizedList
+                        height={BOX_HEIGHT}
+                        itemCount={maximumPosition - minimumPosition + 1}
+                        itemSize={BOX_HEIGHT}
+                        layout='horizontal'
+                        width={width}
+                        innerElementType='svg'
+                        itemData={relativePeptidePositionsAndSequences}
+                        className={classes.virtualizedList}
+                        ref={
+                          refs.cdsRefs && refs.cdsRefs[index].length > 1 ? refs.cdsRefs[index][1] : undefined
+                        }
+                      >
+                        {Peptide}
+                      </VirtualizedList>
+                    ) : null}
+                  </Fragment>
+                );
+              })}
+            </>
+          )}
+        </AutoSizer>
+      </div>
+    </div>
   );
-});
+};
 
 export default DetailedTranscript;

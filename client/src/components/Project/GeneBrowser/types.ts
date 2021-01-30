@@ -1,4 +1,5 @@
-import { SVGAttributes } from 'react';
+import { HTMLAttributes, SVGAttributes } from 'react';
+import { FixedSizeList } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
 
@@ -20,6 +21,7 @@ export type Transcript = {
     type: string;
     peptides: {
       sequence: string;
+      mod: string;
     }[];
   }[];
   mutations: {
@@ -52,3 +54,10 @@ export type TranscriptData = {
 export interface TranscriptProps extends SVGAttributes<SVGElement> {
   transcriptData: TranscriptData;
 }
+
+export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
+  transcriptData: TranscriptData;
+  refs: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] };
+}
+
+export type VirtualRef = React.RefObject<FixedSizeList>;

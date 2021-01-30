@@ -1,10 +1,54 @@
-/* eslint-disable no-loop-func */
-// WOOP, I have no idea, actually maybe some bit of an idea about the logic here
-
 import uniqBy from 'lodash/uniqBy';
-import { TranscriptData } from '../../types';
+import { Transcript, TranscriptData } from '../../types';
 
-// Literal copypasta from Esteban's java
+export const getTranscriptVisualLineCount = (transcript: Transcript) => {
+  const { cds } = transcript;
+
+  if (!cds) return 1;
+
+  // Add cds lines and 1 more per cds line if the cds has peptides
+  let totalCdssLineCount = cds.length;
+  cds.forEach((e) => {
+    if (e.peptides) totalCdssLineCount += 1;
+  });
+
+  return 1 + totalCdssLineCount;
+};
+
+export const getNucleotideColor = (nucleotide: string) => {
+  let color = '#336';
+  if (nucleotide === 'C') color = '#673f7e';
+  else if (nucleotide === 'T') color = '#6b88a2';
+  else if (nucleotide === 'G') color = '#2F2C38';
+
+  return color;
+};
+
+// WOOP, I have no idea, actually maybe some bit of an idea about the logic here
+export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptData) => {
+  const { transcript, minimumPosition } = transcriptData;
+
+  let lastExonEndedAt = 0;
+  const parsedExons = transcript.exons
+    .sort((x, y) => x.genomeStart - y.genomeEnd)
+    .map(({ genomeStart, genomeEnd }) => {
+      const exonLength = genomeEnd - genomeStart + 1;
+
+      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
+
+      lastExonEndedAt += exonLength;
+
+      return {
+        sequence: exonSequence,
+        start: genomeStart - minimumPosition,
+        end: genomeEnd - minimumPosition,
+        length: exonLength,
+      };
+    });
+
+  return parsedExons;
+};
+
 export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
   const { cds, exons } = transcript;
 
@@ -45,39 +89,6 @@ export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPositi
   return cdsPositions;
 };
 
-export const getNucleotideColor = (nucleotide: string) => {
-  let color = '#336';
-  if (nucleotide === 'C') color = '#673f7e';
-  else if (nucleotide === 'T') color = '#6b88a2';
-  else if (nucleotide === 'G') color = '#2F2C38';
-
-  return color;
-};
-
-export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptData) => {
-  const { transcript, minimumPosition } = transcriptData;
-
-  let lastExonEndedAt = 0;
-  const parsedExons = transcript.exons
-    .sort((x, y) => x.genomeStart - y.genomeEnd)
-    .map(({ genomeStart, genomeEnd }) => {
-      const exonLength = genomeEnd - genomeStart + 1;
-
-      const exonSequence = transcript.seq.slice(lastExonEndedAt, lastExonEndedAt + exonLength);
-
-      lastExonEndedAt += exonLength;
-
-      return {
-        sequence: exonSequence,
-        start: genomeStart - minimumPosition,
-        end: genomeEnd - minimumPosition,
-        length: exonLength,
-      };
-    });
-
-  return parsedExons;
-};
-
 // WOOP, this is an actual mess, needs some refactoring
 export const getRelativeCdsPositionsAndSequences = (
   exons: {
@@ -105,11 +116,13 @@ export const getRelativeCdsPositionsAndSequences = (
       if (cdsStart > exon.start) {
         relativeCdsPositionsAndSequences.push({
           start: cdsStart - leftoverNucleotideCount,
+          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       } else {
         relativeCdsPositionsAndSequences.push({
           start: exon.start - leftoverNucleotideCount,
+          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       }
@@ -122,6 +135,7 @@ export const getRelativeCdsPositionsAndSequences = (
 
       relativeCdsPositionsAndSequences.push({
         start: cdsStart,
+        end: exon.end,
         sequence: sequence.slice(0, Math.floor(cdsInThisExonLength / 3)),
       });
 
@@ -147,6 +161,7 @@ export const getRelativeCdsPositionsAndSequences = (
       // Need to start from -leftover to cover the leftover from the previous exon
       relativeCdsPositionsAndSequences.push({
         start: exon.start - leftoverNucleotideCount,
+        end: exon.end,
         sequence: cdsSequence,
       });
 

@@ -1,15 +1,11 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  svg: {
-    direction: 'ltr',
-    marginRight: '2rem',
-  },
   nucleotide: {
     fill: 'white',
     textAnchor: 'middle',
   },
-  codon: {
+  aminoacid: {
     fill: '#1b2742',
     textAnchor: 'middle',
   },
@@ -30,5 +26,32 @@ export const useStyles = makeStyles((theme) => ({
   mod: {
     fill: 'rgba(40, 82, 56, 0.7)',
     cursor: 'pointer',
+  },
+  detailedTranscriptContainer: {
+    display: 'flex',
+  },
+  transcriptLabelContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginRight: '2rem',
+    alignItems: 'flex-start',
+    paddingTop: '0.85rem',
+    minWidth: '24rem',
+  },
+  transcriptLabelCondition: {
+    marginRight: '5.5rem',
+    padding: '0.8rem 1rem',
+    borderRadius: '0.3rem',
+    width: '4rem',
+    color: 'white',
+    fontSize: '1.4rem',
+    textAlign: 'center',
+  },
+  transcriptLabelId: {
+    fontSize: '1.4rem',
+    color: theme.palette.primary.main,
+  },
+  virtualizedList: {
+    overflow: 'hidden !important',
   },
 }));

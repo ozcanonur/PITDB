@@ -1,16 +1,15 @@
-import { useMemo, useEffect, createRef, useRef } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
 import DetailedTranscriptsScrollTooltip from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
-import DetailedTranscriptVirtual from '../DetailedTranscriptVirtual/DetailedTranscriptVirtual';
+import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 
 import { useStyles } from './styles';
 import { TranscriptsResponse } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
 import React from 'react';
-import { FixedSizeList } from 'react-window';
-import { range } from 'lodash';
+import { makeVirtualizedListRefsList, scrollVirtualRefs } from './helpers';
 
 const BOX_HEIGHT = 30;
 
@@ -150,25 +149,9 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
 
   /* We are going to pass down refs to the detailed transcript children virtualized lists
    * So that we can control their scroll status from this component
-   * First, calculate how many refs per transcripts we need
+   * First, generate the refs
    */
-  const refCounts = transcripts.map(({ cds }) => {
-    // Exon index check line + exon line
-    if (!cds) return 1 + 1;
-
-    // Add cds lines and 1 more per cds line if the cds has peptides
-    let totalCdssLineCount = cds.length;
-    cds.forEach((e) => {
-      if (e.peptides) totalCdssLineCount += 1;
-    });
-
-    return 1 + 1 + totalCdssLineCount;
-  });
-
-  // Generate the refs
-  const virtualizedListRefsList = refCounts.map((count) =>
-    range(0, count).map(() => createRef<FixedSizeList>())
-  );
+  const virtualizedListRefsList = makeVirtualizedListRefsList(transcripts);
 
   const dragScrollRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -177,17 +160,13 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
-    // Scroll all the children transcript virtualized lists
-    virtualizedListRefsList.forEach((virtualizedListRefs) =>
-      virtualizedListRefs.forEach((ref) => {
-        if (ref.current) ref.current.scrollTo(scrollLeft);
-      })
-    );
-
     // Also scroll regular scroll element
     // Second if check is to avoid cycles
     if (!scrollRef.current || scrollRef.current.scrollLeft === scrollLeft) return;
     scrollRef.current.scrollTo({ left: scrollLeft });
+
+    // Scroll all the children transcript virtualized lists
+    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
   };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -196,17 +175,13 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
-    // Scroll all the children transcript virtualized lists
-    virtualizedListRefsList.forEach((virtualizedListRefs) =>
-      virtualizedListRefs.forEach((ref) => {
-        if (ref.current) ref.current.scrollTo(scrollLeft);
-      })
-    );
-
     // Also scroll drag scroll element
     // Second if check is to avoid cycles
     if (!dragScrollRef.current || dragScrollRef.current.scrollLeft === scrollLeft) return;
     dragScrollRef.current.scrollTo({ left: scrollLeft });
+
+    // Scroll all the children transcript virtualized lists
+    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
   };
 
   return (
@@ -216,7 +191,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           if (index > 1) return null;
 
           return (
-            <DetailedTranscriptVirtual
+            <DetailedTranscript
               key={transcript.transcriptId}
               transcriptData={{
                 transcript,
