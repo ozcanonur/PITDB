@@ -50,6 +50,7 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     padding: '0 2rem',
+    marginTop: '1rem',
 
     '& > div:not(:last-child)': {
       marginBottom: '2rem',

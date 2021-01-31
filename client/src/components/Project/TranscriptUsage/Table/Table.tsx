@@ -116,6 +116,14 @@ const SplicingEventsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);
 
+  // Return to initial state on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(setTranscriptUsageFilters({ gene: '', maxPValue: 0.05 }));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
     setSortedOn({ field, order: newSortOrder as -1 | 1 });

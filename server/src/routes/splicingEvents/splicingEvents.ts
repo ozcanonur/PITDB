@@ -3,12 +3,7 @@ import express from 'express';
 import { SplicingDPSI } from '../../db/models/splicingDPSI';
 import { ExtendedRequest } from '../../types';
 import { SplicingEventsFilters, SplicingDPSIWithConditions } from './types';
-import {
-  findMongoFieldFromTableColumn,
-  parseSplicingEvents,
-  parseConditions,
-  getRegexForStrandFilter,
-} from './helpers';
+import { findMongoFieldFromTableColumn, parseSplicingEvents, parseConditions } from './helpers';
 
 const router = express.Router();
 
@@ -22,14 +17,12 @@ router.get('/', async (req: ExtendedRequest, res) => {
   const { project, skip, filters, sortedOn } = req.query;
 
   try {
-    const { gene, maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
+    const { gene, maxPValue } = JSON.parse(filters) as SplicingEventsFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
     let query = {
       project,
       pval: { $lt: maxPValue },
-      pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
-      event: getRegexForStrandFilter(strand),
     };
 
     if (gene)
@@ -86,15 +79,13 @@ router.get('/types', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   try {
-    const { maxPValue, hasPeptideEvidence, strand } = JSON.parse(filters) as SplicingEventsFilters;
+    const { maxPValue } = JSON.parse(filters) as SplicingEventsFilters;
 
     const counts: { _id: string; count: number }[] = await SplicingDPSI.aggregate([
       {
         $match: {
           project,
           pval: { $lt: maxPValue },
-          pepEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
-          event: getRegexForStrandFilter(strand),
         },
       },
       {

@@ -59,7 +59,7 @@ const SingleSelect = ({
     containerEl?.appendChild(clonedMenuEl!);
   };
 
-  const debouncedOptions = debounce(options, 500, { leading: true });
+  const debouncedOptions = debounce(options, 250, { leading: true });
 
   return (
     <div {...props}>

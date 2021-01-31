@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme) => ({
   projectItemCard: {
     marginLeft: '2rem',
     width: '100%',
-    height: '30rem',
+    height: '35.1rem',
     position: 'relative',
   },
   figureContainer: {

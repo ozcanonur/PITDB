@@ -14,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     width: '100%',
     height: 'max-content',
-    marginTop: '2rem',
+    marginBottom: '2rem',
   },
   figuresContainer: {
     display: 'flex',

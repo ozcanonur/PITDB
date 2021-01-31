@@ -1,7 +1,6 @@
 export type TranscriptUsageTableFilters = {
   gene: string;
   maxPValue: number;
-  hasPeptideEvidence: [string?, string?];
 };
 
 export type TranscriptUsagesResponse = {

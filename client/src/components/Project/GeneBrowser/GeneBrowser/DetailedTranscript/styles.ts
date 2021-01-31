@@ -56,6 +56,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
     textAlign: 'center',
     height: 30,
+    minWidth: '4rem',
   },
   transcriptLabelId: {
     fontSize: '1.4rem',

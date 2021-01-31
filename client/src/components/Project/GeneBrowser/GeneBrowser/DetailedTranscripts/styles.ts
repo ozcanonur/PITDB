@@ -120,7 +120,6 @@ export const useStyles = makeStyles((theme) => ({
     left: '28rem',
     overflow: 'auto',
     width: 'calc(100% - 30rem)',
-    height: 'auto',
     bottom: 0,
   },
   scrollDragContainer: {

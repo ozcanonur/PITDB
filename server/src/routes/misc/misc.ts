@@ -8,8 +8,6 @@ const router = express.Router();
 router.get('/condition-types', async (req: ExtendedRequest, res) => {
   const { project } = req.query;
 
-  console.log(project);
-
   try {
     const projectConfig = await Config.findOne({ project });
 

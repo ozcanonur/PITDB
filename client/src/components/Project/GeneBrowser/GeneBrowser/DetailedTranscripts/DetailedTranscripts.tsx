@@ -75,9 +75,10 @@ const DetailedTranscriptsVirtualLists = memo(
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
-
+  // When the user clicks an exon on the transcripts overview
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
+
+  const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
 
   const dispatch = useDispatch();
 
@@ -165,7 +166,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
         />
       </ScrollContainer>
       {/* This is for regular scroll on the transcripts
-       *  We have to do this because hideScrollbars={true} on ScrollContainer library is buggy
+       *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
         handleScroll={handleRegularScroll}

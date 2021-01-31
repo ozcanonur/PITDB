@@ -54,6 +54,14 @@ const GeneBrowser = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
+  // Return to initial state on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(setGeneBrowserFilters({ gene: 'ACAT2', condition: 'Nsi', minQual: 250, minTPM: 0.5 }));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
       project,
@@ -107,9 +115,10 @@ const GeneBrowser = ({ ...props }) => {
 
   return (
     <ProjectItemCard
-      name={`Transcript browser for ${filters.gene}`}
+      name={`Gene browser for ${filters.gene}`}
       className={classes.projectItemCard}
       {...props}
+      style={{ minHeight: loading || transcriptsData.transcripts.length === 0 ? '75vh' : 'auto' }}
     >
       <div className={classes.filtersContainer}>
         <SingleSelect

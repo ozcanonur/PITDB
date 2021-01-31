@@ -10,6 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem 4rem',
     paddingBottom: '0.5rem',
     position: 'relative',
+    minHeight: '53.3rem',
   },
   multiSelect: {
     display: 'flex',
@@ -22,7 +23,10 @@ export const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     padding: '1rem 2rem',
     paddingTop: '2rem',
-    justifyContent: 'space-between',
+
+    '& > div:not(:last-child)': {
+      marginRight: '4rem',
+    },
   },
   singleSelect: {
     display: 'flex',

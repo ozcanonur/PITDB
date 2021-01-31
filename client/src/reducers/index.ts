@@ -90,7 +90,6 @@ const splicingEventsFilters = (
     gene: '',
     maxPValue: 0.05,
     hasPeptideEvidence: ['true'],
-    strand: ['-', '+'],
   },
   action: SetSplicingEventsFiltersAction
 ) => {
@@ -115,7 +114,7 @@ const selectedSplicingEvent = (
 };
 
 const transcriptUsageFilters = (
-  state: TranscriptUsageTableFilters = { gene: '', maxPValue: 0.05, hasPeptideEvidence: ['true', 'false'] },
+  state: TranscriptUsageTableFilters = { gene: '', maxPValue: 0.05 },
   action: SetTranscriptUsageFiltersAction
 ) => {
   switch (action.type) {

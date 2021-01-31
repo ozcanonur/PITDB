@@ -104,6 +104,22 @@ const MutationsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);
 
+  // Return to initial state on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(
+        setMutationFilters({
+          gene: '',
+          variantType: ['SNP', 'DEL', 'INS'],
+          inCDS: ['true'],
+          hasPeptideEvidence: ['false'],
+          isSynonymous: ['true', 'false'],
+        })
+      );
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
@@ -174,8 +190,7 @@ const MutationsTable = ({ ...props }) => {
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.multiSelectContainer}>
-          {/* <MultiSelect
+        {/* <MultiSelect
             name='Synonymous'
             options={[
               { value: 'true', label: 'true' },
@@ -187,44 +202,43 @@ const MutationsTable = ({ ...props }) => {
             }
             className={classes.multiSelect}
           /> */}
-          <MultiSelect
-            name='Type'
-            options={[
-              { value: 'SNP', label: 'SNP' },
-              { value: 'DEL', label: 'DEL' },
-              { value: 'INS', label: 'INS' },
-            ]}
-            defaultValues={['SNP', 'DEL', 'INS']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'variantType')
-            }
-            className={classes.multiSelect}
-          />
-          <MultiSelect
-            name='In CDS'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['true']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
-            }
-            className={classes.multiSelect}
-          />
-          <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['false']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
-            }
-            className={classes.multiSelect}
-          />
-        </div>
+        <MultiSelect
+          name='Type'
+          options={[
+            { value: 'SNP', label: 'SNP' },
+            { value: 'DEL', label: 'DEL' },
+            { value: 'INS', label: 'INS' },
+          ]}
+          defaultValues={['SNP', 'DEL', 'INS']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'variantType')
+          }
+          className={classes.multiSelect}
+        />
+        <MultiSelect
+          name='In CDS'
+          options={[
+            { value: 'true', label: 'true' },
+            { value: 'false', label: 'false' },
+          ]}
+          defaultValues={['true']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
+          }
+          className={classes.multiSelect}
+        />
+        <MultiSelect
+          name='Peptide evidence'
+          options={[
+            { value: 'true', label: 'true' },
+            { value: 'false', label: 'false' },
+          ]}
+          defaultValues={['false']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
+          }
+          className={classes.multiSelect}
+        />
       </div>
       <Table
         tableData={tableData}

@@ -11,7 +11,6 @@ const TranscriptUsageWrapper = () => {
 
   return (
     <div className={classes.container}>
-      <TranscriptViewer />
       <div className={classes.tableAndFigures}>
         <TranscriptUsageTable />
         <div className={classes.figuresContainer}>
@@ -19,6 +18,7 @@ const TranscriptUsageWrapper = () => {
           <ConfidenceIntervalChart />
         </div>
       </div>
+      <TranscriptViewer />
     </div>
   );
 };

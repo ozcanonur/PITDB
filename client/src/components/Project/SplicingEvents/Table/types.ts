@@ -2,7 +2,6 @@ export type SplicingEventsTableFilters = {
   gene: string;
   maxPValue: number;
   hasPeptideEvidence: [string?, string?];
-  strand: [string?, string?];
 };
 
 export type SplicingEventsResponse = {

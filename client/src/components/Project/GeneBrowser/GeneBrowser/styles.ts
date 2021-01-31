@@ -4,16 +4,13 @@ export const useStyles = makeStyles((theme) => ({
   projectItemCard: {
     position: 'relative',
     width: '100%',
-    minHeight: '48rem',
     paddingBottom: '2rem',
   },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: '0 2rem',
-    paddingTop: '2rem',
-    paddingBottom: '3.5rem',
+    padding: '2rem',
 
     '& > div:not(:last-child)': {
       marginRight: '6rem',

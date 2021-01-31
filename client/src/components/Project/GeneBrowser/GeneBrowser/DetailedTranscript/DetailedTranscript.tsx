@@ -70,6 +70,7 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   const nucleotideColor = getNucleotideColor(nucleotide);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
+  // -3 because it looks better
   const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
 
   // @ts-ignore
@@ -122,15 +123,17 @@ const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
   const aminoacid = sequence.slice((index - start - 1) / 3, (index - start - 1) / 3 + 1);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
+  // -3 because it looks better
   const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
 
   return (
     <g style={style}>
       <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+      {/* +0.5 because it looks better */}
       {(index - start) % 3 === 0 ? (
         <line
-          x1={index * BOX_HEIGHT}
-          x2={index * BOX_HEIGHT}
+          x1={index * BOX_HEIGHT + 0.5}
+          x2={index * BOX_HEIGHT + 0.5}
           y1={0}
           y2={BOX_HEIGHT}
           className={classes.divider}
@@ -166,8 +169,8 @@ const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
           {index === start || index === end + 1 ? (
             <line
               className={classes.divider}
-              x1={index * BOX_HEIGHT}
-              x2={index * BOX_HEIGHT}
+              x1={index * BOX_HEIGHT + 0.5}
+              x2={index * BOX_HEIGHT + 0.5}
               y1={0}
               y2={BOX_HEIGHT}
             />
