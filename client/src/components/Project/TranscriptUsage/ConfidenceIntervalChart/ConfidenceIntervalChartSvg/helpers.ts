@@ -2,7 +2,7 @@ import { ConditionsByGeneNameResponse } from 'components/Project/TranscriptUsage
 import { ChartValue } from './types';
 import { std } from 'mathjs';
 
-const getAvg = (values: number[]) => values.reduce((prev, curr) => prev + curr) / values.length;
+const getAvg = (values: number[]) => values.reduce((prev, curr) => prev + curr, 0) / values.length;
 
 export const getCi = (values: number[]) => {
   const sd = std(values, 'biased');
@@ -29,7 +29,6 @@ export const makeChartValues = (data: ConditionsByGeneNameResponse) => {
 
     Object.keys(data[transcript]).forEach((conditionName) => {
       const conditionValue: any = { conditionName, avg: 0, ci: 0 };
-
       const conditionAvg = getAvg(data[transcript][conditionName]);
       const conditionCi = getCi(data[transcript][conditionName]);
       conditionValue.avg = conditionAvg;

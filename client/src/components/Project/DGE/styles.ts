@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: '2rem',
     paddingBottom: '4rem',
+    overflowX: 'hidden',
   },
   figuresContainer: {
     display: 'flex',

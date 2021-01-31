@@ -1,5 +1,5 @@
 import { HTMLAttributes, SVGAttributes } from 'react';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import { FixedSizeList } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
 
@@ -89,7 +89,17 @@ export type RelativePeptidePositionsAndSequences = {
   }[];
 }[];
 
-export interface VirtualListChildComponentProps extends ListChildComponentProps {
-  renderedRange?: { start: number; stop: number };
-  scrollDirection?: 'forward' | 'backward';
-}
+export type DetailedTranscriptsVirtualListsProps = {
+  transcripts: Transcript[];
+  minimumPosition: number;
+  maximumPosition: number;
+  refs: {
+    exonRef: VirtualRef;
+    cdsRefs?: VirtualRef[][] | undefined;
+  }[];
+};
+
+// export interface VirtualListChildComponentProps extends ListChildComponentProps {
+//   renderedRange?: { start: number; stop: number };
+//   scrollDirection?: 'forward' | 'backward';
+// }

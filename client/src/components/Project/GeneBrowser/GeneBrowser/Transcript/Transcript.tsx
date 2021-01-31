@@ -1,4 +1,5 @@
 import { createRef } from 'react';
+import { useDispatch } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
 import max from 'lodash/max';
@@ -13,6 +14,7 @@ import {
   getCDSStartsAndEnds,
 } from '../DetailedTranscript/helpers';
 import { useStyles } from './styles';
+import { setGeneBrowserScrollJumpPosition } from 'actions';
 
 const RAIL_LENGTH = 540;
 const RAIL_HEIGHT = 1;
@@ -45,6 +47,12 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const svgVerticalViewbox =
     EXON_HEIGHT + (transcriptVisualLineCount - 1) * CDS_HEIGHT + transcriptVisualLineCount * 2;
 
+  const dispatch = useDispatch();
+
+  const handleClickExon = (pos: number) => {
+    dispatch(setGeneBrowserScrollJumpPosition(pos));
+  };
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -53,34 +61,32 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
       {...props}
     >
       {/* This is the rail */}
-      <g>
-        <rect
-          x={pixelPerValue * (minExonStart - minimumPosition)}
-          y={4.5}
-          width={pixelPerValue * (maxExonStart - minExonStart)}
-          height={RAIL_HEIGHT}
-          className={classes.rail}
-        />
-      </g>
+      <rect
+        x={pixelPerValue * (minExonStart - minimumPosition)}
+        y={4.5}
+        width={pixelPerValue * (maxExonStart - minExonStart)}
+        height={RAIL_HEIGHT}
+        className={classes.rail}
+      />
       {/* These are the exon boxes */}
-      <g>
-        {transcript.exons.map(({ genomeStart, genomeEnd }, index) => {
-          const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
-          const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
+      {transcript.exons.map(({ genomeStart, genomeEnd }, index) => {
+        const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
+        const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
 
-          return (
-            <g key={index}>
-              <rect
-                className={classes.exon}
-                ref={exonRef}
-                x={exonStartingPosition}
-                width={exonWidth}
-                height={EXON_HEIGHT}
-              />
-            </g>
-          );
-        })}
-      </g>
+        return (
+          <rect
+            key={index}
+            className={classes.exon}
+            ref={exonRef}
+            x={exonStartingPosition}
+            width={exonWidth}
+            height={EXON_HEIGHT}
+            onClick={() => handleClickExon(exonStartingPosition / pixelPerValue)}
+          >
+            <title>Jump to this exon</title>
+          </rect>
+        );
+      })}
       {/* These are the CDS */}
       {cdsPositions.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
         const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
@@ -130,17 +136,15 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
         );
       })}
       {/* These are the mutations */}
-      <g>
-        {mutationPositions.map((pos, index) => (
-          <rect
-            key={index}
-            className={classes.mutation}
-            x={pos}
-            width={MUTATION_WIDTH}
-            height={MUTATION_HEIGHT}
-          />
-        ))}
-      </g>
+      {mutationPositions.map((pos, index) => (
+        <rect
+          key={index}
+          className={classes.mutation}
+          x={pos}
+          width={MUTATION_WIDTH}
+          height={MUTATION_HEIGHT}
+        />
+      ))}
     </svg>
   );
 };

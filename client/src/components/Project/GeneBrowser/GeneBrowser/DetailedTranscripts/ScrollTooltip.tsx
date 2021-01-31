@@ -11,7 +11,7 @@ import { TranscriptsResponse } from '../../types';
 const TranscriptTooltipPositionLine = () => {
   const classes = useStyles();
 
-  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
+  const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   return (
     <div

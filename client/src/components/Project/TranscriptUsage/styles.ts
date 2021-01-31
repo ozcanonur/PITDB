@@ -8,6 +8,7 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem',
     paddingBottom: '4rem',
     flexDirection: 'column',
+    overflowX: 'hidden',
   },
   tableAndFigures: {
     display: 'flex',

@@ -3,7 +3,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   svg: {
     direction: 'ltr',
-    overflow: 'clip',
   },
   textContainer: {
     cursor: 'pointer',
@@ -25,6 +24,10 @@ export const useStyles = makeStyles((theme) => ({
   exon: {
     fill: theme.palette.primary.main,
     cursor: 'pointer',
+
+    '&:hover': {
+      fill: '#6b88a2',
+    },
   },
   tooltipText: {
     fontSize: '0.65rem',
@@ -33,7 +36,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   cds: {
     fill: '#FFDE4D',
-    cursor: 'pointer',
   },
   mutation: {
     fill: '#ED0909',

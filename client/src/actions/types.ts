@@ -19,6 +19,7 @@ export enum ACTION {
   SELECT_GENE_BROWSER_GENE,
   SET_GENE_BROWSER_BOX_HEIGHT,
   SET_GENE_BROWSER_SCROLL_POSITION,
+  SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
 }
 
 export type SetMutationFiltersAction = {
@@ -100,7 +101,10 @@ export type SetGeneBrowserBoxHeight = {
 
 export type SetGeneBrowserScrollPosition = {
   type: ACTION.SET_GENE_BROWSER_SCROLL_POSITION;
-  payload: {
-    scrollPosition: number;
-  };
+  payload: number;
+};
+
+export type SetGeneBrowserScrollJumpPosition = {
+  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION;
+  payload: number;
 };

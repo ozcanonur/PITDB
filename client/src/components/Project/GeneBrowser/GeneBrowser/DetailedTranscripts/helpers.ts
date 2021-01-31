@@ -37,6 +37,8 @@ export const scrollVirtualRefs = (
     .flat();
 
   // Scroll all the children transcript virtualized lists
+  // Won't be scrolled in the cycle between drag and regular scroll
+  // Because scrollTo() checks if the element is already at scrollLeft position
   flattenedRefs.forEach((e: VirtualRef | VirtualRef[]) => {
     if (e instanceof Array) {
       const flattened = e.flat();

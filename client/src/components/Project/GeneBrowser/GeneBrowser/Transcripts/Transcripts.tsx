@@ -15,7 +15,7 @@ const PositionLine = ({
 }) => {
   const classes = useStyles();
 
-  const { scrollPosition } = useSelector((state: RootState) => state.geneBrowserScrollPosition);
+  const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   const maxTranscriptWidth = maximumPosition - minimumPosition;
 
@@ -80,7 +80,6 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
           />
         </div>
       ))}
-
       <PositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
     </div>
   );

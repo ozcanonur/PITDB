@@ -85,6 +85,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   scrollTooltipContainer: {
     position: 'fixed',
+    willChange: 'transform',
     bottom: '2.3rem',
     backgroundColor: 'white',
     boxShadow: '5px 5px 10px 10px rgba(154,160,185,.15), 15px 15px 40px 10px rgba(166,173,201,.2)',

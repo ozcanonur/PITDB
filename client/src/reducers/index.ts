@@ -15,6 +15,7 @@ import {
   SetGeneBrowserFiltersAction,
   SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
+  SetGeneBrowserScrollJumpPosition,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -172,10 +173,19 @@ const geneBrowserBoxHeight = (state = { boxHeight: 30 }, action: SetGeneBrowserB
   }
 };
 
-const geneBrowserScrollPosition = (state = { scrollPosition: 0 }, action: SetGeneBrowserScrollPosition) => {
+const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPosition) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_POSITION:
-      return { ...action.payload };
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
+const geneBrowserScrollJumpPosition = (state = 0, action: SetGeneBrowserScrollJumpPosition) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION:
+      return action.payload;
     default:
       return state;
   }
@@ -195,4 +205,5 @@ export default combineReducers({
   geneBrowserFilters,
   geneBrowserBoxHeight,
   geneBrowserScrollPosition,
+  geneBrowserScrollJumpPosition,
 });

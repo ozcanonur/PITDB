@@ -3,7 +3,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   svg: {
     direction: 'ltr',
-    overflow: 'clip',
   },
   transcriptText: {
     color: '#336',

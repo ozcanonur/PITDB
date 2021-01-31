@@ -12,9 +12,12 @@ export const useStyles = makeStyles((theme) => ({
   cdsBackground: {
     fill: theme.palette.secondary.light,
   },
+  railContainer: {
+    position: 'fixed',
+  },
   rail: {
     stroke: theme.palette.primary.main,
-    strokeWidth: 2,
+    strokeWidth: 4,
   },
   divider: {
     stroke: theme.palette.primary.main,
@@ -32,6 +35,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   detailedTranscript: {
     flexGrow: 1,
+    transform: 'translateZ(0)',
   },
   transcriptLabelContainer: {
     display: 'flex',
@@ -64,9 +68,6 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     height: 30,
     paddingTop: '0.7rem',
-  },
-  virtualizedList: {
-    overflow: 'hidden !important',
   },
   nucleotideContainer: {
     animation: 'bounce 1s',
