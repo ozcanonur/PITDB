@@ -14,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingTop: '2rem',
 
     '& > div:not(:last-child)': {
-      marginRight: '6rem',
+      marginRight: '4rem',
     },
   },
   singleSelect: {

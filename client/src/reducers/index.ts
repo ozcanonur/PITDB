@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import {
   ACTION,
+  SetConditionTypes,
   SelectMutationAction,
   SetMutationFiltersAction,
   SetDGEFiltersAction,
@@ -23,6 +24,15 @@ import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
 import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
+
+const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
+  switch (action.type) {
+    case ACTION.SET_CONDITION_TYPES:
+      return [...action.payload];
+    default:
+      return state;
+  }
+};
 
 const mutationFilters = (
   state: MutationTableFilters = {
@@ -182,16 +192,20 @@ const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPositi
   }
 };
 
-const geneBrowserScrollJumpPosition = (state = 0, action: SetGeneBrowserScrollJumpPosition) => {
+const geneBrowserScrollJumpPosition = (
+  state = { scrollPosition: 0 },
+  action: SetGeneBrowserScrollJumpPosition
+) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION:
-      return action.payload;
+      return { ...action.payload };
     default:
       return state;
   }
 };
 
 export default combineReducers({
+  conditionTypes,
   mutationFilters,
   selectedMutation,
   DGEFilters,

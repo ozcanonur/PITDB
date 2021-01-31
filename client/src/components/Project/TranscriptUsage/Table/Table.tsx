@@ -16,7 +16,7 @@ import {
   selectTranscriptViewerTranscript,
   selectTranscriptViewerTranscriptColor,
 } from 'actions';
-import { parseDiscreteSliderMarks } from './helpers';
+import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 import { TranscriptUsagesResponse, TranscriptUsageGeneNamesResponse } from './types';
 import { COLORS } from 'variables/transcriptViewerColors';
@@ -25,6 +25,8 @@ const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
   const filters = useSelector((state: RootState) => state.transcriptUsageFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
@@ -181,6 +183,8 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setTranscriptUsageFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 
+  const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
+
   return (
     <ProjectItemCard className={classes.container} name='Transcript Usage' {...props}>
       <div className={classes.filtersContainer}>
@@ -188,6 +192,15 @@ const SplicingEventsTable = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
+          className={classes.singleSelect}
+        />
+        {/* WOOP, no handle change for now */}
+        <SingleSelect
+          name='Conditions'
+          options={versusConditionTypes}
+          isAsync={false}
+          defaultInputValue={versusConditionTypes[0]}
+          onChange={() => {}}
           className={classes.singleSelect}
         />
         <DiscreteSlider

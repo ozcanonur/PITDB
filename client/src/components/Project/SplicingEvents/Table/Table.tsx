@@ -12,7 +12,7 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
-import { parseDiscreteSliderMarks } from './helpers';
+import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 import { SplicingEventsResponse, SplicingEventsGeneNamesResponse } from './types';
 
@@ -20,6 +20,8 @@ const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
@@ -178,6 +180,8 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setSplicingEventsFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 
+  const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
+
   return (
     <ProjectItemCard className={classes.container} name='Splicing Events' {...props}>
       <div className={classes.filtersContainer}>
@@ -187,38 +191,45 @@ const SplicingEventsTable = ({ ...props }) => {
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.multiSelectContainer}>
-          <MultiSelect
-            name='Strand'
-            options={[
-              { value: '-', label: '-' },
-              { value: '+', label: '+' },
-            ]}
-            defaultValues={['-', '+']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'strand')
-            }
-            className={classes.multiSelect}
-          />
-          <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['true']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
-            }
-            className={classes.multiSelect}
-          />
-          <DiscreteSlider
-            name='Max. p value'
-            defaultValue={0.05}
-            marks={parseDiscreteSliderMarks(pValueMarks)}
-            onChangeCommited={onPValueChangeCommited}
-          />
-        </div>
+        {/* WOOP, no handle change for now */}
+        <SingleSelect
+          name='Conditions'
+          options={versusConditionTypes}
+          isAsync={false}
+          defaultInputValue={versusConditionTypes[0]}
+          onChange={() => {}}
+          className={classes.singleSelect}
+        />
+        {/* <MultiSelect
+          name='Strand'
+          options={[
+            { value: '-', label: '-' },
+            { value: '+', label: '+' },
+          ]}
+          defaultValues={['-', '+']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'strand')
+          }
+          className={classes.multiSelect}
+        /> */}
+        <MultiSelect
+          name='Peptide evidence'
+          options={[
+            { value: 'true', label: 'true' },
+            { value: 'false', label: 'false' },
+          ]}
+          defaultValues={['true']}
+          onChange={(selectedOptions, _actionMeta) =>
+            multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
+          }
+          className={classes.multiSelect}
+        />
+        <DiscreteSlider
+          name='Max. p value'
+          defaultValue={0.05}
+          marks={parseDiscreteSliderMarks(pValueMarks)}
+          onChangeCommited={onPValueChangeCommited}
+        />
       </div>
       <Table
         tableData={tableData}

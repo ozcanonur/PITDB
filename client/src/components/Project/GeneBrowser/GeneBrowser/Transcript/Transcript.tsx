@@ -49,8 +49,8 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
 
   const dispatch = useDispatch();
 
-  const handleClickExon = (pos: number) => {
-    dispatch(setGeneBrowserScrollJumpPosition(pos));
+  const handleExonClick = (pos: number) => {
+    dispatch(setGeneBrowserScrollJumpPosition(pos / pixelPerValue));
   };
 
   return (
@@ -81,7 +81,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
             x={exonStartingPosition}
             width={exonWidth}
             height={EXON_HEIGHT}
-            onClick={() => handleClickExon(exonStartingPosition / pixelPerValue)}
+            onClick={() => handleExonClick(exonStartingPosition)}
           >
             <title>Jump to this exon</title>
           </rect>
@@ -121,7 +121,9 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
               width={(cdsEnd - cdsStart + 1) * pixelPerValue}
               height={CDS_HEIGHT}
               ref={cdsRef}
-            />
+            >
+              <title>CDS</title>
+            </rect>
             {relativePeptidePositionsAndSequences.map(({ start, end }, index) => (
               <rect
                 key={index}
@@ -130,7 +132,9 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
                 y={CDS_HEIGHT + translateYAmount + 2}
                 width={(end - start + 1) * pixelPerValue}
                 height={CDS_HEIGHT}
-              />
+              >
+                <title>Peptide</title>
+              </rect>
             ))}
           </g>
         );
@@ -143,7 +147,9 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
           x={pos}
           width={MUTATION_WIDTH}
           height={MUTATION_HEIGHT}
-        />
+        >
+          <title>Mutation</title>
+        </rect>
       ))}
     </svg>
   );

@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     height: '30rem',
     position: 'relative',
     maxHeight: '40rem',
+    minHeight: '35rem',
   },
   figureContainer: {
     transition: 'all .3s ease-in-out',

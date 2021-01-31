@@ -5,6 +5,7 @@ interface GenericObject {
 }
 
 interface RootState {
+  conditionTypes: string[];
   mutationFilters: import('components/Project/Mutations/Table/types').MutationTableFilters;
   selectedMutation: {
     gene: string;
@@ -33,5 +34,5 @@ interface RootState {
   geneBrowserFilters: import('components/Project/GeneBrowser/types').GeneBrowserFilters;
   geneBrowserBoxHeight: { boxHeight: number };
   geneBrowserScrollPosition: number;
-  geneBrowserScrollJumpPosition: number;
+  geneBrowserScrollJumpPosition: { scrollPosition: number };
 }

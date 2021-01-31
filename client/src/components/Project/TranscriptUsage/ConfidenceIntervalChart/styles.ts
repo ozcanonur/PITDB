@@ -14,4 +14,11 @@ export const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
     transition: 'all .3s ease-in-out',
   },
+  confidenceIntervalChartContainer: {
+    padding: '2.5rem 1rem 5rem',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }));

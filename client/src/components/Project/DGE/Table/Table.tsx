@@ -11,7 +11,7 @@ import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
-import { parseDiscreteSliderMarks } from './helpers';
+import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
 import { setDGEFilters, selectDGE } from 'actions';
 import { DGESResponse, SymbolNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
@@ -20,6 +20,8 @@ const DGETable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
   const filters = useSelector((state: RootState) => state.DGEFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Symbol',
@@ -191,6 +193,8 @@ const DGETable = ({ ...props }) => {
   //   dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
   // };
 
+  const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
+
   return (
     <ProjectItemCard className={classes.container} name='Differential Gene Expressions' {...props}>
       <div className={classes.filtersContainer}>
@@ -200,8 +204,16 @@ const DGETable = ({ ...props }) => {
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
         />
-        <div className={classes.filtersSubContainer}>
-          {/* <MultiSelect
+        {/* WOOP, no handle change for now */}
+        <SingleSelect
+          name='Conditions'
+          options={versusConditionTypes}
+          isAsync={false}
+          defaultInputValue={versusConditionTypes[0]}
+          onChange={() => {}}
+          className={classes.singleSelect}
+        />
+        {/* <MultiSelect
             name='Peptide evidence'
             options={[
               { value: 'true', label: 'true' },
@@ -213,19 +225,18 @@ const DGETable = ({ ...props }) => {
             }
             className={classes.multiSelect}
           /> */}
-          <DiscreteSlider
-            name='Max. p value'
-            defaultValue={0.05}
-            marks={parseDiscreteSliderMarks(pValueMarks)}
-            onChangeCommited={onPValueChangeCommited}
-          />
-          <DiscreteSlider
-            name='Min. abs. fold change'
-            defaultValue={1}
-            marks={parseDiscreteSliderMarks(foldChangeMarks)}
-            onChangeCommited={onFoldChangeCommited}
-          />
-        </div>
+        <DiscreteSlider
+          name='Max. p value'
+          defaultValue={0.05}
+          marks={parseDiscreteSliderMarks(pValueMarks)}
+          onChangeCommited={onPValueChangeCommited}
+        />
+        <DiscreteSlider
+          name='Min. abs. fold change'
+          defaultValue={1}
+          marks={parseDiscreteSliderMarks(foldChangeMarks)}
+          onChangeCommited={onFoldChangeCommited}
+        />
       </div>
       <Table
         tableData={tableData}

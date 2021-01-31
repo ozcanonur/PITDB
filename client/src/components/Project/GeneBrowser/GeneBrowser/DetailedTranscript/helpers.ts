@@ -241,25 +241,25 @@ export const getRelativePeptidePositionsAndSequences = (
   return relativePeptidePositionsAndSequences;
 };
 
-export const getAnimationString = (
-  index: number,
-  renderedRange: { start: number; stop: number },
-  scrollDirection: 'forward' | 'backward'
-) => {
-  const { start: renderStartIndex, stop: renderStopIndex } = renderedRange;
+// export const getAnimationString = (
+//   index: number,
+//   renderedRange: { start: number; stop: number },
+//   scrollDirection: 'forward' | 'backward'
+// ) => {
+//   const { start: renderStartIndex, stop: renderStopIndex } = renderedRange;
 
-  const animationName =
-    index % 4 === 0
-      ? 'slide-down'
-      : index % 4 === 1
-      ? 'slide-left'
-      : index % 4 === 2
-      ? 'slide-up'
-      : 'slide-right';
-  const animation =
-    scrollDirection === 'forward'
-      ? `${animationName} ${(index - renderStartIndex) / 100}s`
-      : `${animationName} ${(renderStopIndex - index) / 100}s`;
+//   const animationName =
+//     index % 4 === 0
+//       ? 'slide-down'
+//       : index % 4 === 1
+//       ? 'slide-left'
+//       : index % 4 === 2
+//       ? 'slide-up'
+//       : 'slide-right';
+//   const animation =
+//     scrollDirection === 'forward'
+//       ? `${animationName} ${(index - renderStartIndex) / 100}s`
+//       : `${animationName} ${(renderStopIndex - index) / 100}s`;
 
-  return animation;
-};
+//   return animation;
+// };

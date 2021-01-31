@@ -24,6 +24,7 @@ const GeneBrowser = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
@@ -118,16 +119,12 @@ const GeneBrowser = ({ ...props }) => {
           defaultInputValue='ACAT2'
           className={classes.singleSelect}
         />
-        {/* WOOP, hardcode conditions */}
         <SingleSelect
           name='Condition'
           onChange={conditionFilterOnChange}
           className={classes.singleSelect}
           isAsync={false}
-          options={[
-            { value: 'Nsi', label: 'Nsi' },
-            { value: 'si', label: 'si' },
-          ]}
+          options={conditionTypes}
           defaultInputValue={filters.condition}
         />
         <DiscreteSlider

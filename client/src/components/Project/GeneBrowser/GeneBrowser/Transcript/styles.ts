@@ -24,6 +24,7 @@ export const useStyles = makeStyles((theme) => ({
   exon: {
     fill: theme.palette.primary.main,
     cursor: 'pointer',
+    transition: 'all .1s',
 
     '&:hover': {
       fill: '#6b88a2',

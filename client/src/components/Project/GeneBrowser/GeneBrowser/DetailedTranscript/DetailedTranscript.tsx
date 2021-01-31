@@ -182,6 +182,7 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
   const classes = useStyles();
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const { minimumPosition, maximumPosition, transcript } = transcriptData;
 
@@ -196,7 +197,7 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
         <div className={classes.transcriptNameContainer}>
           <div
             className={classes.transcriptLabelCondition}
-            style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+            style={{ backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
           >
             {filters.condition}
           </div>

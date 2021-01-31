@@ -6,6 +6,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import compression from 'compression';
 
+import miscRouter from './routes/misc/misc';
 import mutationsRouter from './routes/mutations/mutations';
 import dgesRouter from './routes/dges/dges';
 import splicingEventsRouter from './routes/splicingEvents/splicingEvents';
@@ -34,6 +35,7 @@ app.use(cors<Request>());
 import './db/mongoose';
 
 // Routes
+app.use('/api/misc', miscRouter);
 app.use('/api/mutations', mutationsRouter);
 app.use('/api/dges', dgesRouter);
 app.use('/api/splicing-events', splicingEventsRouter);

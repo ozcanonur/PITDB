@@ -42,12 +42,7 @@ const VolcanoPlot = ({ ...props }) => {
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
 
   return (
-    <ProjectItemCard
-      name='Volcano plot'
-      className={classes.projectItemCard}
-      style={{ minHeight: '35rem' }}
-      {...props}
-    >
+    <ProjectItemCard name='Volcano plot' className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ResponsiveScatterPlotCanvas

@@ -70,6 +70,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     marginRight: '2rem',
     alignItems: 'flex-start',
+    minWidth: '24rem',
   },
   transcriptIdCondition: {
     marginRight: '5.5rem',
@@ -80,12 +81,20 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
     textAlign: 'center',
   },
+  transcriptPositionLineContainer: {
+    position: 'absolute',
+    height: '100%',
+    left: '28rem',
+    top: 0,
+    width: 'calc(100% - 30rem)',
+  },
   transcriptPositionLine: {
     backgroundColor: 'rgba(217, 33, 122, 0.7)',
     position: 'absolute',
     left: 0,
     bottom: 0,
     width: '2px',
+    height: 'calc(100% + 2rem)',
   },
   transcriptPositionText: {
     fontSize: '1.4rem',

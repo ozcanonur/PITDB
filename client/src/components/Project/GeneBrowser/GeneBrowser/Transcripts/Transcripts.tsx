@@ -22,15 +22,7 @@ const PositionLine = ({
   const currentGenomePosition = Math.floor(minimumPosition + (maxTranscriptWidth * scrollPosition) / 100);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        height: '100%',
-        left: '28rem',
-        top: 0,
-        width: 'calc(100% - 30rem)',
-      }}
-    >
+    <div className={classes.transcriptPositionLineContainer}>
       <div
         className={classes.transcriptPositionText}
         style={{
@@ -44,7 +36,6 @@ const PositionLine = ({
         className={classes.transcriptPositionLine}
         style={{
           left: scrollPosition > 99.6 ? '100%' : `${scrollPosition}%`,
-          height: 'calc(100% + 2rem)',
         }}
       />
     </div>
@@ -55,6 +46,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
   const classes = useStyles();
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const { maximumPosition, minimumPosition } = transcriptsData;
 
@@ -62,10 +54,10 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
     <div className={classes.transcriptsOverviewContainer}>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
-          <div className={classes.transcriptIdContainer} style={{ minWidth: '24rem' }}>
+          <div className={classes.transcriptIdContainer}>
             <div
               className={classes.transcriptIdCondition}
-              style={{ backgroundColor: filters.condition === 'Nsi' ? '#336' : '#6B88A2' }}
+              style={{ backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
             >
               {filters.condition}
             </div>

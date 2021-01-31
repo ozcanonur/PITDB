@@ -130,7 +130,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     if (!scrollRef.current || !dragScrollRef.current) return;
 
     // Only scrolling this is enough to trigger other scrolls
-    scrollRef.current.scrollTo({ left: scrollJumpPosition * BOX_HEIGHT - BOX_HEIGHT });
+    scrollRef.current.scrollTo({ left: scrollJumpPosition.scrollPosition * BOX_HEIGHT - BOX_HEIGHT });
   }, [scrollJumpPosition]);
 
   useEffect(() => {
@@ -150,7 +150,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           refs={virtualizedListRefsList}
         />
       </div>
-      {/* This is for drag scroll on the transcripts */}
+      {/* This is for drag scroll on the transcripts, scroll-container class is library req. */}
       <ScrollContainer
         className={`${classes.scrollDragContainer} scroll-container`}
         onScroll={handleDragScroll}

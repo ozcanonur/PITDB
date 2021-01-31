@@ -5,8 +5,6 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     direction: 'rtl',
     minHeight: '25rem',
-    // overflow: 'auto',
-    // marginTop: '2rem',
   },
   transcriptViewerContainer: {
     maxHeight: '30rem',

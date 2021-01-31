@@ -97,7 +97,7 @@ const SingleSelect = ({
           defaultValue={{ value: defaultInputValue, label: defaultInputValue }}
           aria-label={`${name} single-select`}
           styles={singleSelectStyles}
-          options={options}
+          options={options.map((option: string) => ({ value: option, label: option }))}
           placeholder={name}
           onChange={onChange}
           // For menu close animation

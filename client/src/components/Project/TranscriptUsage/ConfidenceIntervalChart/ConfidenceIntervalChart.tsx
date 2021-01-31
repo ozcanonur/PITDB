@@ -48,16 +48,7 @@ const ConfidenceChart = ({ ...props }) => {
       {...props}
     >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
-      <div
-        style={{
-          padding: '2.5rem 1rem 5rem',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: loading ? 0 : 1,
-        }}
-      >
+      <div className={classes.confidenceIntervalChartContainer} style={{ opacity: loading ? 0 : 1 }}>
         <ConfidenceIntervalChartSvg data={conditionsData} />
       </div>
     </ProjectItemCard>
