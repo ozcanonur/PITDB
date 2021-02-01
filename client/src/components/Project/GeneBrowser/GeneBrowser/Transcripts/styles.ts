@@ -58,7 +58,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   transcriptOverview: {
     display: 'flex',
-    zIndex: 9999,
+    zIndex: 999,
     position: 'relative',
   },
   transcriptId: {

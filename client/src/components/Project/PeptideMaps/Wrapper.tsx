@@ -4,9 +4,9 @@ const PeptideMapsWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <main className={classes.container}>
       <div className={classes.placeholder}>Peptide Maps, soon.</div>
-    </div>
+    </main>
   );
 };
 

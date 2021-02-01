@@ -109,14 +109,6 @@ const DGETable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);
 
-  // Return to initial state on unmount
-  useEffect(() => {
-    return () => {
-      dispatch(setDGEFilters({ symbol: '', maxPValue: 0.05, minAbsFoldChange: 1 }));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
@@ -211,6 +203,7 @@ const DGETable = ({ ...props }) => {
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
+          defaultInputValue={filters.symbol}
         />
         {/* WOOP, no handle change for now */}
         <SingleSelect
@@ -235,13 +228,13 @@ const DGETable = ({ ...props }) => {
           /> */}
         <DiscreteSlider
           name='Max. p value'
-          defaultValue={0.05}
+          defaultValue={filters.maxPValue}
           marks={parseDiscreteSliderMarks(pValueMarks)}
           onChangeCommited={onPValueChangeCommited}
         />
         <DiscreteSlider
           name='Min. abs. fold change'
-          defaultValue={1}
+          defaultValue={filters.minAbsFoldChange}
           marks={parseDiscreteSliderMarks(foldChangeMarks)}
           onChangeCommited={onFoldChangeCommited}
         />

@@ -25,6 +25,14 @@ import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Ta
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
 import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
 
+import {
+  initialMutationFilters,
+  initialDgeFilters,
+  initialSplicingEventsFilters,
+  initialTranscriptUsageFilters,
+  initialGeneBrowserFilters,
+} from 'variables/initialTableFilters';
+
 const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
   switch (action.type) {
     case ACTION.SET_CONDITION_TYPES:
@@ -35,13 +43,7 @@ const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
 };
 
 const mutationFilters = (
-  state: MutationTableFilters = {
-    gene: '',
-    variantType: ['SNP', 'DEL', 'INS'],
-    inCDS: ['true'],
-    hasPeptideEvidence: ['false'],
-    isSynonymous: ['true', 'false'],
-  },
+  state: MutationTableFilters = initialMutationFilters,
   action: SetMutationFiltersAction
 ) => {
   switch (action.type) {
@@ -64,10 +66,7 @@ const selectedMutation = (
   }
 };
 
-const DGEFilters = (
-  state: DGETableFilters = { symbol: '', maxPValue: 0.05, minAbsFoldChange: 1 },
-  action: SetDGEFiltersAction
-) => {
+const DGEFilters = (state: DGETableFilters = initialDgeFilters, action: SetDGEFiltersAction) => {
   switch (action.type) {
     case ACTION.SET_DGE_FILTERS:
       return { ...action.payload };
@@ -86,11 +85,7 @@ const selectedDGE = (state: { symbol: string } = { symbol: '' }, action: SelectD
 };
 
 const splicingEventsFilters = (
-  state: SplicingEventsTableFilters = {
-    gene: '',
-    maxPValue: 0.05,
-    hasPeptideEvidence: ['true'],
-  },
+  state: SplicingEventsTableFilters = initialSplicingEventsFilters,
   action: SetSplicingEventsFiltersAction
 ) => {
   switch (action.type) {
@@ -114,7 +109,7 @@ const selectedSplicingEvent = (
 };
 
 const transcriptUsageFilters = (
-  state: TranscriptUsageTableFilters = { gene: '', maxPValue: 0.05 },
+  state: TranscriptUsageTableFilters = initialTranscriptUsageFilters,
   action: SetTranscriptUsageFiltersAction
 ) => {
   switch (action.type) {
@@ -162,7 +157,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { gene: 'ACAT2', condition: 'Nsi', minQual: 250, minTPM: 0.5 },
+  state: GeneBrowserFilters = initialGeneBrowserFilters,
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {

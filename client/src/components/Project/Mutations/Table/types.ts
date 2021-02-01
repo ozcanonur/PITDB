@@ -1,9 +1,8 @@
 export type MutationTableFilters = {
   gene: string;
-  variantType: [string?, string?, string?];
-  inCDS: [string?, string?];
-  hasPeptideEvidence: [string?, string?];
-  isSynonymous: [string?, string?];
+  variantType: string[];
+  inCDS: string[];
+  hasPeptideEvidence: string[];
 };
 
 export type MutationsResponse = {

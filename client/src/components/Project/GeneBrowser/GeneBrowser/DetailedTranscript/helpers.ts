@@ -15,13 +15,17 @@ export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   return 1 + totalCdssLineCount;
 };
 
-export const getNucleotideColor = (nucleotide: string) => {
-  let color = '#336';
-  if (nucleotide === 'C') color = '#673f7e';
-  else if (nucleotide === 'T') color = '#6b88a2';
-  else if (nucleotide === 'G') color = '#2F2C38';
-
-  return color;
+export const getNucleotideColor = (nucleotide: string, mutationType?: string) => {
+  if (mutationType) {
+    if (mutationType === 'DEL') return 'red';
+    else if (mutationType === 'INS') return 'green';
+    else if (mutationType === 'SNP') return '#83502e';
+  } else {
+    if (nucleotide === 'A') return '#336';
+    else if (nucleotide === 'C') return '#673f7e';
+    else if (nucleotide === 'T') return '#6b88a2';
+    else if (nucleotide === 'G') return '#2F2C38';
+  }
 };
 
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
@@ -239,6 +243,37 @@ export const getRelativePeptidePositionsAndSequences = (
   );
 
   return relativePeptidePositionsAndSequences;
+};
+
+// WOOP, I have no idea about the logic here also
+// Literal copypasta from above
+export const getMutationPositionsAndTypes = ({ transcript, minimumPosition }: TranscriptData) => {
+  const { mutations, exons } = transcript;
+
+  const mutationPositions: { start: number; type: string; ref: string; alt: string }[] = [];
+
+  mutations.forEach(({ pos, type, ref, alt }) => {
+    let start = minimumPosition;
+    let startSet = false;
+
+    let posOnTranscript = 1;
+
+    for (const exon of exons) {
+      const posOnGenome = exon.genomeStart;
+      const exonLength = exon.genomeEnd - exon.genomeStart + 1;
+      if (posOnTranscript + exonLength > pos && !startSet) {
+        start = posOnGenome + pos - posOnTranscript;
+        startSet = true;
+      }
+      posOnTranscript += exonLength;
+    }
+
+    start = start - minimumPosition + 1;
+
+    mutationPositions.push({ start, type, ref, alt });
+  });
+
+  return mutationPositions;
 };
 
 // export const getAnimationString = (

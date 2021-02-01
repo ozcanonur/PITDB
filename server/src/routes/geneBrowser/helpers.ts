@@ -1,31 +1,28 @@
+import { mean } from 'lodash';
+// @ts-ignore
+import replaceall from 'replaceall';
+
 import { IAllTranscript } from 'db/models/allTranscript';
 import { IMutation } from 'db/models/mutation';
-import flatten from 'flat';
-import { mean } from 'lodash';
 import { ParsedMutation } from './types';
 
 export const parseMutations = (mutations: IMutation[]) => {
-  const mutationTranscriptsPos: {
-    [transcript: string]: { pos: number; aaRef?: string; aaAlt?: string };
-  }[] = mutations.map((mutation) => mutation.transcriptsPos);
+  const parsedMutations: {
+    transcript: string;
+    pos: number;
+    aaRef: string;
+    aaAlt: string;
+    type: string;
+  }[] = [];
 
-  const flatMutationTranscriptsPos: { [transcript: string]: any } = flatten(mutationTranscriptsPos, {
-    maxDepth: 2,
-  });
+  for (const mutation of mutations) {
+    Object.keys(mutation.transcriptsPos).forEach((transcript) => {
+      const { pos, aaRef, aaAlt } = mutation.transcriptsPos[transcript];
 
-  const parsedMutations: ParsedMutation[] = [];
-
-  Object.keys(flatMutationTranscriptsPos).forEach((transcript) => {
-    const { pos, aaRef, aaAlt } = flatMutationTranscriptsPos[transcript];
-    const parsedMutation = {
-      // flatten creates keys like '1.ENST0000232' etc.
-      transcript: transcript.split('.')[1],
-      pos,
-      aaRef,
-      aaAlt,
-    };
-    parsedMutations.push(parsedMutation);
-  });
+      const x = { transcript, pos, aaRef, aaAlt, type: mutation.type, ref: mutation.ref, alt: mutation.alt };
+      parsedMutations.push(x);
+    });
+  }
 
   return parsedMutations;
 };
@@ -46,7 +43,7 @@ export const parseTranscriptsForViewer = (
       // Transcript IDs are in different format in mutations and allTranscripts
       // ENST0000053421_1 vs ENST0000053421.1
       const mutations = parsedMutations.filter(
-        (mutation) => mutation.transcript.replace('_', '.') === transcriptID
+        (mutation) => replaceall('_', '.', mutation.transcript) === transcriptID
       );
 
       const parsedConditions = Object.entries(TPM)

@@ -9,14 +9,14 @@ const SplicingEventsWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <main className={classes.container}>
       <SplicingEventsTable />
-      <div className={classes.figuresContainer}>
+      <section className={classes.figuresContainer}>
         <PieChart />
         <BarChart />
         <EventVisual />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

@@ -8,13 +8,13 @@ const MutationsWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <main className={classes.container}>
       <MutationsTable />
-      <div className={classes.figuresContainer}>
+      <section className={classes.figuresContainer}>
         <PieChart />
         <BarCharts />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

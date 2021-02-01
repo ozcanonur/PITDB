@@ -16,6 +16,7 @@ import {
   SetGeneBrowserScrollPosition,
   SetGeneBrowserScrollJumpPosition,
 } from './types';
+
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';

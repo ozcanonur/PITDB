@@ -6,9 +6,9 @@ const GeneBrowserWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.geneBrowserContainer}>
+    <main className={classes.geneBrowserContainer}>
       <GeneBrowser />
-    </div>
+    </main>
   );
 };
 

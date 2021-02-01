@@ -1,13 +1,15 @@
 import React, { memo, Fragment } from 'react';
+import { useSelector } from 'react-redux';
+
 import { FixedSizeList as VirtualizedList, areEqual, ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useSelector } from 'react-redux';
 
 import {
   DetailedTranscriptProps,
   RelativeCdsPositionsAndSequences,
   RelativeExonPositionsAndSequences,
   RelativePeptidePositionsAndSequences,
+  RelativeMutationPositionsAndTypes,
 } from '../../types';
 import {
   getTranscriptVisualLineCount,
@@ -16,6 +18,7 @@ import {
   getCDSStartsAndEnds,
   getRelativeCdsPositionsAndSequences,
   getRelativePeptidePositionsAndSequences,
+  getMutationPositionsAndTypes,
 } from './helpers';
 import { useStyles } from './styles';
 
@@ -56,18 +59,26 @@ const BOX_HEIGHT = 30;
 const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   const classes = useStyles();
 
-  const relativeExonPositionsAndSequences: RelativeExonPositionsAndSequences = data;
+  const relativeExonPositionsAndSequences: RelativeExonPositionsAndSequences =
+    data.relativeExonPositionsAndSequences;
+
+  const relativeMutationPositions: RelativeMutationPositionsAndTypes = data.relativeMutationPositionsAndTypes;
 
   const indexBelongsTo = relativeExonPositionsAndSequences.find(
     ({ start, end }) => index >= start && index <= end
   );
 
+  // Put nothing if no exon found in this index at all
   if (!indexBelongsTo) return null;
 
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
 
   const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
-  const nucleotideColor = getNucleotideColor(nucleotide);
+
+  const mutation = relativeMutationPositions.find(({ start }) => start === index);
+  const mutationType = mutation?.type;
+
+  const nucleotideColor = getNucleotideColor(nucleotide, mutationType);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
   // -3 because it looks better
@@ -79,9 +90,32 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   return (
     <g style={style}>
       <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
-      <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-        {nucleotide}
-      </text>
+      {mutationType === 'SNP' ? (
+        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+          {`${mutation?.ref}>${mutation?.alt}`}
+        </text>
+      ) : mutationType === 'DEL' ? (
+        <>
+          <line
+            x1={index * BOX_HEIGHT}
+            x2={index * BOX_HEIGHT + BOX_HEIGHT}
+            y1={BOX_HEIGHT}
+            y2={0}
+            className={classes.delMutationLine}
+          />
+          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+            {mutation?.ref}
+          </text>
+        </>
+      ) : mutationType === 'INS' ? (
+        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+          {`>${mutation?.alt}`}
+        </text>
+      ) : (
+        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+          {nucleotide}
+        </text>
+      )}
     </g>
   );
 }, areEqual);
@@ -156,6 +190,7 @@ const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
     ({ start, end }) => index >= start && index <= end
   );
 
+  // Put nothing if no peptide in this index at all
   if (!indexBelongsTo) return null;
 
   // @ts-ignore
@@ -163,8 +198,8 @@ const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
 
   return (
     <g style={style}>
-      {indexBelongsTo.map(({ start, end }, iterationIndex) => (
-        <Fragment key={iterationIndex}>
+      {indexBelongsTo.map(({ start, end }, iterateIndex) => (
+        <Fragment key={iterateIndex}>
           <rect className={classes.peptide} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           {index === start || index === end + 1 ? (
             <line
@@ -189,11 +224,13 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
 
   const { minimumPosition, maximumPosition, transcript } = transcriptData;
 
+  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
   const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
-  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
+  const relativeMutationPositionsAndTypes = getMutationPositionsAndTypes(transcriptData);
 
-  // WOOP, hardcoded conditions
+  console.log(relativeMutationPositionsAndTypes);
+
   return (
     <div className={classes.detailedTranscriptContainer} {...props}>
       <div className={classes.transcriptLabelContainer}>
@@ -251,7 +288,7 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
                 layout='horizontal'
                 width={width}
                 innerElementType='svg'
-                itemData={relativeExonPositionsAndSequences}
+                itemData={{ relativeExonPositionsAndSequences, relativeMutationPositionsAndTypes }}
                 style={{ overflow: 'hidden' }}
                 ref={refs.exonRef}
               >

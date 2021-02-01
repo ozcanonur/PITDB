@@ -11,6 +11,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   tableHeadCell: {
     paddingRight: '0.5rem !important',
+    lineHeight: 1.5,
 
     '&, &$tableCell': {
       fontSize: '1.4rem',
@@ -28,7 +29,8 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontFamily: 'Poppins, sans-serif !important',
     borderColor: 'rgba(94, 112, 157, 0.25)',
-    maxWidth: '10rem',
+    maxWidth: '10ch',
+    minWidth: '10ch',
     position: 'relative',
     transform: 'translateZ(0)',
     overflow: 'auto',

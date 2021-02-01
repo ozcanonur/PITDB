@@ -110,20 +110,6 @@ const SplicingEventsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);
 
-  // Return to initial state on unmount
-  useEffect(() => {
-    return () => {
-      dispatch(
-        setSplicingEventsFilters({
-          gene: '',
-          maxPValue: 0.05,
-          hasPeptideEvidence: ['true'],
-        })
-      );
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
@@ -204,6 +190,7 @@ const SplicingEventsTable = ({ ...props }) => {
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
+          defaultInputValue={filters.gene}
         />
         {/* WOOP, no handle change for now */}
         <SingleSelect
@@ -232,7 +219,7 @@ const SplicingEventsTable = ({ ...props }) => {
             { value: 'true', label: 'true' },
             { value: 'false', label: 'false' },
           ]}
-          defaultValues={['true']}
+          defaultValues={filters.hasPeptideEvidence}
           onChange={(selectedOptions, _actionMeta) =>
             multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
           }
@@ -240,7 +227,7 @@ const SplicingEventsTable = ({ ...props }) => {
         />
         <DiscreteSlider
           name='Max. p value'
-          defaultValue={0.05}
+          defaultValue={filters.maxPValue}
           marks={parseDiscreteSliderMarks(pValueMarks)}
           onChangeCommited={onPValueChangeCommited}
         />

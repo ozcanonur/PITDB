@@ -5,7 +5,7 @@ import min from 'lodash/min';
 import max from 'lodash/max';
 
 import { TranscriptProps } from '../../types';
-import { getMutationPosition } from './helpers';
+import { getMutationPositions } from './helpers';
 import {
   getTranscriptVisualLineCount,
   getRelativePeptidePositionsAndSequences,
@@ -21,7 +21,7 @@ const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
 const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
-const MUTATION_WIDTH = 1;
+const MUTATION_WIDTH = 0.5;
 
 const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const classes = useStyles();
@@ -34,7 +34,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const maxExonStart: number = max(Object.values(flatten(transcript.exons))) || 0;
 
   const cdsPositions = getCDSStartsAndEnds(transcriptData);
-  const mutationPositions = getMutationPosition(transcriptData, pixelPerValue);
+  const mutationPositions = getMutationPositions(transcriptData, pixelPerValue);
 
   const exonRef = createRef<SVGRectElement>();
   const cdsRef = createRef<SVGRectElement>();
@@ -54,12 +54,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   };
 
   return (
-    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`}
-      className={classes.svg}
-      {...props}
-    >
+    <svg xmlns='http://www.w3.org/2000/svg' viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`} {...props}>
       {/* This is the rail */}
       <rect
         x={pixelPerValue * (minExonStart - minimumPosition)}

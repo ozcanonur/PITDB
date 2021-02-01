@@ -51,7 +51,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
   const { maximumPosition, minimumPosition } = transcriptsData;
 
   return (
-    <div className={classes.transcriptsOverviewContainer}>
+    <section className={classes.transcriptsOverviewContainer}>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
@@ -73,7 +73,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
         </div>
       ))}
       <PositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
-    </div>
+    </section>
   );
 };
 

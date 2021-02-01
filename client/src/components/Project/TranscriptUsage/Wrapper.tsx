@@ -10,16 +10,16 @@ const TranscriptUsageWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
-      <div className={classes.tableAndFigures}>
+    <main className={classes.container}>
+      <section className={classes.tableAndFigures}>
         <TranscriptUsageTable />
         <div className={classes.figuresContainer}>
           <BarChart />
           <ConfidenceIntervalChart />
         </div>
-      </div>
+      </section>
       <TranscriptViewer />
-    </div>
+    </main>
   );
 };
 

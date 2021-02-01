@@ -104,22 +104,6 @@ const MutationsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, sortedOn]);
 
-  // Return to initial state on unmount
-  useEffect(() => {
-    return () => {
-      dispatch(
-        setMutationFilters({
-          gene: '',
-          variantType: ['SNP', 'DEL', 'INS'],
-          inCDS: ['true'],
-          hasPeptideEvidence: ['false'],
-          isSynonymous: ['true', 'false'],
-        })
-      );
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSort = (field: string, currentOrder?: -1 | 1) => {
     const newSortOrder = currentOrder ? -currentOrder : 1;
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
@@ -189,6 +173,7 @@ const MutationsTable = ({ ...props }) => {
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
           className={classes.singleSelect}
+          defaultInputValue={filters.gene}
         />
         {/* <MultiSelect
             name='Synonymous'
@@ -209,7 +194,7 @@ const MutationsTable = ({ ...props }) => {
             { value: 'DEL', label: 'DEL' },
             { value: 'INS', label: 'INS' },
           ]}
-          defaultValues={['SNP', 'DEL', 'INS']}
+          defaultValues={filters.variantType}
           onChange={(selectedOptions, _actionMeta) =>
             multiSelectOnChange(selectedOptions, _actionMeta, 'variantType')
           }
@@ -221,7 +206,7 @@ const MutationsTable = ({ ...props }) => {
             { value: 'true', label: 'true' },
             { value: 'false', label: 'false' },
           ]}
-          defaultValues={['true']}
+          defaultValues={filters.inCDS}
           onChange={(selectedOptions, _actionMeta) =>
             multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
           }
@@ -233,7 +218,7 @@ const MutationsTable = ({ ...props }) => {
             { value: 'true', label: 'true' },
             { value: 'false', label: 'false' },
           ]}
-          defaultValues={['false']}
+          defaultValues={filters.hasPeptideEvidence}
           onChange={(selectedOptions, _actionMeta) =>
             multiSelectOnChange(selectedOptions, _actionMeta, 'hasPeptideEvidence')
           }

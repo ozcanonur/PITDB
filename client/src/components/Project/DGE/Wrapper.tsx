@@ -8,13 +8,13 @@ const DGEWrapper = () => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <main className={classes.container}>
       <DGETable />
-      <div className={classes.figuresContainer}>
+      <section className={classes.figuresContainer}>
         <VolcanoPlot />
         <BarChart />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

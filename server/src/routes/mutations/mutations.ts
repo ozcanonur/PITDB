@@ -20,14 +20,14 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const parsedFilters = JSON.parse(filters) as MutationFilters;
     const { field, order } = JSON.parse(sortedOn) as { field: string; order?: -1 | 1 };
 
-    const { gene, variantType, inCDS, hasPeptideEvidence, isSynonymous } = parsedFilters;
+    const { gene, variantType, inCDS, hasPeptideEvidence } = parsedFilters;
 
     // Have to convert string boolean to boolean
     let query = {
       project,
       hasPeptideEvidence: { $in: hasPeptideEvidence.map((e) => e === 'true') },
       inCDS: { $in: inCDS.map((e) => e === 'true') },
-      silent: { $in: isSynonymous.map((e) => e === 'true') },
+      // silent: { $in: isSynonymous.map((e) => e === 'true') },
       type: { $in: variantType },
     };
 

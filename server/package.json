@@ -29,7 +29,8 @@
     "flat": "^5.0.2",
     "helmet": "^4.2.0",
     "lodash": "^4.17.20",
-    "mongoose": "^5.11.7"
+    "mongoose": "^5.11.7",
+    "replaceall": "^0.1.6"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",

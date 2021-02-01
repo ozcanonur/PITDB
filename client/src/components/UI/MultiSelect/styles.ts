@@ -82,6 +82,7 @@ export const selectStyles: Styles = {
     boxShadow: '0 5px 10px rgba(154,160,185,.1), 0 15px 40px rgba(166,173,201,.2)',
     border: 'none',
     marginTop: 0,
+    zIndex: 9999,
   }),
   indicatorSeparator: (styles) => ({
     ...styles,

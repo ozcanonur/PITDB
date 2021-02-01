@@ -64,11 +64,11 @@ const Sidebar = () => {
   };
 
   return (
-    <nav className={classes.sidebarContainer}>
+    <aside className={classes.sidebarContainer}>
       <ProjectInfo project={project} />
       <div className={classes.routesContainer}>
         {routes.map(({ name, route, alt, imgSrc }) => (
-          <div
+          <nav
             key={name}
             className={classes.route}
             style={{ backgroundColor: currentRoute === route ? 'rgba(51, 51, 102, 0.1)' : 'transparent' }}
@@ -76,10 +76,10 @@ const Sidebar = () => {
           >
             <img className={classes.routeImg} src={imgSrc} alt={alt} />
             <h4 className={classes.routeText}>{name}</h4>
-          </div>
+          </nav>
         ))}
       </div>
-    </nav>
+    </aside>
   );
 };
 

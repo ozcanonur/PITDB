@@ -70,7 +70,8 @@ export const useStyles = makeStyles((theme) => ({
     height: 30,
     paddingTop: '0.7rem',
   },
-  nucleotideContainer: {
-    animation: 'bounce 1s',
+  delMutationLine: {
+    stroke: 'black',
+    strokeWidth: 2,
   },
 }));

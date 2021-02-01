@@ -54,7 +54,7 @@ const Help = () => {
             The PIT approach involves the analysis of a given sample by both RNA-seq and proteomic mass
             spectrometry followed by sequence-level integration of the acquired data to provide an
             unprecedented insight into which genomic elements are being transcribed and translated within a
-            given sample.{' '}
+            given sample.
           </p>
           <div className={classes.browseButton} onClick={navToBrowse}>
             Browse

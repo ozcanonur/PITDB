@@ -29,6 +29,9 @@ export type Transcript = {
     pos: number;
     aaRef?: string;
     aaAlt?: string;
+    type: string;
+    ref: string;
+    alt: string;
   }[];
   conditions: {
     condition: string;
@@ -87,6 +90,13 @@ export type RelativePeptidePositionsAndSequences = {
     type: string;
     pos: number;
   }[];
+}[];
+
+export type RelativeMutationPositionsAndTypes = {
+  start: number;
+  type: string;
+  ref: string;
+  alt: string;
 }[];
 
 export type DetailedTranscriptsVirtualListsProps = {

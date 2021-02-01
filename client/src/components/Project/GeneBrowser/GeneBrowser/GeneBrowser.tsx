@@ -54,14 +54,6 @@ const GeneBrowser = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Return to initial state on unmount
-  useEffect(() => {
-    return () => {
-      dispatch(setGeneBrowserFilters({ gene: 'ACAT2', condition: 'Nsi', minQual: 250, minTPM: 0.5 }));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
       project,
@@ -125,7 +117,7 @@ const GeneBrowser = ({ ...props }) => {
           name='Search gene'
           options={fetchSingleSelectOptions}
           onChange={singleSelectOnChange}
-          defaultInputValue='ACAT2'
+          defaultInputValue={filters.gene}
           className={classes.singleSelect}
         />
         <SingleSelect
@@ -138,13 +130,13 @@ const GeneBrowser = ({ ...props }) => {
         />
         <DiscreteSlider
           name='Min. TPM'
-          defaultValue={0.5}
+          defaultValue={filters.minTPM}
           marks={parseDiscreteSliderMarks(tpmMarks)}
           onChangeCommited={onMinTPMChangeCommited}
         />
         <DiscreteSlider
           name='Min. Quality'
-          defaultValue={250}
+          defaultValue={filters.minQual}
           marks={parseDiscreteSliderMarks(qualityMarks)}
           onChangeCommited={onMinQualityChangeCommited}
         />

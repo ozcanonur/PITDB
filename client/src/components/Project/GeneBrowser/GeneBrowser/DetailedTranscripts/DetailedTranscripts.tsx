@@ -142,7 +142,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   }, []);
 
   return (
-    <div className={classes.detailedTranscriptViewerContainer}>
+    <section className={classes.detailedTranscriptViewerContainer}>
       <div className={classes.detailedTranscripts}>
         <DetailedTranscriptsVirtualLists
           transcripts={transcripts}
@@ -175,7 +175,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
       >
         <ScrollTooltip transcriptsData={transcriptsData} />
       </RegularScroll>
-    </div>
+    </section>
   );
 };
 

@@ -1,9 +1,6 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
-  svg: {
-    direction: 'ltr',
-  },
   textContainer: {
     cursor: 'pointer',
   },
@@ -40,6 +37,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   mutation: {
     fill: '#ED0909',
+    zIndex: 9999,
   },
   peptide: {
     fill: 'rgba(200, 85, 61, 0.6)',

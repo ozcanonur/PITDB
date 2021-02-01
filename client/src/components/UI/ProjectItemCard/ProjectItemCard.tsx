@@ -5,10 +5,10 @@ const ProjectItemCard = ({ name, children, className, ...props }: ProjectItemCar
   const classes = useStyles();
 
   return (
-    <div {...props} className={`${classes.container} ${className}`}>
+    <section {...props} className={`${classes.container} ${className}`}>
       <div className={classes.header}>{name}</div>
       {children}
-    </div>
+    </section>
   );
 };
 
