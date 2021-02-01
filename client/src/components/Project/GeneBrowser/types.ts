@@ -61,6 +61,7 @@ export interface TranscriptProps extends SVGAttributes<SVGElement> {
 export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
   handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   width: number;
+  position: 'top' | 'bottom';
 }
 
 export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {

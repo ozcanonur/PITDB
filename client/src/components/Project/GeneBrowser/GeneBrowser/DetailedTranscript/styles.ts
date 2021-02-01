@@ -74,4 +74,14 @@ export const useStyles = makeStyles((theme) => ({
     stroke: 'black',
     strokeWidth: 2,
   },
+  snpGroup: {
+    animationName: 'bounce',
+    animationDuration: '1s',
+    animationIterationCount: 'infinite',
+  },
+  insRect: {
+    animationName: 'slide-right-small',
+    animationDuration: '1s',
+    animationIterationCount: 'infinite',
+  },
 }));

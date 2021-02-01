@@ -30,7 +30,7 @@ const PositionLine = ({
           transform: scrollPosition >= 50 ? 'translateX(-8.5rem)' : 'none',
         }}
       >
-        {currentGenomePosition}
+        {currentGenomePosition.toLocaleString()}
       </div>
       <div
         className={classes.transcriptPositionLine}
@@ -51,7 +51,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
   const { maximumPosition, minimumPosition } = transcriptsData;
 
   return (
-    <section className={classes.transcriptsOverviewContainer}>
+    <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>

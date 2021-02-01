@@ -2,12 +2,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
   detailedTranscriptViewerContainer: {
-    padding: '0 2rem',
-    paddingBottom: '4rem',
+    padding: '2rem',
     display: 'flex',
     overflow: 'auto',
     position: 'relative',
-    marginTop: '4rem',
+    marginTop: '0.5rem',
     transform: 'translateZ(0)',
   },
   detailedTranscripts: {
@@ -84,13 +83,17 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
   },
   scrollTooltipContainer: {
-    position: 'fixed',
+    position: 'absolute',
     willChange: 'transform',
-    bottom: '2.3rem',
     backgroundColor: 'white',
     boxShadow: '5px 5px 10px 10px rgba(154,160,185,.15), 15px 15px 40px 10px rgba(166,173,201,.2)',
     borderRadius: '4px',
     padding: '1rem',
+    zIndex: 9999,
+    left: '28rem',
+    bottom: '1.5rem',
+    width: 'max-content',
+    opacity: 0.9,
   },
   transcriptTooltipRails: {
     display: 'flex',
@@ -109,6 +112,14 @@ export const useStyles = makeStyles((theme) => ({
     height: '100%',
     width: '2px',
   },
+  transcriptPositionLineText: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: theme.palette.primary.main,
+    fontSize: '1.4rem',
+  },
   tooltipPositionText: {
     fontSize: '1.2rem',
     color: theme.palette.primary.main,
@@ -120,15 +131,15 @@ export const useStyles = makeStyles((theme) => ({
     left: '28rem',
     overflow: 'auto',
     width: 'calc(100% - 30rem)',
-    bottom: 0,
+    // bottom: 0,
   },
   scrollDragContainer: {
     position: 'absolute',
     left: '28rem',
     width: 'calc(100% - 30rem)',
-    top: 0,
+    top: '2rem',
     zIndex: 9999,
-    height: 'calc(100% - 18px)',
+    height: 'calc(100% - 36px)',
     cursor: 'grab',
   },
   scroll: {

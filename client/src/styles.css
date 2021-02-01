@@ -49,6 +49,38 @@ html {
   }
 }
 
+@keyframes fadeOutNoTranslate {
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+
+  33% {
+    transform: translateY(-0.2rem);
+  }
+
+  66% {
+    transform: translateY(0.2rem);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .menu {
   animation: fadeIn 0.15s ease-in-out;
 }
@@ -70,6 +102,16 @@ html {
 @keyframes slide-right {
   0% {
     transform: translateX(-2rem);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-right-small {
+  0% {
+    transform: translateX(-0.5rem);
   }
 
   100% {

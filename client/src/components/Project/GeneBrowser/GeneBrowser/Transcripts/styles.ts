@@ -55,6 +55,14 @@ export const useStyles = makeStyles((theme) => ({
     '& > div:not(:last-child)': {
       marginBottom: '2rem',
     },
+
+    // '& > div:nth-last-child(2)': {
+    //   marginBottom: 0,
+    // },
+
+    // '& > div:nth-last-child(3)': {
+    //   marginBottom: 0,
+    // },
   },
   transcriptOverview: {
     display: 'flex',
@@ -88,6 +96,7 @@ export const useStyles = makeStyles((theme) => ({
     left: '28rem',
     top: 0,
     width: 'calc(100% - 30rem)',
+    marginBottom: '0 !important',
   },
   transcriptPositionLine: {
     backgroundColor: 'rgba(217, 33, 122, 0.7)',

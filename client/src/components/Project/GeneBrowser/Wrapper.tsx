@@ -6,7 +6,7 @@ const GeneBrowserWrapper = () => {
   const classes = useStyles();
 
   return (
-    <main className={classes.geneBrowserContainer}>
+    <main className={classes.geneBrowserContainer} id='geneBrowserContainer'>
       <GeneBrowser />
     </main>
   );

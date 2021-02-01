@@ -84,37 +84,48 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   // -3 because it looks better
   const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
 
-  // @ts-ignore
-  // const animation = getAnimationString(index, renderedRange, scrollDirection);
-
   return (
     <g style={style}>
-      <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
       {mutationType === 'SNP' ? (
-        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-          {`${mutation?.ref}>${mutation?.alt}`}
-        </text>
+        <g className={classes.snpGroup}>
+          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+            {`${mutation?.ref}>${mutation?.alt}`}
+          </text>
+        </g>
       ) : mutationType === 'DEL' ? (
-        <>
-          <line
-            x1={index * BOX_HEIGHT}
-            x2={index * BOX_HEIGHT + BOX_HEIGHT}
-            y1={BOX_HEIGHT}
-            y2={0}
-            className={classes.delMutationLine}
-          />
+        <g style={{ animation: 'fadeOutNoTranslate 1s infinite' }}>
+          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {mutation?.ref}
           </text>
-        </>
+        </g>
       ) : mutationType === 'INS' ? (
-        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-          {`>${mutation?.alt}`}
-        </text>
+        <>
+          <rect
+            fill={nucleotideColor}
+            x={index * BOX_HEIGHT}
+            width={BOX_HEIGHT / 2}
+            height={BOX_HEIGHT}
+            className={classes.insRect}
+          />
+          <rect
+            fill={getNucleotideColor(nucleotide)}
+            x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
+            width={BOX_HEIGHT / 2}
+            height={BOX_HEIGHT}
+          />
+          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+            {`${mutation?.alt} ${nucleotide}`}
+          </text>
+        </>
       ) : (
-        <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-          {nucleotide}
-        </text>
+        <>
+          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+            {nucleotide}
+          </text>
+        </>
       )}
     </g>
   );
@@ -135,9 +146,6 @@ const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
   const indexBelongsTo = relativeCdsPositionsAndSequences.find(
     ({ start, end }) => index >= start && index <= end
   );
-
-  // @ts-ignore
-  // const animation = getAnimationString(index, renderedRange, scrollDirection);
 
   // Only put yellow box if CDS exists but no aminoacid
   if (!indexBelongsTo)
@@ -193,9 +201,6 @@ const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
   // Put nothing if no peptide in this index at all
   if (!indexBelongsTo) return null;
 
-  // @ts-ignore
-  // const animation = getAnimationString(index, renderedRange, scrollDirection);
-
   return (
     <g style={style}>
       {indexBelongsTo.map(({ start, end }, iterateIndex) => (
@@ -228,8 +233,6 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
   const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
   const relativeMutationPositionsAndTypes = getMutationPositionsAndTypes(transcriptData);
-
-  console.log(relativeMutationPositionsAndTypes);
 
   return (
     <div className={classes.detailedTranscriptContainer} {...props}>
