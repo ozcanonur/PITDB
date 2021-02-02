@@ -1,5 +1,6 @@
 import React, { memo, Fragment } from 'react';
 import { useSelector } from 'react-redux';
+import { max, min } from 'lodash';
 
 import { FixedSizeList as VirtualizedList, areEqual, ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -64,12 +65,27 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
 
   const relativeMutationPositions: RelativeMutationPositionsAndTypes = data.relativeMutationPositionsAndTypes;
 
+  const minExonStart = min(relativeExonPositionsAndSequences.map(({ start }) => start)) as number;
+  const maxExonEnd = max(relativeExonPositionsAndSequences.map(({ end }) => end)) as number;
+
+  // Put nothing if no exon or intron found in this index at all
+  if (index < minExonStart || index > maxExonEnd) return null;
+
   const indexBelongsTo = relativeExonPositionsAndSequences.find(
     ({ start, end }) => index >= start && index <= end
   );
 
-  // Put nothing if no exon found in this index at all
-  if (!indexBelongsTo) return null;
+  // Only put the intron line if no exon
+  if (!indexBelongsTo)
+    return (
+      <line
+        x1={index * BOX_HEIGHT}
+        x2={index * BOX_HEIGHT + BOX_HEIGHT}
+        y1={BOX_HEIGHT / 2}
+        y2={BOX_HEIGHT / 2}
+        className={classes.rail}
+      />
+    );
 
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
 
@@ -273,16 +289,6 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
               >
                 {Nucleotide2}
               </VirtualizedList> */}
-              {/* This is the 'rail' line behind the exons */}
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                viewBox={`0 0 ${width} 4`}
-                width={width}
-                className={classes.railContainer}
-                style={{ top: BOX_HEIGHT / 2 }}
-              >
-                <line x1={0} x2={width} y1={0} y2={0} className={classes.rail} />
-              </svg>
               {/* These are the exons */}
               <VirtualizedList
                 height={BOX_HEIGHT}

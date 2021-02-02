@@ -41,7 +41,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   const classes = useStyles();
 
   // When the user clicks on an exon on the transcripts overview
-  const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
+  const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPositionPercent);
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
 
@@ -58,7 +58,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 
   // Debounce to not change redux state too fast
-  const debounceDispatch = debounce(dispatch, 10);
+  const debounceDispatch = debounce(dispatch, 15);
 
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
@@ -98,9 +98,9 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   useEffect(() => {
     if (!topScrollRef.current || !bottomScrollRef.current) return;
 
-    const scrollLeft = scrollJumpPosition.scrollPosition * BOX_HEIGHT - BOX_HEIGHT;
-
     const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
+    const scrollLeft = widthOnScreen * scrollJumpPosition.scrollPosition - BOX_HEIGHT;
+
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
     // Scroll all the children transcript virtualized lists

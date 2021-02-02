@@ -12,12 +12,9 @@ export const useStyles = makeStyles((theme) => ({
   cdsBackground: {
     fill: theme.palette.secondary.light,
   },
-  railContainer: {
-    position: 'fixed',
-  },
   rail: {
     stroke: theme.palette.primary.main,
-    strokeWidth: 4,
+    strokeWidth: 2,
   },
   divider: {
     stroke: theme.palette.primary.main,

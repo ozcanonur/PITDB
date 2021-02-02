@@ -1,6 +1,9 @@
 import makeStyles from '@material-ui/core/styles/makeStyles';
 
 export const useStyles = makeStyles((theme) => ({
+  svg: {
+    cursor: 'pointer',
+  },
   textContainer: {
     cursor: 'pointer',
   },
@@ -16,16 +19,10 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
   },
   rail: {
-    fill: theme.palette.primary.main,
+    stroke: theme.palette.primary.main,
   },
   exon: {
     fill: theme.palette.primary.main,
-    cursor: 'pointer',
-    transition: 'all .1s',
-
-    '&:hover': {
-      fill: '#6b88a2',
-    },
   },
   tooltipText: {
     fontSize: '0.65rem',

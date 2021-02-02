@@ -14,7 +14,7 @@ import {
   SetGeneBrowserFiltersAction,
   SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
-  SetGeneBrowserScrollJumpPosition,
+  SetGeneBrowserScrollJumpPositionPercent,
 } from './types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -118,10 +118,10 @@ export const setGeneBrowserScrollPosition = (scrollPosition: number): SetGeneBro
   payload: scrollPosition,
 });
 
-export const setGeneBrowserScrollJumpPosition = (
+export const setGeneBrowserScrollJumpPositionPercent = (
   scrollPosition: number
-): SetGeneBrowserScrollJumpPosition => ({
-  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
+): SetGeneBrowserScrollJumpPositionPercent => ({
+  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
   payload: {
     scrollPosition,
   },

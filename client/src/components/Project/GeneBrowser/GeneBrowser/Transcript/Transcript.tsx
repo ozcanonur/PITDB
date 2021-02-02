@@ -1,4 +1,4 @@
-import { createRef } from 'react';
+import { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
@@ -14,10 +14,9 @@ import {
   getCDSStartsAndEnds,
 } from '../DetailedTranscript/helpers';
 import { useStyles } from './styles';
-import { setGeneBrowserScrollJumpPosition } from 'actions';
+import { setGeneBrowserScrollJumpPositionPercent } from 'actions';
 
 const RAIL_LENGTH = 540;
-const RAIL_HEIGHT = 1;
 const EXON_HEIGHT = 10;
 const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
@@ -36,8 +35,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const cdsPositions = getCDSStartsAndEnds(transcriptData);
   const mutationPositions = getMutationPositions(transcriptData);
 
-  const exonRef = createRef<SVGRectElement>();
-  const cdsRef = createRef<SVGRectElement>();
+  const svgRef = useRef<SVGSVGElement>(null);
 
   const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
 
@@ -49,18 +47,30 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
 
   const dispatch = useDispatch();
 
-  const handleExonClick = (pos: number) => {
-    dispatch(setGeneBrowserScrollJumpPosition(pos / pixelPerValue));
+  const svgOnClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (!svgRef.current) return;
+
+    const { x: svgXOffset, width: svgWidth } = svgRef.current.getBoundingClientRect();
+    const relativeClickPositionPercent = (e.clientX - svgXOffset) / svgWidth;
+
+    dispatch(setGeneBrowserScrollJumpPositionPercent(relativeClickPositionPercent));
   };
 
   return (
-    <svg xmlns='http://www.w3.org/2000/svg' viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`} {...props}>
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`}
+      className={classes.svg}
+      {...props}
+      onClick={svgOnClick}
+      ref={svgRef}
+    >
       {/* This is the rail */}
-      <rect
-        x={pixelPerValue * (minExonStart - minimumPosition)}
-        y={4.5}
-        width={pixelPerValue * (maxExonStart - minExonStart)}
-        height={RAIL_HEIGHT}
+      <line
+        x1={pixelPerValue * (minExonStart - minimumPosition)}
+        x2={pixelPerValue * (maxExonStart - minimumPosition)}
+        y1={5}
+        y2={5}
         className={classes.rail}
       />
       {/* These are the exon boxes */}
@@ -72,13 +82,11 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
           <rect
             key={index}
             className={classes.exon}
-            ref={exonRef}
             x={exonStartingPosition}
             width={exonWidth}
             height={EXON_HEIGHT}
-            onClick={() => handleExonClick(exonStartingPosition)}
           >
-            <title>Jump to this exon</title>
+            <title>Exon</title>
           </rect>
         );
       })}
@@ -115,7 +123,6 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
               y={translateYAmount}
               width={(cdsEnd - cdsStart + 1) * pixelPerValue}
               height={CDS_HEIGHT}
-              ref={cdsRef}
             >
               <title>CDS</title>
             </rect>

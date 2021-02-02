@@ -5,6 +5,7 @@ import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/
 import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
 
 export enum ACTION {
+  SET_CONDITION_TYPES,
   SET_MUTATION_FILTERS,
   SELECT_MUTATION,
   SET_DGE_FILTERS,
@@ -19,8 +20,7 @@ export enum ACTION {
   SELECT_GENE_BROWSER_GENE,
   SET_GENE_BROWSER_BOX_HEIGHT,
   SET_GENE_BROWSER_SCROLL_POSITION,
-  SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
-  SET_CONDITION_TYPES,
+  SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
 }
 
 export type SetConditionTypes = {
@@ -110,8 +110,8 @@ export type SetGeneBrowserScrollPosition = {
   payload: number;
 };
 
-export type SetGeneBrowserScrollJumpPosition = {
-  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION;
+export type SetGeneBrowserScrollJumpPositionPercent = {
+  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT;
   payload: {
     scrollPosition: number;
   };
