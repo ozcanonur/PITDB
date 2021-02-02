@@ -14,7 +14,8 @@ import {
   getCDSStartsAndEnds,
 } from '../DetailedTranscript/helpers';
 import { useStyles } from './styles';
-import { setGeneBrowserScrollJumpPositionPercent } from 'actions';
+import { setGeneBrowserScrollJumpPositionPercent, setGeneBrowserMouseoverScrollPosition } from 'actions';
+import { debounce } from 'lodash';
 
 const RAIL_LENGTH = 540;
 const EXON_HEIGHT = 10;
@@ -22,7 +23,7 @@ const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
 const MUTATION_WIDTH = 0.5;
 
-const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
+const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptProps) => {
   const classes = useStyles();
 
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
@@ -47,8 +48,8 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
 
   const dispatch = useDispatch();
 
-  const svgOnClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
-    if (!svgRef.current) return;
+  const handleClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (!svgRef.current || isTooltip) return;
 
     const { x: svgXOffset, width: svgWidth } = svgRef.current.getBoundingClientRect();
     const relativeClickPositionPercent = (e.clientX - svgXOffset) / svgWidth;
@@ -56,14 +57,34 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
     dispatch(setGeneBrowserScrollJumpPositionPercent(relativeClickPositionPercent));
   };
 
+  // Just debouncing it a small amount for a small performance gain
+  const debounceDispatch = debounce(dispatch, 5);
+  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (!svgRef.current || isTooltip) return;
+
+    const { x: svgXOffset, width: svgWidth } = svgRef.current.getBoundingClientRect();
+    const relativeClickPositionPercent = (e.clientX - svgXOffset) / svgWidth;
+
+    debounceDispatch(setGeneBrowserMouseoverScrollPosition(relativeClickPositionPercent * 100));
+  };
+
+  const handleMouseLeave = (_e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    if (!svgRef.current || isTooltip) return;
+
+    // -1 will make it disappear
+    dispatch(setGeneBrowserMouseoverScrollPosition(-1));
+  };
+
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`}
       className={classes.svg}
-      {...props}
-      onClick={svgOnClick}
       ref={svgRef}
+      onClick={handleClick}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
+      {...props}
     >
       {/* This is the rail */}
       <line
@@ -100,14 +121,11 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
           isReverse
         );
 
-        // @ts-ignore
-        const peptides = transcript.cds[index].peptides;
-
         const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
           relativeCdsPositionsAndSequences,
           sequence,
           // @ts-ignore
-          peptides
+          transcript.cds[index].peptides
         );
 
         // Need to move by 6 more if previous Cds had a peptide line

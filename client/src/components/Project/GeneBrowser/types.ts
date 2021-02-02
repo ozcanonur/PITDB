@@ -1,5 +1,5 @@
-import { HTMLAttributes, SVGAttributes } from 'react';
-import { FixedSizeList } from 'react-window';
+import { CSSProperties, HTMLAttributes, SVGAttributes } from 'react';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
 
@@ -56,11 +56,23 @@ export type TranscriptData = {
 
 export interface TranscriptProps extends SVGAttributes<SVGElement> {
   transcriptData: TranscriptData;
+  isTooltip?: boolean;
 }
 
 export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
+  transcriptsData: TranscriptsResponse;
   handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   width: number;
+  tooltipStyles?: CSSProperties;
+  scrollStyles?: CSSProperties;
+  tooltipPortalTo?: string;
+}
+
+export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
+  transcriptsData: TranscriptsResponse;
+  portalTo?: string;
+  tooltipStyles?: CSSProperties;
+  tooltipOpen: boolean;
 }
 
 export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
@@ -99,6 +111,27 @@ export type RelativeMutationPositionsAndTypes = {
   alt: string;
 }[];
 
+export interface DetailedNucleotideProps extends ListChildComponentProps {
+  data: {
+    relativeExonPositionsAndSequences: RelativeExonPositionsAndSequences;
+    relativeMutationPositionsAndTypes: RelativeMutationPositionsAndTypes;
+  };
+}
+
+export interface DetailedCdsProps extends ListChildComponentProps {
+  data: {
+    relativeCdsPositionsAndSequences: RelativeCdsPositionsAndSequences;
+    cdsStart: number;
+    cdsEnd: number;
+  };
+}
+
+export interface DetailedPeptideProps extends ListChildComponentProps {
+  data: {
+    relativePeptidePositionsAndSequences: RelativePeptidePositionsAndSequences;
+  };
+}
+
 export type DetailedTranscriptsVirtualListsProps = {
   transcripts: Transcript[];
   minimumPosition: number;
@@ -108,11 +141,6 @@ export type DetailedTranscriptsVirtualListsProps = {
     cdsRefs?: VirtualRef[][] | undefined;
   }[];
 };
-
-export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
-  transcriptsData: TranscriptsResponse;
-  portalTo?: string;
-}
 
 // export interface VirtualListChildComponentProps extends ListChildComponentProps {
 //   renderedRange?: { start: number; stop: number };

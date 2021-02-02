@@ -8,7 +8,6 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem',
     paddingBottom: '4rem',
     flexDirection: 'column',
-    transform: 'translateZ(0)',
 
     '& > div:not(:last-child)': {
       marginBottom: '2rem',

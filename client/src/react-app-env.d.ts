@@ -34,5 +34,6 @@ interface RootState {
   geneBrowserFilters: import('components/Project/GeneBrowser/types').GeneBrowserFilters;
   geneBrowserBoxHeight: { boxHeight: number };
   geneBrowserScrollPosition: number;
+  geneBrowserMouseoverScrollPosition: number;
   geneBrowserScrollJumpPositionPercent: { scrollPosition: number };
 }

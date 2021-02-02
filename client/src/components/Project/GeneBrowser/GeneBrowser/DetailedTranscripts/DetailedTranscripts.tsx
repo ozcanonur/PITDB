@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
 
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
-import { RegularScroll, ScrollTooltip } from './RegularScroll/RegularScroll';
+import RegularScroll from './RegularScroll/RegularScroll';
 
 import { useStyles } from './styles';
 import { TranscriptsResponse, DetailedTranscriptsVirtualListsProps } from '../../types';
@@ -70,11 +70,11 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
       scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
 
       // Also scroll regular top scroll element
-      if (!topScrollRef.current || topScrollRef.current.scrollLeft === scrollLeft) return;
+      if (!topScrollRef.current) return;
       topScrollRef.current.scrollTo({ left: scrollLeft });
 
       // And scroll regular bottom scroll element
-      if (!bottomScrollRef.current || bottomScrollRef.current.scrollLeft === scrollLeft) return;
+      if (!bottomScrollRef.current) return;
       bottomScrollRef.current.scrollTo({ left: scrollLeft });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
@@ -88,7 +88,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
 
       // Also scroll drag scroll element
       // All other needed scrolls will be done via handleDragScroll indirectly
-      if (!dragScrollRef.current || dragScrollRef.current.scrollLeft === scrollLeft) return;
+      if (!dragScrollRef.current) return;
       dragScrollRef.current.scrollTo({ left: scrollLeft });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,17 +124,15 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
+        transcriptsData={transcriptsData}
         handleScroll={handleRegularScroll}
         ref={topScrollRef}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
-        style={{ top: 0 }}
-      >
-        <ScrollTooltip
-          transcriptsData={transcriptsData}
-          portalTo='transcriptsOverviewContainer'
-          style={{ position: 'absolute', bottom: '-1.5rem' }}
-        />
-      </RegularScroll>
+        scrollStyles={{ top: 0 }}
+        tooltipStyles={{ position: 'absolute', bottom: 0 }}
+        tooltipPortalTo='transcriptsOverviewContainer'
+      />
+
       {/* These are the actual transcripts */}
       <div className={classes.detailedTranscripts}>
         <DetailedTranscriptsVirtualLists
@@ -162,13 +160,13 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
+        transcriptsData={transcriptsData}
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
-        style={{ bottom: 0 }}
-      >
-        <ScrollTooltip transcriptsData={transcriptsData} style={{ position: 'fixed', bottom: '2.3rem' }} />
-      </RegularScroll>
+        scrollStyles={{ bottom: 0 }}
+        tooltipStyles={{ position: 'fixed', bottom: '2.3rem' }}
+      />
     </section>
   );
 };

@@ -20,6 +20,7 @@ export enum ACTION {
   SELECT_GENE_BROWSER_GENE,
   SET_GENE_BROWSER_BOX_HEIGHT,
   SET_GENE_BROWSER_SCROLL_POSITION,
+  SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION,
   SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
 }
 
@@ -115,4 +116,9 @@ export type SetGeneBrowserScrollJumpPositionPercent = {
   payload: {
     scrollPosition: number;
   };
+};
+
+export type SetGeneBrowserMouseoverScrollPosition = {
+  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION;
+  payload: number;
 };

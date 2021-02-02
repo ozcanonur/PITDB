@@ -2,15 +2,14 @@ import React, { memo, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { max, min } from 'lodash';
 
-import { FixedSizeList as VirtualizedList, areEqual, ListChildComponentProps } from 'react-window';
+import { FixedSizeList as VirtualizedList, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import {
   DetailedTranscriptProps,
-  RelativeCdsPositionsAndSequences,
-  RelativeExonPositionsAndSequences,
-  RelativePeptidePositionsAndSequences,
-  RelativeMutationPositionsAndTypes,
+  DetailedNucleotideProps,
+  DetailedCdsProps,
+  DetailedPeptideProps,
 } from '../../types';
 import {
   getTranscriptVisualLineCount,
@@ -57,18 +56,14 @@ const BOX_HEIGHT = 30;
 //   );
 // }, areEqual);
 
-const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
+const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
   const classes = useStyles();
 
-  const relativeExonPositionsAndSequences: RelativeExonPositionsAndSequences =
-    data.relativeExonPositionsAndSequences;
+  const { relativeExonPositionsAndSequences, relativeMutationPositionsAndTypes } = data;
 
-  const relativeMutationPositions: RelativeMutationPositionsAndTypes = data.relativeMutationPositionsAndTypes;
-
+  // Put nothing if no exon or intron in this index at all
   const minExonStart = min(relativeExonPositionsAndSequences.map(({ start }) => start)) as number;
   const maxExonEnd = max(relativeExonPositionsAndSequences.map(({ end }) => end)) as number;
-
-  // Put nothing if no exon or intron found in this index at all
   if (index < minExonStart || index > maxExonEnd) return null;
 
   const indexBelongsTo = relativeExonPositionsAndSequences.find(
@@ -88,13 +83,11 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
     );
 
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
-
   const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
 
-  const mutation = relativeMutationPositions.find(({ start }) => start === index);
-  const mutationType = mutation?.type;
+  const mutation = relativeMutationPositionsAndTypes.find(({ start }) => start === index);
 
-  const nucleotideColor = getNucleotideColor(nucleotide, mutationType);
+  const nucleotideColor = getNucleotideColor(nucleotide, mutation?.type);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
   // -3 because it looks better
@@ -102,21 +95,21 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
 
   return (
     <g style={style}>
-      {mutationType === 'SNP' ? (
+      {mutation?.type === 'SNP' ? (
         <g className={classes.snpGroup}>
           <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {`${mutation?.ref}>${mutation?.alt}`}
           </text>
         </g>
-      ) : mutationType === 'DEL' ? (
+      ) : mutation?.type === 'DEL' ? (
         <g className={classes.delGroup}>
           <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {mutation?.ref}
           </text>
         </g>
-      ) : mutationType === 'INS' ? (
+      ) : mutation?.type === 'INS' ? (
         <>
           <rect
             fill={nucleotideColor}
@@ -147,13 +140,10 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
   );
 }, areEqual);
 
-const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
+const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
   const classes = useStyles();
 
-  const relativeCdsPositionsAndSequences: RelativeCdsPositionsAndSequences =
-    data.relativeCdsPositionsAndSequences;
-
-  const { cdsStart, cdsEnd } = data;
+  const { relativeCdsPositionsAndSequences, cdsStart, cdsEnd } = data;
 
   // Put nothing if no cds in this box at all
   const isCds = index >= cdsStart && index <= cdsEnd;
@@ -205,10 +195,10 @@ const CDS = memo(({ index, style, data }: ListChildComponentProps) => {
   );
 }, areEqual);
 
-const Peptide = memo(({ index, style, data }: ListChildComponentProps) => {
+const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
   const classes = useStyles();
 
-  const relativePeptidePositionsAndSequences: RelativePeptidePositionsAndSequences = data;
+  const { relativePeptidePositionsAndSequences } = data;
 
   const indexBelongsTo = relativePeptidePositionsAndSequences.filter(
     ({ start, end }) => index >= start && index <= end
@@ -345,7 +335,7 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
                         layout='horizontal'
                         width={width}
                         innerElementType='svg'
-                        itemData={relativePeptidePositionsAndSequences}
+                        itemData={{ relativePeptidePositionsAndSequences }}
                         style={{ overflow: 'hidden' }}
                         ref={
                           refs.cdsRefs && refs.cdsRefs[index].length > 1 ? refs.cdsRefs[index][1] : undefined

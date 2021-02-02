@@ -30,7 +30,6 @@ export const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     zIndex: 9999,
     left: '28rem',
-    bottom: '1.5rem',
     width: 'max-content',
     opacity: 0.9,
   },

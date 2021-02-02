@@ -14,6 +14,7 @@ import {
   SetGeneBrowserFiltersAction,
   SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
+  SetGeneBrowserMouseoverScrollPosition,
   SetGeneBrowserScrollJumpPositionPercent,
 } from './types';
 
@@ -125,4 +126,11 @@ export const setGeneBrowserScrollJumpPositionPercent = (
   payload: {
     scrollPosition,
   },
+});
+
+export const setGeneBrowserMouseoverScrollPosition = (
+  scrollPosition: number
+): SetGeneBrowserMouseoverScrollPosition => ({
+  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION,
+  payload: scrollPosition,
 });

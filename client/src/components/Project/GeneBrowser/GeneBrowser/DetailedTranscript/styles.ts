@@ -32,7 +32,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   detailedTranscript: {
     flexGrow: 1,
-    transform: 'translateZ(0)',
   },
   transcriptLabelContainer: {
     display: 'flex',

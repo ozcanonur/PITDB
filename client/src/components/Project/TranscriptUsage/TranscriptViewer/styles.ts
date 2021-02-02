@@ -13,7 +13,6 @@ export const useStyles = makeStyles((theme) => ({
   transcriptRails: {
     display: 'flex',
     flexDirection: 'column',
-    transform: 'translateZ(0)',
     width: '100%',
     overflow: 'auto',
     direction: 'rtl',

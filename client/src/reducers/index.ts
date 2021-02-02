@@ -16,6 +16,7 @@ import {
   SetGeneBrowserFiltersAction,
   SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
+  SetGeneBrowserMouseoverScrollPosition,
   SetGeneBrowserScrollJumpPositionPercent,
 } from 'actions/types';
 
@@ -186,6 +187,15 @@ const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPositi
   }
 };
 
+const geneBrowserMouseoverScrollPosition = (state = 0, action: SetGeneBrowserMouseoverScrollPosition) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION:
+      return action.payload;
+    default:
+      return state;
+  }
+};
+
 const geneBrowserScrollJumpPositionPercent = (
   state = { scrollPosition: 0 },
   action: SetGeneBrowserScrollJumpPositionPercent
@@ -213,5 +223,6 @@ export default combineReducers({
   geneBrowserFilters,
   geneBrowserBoxHeight,
   geneBrowserScrollPosition,
+  geneBrowserMouseoverScrollPosition,
   geneBrowserScrollJumpPositionPercent,
 });

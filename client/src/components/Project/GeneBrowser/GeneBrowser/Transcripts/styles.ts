@@ -51,23 +51,15 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: '0 2rem',
     marginTop: '1rem',
-
-    '& > div:not(:last-child)': {
-      marginBottom: '2rem',
-    },
-
-    // '& > div:nth-last-child(2)': {
-    //   marginBottom: 0,
-    // },
-
-    // '& > div:nth-last-child(3)': {
-    //   marginBottom: 0,
-    // },
   },
   transcriptOverview: {
     display: 'flex',
     zIndex: 999,
     position: 'relative',
+
+    '& > svg': {
+      paddingBottom: '2rem',
+    },
   },
   transcriptId: {
     fontSize: '1.4rem',
