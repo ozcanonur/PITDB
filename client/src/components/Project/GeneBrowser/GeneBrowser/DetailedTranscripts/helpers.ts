@@ -3,8 +3,8 @@ import { createRef } from 'react';
 import { FixedSizeList } from 'react-window';
 import { Transcript, VirtualRef } from '../../types';
 
-export const makeVirtualizedListRefsList = (transcripts: Transcript[]) => {
-  const result = transcripts.map(({ cds }) => {
+export const makeVirtualizedListRefsList = (transcripts: Transcript[]) =>
+  transcripts.map(({ cds }) => {
     const baseCase: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] } = {
       exonRef: createRef<FixedSizeList>(),
     };
@@ -21,9 +21,6 @@ export const makeVirtualizedListRefsList = (transcripts: Transcript[]) => {
 
     return baseCase;
   });
-
-  return result;
-};
 
 export const scrollVirtualRefs = (
   scrollLeft: number,

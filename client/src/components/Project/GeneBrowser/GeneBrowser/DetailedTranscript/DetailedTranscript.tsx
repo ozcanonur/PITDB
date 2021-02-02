@@ -94,7 +94,7 @@ const Nucleotide = memo(({ index, style, data }: ListChildComponentProps) => {
           </text>
         </g>
       ) : mutationType === 'DEL' ? (
-        <g style={{ animation: 'fadeOutNoTranslate 1s infinite' }}>
+        <g className={classes.delGroup}>
           <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {mutation?.ref}

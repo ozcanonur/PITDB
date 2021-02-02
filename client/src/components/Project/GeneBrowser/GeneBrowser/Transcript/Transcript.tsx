@@ -34,7 +34,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
   const maxExonStart: number = max(Object.values(flatten(transcript.exons))) || 0;
 
   const cdsPositions = getCDSStartsAndEnds(transcriptData);
-  const mutationPositions = getMutationPositions(transcriptData, pixelPerValue);
+  const mutationPositions = getMutationPositions(transcriptData);
 
   const exonRef = createRef<SVGRectElement>();
   const cdsRef = createRef<SVGRectElement>();
@@ -139,7 +139,7 @@ const Transcript = ({ transcriptData, ...props }: TranscriptProps) => {
         <rect
           key={index}
           className={classes.mutation}
-          x={pos}
+          x={pos * pixelPerValue}
           width={MUTATION_WIDTH}
           height={MUTATION_HEIGHT}
         >

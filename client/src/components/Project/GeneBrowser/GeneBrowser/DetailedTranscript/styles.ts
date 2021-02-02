@@ -79,6 +79,11 @@ export const useStyles = makeStyles((theme) => ({
     animationDuration: '1s',
     animationIterationCount: 'infinite',
   },
+  delGroup: {
+    animationName: 'fadeOutNoTranslate',
+    animationDuration: '1s',
+    animationIterationCount: 'infinite',
+  },
   insRect: {
     animationName: 'slide-right-small',
     animationDuration: '1s',

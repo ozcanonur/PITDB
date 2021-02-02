@@ -50,10 +50,7 @@ export const getCDSPositions = (
 
 // WOOP, I have no idea about the logic here also
 // Literal copypasta from above
-export const getMutationPositions = (
-  { transcript, minimumPosition }: TranscriptData,
-  pixelPerValue: number
-) => {
+export const getMutationPositions = ({ transcript, minimumPosition }: TranscriptData) => {
   const { mutations, exons } = transcript;
 
   const mutationPositions: number[] = [];
@@ -74,7 +71,7 @@ export const getMutationPositions = (
       posOnTranscript += exonLength;
     }
 
-    start = pixelPerValue * (start - minimumPosition);
+    start = start - minimumPosition;
 
     mutationPositions.push(start);
   });

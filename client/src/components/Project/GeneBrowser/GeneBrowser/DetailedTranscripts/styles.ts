@@ -13,7 +13,6 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    // direction: 'ltr',
     height: 'max-content',
     position: 'relative',
 
@@ -82,57 +81,6 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     textAlign: 'right',
   },
-  scrollTooltipContainer: {
-    position: 'absolute',
-    willChange: 'transform',
-    backgroundColor: 'white',
-    boxShadow: '5px 5px 10px 10px rgba(154,160,185,.15), 15px 15px 40px 10px rgba(166,173,201,.2)',
-    borderRadius: '4px',
-    padding: '1rem',
-    zIndex: 9999,
-    left: '28rem',
-    bottom: '1.5rem',
-    width: 'max-content',
-    opacity: 0.9,
-  },
-  transcriptTooltipRails: {
-    display: 'flex',
-    flexDirection: 'column',
-    transform: 'translateZ(0)',
-    width: '40rem',
-    overflow: 'auto',
-    direction: 'rtl',
-    height: 'max-content',
-  },
-  transcriptPositionLine: {
-    backgroundColor: 'rgba(217, 33, 122, 0.5)',
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    height: '100%',
-    width: '2px',
-  },
-  transcriptPositionLineText: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    color: theme.palette.primary.main,
-    fontSize: '1.4rem',
-  },
-  tooltipPositionText: {
-    fontSize: '1.2rem',
-    color: theme.palette.primary.main,
-    textAlign: 'center',
-    marginTop: '0.5rem',
-  },
-  scrollContainer: {
-    position: 'absolute',
-    left: '28rem',
-    overflow: 'auto',
-    width: 'calc(100% - 30rem)',
-    // bottom: 0,
-  },
   scrollDragContainer: {
     position: 'absolute',
     left: '28rem',
@@ -145,9 +93,12 @@ export const useStyles = makeStyles((theme) => ({
   scroll: {
     height: 1,
   },
-  tooltipTranscripts: {
-    '& > svg:not(:last-child)': {
-      marginBottom: '0.5rem',
-    },
+  transcriptPositionLineText: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    color: theme.palette.primary.main,
+    fontSize: '1.4rem',
   },
 }));

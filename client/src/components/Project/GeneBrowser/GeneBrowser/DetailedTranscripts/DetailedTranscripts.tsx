@@ -1,59 +1,20 @@
-import { useEffect, useRef, forwardRef, useState, memo, useCallback } from 'react';
+import { useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ScrollContainer from 'react-indiana-drag-scroll';
+import DragScroll from 'react-indiana-drag-scroll';
 
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
-import ScrollTooltip from './ScrollTooltip';
+import { RegularScroll, ScrollTooltip } from './RegularScroll/RegularScroll';
 
 import { useStyles } from './styles';
-import { TranscriptsResponse, RegularScrollProps, DetailedTranscriptsVirtualListsProps } from '../../types';
+import { TranscriptsResponse, DetailedTranscriptsVirtualListsProps } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
 
 import { makeVirtualizedListRefsList, scrollVirtualRefs } from './helpers';
+import { debounce } from 'lodash';
 
 const BOX_HEIGHT = 30;
 
-const RegularScroll = forwardRef(
-  ({ handleScroll, width, children, position }: RegularScrollProps, ref: any) => {
-    const [tooltipOpen, setTooltipOpen] = useState(false);
-
-    const classes = useStyles();
-
-    let timeout = useRef<NodeJS.Timeout>();
-
-    const onScroll = useCallback(
-      (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-        handleScroll(e);
-
-        // @ts-ignore
-        clearTimeout(timeout.current);
-
-        setTooltipOpen(true);
-
-        timeout.current = setTimeout(() => {
-          setTooltipOpen(false);
-        }, 500);
-      },
-      [handleScroll]
-    );
-
-    const cssPosition = position === 'top' ? { top: 0 } : { bottom: 0 };
-
-    return (
-      <div className={classes.scrollContainer} onScroll={onScroll} ref={ref} style={cssPosition}>
-        <div
-          className={classes.scroll}
-          style={{
-            width,
-          }}
-        />
-        {tooltipOpen ? <>{children}</> : null}
-      </div>
-    );
-  }
-);
-
-// Have to make this a seperate pure component to avoid re-renders on scrollJumpPosition change
+// Need to make this a separate pure component to avoid re-renders on scrollJumpPosition change
 const DetailedTranscriptsVirtualLists = memo(
   ({ transcripts, minimumPosition, maximumPosition, refs }: DetailedTranscriptsVirtualListsProps) => (
     <>
@@ -79,7 +40,7 @@ const DetailedTranscriptsVirtualLists = memo(
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  // When the user clicks an exon on the transcripts overview
+  // When the user clicks on an exon on the transcripts overview
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
@@ -90,51 +51,64 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
    * So that we can control their scroll status from this component
    * First, generate the refs
    */
-  const virtualizedListRefsList = makeVirtualizedListRefsList(transcripts);
+  const virtualizedListRefsList = useMemo(() => makeVirtualizedListRefsList(transcripts), [transcripts]);
 
   const dragScrollRef = useRef<HTMLDivElement>(null);
   const topScrollRef = useRef<HTMLDivElement>(null);
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 
-  const handleDragScroll = (scrollLeft: number) => {
-    const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
-    dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+  // Debounce to not change redux state too fast
+  const debounceDispatch = debounce(dispatch, 10);
 
-    // Scroll all the children transcript virtualized lists
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+  const handleDragScroll = useCallback(
+    (scrollLeft: number) => {
+      const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
 
-    // Also scroll regular top scroll element
-    // Second if check is to avoid cycles
-    if (!topScrollRef.current || topScrollRef.current.scrollLeft === scrollLeft) return;
-    topScrollRef.current.scrollTo({ left: scrollLeft });
+      debounceDispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
-    if (!bottomScrollRef.current || bottomScrollRef.current.scrollLeft === scrollLeft) return;
-    bottomScrollRef.current.scrollTo({ left: scrollLeft });
-  };
+      // Scroll all the children transcript virtualized lists
+      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
 
-  const handleRegularScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const scrollLeft = e.currentTarget.scrollLeft;
+      // Also scroll regular top scroll element
+      if (!topScrollRef.current || topScrollRef.current.scrollLeft === scrollLeft) return;
+      topScrollRef.current.scrollTo({ left: scrollLeft });
 
-    const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
-    dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+      // And scroll regular bottom scroll element
+      if (!bottomScrollRef.current || bottomScrollRef.current.scrollLeft === scrollLeft) return;
+      bottomScrollRef.current.scrollTo({ left: scrollLeft });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [maximumPosition, minimumPosition, virtualizedListRefsList]
+  );
 
-    // Scroll all the children transcript virtualized lists
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+  const handleRegularScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+      const scrollLeft = e.currentTarget.scrollLeft;
 
-    // Also scroll drag scroll element
-    // Second if check is to avoid cycles
-    if (!dragScrollRef.current || dragScrollRef.current.scrollLeft === scrollLeft) return;
-    dragScrollRef.current.scrollTo({ left: scrollLeft });
-
-    if (!bottomScrollRef.current || bottomScrollRef.current.scrollLeft === scrollLeft) return;
-    bottomScrollRef.current.scrollTo({ left: scrollLeft });
-  };
+      // Also scroll drag scroll element
+      // All other needed scrolls will be done via handleDragScroll indirectly
+      if (!dragScrollRef.current || dragScrollRef.current.scrollLeft === scrollLeft) return;
+      dragScrollRef.current.scrollTo({ left: scrollLeft });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [maximumPosition, minimumPosition, virtualizedListRefsList]
+  );
 
   useEffect(() => {
-    if (!topScrollRef.current || !dragScrollRef.current) return;
+    if (!topScrollRef.current || !bottomScrollRef.current) return;
 
-    // Only scrolling this is enough to trigger other scrolls
-    topScrollRef.current.scrollTo({ left: scrollJumpPosition.scrollPosition * BOX_HEIGHT - BOX_HEIGHT });
+    const scrollLeft = scrollJumpPosition.scrollPosition * BOX_HEIGHT - BOX_HEIGHT;
+
+    const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
+    dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
+
+    // Scroll all the children transcript virtualized lists
+    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+
+    topScrollRef.current.scrollTo({ left: scrollLeft });
+    bottomScrollRef.current.scrollTo({ left: scrollLeft });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollJumpPosition]);
 
   useEffect(() => {
@@ -145,15 +119,23 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   }, []);
 
   return (
-    <section className={classes.detailedTranscriptViewerContainer}>
+    <section className={classes.detailedTranscriptViewerContainer} id='detailedTranscriptViewerContainer'>
+      {/* This is for regular scroll on the transcripts
+       *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
+       */}
       <RegularScroll
         handleScroll={handleRegularScroll}
         ref={topScrollRef}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
-        position='top'
+        style={{ top: 0 }}
       >
-        <ScrollTooltip transcriptsData={transcriptsData} position='top' />
+        <ScrollTooltip
+          transcriptsData={transcriptsData}
+          portalTo='transcriptsOverviewContainer'
+          style={{ position: 'absolute', bottom: '-1.5rem' }}
+        />
       </RegularScroll>
+      {/* These are the actual transcripts */}
       <div className={classes.detailedTranscripts}>
         <DetailedTranscriptsVirtualLists
           transcripts={transcripts}
@@ -163,7 +145,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
         />
       </div>
       {/* This is for drag scroll on the transcripts, scroll-container class is library req. */}
-      <ScrollContainer
+      <DragScroll
         className={`${classes.scrollDragContainer} scroll-container`}
         onScroll={handleDragScroll}
         activationDistance={2}
@@ -175,7 +157,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
             width: (maximumPosition - minimumPosition + 1) * BOX_HEIGHT,
           }}
         />
-      </ScrollContainer>
+      </DragScroll>
       {/* This is for regular scroll on the transcripts
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
@@ -183,9 +165,9 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
-        position='bottom'
+        style={{ bottom: 0 }}
       >
-        <ScrollTooltip transcriptsData={transcriptsData} position='bottom' />
+        <ScrollTooltip transcriptsData={transcriptsData} style={{ position: 'fixed', bottom: '2.3rem' }} />
       </RegularScroll>
     </section>
   );
