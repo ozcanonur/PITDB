@@ -110,8 +110,6 @@ export type RelativeMutationPositionsAndTypes = {
   type: string;
   ref: string;
   alt: string;
-  isGroupStart: boolean;
-  isGroupEnd: boolean;
 }[];
 
 export interface DetailedNucleotideProps extends ListChildComponentProps {

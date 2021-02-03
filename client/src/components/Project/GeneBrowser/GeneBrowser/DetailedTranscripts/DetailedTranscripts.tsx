@@ -68,6 +68,7 @@ const DetailedTranscriptsVirtualList = memo(
             layout='vertical'
             direction='rtl'
             width={width}
+            style={{ overflowY: 'scroll', overflowX: 'hidden' }}
             itemData={{ transcripts, minimumPosition, maximumPosition, refs: virtualizedListRefsList }}
           >
             {DetailedTranscriptRenderer}
@@ -174,7 +175,6 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     .slice(0, 10)
     .reduce((prev, next) => prev + next, 0);
 
-  console.log(firstTenDetailedTranscriptsTotalHeight);
   return (
     <section className={classes.detailedTranscriptViewerContainer} id='detailedTranscriptViewerContainer'>
       {/* This is for regular scroll on the transcripts

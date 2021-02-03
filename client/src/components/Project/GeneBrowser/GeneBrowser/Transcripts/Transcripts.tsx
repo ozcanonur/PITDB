@@ -109,7 +109,7 @@ const TranscriptsOverview = ({ transcriptsData }: { transcriptsData: Transcripts
 
   useEffect(() => {
     dispatch(setGeneBrowserScrollJumpPositionPercent(0));
-    dispatch(setGeneBrowserMouseoverScrollPosition(0));
+    dispatch(setGeneBrowserMouseoverScrollPosition(-1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData]);
 

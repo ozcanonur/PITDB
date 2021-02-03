@@ -1,5 +1,6 @@
 import express from 'express';
 import flatten from 'flat';
+import { max, mean } from 'lodash';
 
 import { AllTranscript } from '../../db/models/allTranscript';
 import { Mutation } from '../../db/models/mutation';
@@ -24,12 +25,13 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
 
     // Filter by selected conditions and min TPM
     const filteredTranscripts = transcripts.filter(
-      ({ TPM }) =>
-        Object.keys(TPM).includes(condition) && Object.values(flatten(TPM)).every((value) => value >= minTPM)
+      ({ TPM }) => TPM[condition] && mean(Object.values(TPM[condition])) >= minTPM
     );
 
     const mutations = await Mutation.find({ gene });
-    const parsedMutations = parseMutations(mutations);
+    const filteredMutations = mutations.filter(({ conditions }) => conditions[condition]);
+
+    const parsedMutations = parseMutations(filteredMutations);
 
     const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations, condition);
 
@@ -58,6 +60,31 @@ router.get('/gene-names', async (req: ExtendedRequest, res) => {
     ]);
 
     res.send(geneNames);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+/* Route to get the maximum TPM
+ */
+router.get('/max-tpm', async (req: ExtendedRequest, res) => {
+  const { project, filters } = req.query;
+
+  const parsedFilters = JSON.parse(filters) as GeneBrowserFilters;
+  const { gene, condition } = parsedFilters;
+
+  try {
+    const transcripts = await AllTranscript.find({ project, gene });
+
+    // Filter by selected conditions
+    const filteredTranscripts = transcripts.filter(({ TPM }) => Object.keys(TPM).includes(condition));
+
+    const selectedConditionTPMvalues = filteredTranscripts
+      .map(({ TPM }) => Object.values(TPM[condition]))
+      .flat();
+
+    res.send({ maxTPM: max(selectedConditionTPMvalues) });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

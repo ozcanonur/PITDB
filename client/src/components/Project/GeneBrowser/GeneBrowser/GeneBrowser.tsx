@@ -6,17 +6,18 @@ import { ActionMeta } from 'react-select';
 import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
-import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
+import ContinuousSlider from 'components/UI/ContinuousSlider/ContinuousSlider';
+// import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 import Transcripts from './Transcripts/Transcripts';
-import TranscriptsDetailed from './DetailedTranscripts/DetailedTranscripts';
+import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
-import { parseDiscreteSliderMarks } from './helpers';
+// import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
 import { setGeneBrowserFilters } from 'actions';
 
@@ -32,6 +33,8 @@ const GeneBrowser = ({ ...props }) => {
     maximumPosition: 0,
     minimumPosition: 0,
   });
+  const [maxTPM, setMaxTPM] = useState(0);
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -39,14 +42,18 @@ const GeneBrowser = ({ ...props }) => {
 
     setLoading(true);
 
-    fetchFromApi('/api/gene-browser/transcripts', { project, filters: filters as any }).then(
-      (res: TranscriptsResponse) => {
-        if (!isMounted || !res) return;
+    Promise.all([
+      fetchFromApi('/api/gene-browser/transcripts', { project, filters: filters as any }),
+      fetchFromApi('/api/gene-browser/max-tpm', { project, filters: filters as any }),
+    ]).then(([resTranscripts, resMaxTpm]: [TranscriptsResponse, { maxTPM: number }]) => {
+      if (!resTranscripts || !isMounted) return;
+      setTranscriptsData(resTranscripts);
 
-        setTranscriptsData(res);
-        setLoading(false);
-      }
-    );
+      setLoading(false);
+
+      if (!resMaxTpm) return;
+      setMaxTPM(resMaxTpm.maxTPM);
+    });
 
     return () => {
       isMounted = false;
@@ -79,24 +86,20 @@ const GeneBrowser = ({ ...props }) => {
     dispatch(setGeneBrowserFilters({ ...filters, gene: selectedOption.value }));
   };
 
-  const tpmMarks = ['0', '0.1', '0.5', '1', '5'];
+  // const qualityMarks = ['0', '100', '250', '500', '1000'];
+
+  // const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+  //   const newMinQualValue = parseFloat(qualityMarks[value]);
+
+  //   if (newMinQualValue === filters.minQual) return;
+
+  //   dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
+  // };
 
   const onMinTPMChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMinTPMValue = parseFloat(tpmMarks[value]);
+    if (value === filters.minTPM) return;
 
-    if (newMinTPMValue === filters.minTPM) return;
-
-    dispatch(setGeneBrowserFilters({ ...filters, minTPM: newMinTPMValue }));
-  };
-
-  const qualityMarks = ['0', '100', '250', '500', '1000'];
-
-  const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newMinQualValue = parseFloat(qualityMarks[value]);
-
-    if (newMinQualValue === filters.minQual) return;
-
-    dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
+    dispatch(setGeneBrowserFilters({ ...filters, minTPM: value }));
   };
 
   const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
@@ -128,18 +131,19 @@ const GeneBrowser = ({ ...props }) => {
           options={conditionTypes}
           defaultInputValue={filters.condition}
         />
-        <DiscreteSlider
-          name='Min. TPM'
-          defaultValue={filters.minTPM}
-          marks={parseDiscreteSliderMarks(tpmMarks)}
+        <ContinuousSlider
+          name='Min. Mean TPM'
+          initialValue={0}
+          min={0}
+          max={Math.floor(maxTPM)}
           onChangeCommited={onMinTPMChangeCommited}
         />
-        <DiscreteSlider
+        {/* <DiscreteSlider
           name='Min. Quality'
           defaultValue={filters.minQual}
           marks={parseDiscreteSliderMarks(qualityMarks)}
           onChangeCommited={onMinQualityChangeCommited}
-        />
+        /> */}
         <GenericLegend
           items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
           colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', 'rgba(40, 82, 56, 0.7)']}
@@ -153,7 +157,7 @@ const GeneBrowser = ({ ...props }) => {
       ) : (
         <>
           <Transcripts transcriptsData={transcriptsData} />
-          <TranscriptsDetailed transcriptsData={transcriptsData} />
+          <DetailedTranscripts transcriptsData={transcriptsData} />
         </>
       )}
     </ProjectItemCard>

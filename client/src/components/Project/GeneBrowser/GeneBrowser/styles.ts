@@ -71,6 +71,7 @@ export const useStyles = makeStyles((theme) => ({
     color: 'white',
     fontSize: '1.4rem',
     textAlign: 'center',
+    height: 30,
   },
   transcriptPositionLine: {
     backgroundColor: 'rgba(217, 33, 122, 0.7)',

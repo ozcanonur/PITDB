@@ -33,5 +33,5 @@ export const initialGeneBrowserFilters: GeneBrowserFilters = {
   gene: 'ACAT2',
   condition: 'Nsi',
   minQual: 250,
-  minTPM: 0.5,
+  minTPM: 0,
 };

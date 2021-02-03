@@ -60,7 +60,6 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
           <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {mutation?.ref}
-            {mutation.isGroupStart ? 'S' : mutation.isGroupEnd ? 'E' : ''}
           </text>
         </g>
       ) : mutation?.type === 'INS' ? (
