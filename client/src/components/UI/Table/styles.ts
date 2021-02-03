@@ -10,8 +10,8 @@ export const useStyles = makeStyles((theme) => ({
     borderCollapse: 'collapse',
   },
   tableHeadCell: {
-    paddingRight: '0.5rem !important',
     lineHeight: 1.5,
+    overflow: 'visible !important',
 
     '&, &$tableCell': {
       fontSize: '1.4rem',
@@ -22,10 +22,10 @@ export const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     fontWeight: 400,
-    padding: '0 !important',
+    paddingTop: '0 !important',
+    paddingBottom: '0 !important',
     verticalAlign: 'middle',
     fontSize: '1.4rem !important',
-    paddingRight: '0.5rem !important',
     color: theme.palette.primary.main,
     fontFamily: 'Poppins, sans-serif !important',
     borderColor: 'rgba(94, 112, 157, 0.25)',

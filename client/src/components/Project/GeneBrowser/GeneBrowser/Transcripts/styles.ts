@@ -72,9 +72,9 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '2rem',
     alignItems: 'flex-start',
     minWidth: '24rem',
+    paddingLeft: '2.7rem',
   },
   transcriptIdCondition: {
-    marginRight: '5.5rem',
     padding: '0.8rem 1rem',
     borderRadius: '0.3rem',
     width: '4rem',

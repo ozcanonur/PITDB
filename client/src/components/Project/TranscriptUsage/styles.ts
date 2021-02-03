@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: '32rem',
     marginRight: '1rem',
 
-    '& > div:not(:last-child)': {
+    '& > *:not(:last-child)': {
       marginBottom: '2rem',
     },
   },

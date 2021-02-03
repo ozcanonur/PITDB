@@ -9,18 +9,27 @@ import { ParsedMutation } from './types';
 export const parseMutations = (mutations: IMutation[]) => {
   const parsedMutations: {
     transcript: string;
-    pos: number;
+    refPos: number;
     aaRef: string;
     aaAlt: string;
     type: string;
   }[] = [];
 
   for (const mutation of mutations) {
+    const { refPos } = mutation;
     Object.keys(mutation.transcriptsPos).forEach((transcript) => {
-      const { pos, aaRef, aaAlt } = mutation.transcriptsPos[transcript];
+      const { aaRef, aaAlt } = mutation.transcriptsPos[transcript];
 
-      const x = { transcript, pos, aaRef, aaAlt, type: mutation.type, ref: mutation.ref, alt: mutation.alt };
-      parsedMutations.push(x);
+      const parsedMutation = {
+        transcript,
+        refPos,
+        aaRef,
+        aaAlt,
+        type: mutation.type,
+        ref: mutation.ref,
+        alt: mutation.alt,
+      };
+      parsedMutations.push(parsedMutation);
     });
   }
 

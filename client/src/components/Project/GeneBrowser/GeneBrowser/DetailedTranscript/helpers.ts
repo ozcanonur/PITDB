@@ -247,57 +247,23 @@ export const getRelativePeptidePositionsAndSequences = (
 
 // WOOP, I have no idea about the logic here also
 // Literal copypasta from above
-export const getMutationPositionsAndTypes = ({ transcript, minimumPosition }: TranscriptData) => {
-  const { mutations, exons } = transcript;
+export const getRelativeMutationPositionsAndTypes = ({
+  transcript: { mutations },
+  minimumPosition,
+}: TranscriptData) => {
+  const relativeMutationPositionsAndTypes = [];
 
-  const mutationPositions: {
-    position: number;
-    type: string;
-    ref: string;
-    alt: string;
-    isGroupStart?: boolean;
-    isGroupEnd?: boolean;
-  }[] = [];
+  for (const { refPos, type, ref, alt } of mutations) {
+    if (type === 'DEL' && ref.length > 1) {
+      ref.split('').forEach((nucleotide, index) => {
+        relativeMutationPositionsAndTypes.push({
+          pos: refPos - minimumPosition + index,
+          type,
+          ref: nucleotide,
+        });
+      });
+    } else relativeMutationPositionsAndTypes.push({ pos: refPos - minimumPosition, type, ref, alt });
+  }
 
-  mutations.forEach(({ pos, type, ref, alt }) => {
-    console.log(pos);
-    let position = minimumPosition;
-    let startSet = false;
-
-    let posOnTranscript = 1;
-
-    for (const exon of exons) {
-      const posOnGenome = exon.genomeStart;
-      const exonLength = exon.genomeEnd - exon.genomeStart + 1;
-      if (posOnTranscript + exonLength > pos && !startSet) {
-        position = posOnGenome + pos - posOnTranscript;
-        startSet = true;
-      }
-      posOnTranscript += exonLength;
-    }
-
-    position -= minimumPosition + 1;
-
-    // if (type === 'DEL' && ref.length > 1) {
-    //   for (let i = 0; i < ref.length; i++) {
-    //     const isGroupStart = i === 0;
-    //     const isGroupEnd = i === ref.length - 1;
-
-    //     mutationPositions.push({
-    //       position: position + i,
-    //       type: 'DEL',
-    //       ref: ref.charAt(i),
-    //       alt: '',
-    //       isGroupStart,
-    //       isGroupEnd,
-    //     });
-    //   }
-    // } else mutationPositions.push({ position, type, ref, alt });
-
-    mutationPositions.push({ position, type, ref, alt });
-  });
-
-  console.log(mutationPositions.filter((e) => e.type === 'DEL' && e.ref.length > 1));
-
-  return mutationPositions;
+  return relativeMutationPositionsAndTypes;
 };

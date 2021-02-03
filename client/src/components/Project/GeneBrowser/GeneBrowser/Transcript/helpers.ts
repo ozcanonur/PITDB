@@ -50,31 +50,7 @@ export const getCDSPositions = (
 
 // WOOP, I have no idea about the logic here also
 // Literal copypasta from above
-export const getMutationPositions = ({ transcript, minimumPosition }: TranscriptData) => {
-  const { mutations, exons } = transcript;
-
-  const mutationPositions: number[] = [];
-
-  mutations.forEach(({ pos }) => {
-    let start = minimumPosition;
-    let startSet = false;
-
-    let posOnTranscript = 1;
-
-    for (const exon of exons) {
-      const posOnGenome = exon.genomeStart;
-      const exonLength = exon.genomeEnd - exon.genomeStart + 1;
-      if (posOnTranscript + exonLength > pos && !startSet) {
-        start = posOnGenome + pos - posOnTranscript + 1;
-        startSet = true;
-      }
-      posOnTranscript += exonLength;
-    }
-
-    start = start - minimumPosition;
-
-    mutationPositions.push(start);
-  });
-
-  return mutationPositions;
-};
+export const getRelativeMutationPositions = ({
+  transcript: { mutations },
+  minimumPosition,
+}: TranscriptData) => mutations.map(({ refPos }) => refPos - minimumPosition);

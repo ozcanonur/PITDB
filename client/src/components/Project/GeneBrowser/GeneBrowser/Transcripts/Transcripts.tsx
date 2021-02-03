@@ -1,8 +1,9 @@
-import { memo } from 'react';
-import { useSelector } from 'react-redux';
+import { memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { TranscriptsResponse, PositionLineProps } from '../../types';
 import { useStyles } from './styles';
+import { setGeneBrowserScrollJumpPositionPercent, setGeneBrowserMouseoverScrollPosition } from 'actions';
 
 import Transcript from '../Transcript/Transcript';
 
@@ -103,6 +104,14 @@ const TranscriptsOverview = ({ transcriptsData }: { transcriptsData: Transcripts
   const classes = useStyles();
 
   const { maximumPosition, minimumPosition } = transcriptsData;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setGeneBrowserScrollJumpPositionPercent(0));
+    dispatch(setGeneBrowserMouseoverScrollPosition(0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcriptsData]);
 
   return (
     <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>

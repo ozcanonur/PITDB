@@ -37,7 +37,7 @@ const CustomTable = ({
 
   return (
     <div className={classes.tableResponsive} {...props}>
-      <Table className={classes.table} {...tableProps}>
+      <Table className={classes.table} {...tableProps} cellSpacing={5}>
         <TableHead>
           <TableRow className={classes.tableHeadRow}>
             {tableHead.map((e, index) => (

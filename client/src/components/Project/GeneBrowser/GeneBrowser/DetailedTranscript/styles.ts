@@ -29,6 +29,9 @@ export const useStyles = makeStyles((theme) => ({
   },
   detailedTranscriptContainer: {
     display: 'flex',
+    paddingBottom: '2rem',
+    direction: 'ltr',
+    paddingLeft: '1rem',
   },
   detailedTranscript: {
     flexGrow: 1,
@@ -41,9 +44,8 @@ export const useStyles = makeStyles((theme) => ({
   transcriptNameContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-
     alignItems: 'flex-start',
-    minWidth: '24rem',
+    minWidth: '21.4rem',
   },
   transcriptLabelCondition: {
     padding: '0.8rem 1rem',

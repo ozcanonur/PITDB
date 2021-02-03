@@ -26,7 +26,7 @@ export type Transcript = {
   }[];
   mutations: {
     transcript: string;
-    pos: number;
+    refPos: number;
     aaRef?: string;
     aaAlt?: string;
     type: string;
@@ -66,6 +66,7 @@ export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
   tooltipStyles?: CSSProperties;
   scrollStyles?: CSSProperties;
   tooltipPortalTo?: string;
+  hasTooltip?: boolean;
 }
 
 export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
@@ -105,7 +106,7 @@ export type RelativePeptidePositionsAndSequences = {
 }[];
 
 export type RelativeMutationPositionsAndTypes = {
-  position: number;
+  pos: number;
   type: string;
   ref: string;
   alt: string;

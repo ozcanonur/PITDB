@@ -84,7 +84,7 @@ export const useStyles = makeStyles((theme) => ({
   scrollDragContainer: {
     position: 'absolute',
     left: '28rem',
-    width: 'calc(100% - 30rem)',
+    width: 'calc(100% - 30rem - 18px)',
     top: '2rem',
     zIndex: 9999,
     height: 'calc(100% - 36px)',

@@ -5,7 +5,7 @@ import min from 'lodash/min';
 import max from 'lodash/max';
 
 import { TranscriptProps } from '../../types';
-import { getMutationPositions } from './helpers';
+import { getRelativeMutationPositions } from './helpers';
 import {
   getTranscriptVisualLineCount,
   getRelativePeptidePositionsAndSequences,
@@ -33,14 +33,12 @@ const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptP
   const minExonStart: number = min(Object.values(flatten(transcript.exons))) || 0;
   const maxExonStart: number = max(Object.values(flatten(transcript.exons))) || 0;
 
+  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
+  const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
   const cdsPositions = getCDSStartsAndEnds(transcriptData);
-  const mutationPositions = getMutationPositions(transcriptData);
+  const mutationPositions = getRelativeMutationPositions(transcriptData);
 
   const svgRef = useRef<SVGSVGElement>(null);
-
-  const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
-
-  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
 
   // There are 2 px space between 'lines' hence transcriptVisualLineCount * 2
   const svgVerticalViewbox =
@@ -57,7 +55,7 @@ const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptP
     dispatch(setGeneBrowserScrollJumpPositionPercent(relativeClickPositionPercent));
   };
 
-  // Just debouncing it a small amount for a small performance gain
+  // Just debouncing it a small amount for performance
   const debounceDispatch = debounce(dispatch, 5);
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     if (!svgRef.current || isTooltip) return;

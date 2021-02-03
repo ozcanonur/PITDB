@@ -87,6 +87,7 @@ const RegularScroll = forwardRef(
       tooltipStyles,
       scrollStyles,
       tooltipPortalTo,
+      hasTooltip = false,
     }: RegularScrollProps,
     ref: any
   ) => {
@@ -120,12 +121,14 @@ const RegularScroll = forwardRef(
             width,
           }}
         />
-        <ScrollTooltip
-          transcriptsData={transcriptsData}
-          portalTo={tooltipPortalTo}
-          tooltipStyles={tooltipStyles}
-          tooltipOpen={tooltipOpen}
-        />
+        {hasTooltip ? (
+          <ScrollTooltip
+            transcriptsData={transcriptsData}
+            portalTo={tooltipPortalTo}
+            tooltipStyles={tooltipStyles}
+            tooltipOpen={tooltipOpen}
+          />
+        ) : null}
       </div>
     );
   }

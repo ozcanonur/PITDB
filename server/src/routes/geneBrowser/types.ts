@@ -7,7 +7,7 @@ export type GeneBrowserFilters = {
 
 export type ParsedMutation = {
   transcript: string;
-  pos: number;
+  refPos: number;
   aaRef?: string;
   aaAlt?: string;
 };

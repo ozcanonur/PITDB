@@ -1,40 +1,81 @@
-import { useEffect, useRef, memo, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
+
+import { areEqual, VariableSizeList as VirtualizedList, ListChildComponentProps } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import RegularScroll from './RegularScroll/RegularScroll';
 
 import { useStyles } from './styles';
-import { TranscriptsResponse, DetailedTranscriptsVirtualListsProps } from '../../types';
+import { TranscriptsResponse, Transcript, VirtualRef } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
 
 import { makeVirtualizedListRefsList, scrollVirtualRefs } from './helpers';
 import { debounce } from 'lodash';
+import { getTranscriptVisualLineCount } from '../DetailedTranscript/helpers';
 
 const BOX_HEIGHT = 30;
 
-// Need to make this a separate pure component to avoid re-renders on scrollJumpPosition change
-const DetailedTranscriptsVirtualLists = memo(
-  ({ transcripts, minimumPosition, maximumPosition, refs }: DetailedTranscriptsVirtualListsProps) => (
-    <>
-      {transcripts.map((transcript, index) => {
-        // if (index > 1) return null;
+const DetailedTranscriptRenderer = memo(({ index, style, data }: ListChildComponentProps) => {
+  const { transcripts, minimumPosition, maximumPosition, refs } = data;
 
-        return (
-          <DetailedTranscript
-            key={transcript.transcriptId}
-            transcriptData={{
-              transcript,
-              minimumPosition,
-              maximumPosition,
-            }}
-            refs={refs[index]}
-          />
-        );
-      })}
-    </>
-  )
+  return (
+    <div style={{ ...style, direction: 'rtl' }}>
+      <DetailedTranscript
+        transcriptData={{
+          transcript: transcripts[index],
+          minimumPosition,
+          maximumPosition,
+        }}
+        refs={refs[index]}
+      />
+    </div>
+  );
+}, areEqual);
+
+const DetailedTranscriptsVirtualList = memo(
+  ({
+    transcripts,
+    minimumPosition,
+    maximumPosition,
+    virtualizedListRefsList,
+  }: {
+    transcripts: Transcript[];
+    minimumPosition: number;
+    maximumPosition: number;
+    virtualizedListRefsList: {
+      exonRef: VirtualRef;
+      cdsRefs?: VirtualRef[][] | undefined;
+    }[];
+  }) => {
+    const getDetailedTranscriptHeight = (index: number) => {
+      const heights = transcripts.map(
+        (transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + 20
+      );
+
+      return heights[index];
+    };
+
+    return (
+      <AutoSizer>
+        {({ width, height }) => (
+          <VirtualizedList
+            height={height}
+            itemCount={transcripts.length}
+            itemSize={getDetailedTranscriptHeight}
+            layout='vertical'
+            direction='rtl'
+            width={width}
+            itemData={{ transcripts, minimumPosition, maximumPosition, refs: virtualizedListRefsList }}
+          >
+            {DetailedTranscriptRenderer}
+          </VirtualizedList>
+        )}
+      </AutoSizer>
+    );
+  }
 );
 
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
@@ -58,7 +99,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 
   // Debounce to not change redux state too fast
-  const debounceDispatch = debounce(dispatch, 15);
+  const debounceDispatch = debounce(dispatch, 10);
 
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
@@ -116,7 +157,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     setTimeout(() => {
       // Scroll all the children transcript virtualized lists
       scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
-    }, 5);
+    }, 10);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollJumpPosition]);
@@ -128,6 +169,12 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const firstTenDetailedTranscriptsTotalHeight = transcripts
+    .map((transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + 20)
+    .slice(0, 10)
+    .reduce((prev, next) => prev + next, 0);
+
+  console.log(firstTenDetailedTranscriptsTotalHeight);
   return (
     <section className={classes.detailedTranscriptViewerContainer} id='detailedTranscriptViewerContainer'>
       {/* This is for regular scroll on the transcripts
@@ -144,12 +191,15 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
       />
 
       {/* These are the actual transcripts */}
-      <div className={classes.detailedTranscripts}>
-        <DetailedTranscriptsVirtualLists
+      <div
+        className={classes.detailedTranscripts}
+        style={{ height: firstTenDetailedTranscriptsTotalHeight, maxHeight: '100vh' }}
+      >
+        <DetailedTranscriptsVirtualList
           transcripts={transcripts}
           minimumPosition={minimumPosition}
           maximumPosition={maximumPosition}
-          refs={virtualizedListRefsList}
+          virtualizedListRefsList={virtualizedListRefsList}
         />
       </div>
       {/* This is for drag scroll on the transcripts, scroll-container class is library req. */}
@@ -173,6 +223,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
         transcriptsData={transcriptsData}
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
+        hasTooltip={true}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
         scrollStyles={{ bottom: 0 }}
         tooltipStyles={{ position: 'fixed', bottom: '2.3rem' }}

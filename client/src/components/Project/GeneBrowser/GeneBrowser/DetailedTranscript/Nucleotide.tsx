@@ -38,7 +38,7 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
   const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
 
-  const mutation = relativeMutationPositionsAndTypes.find(({ position }) => position === index);
+  const mutation = relativeMutationPositionsAndTypes.find(({ pos }) => pos === index);
 
   const nucleotideColor = getNucleotideColor(nucleotide, mutation?.type);
 
