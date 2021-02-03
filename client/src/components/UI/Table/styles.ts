@@ -59,11 +59,6 @@ export const useStyles = makeStyles((theme) => ({
     outline: 'none',
     verticalAlign: 'middle',
   },
-  tableCellClickableContent: {
-    cursor: 'pointer',
-    color: '#337AB7',
-    display: 'inline',
-  },
   tablePagination: {
     fontSize: '1.4rem',
     fontFamily: 'Poppins, sans-serif !important',
@@ -100,5 +95,22 @@ export const useStyles = makeStyles((theme) => ({
     left: '50%',
     top: '50%',
     transform: 'translate(-50%, -50%)',
+  },
+  tableHeadCellRowContentRight: {
+    minWidth: '4rem',
+    maxWidth: '4rem',
+  },
+  tableCellRowContentRight: {
+    minWidth: '4rem',
+    maxWidth: '4rem',
+    textAlign: 'center',
+
+    '&:hover': {
+      backgroundColor: 'rgba(51, 51, 102, 0.2)',
+
+      '& > img': {
+        transform: 'scale(1.2)',
+      },
+    },
   },
 }));

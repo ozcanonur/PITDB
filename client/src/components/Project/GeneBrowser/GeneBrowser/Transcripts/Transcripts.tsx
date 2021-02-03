@@ -1,18 +1,12 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TranscriptsResponse } from '../../types';
+import { TranscriptsResponse, PositionLineProps } from '../../types';
 import { useStyles } from './styles';
 
 import Transcript from '../Transcript/Transcript';
 
-// WOOP, hardcoded
-const PositionLine = ({
-  maximumPosition,
-  minimumPosition,
-}: {
-  maximumPosition: number;
-  minimumPosition: number;
-}) => {
+const CurrentPositionLine = ({ maximumPosition, minimumPosition }: PositionLineProps) => {
   const classes = useStyles();
 
   const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
@@ -41,32 +35,23 @@ const PositionLine = ({
   );
 };
 
-// WOOP, hardcoded
-const MouseOverPositionLine = ({
-  maximumPosition,
-  minimumPosition,
-}: {
-  maximumPosition: number;
-  minimumPosition: number;
-}) => {
+const MouseoverPositionLine = ({ maximumPosition, minimumPosition }: PositionLineProps) => {
   const classes = useStyles();
 
-  const mouseoverScrollPosition = useSelector((state: RootState) => state.geneBrowserMouseoverScrollPosition);
+  const mouseoverPosition = useSelector((state: RootState) => state.geneBrowserMouseoverPosition);
 
-  if (mouseoverScrollPosition < 0) return null;
+  if (mouseoverPosition < 0) return null;
 
   const maxTranscriptWidth = maximumPosition - minimumPosition;
-  const currentGenomePosition = Math.floor(
-    minimumPosition + (maxTranscriptWidth * mouseoverScrollPosition) / 100
-  );
+  const currentGenomePosition = Math.floor(minimumPosition + (maxTranscriptWidth * mouseoverPosition) / 100);
 
   return (
     <div className={classes.transcriptPositionLineContainer}>
       <div
         className={classes.transcriptPositionText}
         style={{
-          left: `${mouseoverScrollPosition}%`,
-          transform: mouseoverScrollPosition >= 50 ? 'translateX(-13.3rem)' : 'none',
+          left: `${mouseoverPosition}%`,
+          transform: mouseoverPosition >= 50 ? 'translate(-12rem, -2rem)' : 'translate(-1rem, -2rem)',
         }}
       >
         {`Go to ${currentGenomePosition.toLocaleString()}`}
@@ -74,7 +59,7 @@ const MouseOverPositionLine = ({
       <div
         className={classes.transcriptPositionLine}
         style={{
-          left: mouseoverScrollPosition > 99.6 ? '100%' : `${mouseoverScrollPosition}%`,
+          left: mouseoverPosition > 99.6 ? '100%' : `${mouseoverPosition}%`,
           opacity: 0.5,
         }}
       />
@@ -82,16 +67,14 @@ const MouseOverPositionLine = ({
   );
 };
 
-const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const Transcripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
-  const { maximumPosition, minimumPosition } = transcriptsData;
-
   return (
-    <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
+    <>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
@@ -112,10 +95,22 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
           />
         </div>
       ))}
-      <PositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
-      <MouseOverPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
+    </>
+  );
+});
+
+const TranscriptsOverview = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+  const classes = useStyles();
+
+  const { maximumPosition, minimumPosition } = transcriptsData;
+
+  return (
+    <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
+      <Transcripts transcriptsData={transcriptsData} />
+      <CurrentPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
+      <MouseoverPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
     </section>
   );
 };
 
-export default Transcripts;
+export default TranscriptsOverview;

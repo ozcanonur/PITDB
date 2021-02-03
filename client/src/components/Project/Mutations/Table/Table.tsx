@@ -1,16 +1,22 @@
 import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import Category3 from 'assets/category3.svg';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
-import { selectMutation, setMutationFilters } from 'actions';
+import {
+  selectMutation,
+  setMutationFilters,
+  setGeneBrowserFilters,
+  setGeneBrowserScrollJumpPositionPercent,
+} from 'actions';
 import { MutationsResponse, GeneNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
@@ -18,6 +24,8 @@ const MutationsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
   const filters = useSelector((state: RootState) => state.mutationFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
@@ -165,6 +173,30 @@ const MutationsTable = ({ ...props }) => {
     dispatch(setMutationFilters({ ...filters, gene }));
   };
 
+  // Button on the right of the row
+  // row prop will come from the table component's row
+  const RowContentRight = ({ row }: { row: string[] }) => {
+    const [gene, position] = row;
+
+    const history = useHistory();
+
+    const handleClick = () => {
+      dispatch(setGeneBrowserFilters({ gene, condition: conditionTypes[0], minTPM: 0, minQual: 0 }));
+      dispatch(setGeneBrowserScrollJumpPositionPercent(parseInt(position)));
+      history.push(history.location.pathname.replace('mutations', 'gene-browser'));
+    };
+
+    return (
+      <img
+        className={classes.goToGeneBrowserIcon}
+        src={Category3}
+        onClick={handleClick}
+        alt='See on gene browser'
+        title='See on gene browser'
+      />
+    );
+  };
+
   return (
     <ProjectItemCard className={classes.container} name='Mutations' {...props}>
       <div className={classes.filtersContainer}>
@@ -239,6 +271,7 @@ const MutationsTable = ({ ...props }) => {
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}
+        RowContentRight={RowContentRight}
       />
     </ProjectItemCard>
   );

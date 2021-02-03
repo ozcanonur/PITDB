@@ -12,7 +12,7 @@ import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
 import Transcripts from './Transcripts/Transcripts';
-import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
+import TranscriptsDetailed from './DetailedTranscripts/DetailedTranscripts';
 
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
@@ -153,7 +153,7 @@ const GeneBrowser = ({ ...props }) => {
       ) : (
         <>
           <Transcripts transcriptsData={transcriptsData} />
-          <DetailedTranscripts transcriptsData={transcriptsData} />
+          <TranscriptsDetailed transcriptsData={transcriptsData} />
         </>
       )}
     </ProjectItemCard>

@@ -31,6 +31,8 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     const mutations = await Mutation.find({ gene });
     const parsedMutations = parseMutations(mutations);
 
+    console.log(parsedMutations);
+
     const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations, condition);
 
     res.send(parsedTranscripts);

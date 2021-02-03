@@ -105,10 +105,12 @@ export type RelativePeptidePositionsAndSequences = {
 }[];
 
 export type RelativeMutationPositionsAndTypes = {
-  start: number;
+  position: number;
   type: string;
   ref: string;
   alt: string;
+  isGroupStart: boolean;
+  isGroupEnd: boolean;
 }[];
 
 export interface DetailedNucleotideProps extends ListChildComponentProps {
@@ -138,9 +140,14 @@ export type DetailedTranscriptsVirtualListsProps = {
   maximumPosition: number;
   refs: {
     exonRef: VirtualRef;
-    cdsRefs?: VirtualRef[][] | undefined;
+    cdsRefs?: VirtualRef[][];
   }[];
 };
+
+export interface PositionLineProps extends HTMLAttributes<HTMLDivElement> {
+  minimumPosition: number;
+  maximumPosition: number;
+}
 
 // export interface VirtualListChildComponentProps extends ListChildComponentProps {
 //   renderedRange?: { start: number; stop: number };

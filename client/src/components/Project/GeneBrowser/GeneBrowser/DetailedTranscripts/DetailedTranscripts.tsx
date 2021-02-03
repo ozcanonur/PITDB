@@ -98,16 +98,26 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   useEffect(() => {
     if (!topScrollRef.current || !bottomScrollRef.current) return;
 
+    let scrollPosition = scrollJumpPosition.scrollPosition;
+
     const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
-    const scrollLeft = widthOnScreen * scrollJumpPosition.scrollPosition - BOX_HEIGHT;
+
+    if (scrollPosition > 1)
+      scrollPosition = (scrollPosition - minimumPosition) / (maximumPosition - minimumPosition);
+
+    const scrollLeft = widthOnScreen * scrollPosition - BOX_HEIGHT;
 
     dispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
-    // Scroll all the children transcript virtualized lists
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
-
     topScrollRef.current.scrollTo({ left: scrollLeft });
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
+
+    // Have to add a small delay or virtual lists won't scroll
+    setTimeout(() => {
+      // Scroll all the children transcript virtualized lists
+      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+    }, 5);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollJumpPosition]);
 

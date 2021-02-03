@@ -28,6 +28,7 @@ const CustomTable = ({
   selectedRow,
   sortedOn,
   handleSort,
+  RowContentRight,
   ...props
 }: TableProps) => {
   const classes = useStyles();
@@ -39,12 +40,14 @@ const CustomTable = ({
       <Table className={classes.table} {...tableProps}>
         <TableHead>
           <TableRow className={classes.tableHeadRow}>
-            {tableHead.map((e) => (
+            {tableHead.map((e, index) => (
               <TableCell
-                key={e}
+                key={index}
                 className={`${classes.tableCell} ${classes.tableHeadCell}`}
                 onClick={handleSort ? () => handleSort(e, sortedOn?.order) : undefined}
-                style={{ cursor: handleSort ? 'pointer' : 'inherit' }}
+                style={{
+                  cursor: handleSort ? 'pointer' : 'inherit',
+                }}
               >
                 {e}
                 {sortedOn && e === sortedOn.field ? (
@@ -56,6 +59,11 @@ const CustomTable = ({
                 ) : null}
               </TableCell>
             ))}
+            {RowContentRight ? (
+              <TableCell
+                className={`${classes.tableCell} ${classes.tableHeadCell} ${classes.tableHeadCellRowContentRight}`}
+              />
+            ) : null}
           </TableRow>
         </TableHead>
         {loading ? (
@@ -77,7 +85,13 @@ const CustomTable = ({
         ) : (
           <TableBody>
             {slicedTableData.map((row, key) => (
-              <Row key={key} row={row} rowOnClick={rowOnClick} selectedRow={selectedRow} />
+              <Row
+                key={key}
+                row={row}
+                rowOnClick={rowOnClick}
+                selectedRow={selectedRow}
+                RowContentRight={RowContentRight}
+              />
             ))}
           </TableBody>
         )}

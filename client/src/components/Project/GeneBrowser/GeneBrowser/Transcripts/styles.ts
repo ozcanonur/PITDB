@@ -104,5 +104,6 @@ export const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: '-2rem',
     marginLeft: '1rem',
+    width: 'max-content',
   },
 }));

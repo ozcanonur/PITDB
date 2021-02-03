@@ -18,9 +18,8 @@ export enum ACTION {
   SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR,
   SET_GENE_BROWSER_FILTERS,
   SELECT_GENE_BROWSER_GENE,
-  SET_GENE_BROWSER_BOX_HEIGHT,
   SET_GENE_BROWSER_SCROLL_POSITION,
-  SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION,
+  SET_GENE_BROWSER_MOUSEOVER_POSITION,
   SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
 }
 
@@ -99,13 +98,6 @@ export type SetGeneBrowserFiltersAction = {
   payload: GeneBrowserFilters;
 };
 
-export type SetGeneBrowserBoxHeight = {
-  type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT;
-  payload: {
-    boxHeight: number;
-  };
-};
-
 export type SetGeneBrowserScrollPosition = {
   type: ACTION.SET_GENE_BROWSER_SCROLL_POSITION;
   payload: number;
@@ -118,7 +110,7 @@ export type SetGeneBrowserScrollJumpPositionPercent = {
   };
 };
 
-export type SetGeneBrowserMouseoverScrollPosition = {
-  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION;
+export type SetGeneBrowserMouseoverPosition = {
+  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_POSITION;
   payload: number;
 };

@@ -24,10 +24,12 @@ export interface TableProps extends HTMLAttributes<HTMLDivElement> {
     order?: -1 | 1;
   };
   handleSort?: (field: string, currentOrder?: -1 | 1) => void;
+  RowContentRight?: ({ row }: { row: string[] }) => JSX.Element;
 }
 
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   row: string[];
   rowOnClick?: (row: string[]) => void;
   selectedRow?: string[];
+  RowContentRight?: ({ row }: { row: string[] }) => JSX.Element;
 }

@@ -12,9 +12,8 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
-  SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
-  SetGeneBrowserMouseoverScrollPosition,
+  SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPositionPercent,
 } from './types';
 
@@ -107,13 +106,6 @@ export const setGeneBrowserFilters = (filters: GeneBrowserFilters): SetGeneBrows
   payload: filters,
 });
 
-export const setGeneBrowserBoxHeight = (boxHeight: number): SetGeneBrowserBoxHeight => ({
-  type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT,
-  payload: {
-    boxHeight,
-  },
-});
-
 export const setGeneBrowserScrollPosition = (scrollPosition: number): SetGeneBrowserScrollPosition => ({
   type: ACTION.SET_GENE_BROWSER_SCROLL_POSITION,
   payload: scrollPosition,
@@ -130,7 +122,7 @@ export const setGeneBrowserScrollJumpPositionPercent = (
 
 export const setGeneBrowserMouseoverScrollPosition = (
   scrollPosition: number
-): SetGeneBrowserMouseoverScrollPosition => ({
-  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION,
+): SetGeneBrowserMouseoverPosition => ({
+  type: ACTION.SET_GENE_BROWSER_MOUSEOVER_POSITION,
   payload: scrollPosition,
 });

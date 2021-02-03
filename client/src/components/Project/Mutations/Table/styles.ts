@@ -40,4 +40,10 @@ export const useStyles = makeStyles((theme) => ({
       marginRight: '2rem',
     },
   },
+  goToGeneBrowserIcon: {
+    width: '2rem',
+    height: '2rem',
+    verticalAlign: 'middle',
+    transition: 'all .15s',
+  },
 }));

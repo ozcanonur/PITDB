@@ -14,9 +14,8 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
-  SetGeneBrowserBoxHeight,
   SetGeneBrowserScrollPosition,
-  SetGeneBrowserMouseoverScrollPosition,
+  SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPositionPercent,
 } from 'actions/types';
 
@@ -169,15 +168,6 @@ const geneBrowserFilters = (
   }
 };
 
-const geneBrowserBoxHeight = (state = { boxHeight: 30 }, action: SetGeneBrowserBoxHeight) => {
-  switch (action.type) {
-    case ACTION.SET_GENE_BROWSER_BOX_HEIGHT:
-      return { ...action.payload };
-    default:
-      return state;
-  }
-};
-
 const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPosition) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_POSITION:
@@ -187,9 +177,9 @@ const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPositi
   }
 };
 
-const geneBrowserMouseoverScrollPosition = (state = 0, action: SetGeneBrowserMouseoverScrollPosition) => {
+const geneBrowserMouseoverPosition = (state = -1, action: SetGeneBrowserMouseoverPosition) => {
   switch (action.type) {
-    case ACTION.SET_GENE_BROWSER_MOUSEOVER_SCROLL_POSITION:
+    case ACTION.SET_GENE_BROWSER_MOUSEOVER_POSITION:
       return action.payload;
     default:
       return state;
@@ -221,8 +211,7 @@ export default combineReducers({
   selectedTranscriptViewerTranscript,
   selectedTranscriptViewerTranscriptColor,
   geneBrowserFilters,
-  geneBrowserBoxHeight,
   geneBrowserScrollPosition,
-  geneBrowserMouseoverScrollPosition,
+  geneBrowserMouseoverPosition,
   geneBrowserScrollJumpPositionPercent,
 });
