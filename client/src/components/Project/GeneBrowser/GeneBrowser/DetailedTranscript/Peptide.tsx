@@ -1,9 +1,7 @@
 import React, { memo, Fragment } from 'react';
-
 import { areEqual } from 'react-window';
 
 import { DetailedPeptideProps } from '../../types';
-
 import { useStyles } from './styles';
 
 const BOX_HEIGHT = 30;
@@ -13,6 +11,7 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
 
   const { relativePeptidePositionsAndSequences } = data;
 
+  // Find which peptide the current index belongs to
   const indexBelongsTo = relativePeptidePositionsAndSequences.filter(
     ({ start, end }) => index >= start && index <= end
   );

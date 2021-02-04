@@ -29,10 +29,11 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
 
   const { minimumPosition, maximumPosition, transcript } = transcriptData;
 
-  const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
   const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcriptData);
-  const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
   const relativeMutationPositionsAndTypes = getRelativeMutationPositionsAndTypes(transcriptData);
+  const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
+
+  const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + BOX_HEIGHT;
 
   return (
     <div className={classes.detailedTranscriptContainer} {...props}>
@@ -55,13 +56,13 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
           </Fragment>
         ))}
       </div>
-      <div className={classes.detailedTranscript} style={{ height: transcriptVisualLineCount * BOX_HEIGHT }}>
+      <div className={classes.detailedTranscript} style={{ height: detailedTranscriptTotalHeight }}>
         <AutoSizer>
           {({ width }) => (
             <>
               {/* These are the exons */}
               <VirtualizedList
-                height={BOX_HEIGHT}
+                height={BOX_HEIGHT * 2}
                 itemCount={maximumPosition - minimumPosition + 1}
                 itemSize={BOX_HEIGHT}
                 layout='horizontal'

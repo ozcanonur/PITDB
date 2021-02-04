@@ -1,6 +1,5 @@
 import { forwardRef, memo, useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import usePortal from 'react-useportal';
 
 import Transcript from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
 
@@ -28,53 +27,32 @@ const Transcripts = memo(({ transcripts, minimumPosition, maximumPosition }: Tra
   );
 });
 
-const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen, portalTo, ...props }: TooltipProps) => {
+const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipProps) => {
   const classes = useStyles();
 
   const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
 
-  // @ts-ignore
-  const bindTo = document.getElementById(portalTo);
-
-  const { Portal } = usePortal({
-    bindTo: bindTo || undefined,
-  });
-
-  const Tooltip = () => {
-    return (
-      <div
-        className={classes.scrollTooltipContainer}
-        style={{ ...tooltipStyles, display: tooltipOpen ? 'inherit' : 'none' }}
-      >
-        <div className={classes.transcriptTooltipRails}>
-          <Transcripts
-            transcripts={transcripts}
-            minimumPosition={minimumPosition}
-            maximumPosition={maximumPosition}
-          />
-          <div
-            className={classes.transcriptPositionLine}
-            style={{
-              left: `${scrollPosition}%`,
-            }}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <>
-      {portalTo ? (
-        <Portal>
-          <Tooltip />
-        </Portal>
-      ) : (
-        <Tooltip />
-      )}
-    </>
+    <div
+      className={classes.scrollTooltipContainer}
+      style={{ ...tooltipStyles, display: tooltipOpen ? 'inherit' : 'none' }}
+    >
+      <div className={classes.transcriptTooltipRails}>
+        <Transcripts
+          transcripts={transcripts}
+          minimumPosition={minimumPosition}
+          maximumPosition={maximumPosition}
+        />
+        <div
+          className={classes.transcriptPositionLine}
+          style={{
+            left: `${scrollPosition}%`,
+          }}
+        />
+      </div>
+    </div>
   );
 };
 

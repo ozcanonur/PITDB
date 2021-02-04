@@ -1,5 +1,5 @@
 import uniqBy from 'lodash/uniqBy';
-import { Transcript, TranscriptData } from '../../types';
+import { Transcript, TranscriptData, RelativeMutationPositionAndType } from '../../types';
 
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   const { cds } = transcript;
@@ -15,17 +15,11 @@ export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   return 1 + totalCdssLineCount;
 };
 
-export const getNucleotideColor = (nucleotide: string, mutationType?: string) => {
-  if (mutationType) {
-    if (mutationType === 'DEL') return 'red';
-    else if (mutationType === 'INS') return 'green';
-    else if (mutationType === 'SNP') return '#83502e';
-  } else {
-    if (nucleotide === 'A') return '#336';
-    else if (nucleotide === 'C') return '#673f7e';
-    else if (nucleotide === 'T') return '#6b88a2';
-    else if (nucleotide === 'G') return '#2F2C38';
-  }
+export const getNucleotideColor = (nucleotide: string) => {
+  if (nucleotide === 'A') return '#336';
+  else if (nucleotide === 'C') return '#673f7e';
+  else if (nucleotide === 'T') return '#6b88a2';
+  else if (nucleotide === 'G') return '#2F2C38';
 };
 
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
@@ -251,18 +245,26 @@ export const getRelativeMutationPositionsAndTypes = ({
   transcript: { mutations },
   minimumPosition,
 }: TranscriptData) => {
-  const relativeMutationPositionsAndTypes = [];
+  const relativeMutationPositionsAndTypes: RelativeMutationPositionAndType[] = [];
 
   for (const { refPos, type, ref, alt } of mutations) {
     if (type === 'DEL' && ref.length > 1) {
       ref.split('').forEach((nucleotide, index) => {
         relativeMutationPositionsAndTypes.push({
-          pos: refPos - minimumPosition + index,
+          start: refPos - minimumPosition + index,
+          end: refPos - minimumPosition + index,
           type,
           ref: nucleotide,
         });
       });
-    } else relativeMutationPositionsAndTypes.push({ pos: refPos - minimumPosition, type, ref, alt });
+    } else
+      relativeMutationPositionsAndTypes.push({
+        start: refPos - minimumPosition,
+        end: refPos - minimumPosition,
+        type,
+        ref,
+        alt,
+      });
   }
 
   return relativeMutationPositionsAndTypes;

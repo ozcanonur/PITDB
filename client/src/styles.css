@@ -111,6 +111,10 @@ html {
 
 @keyframes slide-right-small {
   0% {
+    transform: translateX(0);
+  }
+
+  50% {
     transform: translateX(-0.5rem);
   }
 

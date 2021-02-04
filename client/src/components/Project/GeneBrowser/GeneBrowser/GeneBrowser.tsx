@@ -25,14 +25,17 @@ const GeneBrowser = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
+  // Dispatched on project wrapper entry
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  // Initial values are set in the reducer
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
     transcripts: [],
     maximumPosition: 0,
     minimumPosition: 0,
   });
+  // Max mean TPM value for the selected filters (aside from TPM)
   const [maxTPM, setMaxTPM] = useState(0);
 
   const [loading, setLoading] = useState(false);
@@ -61,6 +64,8 @@ const GeneBrowser = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
+  const dispatch = useDispatch();
+
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
       project,
@@ -70,8 +75,6 @@ const GeneBrowser = ({ ...props }) => {
     // Single select component accepts data in this format
     return geneNames.map(({ _id }) => ({ value: _id, label: _id }));
   };
-
-  const dispatch = useDispatch();
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     if (!selectedOption) {

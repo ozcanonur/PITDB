@@ -29,6 +29,7 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     );
 
     const mutations = await Mutation.find({ gene });
+    // @ts-ignore
     const filteredMutations = mutations.filter(({ conditions }) => conditions[condition]);
 
     const parsedMutations = parseMutations(filteredMutations);

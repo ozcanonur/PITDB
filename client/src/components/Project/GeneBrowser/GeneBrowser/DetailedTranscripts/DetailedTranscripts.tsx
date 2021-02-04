@@ -9,7 +9,7 @@ import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import RegularScroll from './RegularScroll/RegularScroll';
 
 import { useStyles } from './styles';
-import { TranscriptsResponse, Transcript, VirtualRef } from '../../types';
+import { TranscriptsResponse, DetailedTranscriptsVirtualListProps } from '../../types';
 import { setGeneBrowserScrollPosition } from 'actions';
 
 import { makeVirtualizedListRefsList, scrollVirtualRefs } from './helpers';
@@ -22,7 +22,7 @@ const DetailedTranscriptRenderer = memo(({ index, style, data }: ListChildCompon
   const { transcripts, minimumPosition, maximumPosition, refs } = data;
 
   return (
-    <div style={{ ...style, direction: 'rtl' }}>
+    <div style={style}>
       <DetailedTranscript
         transcriptData={{
           transcript: transcripts[index],
@@ -35,24 +35,18 @@ const DetailedTranscriptRenderer = memo(({ index, style, data }: ListChildCompon
   );
 }, areEqual);
 
+// This is the vertical list of detailed transcripts
+// Which will render as user scrolls up/down
 const DetailedTranscriptsVirtualList = memo(
   ({
     transcripts,
     minimumPosition,
     maximumPosition,
     virtualizedListRefsList,
-  }: {
-    transcripts: Transcript[];
-    minimumPosition: number;
-    maximumPosition: number;
-    virtualizedListRefsList: {
-      exonRef: VirtualRef;
-      cdsRefs?: VirtualRef[][] | undefined;
-    }[];
-  }) => {
+  }: DetailedTranscriptsVirtualListProps) => {
     const getDetailedTranscriptHeight = (index: number) => {
       const heights = transcripts.map(
-        (transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + 20
+        (transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + BOX_HEIGHT
       );
 
       return heights[index];
@@ -70,6 +64,8 @@ const DetailedTranscriptsVirtualList = memo(
             width={width}
             style={{ overflowY: 'scroll', overflowX: 'hidden' }}
             itemData={{ transcripts, minimumPosition, maximumPosition, refs: virtualizedListRefsList }}
+            // // Scroll virtual refs
+            // onScroll={}
           >
             {DetailedTranscriptRenderer}
           </VirtualizedList>
@@ -82,12 +78,10 @@ const DetailedTranscriptsVirtualList = memo(
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  // When the user clicks on an exon on the transcripts overview
+  // When the user clicks on a position on the top transcripts overview
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPositionPercent);
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
-
-  const dispatch = useDispatch();
 
   /* We are going to pass down refs to the detailed transcript children virtualized lists
    * So that we can control their scroll status from this component
@@ -99,13 +93,16 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
   const topScrollRef = useRef<HTMLDivElement>(null);
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 
-  // Debounce to not change redux state too fast
+  const dispatch = useDispatch();
+
+  // Debounce to not change redux state too quick
   const debounceDispatch = debounce(dispatch, 10);
 
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
       const widthOnScreen = (maximumPosition - minimumPosition) * BOX_HEIGHT;
 
+      // Change the position line indicator
       debounceDispatch(setGeneBrowserScrollPosition((scrollLeft / widthOnScreen) * 100));
 
       // Scroll all the children transcript virtualized lists
@@ -128,8 +125,8 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
       const scrollLeft = e.currentTarget.scrollLeft;
 
-      // Also scroll drag scroll element
-      // All other needed scrolls will be done via handleDragScroll indirectly
+      // Scroll drag scroll element
+      // All other scrolls will be done via handleDragScroll indirectly
       if (!dragScrollRef.current) return;
       dragScrollRef.current.scrollTo({ left: scrollLeft });
     },
@@ -137,6 +134,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     [maximumPosition, minimumPosition, virtualizedListRefsList]
   );
 
+  // Jump to a position whenever the user clicks on a position on top transcripts overview
   useEffect(() => {
     if (!topScrollRef.current || !bottomScrollRef.current) return;
 
@@ -163,6 +161,7 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollJumpPosition]);
 
+  // Reset the position on unmount
   useEffect(() => {
     return () => {
       dispatch(setGeneBrowserScrollPosition(0));
@@ -170,14 +169,16 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const firstTenDetailedTranscriptsTotalHeight = transcripts
-    .map((transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + 20)
-    .slice(0, 10)
+  // Allow only 7 detailed transcripts to render at the start
+  // Rest will be scrollable
+  const renderHeight = transcripts
+    .map((transcript) => getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + BOX_HEIGHT)
+    .slice(0, 7)
     .reduce((prev, next) => prev + next, 0);
 
   return (
-    <section className={classes.detailedTranscriptViewerContainer} id='detailedTranscriptViewerContainer'>
-      {/* This is for regular scroll on the transcripts
+    <section className={classes.detailedTranscriptViewerContainer}>
+      {/* This is for top regular scroll on the transcripts
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
@@ -186,14 +187,15 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
         ref={topScrollRef}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
         scrollStyles={{ top: 0 }}
-        tooltipStyles={{ position: 'absolute', bottom: 0 }}
-        tooltipPortalTo='transcriptsOverviewContainer'
       />
 
       {/* These are the actual transcripts */}
       <div
         className={classes.detailedTranscripts}
-        style={{ height: firstTenDetailedTranscriptsTotalHeight, maxHeight: '100vh' }}
+        style={{
+          minHeight: renderHeight,
+          maxHeight: renderHeight,
+        }}
       >
         <DetailedTranscriptsVirtualList
           transcripts={transcripts}
@@ -216,16 +218,16 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
           }}
         />
       </DragScroll>
-      {/* This is for regular scroll on the transcripts
+      {/* This is for bottom regular scroll on the transcripts
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
         transcriptsData={transcriptsData}
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
-        hasTooltip={true}
         width={(maximumPosition - minimumPosition + 1) * BOX_HEIGHT}
         scrollStyles={{ bottom: 0 }}
+        hasTooltip={true}
         tooltipStyles={{ position: 'fixed', bottom: '2.3rem' }}
       />
     </section>

@@ -1,7 +1,10 @@
 import { memo } from 'react';
 import { max, min } from 'lodash';
-
 import { areEqual } from 'react-window';
+
+import SnpMutation from './SnpMutation';
+import InsMutation from './InsMutation';
+import DelMutation from './DelMutation';
 
 import { DetailedNucleotideProps } from '../../types';
 import { getNucleotideColor } from './helpers';
@@ -19,6 +22,7 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
   const maxExonEnd = max(relativeExonPositionsAndSequences.map(({ end }) => end)) as number;
   if (index < minExonStart || index > maxExonEnd) return null;
 
+  // Find which exon the current index belongs to
   const indexBelongsTo = relativeExonPositionsAndSequences.find(
     ({ start, end }) => index >= start && index <= end
   );
@@ -29,61 +33,44 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
       <line
         x1={index * BOX_HEIGHT}
         x2={index * BOX_HEIGHT + BOX_HEIGHT}
-        y1={BOX_HEIGHT / 2}
-        y2={BOX_HEIGHT / 2}
+        y1={BOX_HEIGHT / 2 + BOX_HEIGHT}
+        y2={BOX_HEIGHT / 2 + BOX_HEIGHT}
         className={classes.rail}
       />
     );
 
+  // Find the nucleotide
   const { sequence: exonSequence, start: exonStart } = indexBelongsTo;
   const nucleotide = exonSequence.slice(index - exonStart, index - exonStart + 1);
 
-  const mutation = relativeMutationPositionsAndTypes.find(({ pos }) => pos === index);
+  // Check if there is a mutation
+  const mutation = relativeMutationPositionsAndTypes.find(({ start }) => start === index);
 
-  const nucleotideColor = getNucleotideColor(nucleotide, mutation?.type);
+  const nucleotideColor = getNucleotideColor(nucleotide);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
   // -3 because it looks better
-  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3;
+  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3 + BOX_HEIGHT;
 
   return (
     <g style={style}>
+      {/* If there is a mutation at the current index */}
       {mutation?.type === 'SNP' ? (
-        <g className={classes.snpGroup}>
-          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
-          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-            {`${mutation?.ref}>${mutation?.alt}`}
-          </text>
-        </g>
-      ) : mutation?.type === 'DEL' ? (
-        <g className={classes.delGroup}>
-          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
-          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-            {mutation?.ref}
-          </text>
-        </g>
+        <SnpMutation index={index} mutation={mutation} />
       ) : mutation?.type === 'INS' ? (
+        <InsMutation index={index} mutation={mutation} refNucleotide={nucleotide} />
+      ) : mutation?.type === 'DEL' ? (
+        <DelMutation index={index} mutation={mutation} />
+      ) : (
         <>
+          {/* If no mutation */}
           <rect
             fill={nucleotideColor}
             x={index * BOX_HEIGHT}
-            width={BOX_HEIGHT / 2}
-            height={BOX_HEIGHT}
-            className={classes.insRect}
-          />
-          <rect
-            fill={getNucleotideColor(nucleotide)}
-            x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
-            width={BOX_HEIGHT / 2}
+            y={BOX_HEIGHT}
+            width={BOX_HEIGHT}
             height={BOX_HEIGHT}
           />
-          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
-            {`${mutation?.alt} ${nucleotide}`}
-          </text>
-        </>
-      ) : (
-        <>
-          <rect fill={nucleotideColor} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
           <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
             {nucleotide}
           </text>

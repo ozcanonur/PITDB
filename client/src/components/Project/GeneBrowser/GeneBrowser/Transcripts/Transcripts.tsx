@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TranscriptsResponse, PositionLineProps } from '../../types';
@@ -68,14 +68,26 @@ const MouseoverPositionLine = ({ maximumPosition, minimumPosition }: PositionLin
   );
 };
 
-const Transcripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  const { maximumPosition, minimumPosition } = transcriptsData;
+
+  const dispatch = useDispatch();
+
+  // Reset positions on entry
+  useEffect(() => {
+    // WOOP
+    // dispatch(setGeneBrowserScrollJumpPositionPercent(0));
+    dispatch(setGeneBrowserMouseoverScrollPosition(-1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcriptsData]);
+
   return (
-    <>
+    <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
@@ -96,30 +108,10 @@ const Transcripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsRes
           />
         </div>
       ))}
-    </>
-  );
-});
-
-const TranscriptsOverview = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
-  const classes = useStyles();
-
-  const { maximumPosition, minimumPosition } = transcriptsData;
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setGeneBrowserScrollJumpPositionPercent(0));
-    dispatch(setGeneBrowserMouseoverScrollPosition(-1));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transcriptsData]);
-
-  return (
-    <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
-      <Transcripts transcriptsData={transcriptsData} />
       <CurrentPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
       <MouseoverPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
     </section>
   );
 };
 
-export default TranscriptsOverview;
+export default Transcripts;

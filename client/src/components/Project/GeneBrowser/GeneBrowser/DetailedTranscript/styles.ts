@@ -29,7 +29,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   detailedTranscriptContainer: {
     display: 'flex',
-    paddingBottom: '2rem',
     direction: 'ltr',
   },
   detailedTranscript: {
@@ -40,6 +39,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     marginRight: '2rem',
     paddingLeft: '1rem',
+    marginTop: 30,
   },
   transcriptNameContainer: {
     display: 'flex',

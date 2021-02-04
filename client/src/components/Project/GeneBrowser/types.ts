@@ -83,45 +83,46 @@ export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> 
 
 export type VirtualRef = React.RefObject<FixedSizeList>;
 
-export type RelativeExonPositionsAndSequences = {
+export type RelativeExonPositionAndSequence = {
   sequence: string;
   start: number;
   end: number;
   length: number;
-}[];
+};
 
-export type RelativeCdsPositionsAndSequences = {
+export type RelativeCdsPositionAndSequence = {
   start: number;
   end: number;
   sequence: string;
-}[];
+};
 
-export type RelativePeptidePositionsAndSequences = {
+export type RelativePeptidePositionAndSequence = {
   start: number;
   end: number;
   mods: {
     type: string;
     pos: number;
   }[];
-}[];
+};
 
-export type RelativeMutationPositionsAndTypes = {
-  pos: number;
+export type RelativeMutationPositionAndType = {
+  start: number;
+  end: number;
   type: string;
   ref: string;
-  alt: string;
-}[];
+  alt?: string;
+};
 
 export interface DetailedNucleotideProps extends ListChildComponentProps {
   data: {
-    relativeExonPositionsAndSequences: RelativeExonPositionsAndSequences;
-    relativeMutationPositionsAndTypes: RelativeMutationPositionsAndTypes;
+    relativeExonPositionsAndSequences: RelativeExonPositionAndSequence[];
+    relativeMutationPositionsAndTypes: RelativeMutationPositionAndType[];
   };
 }
 
 export interface DetailedCdsProps extends ListChildComponentProps {
   data: {
-    relativeCdsPositionsAndSequences: RelativeCdsPositionsAndSequences;
+    relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[];
     cdsStart: number;
     cdsEnd: number;
   };
@@ -129,7 +130,7 @@ export interface DetailedCdsProps extends ListChildComponentProps {
 
 export interface DetailedPeptideProps extends ListChildComponentProps {
   data: {
-    relativePeptidePositionsAndSequences: RelativePeptidePositionsAndSequences;
+    relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[];
   };
 }
 
@@ -148,7 +149,12 @@ export interface PositionLineProps extends HTMLAttributes<HTMLDivElement> {
   maximumPosition: number;
 }
 
-// export interface VirtualListChildComponentProps extends ListChildComponentProps {
-//   renderedRange?: { start: number; stop: number };
-//   scrollDirection?: 'forward' | 'backward';
-// }
+export interface DetailedTranscriptsVirtualListProps {
+  transcripts: Transcript[];
+  minimumPosition: number;
+  maximumPosition: number;
+  virtualizedListRefsList: {
+    exonRef: VirtualRef;
+    cdsRefs?: VirtualRef[][] | undefined;
+  }[];
+}

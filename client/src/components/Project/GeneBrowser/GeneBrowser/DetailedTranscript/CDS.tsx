@@ -11,10 +11,11 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
 
   const { relativeCdsPositionsAndSequences, cdsStart, cdsEnd } = data;
 
-  // Put nothing if no cds in this box at all
+  // Put nothing if no cds at this index at all
   const isCds = index >= cdsStart && index <= cdsEnd;
   if (!isCds) return null;
 
+  // Check which cds this index belongs to
   const indexBelongsTo = relativeCdsPositionsAndSequences.find(
     ({ start, end }) => index >= start && index <= end
   );
@@ -32,8 +33,8 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
       </g>
     );
 
+  // Find the aminoacid
   const { start, sequence } = indexBelongsTo;
-
   const aminoacid = sequence.slice((index - start - 1) / 3, (index - start - 1) / 3 + 1);
 
   const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
@@ -43,6 +44,7 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
   return (
     <g style={style}>
       <rect className={classes.cdsBackground} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+      {/* Put a vertical line if this is the start of the aminoacid */}
       {/* +0.5 because it looks better */}
       {(index - start) % 3 === 0 ? (
         <line
@@ -52,7 +54,8 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
           y2={BOX_HEIGHT}
           className={classes.divider}
         />
-      ) : (index - start) % 3 === 1 ? (
+      ) : // Put the aminoacid text if this is the middle index
+      (index - start) % 3 === 1 ? (
         <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.aminoacid}>
           {aminoacid}
         </text>
