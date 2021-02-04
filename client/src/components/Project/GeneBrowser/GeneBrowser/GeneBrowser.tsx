@@ -19,7 +19,7 @@ import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 // import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
-import { setGeneBrowserFilters } from 'actions';
+import { clearGeneBrowserTranscriptVisibility, setGeneBrowserFilters } from 'actions';
 
 const GeneBrowser = ({ ...props }) => {
   const classes = useStyles();
@@ -110,6 +110,12 @@ const GeneBrowser = ({ ...props }) => {
 
     dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
   };
+
+  // Clear the hidden transcripts list on new gene
+  useEffect(() => {
+    dispatch(clearGeneBrowserTranscriptVisibility());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.gene]);
 
   return (
     <ProjectItemCard

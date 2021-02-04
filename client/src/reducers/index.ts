@@ -17,6 +17,8 @@ import {
   SetGeneBrowserScrollPosition,
   SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPositionPercent,
+  SetGeneBrowserTranscriptVisibility,
+  ClearGeneBrowserTranscriptVisibility,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -198,6 +200,23 @@ const geneBrowserScrollJumpPositionPercent = (
   }
 };
 
+const geneBrowserHiddenTranscripts = (
+  state: string[] = [],
+  action: SetGeneBrowserTranscriptVisibility | ClearGeneBrowserTranscriptVisibility
+) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
+      const { transcriptId, isHidden } = action.payload;
+
+      if (isHidden) return [...state, action.payload.transcriptId];
+      else return state.filter((e) => e !== transcriptId);
+    case ACTION.CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
+      return [];
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   conditionTypes,
   mutationFilters,
@@ -214,4 +233,5 @@ export default combineReducers({
   geneBrowserScrollPosition,
   geneBrowserMouseoverPosition,
   geneBrowserScrollJumpPositionPercent,
+  geneBrowserHiddenTranscripts,
 });

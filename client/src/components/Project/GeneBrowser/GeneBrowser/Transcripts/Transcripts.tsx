@@ -1,9 +1,16 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import IconButton from '@material-ui/core/IconButton';
+import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
 
 import { TranscriptsResponse, PositionLineProps } from '../../types';
 import { useStyles } from './styles';
-import { setGeneBrowserScrollJumpPositionPercent, setGeneBrowserMouseoverScrollPosition } from 'actions';
+import {
+  setGeneBrowserScrollJumpPositionPercent,
+  setGeneBrowserMouseoverScrollPosition,
+  setGeneBrowserTranscriptVisibility,
+} from 'actions';
 
 import Transcript from '../Transcript/Transcript';
 
@@ -74,6 +81,8 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  const hiddenTranscriptIds = useSelector((state: RootState) => state.geneBrowserHiddenTranscripts);
+
   const { maximumPosition, minimumPosition } = transcriptsData;
 
   const dispatch = useDispatch();
@@ -86,11 +95,41 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData]);
 
+  const hideTranscript = (transcriptId: string) => {
+    dispatch(setGeneBrowserTranscriptVisibility(transcriptId, true));
+  };
+
+  const showTranscript = (transcriptId: string) => {
+    dispatch(setGeneBrowserTranscriptVisibility(transcriptId, false));
+  };
+
   return (
     <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
+            {hiddenTranscriptIds.includes(transcript.transcriptId) ? (
+              <IconButton
+                className={classes.hideTranscriptButton}
+                aria-label='show transcript'
+                component='span'
+                style={{ backgroundColor: 'green' }}
+                onClick={() => showTranscript(transcript.transcriptId)}
+                title='Show transcript'
+              >
+                <AddIcon className={classes.hideTranscriptButtonIcon} />
+              </IconButton>
+            ) : (
+              <IconButton
+                className={classes.hideTranscriptButton}
+                aria-label='hide transcript'
+                component='span'
+                onClick={() => hideTranscript(transcript.transcriptId)}
+                title='Hide transcript'
+              >
+                <RemoveIcon className={classes.hideTranscriptButtonIcon} />
+              </IconButton>
+            )}
             <div
               className={classes.transcriptIdCondition}
               style={{ backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
@@ -99,13 +138,15 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
             </div>
             <p className={classes.transcriptId}>{transcript.transcriptId}</p>
           </div>
-          <Transcript
-            transcriptData={{
-              transcript: transcript,
-              minimumPosition: transcriptsData.minimumPosition,
-              maximumPosition: transcriptsData.maximumPosition,
-            }}
-          />
+          {!hiddenTranscriptIds.includes(transcript.transcriptId) ? (
+            <Transcript
+              transcriptData={{
+                transcript: transcript,
+                minimumPosition: transcriptsData.minimumPosition,
+                maximumPosition: transcriptsData.maximumPosition,
+              }}
+            />
+          ) : null}
         </div>
       ))}
       <CurrentPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />

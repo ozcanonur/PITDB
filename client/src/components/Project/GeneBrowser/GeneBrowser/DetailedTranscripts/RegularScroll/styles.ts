@@ -9,9 +9,9 @@ export const useStyles = makeStyles((theme) => ({
   },
   scrollContainer: {
     position: 'absolute',
-    left: '28rem',
+    left: '27rem',
     overflow: 'auto',
-    width: 'calc(100% - 30rem)',
+    width: 'calc(100% - 29rem)',
   },
   scroll: {
     height: 1,
@@ -28,7 +28,7 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: '4px',
     padding: '1rem',
     zIndex: 9999,
-    left: '28rem',
+    left: '27rem',
     width: 'max-content',
     opacity: 0.9,
   },

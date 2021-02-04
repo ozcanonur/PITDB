@@ -80,11 +80,11 @@ const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptP
     <svg
       xmlns='http://www.w3.org/2000/svg'
       viewBox={`0 0 ${RAIL_LENGTH} ${svgVerticalViewbox}`}
-      className={classes.svg}
       ref={svgRef}
       onClick={handleClick}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
+      style={{ cursor: isTooltip ? 'inherit' : 'crosshair' }}
       {...props}
     >
       {/* This is the rail */}

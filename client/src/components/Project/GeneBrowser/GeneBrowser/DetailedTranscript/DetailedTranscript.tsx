@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { FixedSizeList as VirtualizedList } from 'react-window';
@@ -21,7 +21,7 @@ import { useStyles } from './styles';
 
 const BOX_HEIGHT = 30;
 
-const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
+const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
 
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
@@ -103,7 +103,9 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
                       itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
                       style={{ overflow: 'hidden' }}
                       ref={
-                        refs.cdsRefs && refs.cdsRefs[index].length > 0 ? refs.cdsRefs[index][0] : undefined
+                        refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 0
+                          ? refs.cdsRefs[index][0]
+                          : undefined
                       }
                     >
                       {CDS}
@@ -119,7 +121,9 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
                         itemData={{ relativePeptidePositionsAndSequences }}
                         style={{ overflow: 'hidden' }}
                         ref={
-                          refs.cdsRefs && refs.cdsRefs[index].length > 1 ? refs.cdsRefs[index][1] : undefined
+                          refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 1
+                            ? refs.cdsRefs[index][1]
+                            : undefined
                         }
                       >
                         {Peptide}
@@ -134,6 +138,6 @@ const DetailedTranscript = ({ transcriptData, refs, ...props }: DetailedTranscri
       </div>
     </div>
   );
-};
+});
 
 export default DetailedTranscript;

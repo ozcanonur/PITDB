@@ -21,6 +21,8 @@ export enum ACTION {
   SET_GENE_BROWSER_SCROLL_POSITION,
   SET_GENE_BROWSER_MOUSEOVER_POSITION,
   SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
+  SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
+  CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
 }
 
 export type SetConditionTypes = {
@@ -113,4 +115,16 @@ export type SetGeneBrowserScrollJumpPositionPercent = {
 export type SetGeneBrowserMouseoverPosition = {
   type: ACTION.SET_GENE_BROWSER_MOUSEOVER_POSITION;
   payload: number;
+};
+
+export type SetGeneBrowserTranscriptVisibility = {
+  type: ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY;
+  payload: {
+    transcriptId: string;
+    isHidden: boolean;
+  };
+};
+
+export type ClearGeneBrowserTranscriptVisibility = {
+  type: ACTION.CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY;
 };

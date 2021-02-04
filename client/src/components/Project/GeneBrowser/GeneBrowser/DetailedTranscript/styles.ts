@@ -38,14 +38,13 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     marginRight: '2rem',
-    paddingLeft: '1rem',
     marginTop: 30,
   },
   transcriptNameContainer: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    minWidth: '21.4rem',
+    minWidth: '23rem',
   },
   transcriptLabelCondition: {
     padding: '0.8rem 1rem',

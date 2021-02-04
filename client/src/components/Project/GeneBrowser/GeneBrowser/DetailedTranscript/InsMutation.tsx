@@ -59,7 +59,7 @@ const InsMutation = ({
         />
       </g>
       <rect
-        fill={getNucleotideColor(mutation.ref)}
+        fill={getNucleotideColor(refNucleotide)}
         x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
         y={BOX_HEIGHT}
         width={BOX_HEIGHT / 2}

@@ -15,6 +15,8 @@ import {
   SetGeneBrowserScrollPosition,
   SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPositionPercent,
+  SetGeneBrowserTranscriptVisibility,
+  ClearGeneBrowserTranscriptVisibility,
 } from './types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -125,4 +127,16 @@ export const setGeneBrowserMouseoverScrollPosition = (
 ): SetGeneBrowserMouseoverPosition => ({
   type: ACTION.SET_GENE_BROWSER_MOUSEOVER_POSITION,
   payload: scrollPosition,
+});
+
+export const setGeneBrowserTranscriptVisibility = (
+  transcriptId: string,
+  isHidden: boolean
+): SetGeneBrowserTranscriptVisibility => ({
+  type: ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
+  payload: { transcriptId, isHidden },
+});
+
+export const clearGeneBrowserTranscriptVisibility = (): ClearGeneBrowserTranscriptVisibility => ({
+  type: ACTION.CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
 });
