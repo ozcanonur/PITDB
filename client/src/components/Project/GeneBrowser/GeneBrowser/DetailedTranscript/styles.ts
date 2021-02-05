@@ -38,7 +38,6 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     marginRight: '2rem',
-    marginTop: 30,
   },
   transcriptNameContainer: {
     display: 'flex',
@@ -48,25 +47,23 @@ export const useStyles = makeStyles((theme) => ({
     paddingLeft: '3rem',
   },
   transcriptLabelCondition: {
-    padding: '0.8rem 1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: '0.3rem',
     color: 'white',
     fontSize: '1.4rem',
     textAlign: 'center',
-    height: 30,
-    minWidth: '4rem',
   },
   transcriptLabelId: {
     fontSize: '1.4rem',
     color: theme.palette.primary.main,
-    paddingTop: '0.7rem',
+    // paddingTop: '0.7rem',
   },
   transcriptProperty: {
     fontSize: '1.4rem',
     textAlign: 'right',
     color: theme.palette.primary.main,
-    height: 30,
-    paddingTop: '0.7rem',
   },
   delMutationLine: {
     stroke: 'black',

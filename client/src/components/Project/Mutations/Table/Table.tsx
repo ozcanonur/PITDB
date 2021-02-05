@@ -15,7 +15,7 @@ import {
   selectMutation,
   setMutationFilters,
   setGeneBrowserFilters,
-  setGeneBrowserScrollJumpPositionPercent,
+  setGeneBrowserScrollJumpPosition,
 } from 'actions';
 import { MutationsResponse, GeneNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
@@ -180,9 +180,10 @@ const MutationsTable = ({ ...props }) => {
 
     const history = useHistory();
 
+    // WOOP
     const handleClick = () => {
       dispatch(setGeneBrowserFilters({ gene, condition: conditionTypes[0], minTPM: 0, minQual: 0 }));
-      dispatch(setGeneBrowserScrollJumpPositionPercent(parseInt(position)));
+      dispatch(setGeneBrowserScrollJumpPosition(parseInt(position)));
       history.push(history.location.pathname.replace('mutations', 'gene-browser'));
     };
 

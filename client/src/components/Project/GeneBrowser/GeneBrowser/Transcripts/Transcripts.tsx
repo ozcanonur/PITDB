@@ -6,37 +6,33 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { TranscriptsResponse, PositionLineProps } from '../../types';
 import { useStyles } from './styles';
-import {
-  setGeneBrowserScrollJumpPositionPercent,
-  setGeneBrowserMouseoverScrollPosition,
-  setGeneBrowserTranscriptVisibility,
-} from 'actions';
+import { setGeneBrowserMouseoverScrollPosition, setGeneBrowserTranscriptVisibility } from 'actions';
 
 import Transcript from '../Transcript/Transcript';
 
 const CurrentPositionLine = ({ maximumPosition, minimumPosition }: PositionLineProps) => {
   const classes = useStyles();
 
-  const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
+  const transcriptScrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
-  const maxTranscriptWidth = maximumPosition - minimumPosition;
-  const currentGenomePosition = Math.floor(minimumPosition + (maxTranscriptWidth * scrollPosition) / 100);
+  const percentageScrolled =
+    ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
 
   return (
     <div className={classes.transcriptPositionLineContainer}>
       <div
         className={classes.transcriptPositionText}
         style={{
-          left: `${scrollPosition}%`,
-          transform: scrollPosition >= 50 ? 'translateX(-16.4rem)' : 'none',
+          left: `${percentageScrolled}%`,
+          transform: percentageScrolled >= 50 ? 'translateX(-16.4rem)' : 'none',
         }}
       >
-        {`You are at ${currentGenomePosition.toLocaleString()}`}
+        {`You are at ${transcriptScrollPosition.toLocaleString()}`}
       </div>
       <div
         className={classes.transcriptPositionLine}
         style={{
-          left: scrollPosition > 99.6 ? '100%' : `${scrollPosition}%`,
+          left: `${percentageScrolled}%`,
         }}
       />
     </div>
@@ -67,7 +63,7 @@ const MouseoverPositionLine = ({ maximumPosition, minimumPosition }: PositionLin
       <div
         className={classes.transcriptPositionLine}
         style={{
-          left: mouseoverPosition > 99.6 ? '100%' : `${mouseoverPosition}%`,
+          left: `${mouseoverPosition}%`,
           opacity: 0.5,
         }}
       />
@@ -83,18 +79,12 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
 
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
 
-  const visibleTranscripts = transcriptVisibility
-    .filter(({ isVisible }) => isVisible)
-    .map(({ transcriptId }) => transcriptId);
-
   const { maximumPosition, minimumPosition } = transcriptsData;
 
   const dispatch = useDispatch();
 
   // Reset positions on entry
   useEffect(() => {
-    // WOOP
-    // dispatch(setGeneBrowserScrollJumpPositionPercent(0));
     dispatch(setGeneBrowserMouseoverScrollPosition(-1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData]);
@@ -109,12 +99,16 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const visibleTranscriptIds = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
   return (
     <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
-            {visibleTranscripts.includes(transcript.transcriptId) ? (
+            {visibleTranscriptIds.includes(transcript.transcriptId) ? (
               <IconButton
                 className={classes.hideTranscriptButton}
                 aria-label='hide transcript'
@@ -126,10 +120,9 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
               </IconButton>
             ) : (
               <IconButton
-                className={classes.hideTranscriptButton}
                 aria-label='show transcript'
                 component='span'
-                style={{ backgroundColor: 'green' }}
+                className={classes.showTranscriptButton}
                 onClick={() => showTranscript(transcript.transcriptId)}
                 title='Show transcript'
               >
@@ -144,7 +137,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
             </div>
             <p className={classes.transcriptId}>{transcript.transcriptId}</p>
           </div>
-          {visibleTranscripts.includes(transcript.transcriptId) ? (
+          {visibleTranscriptIds.includes(transcript.transcriptId) ? (
             <Transcript
               transcriptData={{
                 transcript: transcript,

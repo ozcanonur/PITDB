@@ -25,10 +25,11 @@ import { GeneNamesResponse, TranscriptsResponse } from '../types';
 import {
   clearGeneBrowserTranscriptVisibility,
   setGeneBrowserFilters,
+  setGeneBrowserScrollPosition,
   setGeneBrowserTranscriptVisibility,
 } from 'actions';
 
-const GeneBrowser = ({ ...props }) => {
+const GeneBrowser = () => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
@@ -46,8 +47,6 @@ const GeneBrowser = ({ ...props }) => {
   const [maxTPM, setMaxTPM] = useState(0);
 
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {}, [transcriptsData]);
 
   useEffect(() => {
     let isMounted = true;
@@ -73,6 +72,7 @@ const GeneBrowser = ({ ...props }) => {
 
       dispatch(clearGeneBrowserTranscriptVisibility());
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
+      dispatch(setGeneBrowserScrollPosition(resTranscripts.minimumPosition));
     });
 
     return () => {
@@ -151,7 +151,6 @@ const GeneBrowser = ({ ...props }) => {
       name={`Gene browser for ${filters.gene}`}
       className={classes.projectItemCard}
       style={{ minHeight: loading || transcriptsData.transcripts.length === 0 ? '75vh' : 'auto' }}
-      {...props}
     >
       <div className={classes.filtersContainer}>
         <SingleSelect

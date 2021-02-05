@@ -45,3 +45,10 @@ export const scrollVirtualRefs = (
     } else if (e.current) e.current.scrollTo(scrollLeft);
   });
 };
+
+export const parseDiscreteSliderMarks = (marks: string[]) =>
+  marks.map((mark, index) => ({
+    value: index,
+    scaledValue: parseFloat(mark),
+    label: mark,
+  }));

@@ -16,26 +16,27 @@ const DiscreteSlider = ({
 }: DiscreteSliderProps) => {
   const classes = useStyles();
 
-  const [value, setValue] = useState(2);
+  const [value, setValue] = useState(defaultValue);
 
-  const handleChange = (_event: ChangeEvent<{}>, newValue: number | number[]) => {
-    setValue(newValue as number);
+  const handleChange = (event: ChangeEvent<{}>, value: number | number[]) => {
+    setValue(value as number);
   };
 
   return (
     <div className={`${classes.root} ${className}`} {...props}>
-      <Typography id='discrete-slider-custom' className={classes.sliderLabel}>
+      <Typography id='discrete-slider' className={classes.sliderLabel}>
         {name}
       </Typography>
       <Slider
         track={track}
-        value={value}
         min={0}
-        max={4}
+        max={marks.length - 1}
         step={1}
         marks={marks}
+        value={value}
         onChange={handleChange}
-        aria-labelledby='discrete-slider-custom'
+        defaultValue={defaultValue}
+        aria-labelledby='discrete-slider'
         classes={{
           root: classes.root,
           rail: classes.rail,

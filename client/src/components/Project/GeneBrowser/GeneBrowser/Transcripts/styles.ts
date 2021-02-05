@@ -116,11 +116,24 @@ export const useStyles = makeStyles((theme) => ({
     width: '2rem',
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
-    backgroundColor: 'red',
+    backgroundColor: '#ff4949',
     marginRight: '1rem',
+    transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: '#8B000D',
+      backgroundColor: 'red',
+    },
+  },
+  showTranscriptButton: {
+    width: '2rem',
+    padding: '0.8rem 0',
+    borderRadius: '0.3rem',
+    backgroundColor: '#19CC95',
+    marginRight: '1rem',
+    transition: 'all .2s',
+
+    '&:hover': {
+      backgroundColor: 'green',
     },
   },
   hideTranscriptButtonIcon: {

@@ -1,13 +1,14 @@
 import React, { memo, Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
 import { DetailedPeptideProps } from '../../types';
 import { useStyles } from './styles';
 
-const BOX_HEIGHT = 30;
-
 const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
   const classes = useStyles();
+
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
   const { relativePeptidePositionsAndSequences } = data;
 
@@ -23,14 +24,14 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
     <g style={style}>
       {indexBelongsTo.map(({ start, end }, iterateIndex) => (
         <Fragment key={iterateIndex}>
-          <rect className={classes.peptide} x={index * BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
+          <rect className={classes.peptide} x={index * boxHeight} width={boxHeight} height={boxHeight} />
           {index === start || index === end + 1 ? (
             <line
               className={classes.divider}
-              x1={index * BOX_HEIGHT + 0.5}
-              x2={index * BOX_HEIGHT + 0.5}
+              x1={index * boxHeight + 0.5}
+              x2={index * boxHeight + 0.5}
               y1={0}
-              y2={BOX_HEIGHT}
+              y2={boxHeight}
             />
           ) : null}
         </Fragment>

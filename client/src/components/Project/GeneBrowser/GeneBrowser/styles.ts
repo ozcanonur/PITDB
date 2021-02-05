@@ -99,22 +99,24 @@ export const useStyles = makeStyles((theme) => ({
   hideAllTranscriptsButton: {
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
-    backgroundColor: 'red',
+    backgroundColor: '#ff4949',
     marginRight: '1rem',
     flexGrow: 1,
+    transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: '#8B000D',
+      backgroundColor: 'red',
     },
   },
   showAllTranscriptsButton: {
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
-    backgroundColor: 'green',
+    backgroundColor: '#19CC95',
     flexGrow: 1,
+    transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: 'darkgreen',
+      backgroundColor: 'green',
     },
   },
 

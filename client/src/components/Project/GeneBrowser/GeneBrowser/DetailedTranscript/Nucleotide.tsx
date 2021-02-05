@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 import { max, min } from 'lodash';
 import { areEqual } from 'react-window';
 
@@ -10,10 +11,10 @@ import { DetailedNucleotideProps } from '../../types';
 import { getNucleotideColor } from './helpers';
 import { useStyles } from './styles';
 
-const BOX_HEIGHT = 30;
-
 const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
   const classes = useStyles();
+
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
   const { relativeExonPositionsAndSequences, relativeMutationPositionsAndTypes } = data;
 
@@ -31,10 +32,10 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
   if (!indexBelongsTo)
     return (
       <line
-        x1={index * BOX_HEIGHT}
-        x2={index * BOX_HEIGHT + BOX_HEIGHT}
-        y1={BOX_HEIGHT / 2 + BOX_HEIGHT}
-        y2={BOX_HEIGHT / 2 + BOX_HEIGHT}
+        x1={index * boxHeight}
+        x2={index * boxHeight + boxHeight}
+        y1={boxHeight / 2 + boxHeight}
+        y2={boxHeight / 2 + boxHeight}
         className={classes.rail}
       />
     );
@@ -48,9 +49,8 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
 
   const nucleotideColor = getNucleotideColor(nucleotide);
 
-  const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
-  // -3 because it looks better
-  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3 + BOX_HEIGHT;
+  const textOffsetX = index * boxHeight + boxHeight / 2;
+  const textOffsetY = boxHeight / 2 + boxHeight / 4 - boxHeight / 10 + boxHeight;
 
   return (
     <g style={style}>
@@ -66,12 +66,12 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
           {/* If no mutation */}
           <rect
             fill={nucleotideColor}
-            x={index * BOX_HEIGHT}
-            y={BOX_HEIGHT}
-            width={BOX_HEIGHT}
-            height={BOX_HEIGHT}
+            x={index * boxHeight}
+            y={boxHeight}
+            width={boxHeight}
+            height={boxHeight}
           />
-          <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+          <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
             {nucleotide}
           </text>
         </>

@@ -38,9 +38,12 @@ const Transcripts = memo(({ transcripts, minimumPosition, maximumPosition }: Tra
 const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipProps) => {
   const classes = useStyles();
 
-  const scrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
+  const transcriptScrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
 
   const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
+
+  const percentageScrolled =
+    ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
 
   return (
     <div
@@ -56,7 +59,7 @@ const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipP
         <div
           className={classes.transcriptPositionLine}
           style={{
-            left: `${scrollPosition}%`,
+            left: `${percentageScrolled}%`,
           }}
         />
       </div>

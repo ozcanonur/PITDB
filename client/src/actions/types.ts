@@ -20,9 +20,10 @@ export enum ACTION {
   SELECT_GENE_BROWSER_GENE,
   SET_GENE_BROWSER_SCROLL_POSITION,
   SET_GENE_BROWSER_MOUSEOVER_POSITION,
-  SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT,
+  SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
   SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
   CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
+  SET_GENE_BROWSER_BOX_HEIGHT,
 }
 
 export type SetConditionTypes = {
@@ -105,8 +106,8 @@ export type SetGeneBrowserScrollPosition = {
   payload: number;
 };
 
-export type SetGeneBrowserScrollJumpPositionPercent = {
-  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT;
+export type SetGeneBrowserScrollJumpPosition = {
+  type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION;
   payload: {
     scrollPosition: number;
   };
@@ -127,4 +128,9 @@ export type SetGeneBrowserTranscriptVisibility = {
 
 export type ClearGeneBrowserTranscriptVisibility = {
   type: ACTION.CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY;
+};
+
+export type SetGeneBrowserBoxHeight = {
+  type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT;
+  payload: number;
 };

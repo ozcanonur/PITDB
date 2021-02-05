@@ -1,10 +1,9 @@
 import React, { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 
 import { RelativeMutationPositionAndType } from '../../types';
 import { getNucleotideColor } from './helpers';
 import { useStyles } from './styles';
-
-const BOX_HEIGHT = 30;
 
 const InsMutation = ({
   index,
@@ -17,31 +16,32 @@ const InsMutation = ({
 }) => {
   const classes = useStyles();
 
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+
   const { alt } = mutation;
 
   if (!alt) return null;
 
-  const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
-  // -3 because it looks better
-  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3 + BOX_HEIGHT;
+  const textOffsetX = index * boxHeight + boxHeight / 2;
+  const textOffsetY = boxHeight / 2 + boxHeight / 4 - boxHeight / 10 + boxHeight;
 
   return (
     <>
       <g className={classes.insRect}>
         {alt.split('').map((nucleotide, insertionIndex) => {
           const offsetX =
-            index * BOX_HEIGHT -
-            alt.length * (BOX_HEIGHT / 2) +
-            (insertionIndex * BOX_HEIGHT) / 2 +
-            BOX_HEIGHT / 2;
+            index * boxHeight -
+            alt.length * (boxHeight / 2) +
+            (insertionIndex * boxHeight) / 2 +
+            boxHeight / 2;
 
           return (
             <Fragment key={insertionIndex}>
-              <rect fill='rgba(0, 128, 0, 0.7)' x={offsetX} width={BOX_HEIGHT / 2} height={BOX_HEIGHT} />
+              <rect fill='rgba(0, 128, 0, 0.7)' x={offsetX} width={boxHeight / 2} height={boxHeight} />
               <text
-                x={offsetX + BOX_HEIGHT / 4}
-                y={textOffsetY - BOX_HEIGHT}
-                fontSize={BOX_HEIGHT / 2}
+                x={offsetX + boxHeight / 4}
+                y={textOffsetY - boxHeight}
+                fontSize={boxHeight / 2}
                 fill='white'
                 textAnchor='middle'
               >
@@ -52,23 +52,23 @@ const InsMutation = ({
         })}
         <rect
           fill='rgba(0, 128, 0, 0.7)'
-          x={index * BOX_HEIGHT}
-          y={BOX_HEIGHT}
-          width={BOX_HEIGHT / 2}
-          height={BOX_HEIGHT}
+          x={index * boxHeight}
+          y={boxHeight}
+          width={boxHeight / 2}
+          height={boxHeight}
         />
       </g>
       <rect
         fill={getNucleotideColor(refNucleotide)}
-        x={index * BOX_HEIGHT + BOX_HEIGHT / 2}
-        y={BOX_HEIGHT}
-        width={BOX_HEIGHT / 2}
-        height={BOX_HEIGHT}
+        x={index * boxHeight + boxHeight / 2}
+        y={boxHeight}
+        width={boxHeight / 2}
+        height={boxHeight}
       />
       <text
-        x={textOffsetX + BOX_HEIGHT / 4}
+        x={textOffsetX + boxHeight / 4}
         y={textOffsetY}
-        fontSize={BOX_HEIGHT / 2}
+        fontSize={boxHeight / 2}
         className={classes.nucleotide}
       >
         {refNucleotide}

@@ -19,11 +19,12 @@ import {
 } from './helpers';
 import { useStyles } from './styles';
 
-const BOX_HEIGHT = 30;
-
-const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
+const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
   const classes = useStyles();
 
+  const { transcriptData, refs, ...props } = propsa;
+
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
@@ -34,26 +35,56 @@ const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTra
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
 
   // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, top part is for mutation INS & DEL
-  const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + BOX_HEIGHT;
+  const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight;
 
   return (
     <div className={classes.detailedTranscriptContainer} {...props}>
-      <div className={classes.transcriptLabelContainer}>
+      <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
         <div className={classes.transcriptNameContainer}>
           <div
             className={classes.transcriptLabelCondition}
-            style={{ backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
+            style={{
+              backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2',
+              fontSize: boxHeight === 20 ? 9.33 : 14,
+              height: boxHeight === 10 ? 30 : boxHeight,
+              minWidth: boxHeight === 10 ? 30 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
+            }}
           >
             {filters.condition}
           </div>
-          <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
+          <p
+            className={classes.transcriptLabelId}
+            style={{
+              paddingTop: boxHeight / 4,
+              fontSize: boxHeight === 20 ? 9.33 : 14,
+            }}
+          >
+            {transcript.transcriptId}
+          </p>
         </div>
         {transcript.cds?.map(({ strand, peptides }, index) => (
           <Fragment key={index}>
-            <p className={classes.transcriptProperty}>{`CDS, ${
-              strand === '-' ? 'reverse' : 'forward'
-            } strand`}</p>
-            {peptides ? <p className={classes.transcriptProperty}>Peptides</p> : null}
+            <p
+              className={classes.transcriptProperty}
+              style={{
+                paddingTop: boxHeight / 4,
+                fontSize: boxHeight === 20 ? 9.33 : 14,
+                height: boxHeight,
+                display: boxHeight < 20 ? 'none' : 'block',
+              }}
+            >{`CDS, ${strand === '-' ? 'reverse' : 'forward'} strand`}</p>
+            {peptides ? (
+              <p
+                className={classes.transcriptProperty}
+                style={{
+                  paddingTop: boxHeight / 4,
+                  fontSize: boxHeight === 20 ? 9.33 : 14,
+                  display: boxHeight < 20 ? 'none' : 'block',
+                }}
+              >
+                Peptides
+              </p>
+            ) : null}
           </Fragment>
         ))}
       </div>
@@ -63,9 +94,9 @@ const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTra
             <>
               {/* These are the exons */}
               <VirtualizedList
-                height={BOX_HEIGHT * 2}
+                height={boxHeight * 2}
                 itemCount={maximumPosition - minimumPosition + 1}
-                itemSize={BOX_HEIGHT}
+                itemSize={boxHeight}
                 layout='horizontal'
                 width={width}
                 innerElementType='svg'
@@ -95,9 +126,9 @@ const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTra
                 return (
                   <Fragment key={index}>
                     <VirtualizedList
-                      height={BOX_HEIGHT}
+                      height={boxHeight}
                       itemCount={maximumPosition - minimumPosition + 1}
-                      itemSize={BOX_HEIGHT}
+                      itemSize={boxHeight}
                       layout='horizontal'
                       width={width}
                       innerElementType='svg'
@@ -113,9 +144,9 @@ const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTra
                     </VirtualizedList>
                     {relativePeptidePositionsAndSequences.length > 0 ? (
                       <VirtualizedList
-                        height={BOX_HEIGHT}
+                        height={boxHeight}
                         itemCount={maximumPosition - minimumPosition + 1}
-                        itemSize={BOX_HEIGHT}
+                        itemSize={boxHeight}
                         layout='horizontal'
                         width={width}
                         innerElementType='svg'

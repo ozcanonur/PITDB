@@ -3,7 +3,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   detailedTranscriptViewerContainer: {
     padding: '2rem',
-    display: 'flex',
     overflow: 'auto',
     position: 'relative',
     marginTop: '0.5rem',
@@ -100,5 +99,12 @@ export const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
     color: theme.palette.primary.main,
     fontSize: '1.4rem',
+  },
+  zoomSlider: {
+    marginLeft: '4rem',
+
+    '& > span': {
+      width: '18rem',
+    },
   },
 }));

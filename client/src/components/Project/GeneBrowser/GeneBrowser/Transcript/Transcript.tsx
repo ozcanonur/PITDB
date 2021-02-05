@@ -14,7 +14,7 @@ import {
   getCDSStartsAndEnds,
 } from '../DetailedTranscript/helpers';
 import { useStyles } from './styles';
-import { setGeneBrowserScrollJumpPositionPercent, setGeneBrowserMouseoverScrollPosition } from 'actions';
+import { setGeneBrowserScrollJumpPosition, setGeneBrowserMouseoverScrollPosition } from 'actions';
 
 const RAIL_LENGTH = 540;
 const EXON_HEIGHT = 10;
@@ -49,7 +49,13 @@ const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptP
     const { x: svgXOffset, width: svgWidth } = svgRef.current.getBoundingClientRect();
     const relativeClickPositionPercent = (e.clientX - svgXOffset) / svgWidth;
 
-    dispatch(setGeneBrowserScrollJumpPositionPercent(relativeClickPositionPercent));
+    const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
+
+    const currentTranscriptPosition = Math.floor(
+      minimumPosition + transcriptGenomeWidth * relativeClickPositionPercent
+    );
+
+    dispatch(setGeneBrowserScrollJumpPosition(currentTranscriptPosition));
   };
 
   // Change mouseover position line

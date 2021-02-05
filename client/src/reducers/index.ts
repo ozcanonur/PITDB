@@ -17,9 +17,10 @@ import {
   SetGeneBrowserFiltersAction,
   SetGeneBrowserScrollPosition,
   SetGeneBrowserMouseoverPosition,
-  SetGeneBrowserScrollJumpPositionPercent,
+  SetGeneBrowserScrollJumpPosition,
   SetGeneBrowserTranscriptVisibility,
   ClearGeneBrowserTranscriptVisibility,
+  SetGeneBrowserBoxHeight,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -191,10 +192,10 @@ const geneBrowserMouseoverPosition = (state = -1, action: SetGeneBrowserMouseove
 
 const geneBrowserScrollJumpPositionPercent = (
   state = { scrollPosition: 0 },
-  action: SetGeneBrowserScrollJumpPositionPercent
+  action: SetGeneBrowserScrollJumpPosition
 ) => {
   switch (action.type) {
-    case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION_PERCENT:
+    case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION:
       return { ...action.payload };
     default:
       return state;
@@ -210,6 +211,15 @@ const geneBrowserTranscriptVisibility = (
       return [];
     case ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
       return uniqBy([...action.payload, ...state], 'transcriptId');
+    default:
+      return state;
+  }
+};
+
+const geneBrowserBoxHeight = (state = 30, action: SetGeneBrowserBoxHeight) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_BOX_HEIGHT:
+      return action.payload;
     default:
       return state;
   }
@@ -232,4 +242,5 @@ export default combineReducers({
   geneBrowserMouseoverPosition,
   geneBrowserScrollJumpPositionPercent,
   geneBrowserTranscriptVisibility,
+  geneBrowserBoxHeight,
 });

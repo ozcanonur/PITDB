@@ -1,6 +1,5 @@
+import { useSelector } from 'react-redux';
 import { useStyles } from './styles';
-
-const BOX_HEIGHT = 30;
 
 const SnpMutation = ({
   index,
@@ -17,14 +16,15 @@ const SnpMutation = ({
 }) => {
   const classes = useStyles();
 
-  const textOffsetX = index * BOX_HEIGHT + BOX_HEIGHT / 2;
-  // -3 because it looks better
-  const textOffsetY = BOX_HEIGHT / 2 + BOX_HEIGHT / 4 - 3 + BOX_HEIGHT;
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+
+  const textOffsetX = index * boxHeight + boxHeight / 2;
+  const textOffsetY = boxHeight / 2 + boxHeight / 4 - boxHeight / 10 + boxHeight;
 
   return (
     <g className={classes.snpGroup}>
-      <rect fill='#83502e' x={index * BOX_HEIGHT} y={BOX_HEIGHT} width={BOX_HEIGHT} height={BOX_HEIGHT} />
-      <text x={textOffsetX} y={textOffsetY} fontSize={BOX_HEIGHT / 2} className={classes.nucleotide}>
+      <rect fill='#83502e' x={index * boxHeight} y={boxHeight} width={boxHeight} height={boxHeight} />
+      <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
         {`${mutation?.ref}>${mutation?.alt}`}
       </text>
     </g>
