@@ -2,6 +2,9 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
+import IconButton from '@material-ui/core/IconButton';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
@@ -19,7 +22,11 @@ import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 // import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
-import { clearGeneBrowserTranscriptVisibility, setGeneBrowserFilters } from 'actions';
+import {
+  clearGeneBrowserTranscriptVisibility,
+  setGeneBrowserFilters,
+  setGeneBrowserTranscriptVisibility,
+} from 'actions';
 
 const GeneBrowser = ({ ...props }) => {
   const classes = useStyles();
@@ -40,6 +47,8 @@ const GeneBrowser = ({ ...props }) => {
 
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {}, [transcriptsData]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -56,6 +65,14 @@ const GeneBrowser = ({ ...props }) => {
 
       if (!resMaxTpm) return;
       setMaxTPM(resMaxTpm.maxTPM);
+
+      const visibleTranscripts = resTranscripts.transcripts.map(({ transcriptId }) => ({
+        transcriptId,
+        isVisible: true,
+      }));
+
+      dispatch(clearGeneBrowserTranscriptVisibility());
+      dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
     });
 
     return () => {
@@ -111,18 +128,30 @@ const GeneBrowser = ({ ...props }) => {
     dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
   };
 
-  // Clear the hidden transcripts list on new gene
-  useEffect(() => {
-    dispatch(clearGeneBrowserTranscriptVisibility());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.gene]);
+  const hideAllTranscripts = () => {
+    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
+      transcriptId,
+      isVisible: false,
+    }));
+
+    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
+  };
+
+  const showAllTranscripts = () => {
+    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
+      transcriptId,
+      isVisible: true,
+    }));
+
+    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
+  };
 
   return (
     <ProjectItemCard
       name={`Gene browser for ${filters.gene}`}
       className={classes.projectItemCard}
-      {...props}
       style={{ minHeight: loading || transcriptsData.transcripts.length === 0 ? '75vh' : 'auto' }}
+      {...props}
     >
       <div className={classes.filtersContainer}>
         <SingleSelect
@@ -165,6 +194,26 @@ const GeneBrowser = ({ ...props }) => {
         <NoResults className={classes.noResults} />
       ) : (
         <>
+          <div className={classes.hideShowTranscriptsButtonsContainer}>
+            <IconButton
+              className={classes.hideAllTranscriptsButton}
+              aria-label='hide all transcripts'
+              component='span'
+              onClick={hideAllTranscripts}
+              title='Hide all transcripts'
+            >
+              <RemoveCircleIcon className={classes.hideTranscriptButtonIcon} />
+            </IconButton>
+            <IconButton
+              className={classes.showAllTranscriptsButton}
+              aria-label='show all transcripts'
+              component='span'
+              onClick={showAllTranscripts}
+              title='Show all transcripts'
+            >
+              <AddCircleIcon className={classes.hideTranscriptButtonIcon} />
+            </IconButton>
+          </div>
           <Transcripts transcriptsData={transcriptsData} />
           <DetailedTranscripts transcriptsData={transcriptsData} />
         </>

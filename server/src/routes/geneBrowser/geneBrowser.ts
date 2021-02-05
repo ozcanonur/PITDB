@@ -81,11 +81,11 @@ router.get('/max-tpm', async (req: ExtendedRequest, res) => {
     // Filter by selected conditions
     const filteredTranscripts = transcripts.filter(({ TPM }) => Object.keys(TPM).includes(condition));
 
-    const selectedConditionTPMvalues = filteredTranscripts
-      .map(({ TPM }) => Object.values(TPM[condition]))
-      .flat();
+    const meanSelectedConditionTPMvalues = filteredTranscripts.map(({ TPM }) =>
+      mean(Object.values(TPM[condition]))
+    );
 
-    res.send({ maxTPM: max(selectedConditionTPMvalues) });
+    res.send({ maxTPM: max(meanSelectedConditionTPMvalues) });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

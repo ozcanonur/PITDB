@@ -33,6 +33,7 @@ const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTra
   const relativeMutationPositionsAndTypes = getRelativeMutationPositionsAndTypes(transcriptData);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
 
+  // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, top part is for mutation INS & DEL
   const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * BOX_HEIGHT + BOX_HEIGHT;
 
   return (

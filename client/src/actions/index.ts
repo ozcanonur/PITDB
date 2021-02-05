@@ -130,11 +130,10 @@ export const setGeneBrowserMouseoverScrollPosition = (
 });
 
 export const setGeneBrowserTranscriptVisibility = (
-  transcriptId: string,
-  isHidden: boolean
+  transcripts: { transcriptId: string; isVisible: boolean }[]
 ): SetGeneBrowserTranscriptVisibility => ({
   type: ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
-  payload: { transcriptId, isHidden },
+  payload: transcripts,
 });
 
 export const clearGeneBrowserTranscriptVisibility = (): ClearGeneBrowserTranscriptVisibility => ({

@@ -6,20 +6,6 @@ html {
   height: 100%;
 }
 
-/* *::-webkit-scrollbar {
-  width: 10px;
-}
-
-*::-webkit-scrollbar-track {
-  background: '#f4f6ff';
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #858592;
-  border-radius: 2px;
-  border: 3px solid white;
-} */
-
 #root {
   height: 100vh;
   min-width: 1200px;

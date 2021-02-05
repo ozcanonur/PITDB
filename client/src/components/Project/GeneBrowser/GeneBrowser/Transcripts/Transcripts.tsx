@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -81,7 +81,11 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
-  const hiddenTranscriptIds = useSelector((state: RootState) => state.geneBrowserHiddenTranscripts);
+  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+  const visibleTranscripts = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
 
   const { maximumPosition, minimumPosition } = transcriptsData;
 
@@ -95,20 +99,32 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData]);
 
-  const hideTranscript = (transcriptId: string) => {
-    dispatch(setGeneBrowserTranscriptVisibility(transcriptId, true));
-  };
+  const hideTranscript = useCallback((transcriptId: string) => {
+    dispatch(setGeneBrowserTranscriptVisibility([{ transcriptId, isVisible: false }]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const showTranscript = (transcriptId: string) => {
-    dispatch(setGeneBrowserTranscriptVisibility(transcriptId, false));
-  };
+  const showTranscript = useCallback((transcriptId: string) => {
+    dispatch(setGeneBrowserTranscriptVisibility([{ transcriptId, isVisible: true }]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className={classes.transcriptsOverviewContainer} id='transcriptsOverviewContainer'>
       {transcriptsData.transcripts.map((transcript) => (
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
-            {hiddenTranscriptIds.includes(transcript.transcriptId) ? (
+            {visibleTranscripts.includes(transcript.transcriptId) ? (
+              <IconButton
+                className={classes.hideTranscriptButton}
+                aria-label='hide transcript'
+                component='span'
+                onClick={() => hideTranscript(transcript.transcriptId)}
+                title='Hide transcript'
+              >
+                <RemoveIcon className={classes.hideTranscriptButtonIcon} />
+              </IconButton>
+            ) : (
               <IconButton
                 className={classes.hideTranscriptButton}
                 aria-label='show transcript'
@@ -119,16 +135,6 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
               >
                 <AddIcon className={classes.hideTranscriptButtonIcon} />
               </IconButton>
-            ) : (
-              <IconButton
-                className={classes.hideTranscriptButton}
-                aria-label='hide transcript'
-                component='span'
-                onClick={() => hideTranscript(transcript.transcriptId)}
-                title='Hide transcript'
-              >
-                <RemoveIcon className={classes.hideTranscriptButtonIcon} />
-              </IconButton>
             )}
             <div
               className={classes.transcriptIdCondition}
@@ -138,7 +144,7 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
             </div>
             <p className={classes.transcriptId}>{transcript.transcriptId}</p>
           </div>
-          {!hiddenTranscriptIds.includes(transcript.transcriptId) ? (
+          {visibleTranscripts.includes(transcript.transcriptId) ? (
             <Transcript
               transcriptData={{
                 transcript: transcript,

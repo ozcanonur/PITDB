@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import uniqBy from 'lodash/uniqBy';
 
 import {
   ACTION,
@@ -200,18 +201,15 @@ const geneBrowserScrollJumpPositionPercent = (
   }
 };
 
-const geneBrowserHiddenTranscripts = (
-  state: string[] = [],
+const geneBrowserTranscriptVisibility = (
+  state: { transcriptId: string; isVisible: boolean }[] = [],
   action: SetGeneBrowserTranscriptVisibility | ClearGeneBrowserTranscriptVisibility
 ) => {
   switch (action.type) {
-    case ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
-      const { transcriptId, isHidden } = action.payload;
-
-      if (isHidden) return [...state, action.payload.transcriptId];
-      else return state.filter((e) => e !== transcriptId);
     case ACTION.CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
       return [];
+    case ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY:
+      return uniqBy([...action.payload, ...state], 'transcriptId');
     default:
       return state;
   }
@@ -233,5 +231,5 @@ export default combineReducers({
   geneBrowserScrollPosition,
   geneBrowserMouseoverPosition,
   geneBrowserScrollJumpPositionPercent,
-  geneBrowserHiddenTranscripts,
+  geneBrowserTranscriptVisibility,
 });

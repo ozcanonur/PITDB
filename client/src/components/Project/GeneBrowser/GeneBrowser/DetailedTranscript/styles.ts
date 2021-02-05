@@ -45,6 +45,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     minWidth: '23rem',
+    paddingLeft: '3rem',
   },
   transcriptLabelCondition: {
     padding: '0.8rem 1rem',

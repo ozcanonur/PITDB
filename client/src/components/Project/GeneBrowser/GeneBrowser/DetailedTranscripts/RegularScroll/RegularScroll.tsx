@@ -10,19 +10,27 @@ import { useStyles } from './styles';
 const Transcripts = memo(({ transcripts, minimumPosition, maximumPosition }: TranscriptsResponse) => {
   const classes = useStyles();
 
+  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+  const visibleTranscripts = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
   return (
     <div className={classes.tooltipTranscripts}>
-      {transcripts.map((transcript) => (
-        <Transcript
-          key={transcript.transcriptId}
-          transcriptData={{
-            transcript: transcript,
-            minimumPosition,
-            maximumPosition,
-          }}
-          isTooltip={true}
-        />
-      ))}
+      {transcripts.map((transcript) =>
+        visibleTranscripts.includes(transcript.transcriptId) ? (
+          <Transcript
+            key={transcript.transcriptId}
+            transcriptData={{
+              transcript: transcript,
+              minimumPosition,
+              maximumPosition,
+            }}
+            isTooltip={true}
+          />
+        ) : null
+      )}
     </div>
   );
 });

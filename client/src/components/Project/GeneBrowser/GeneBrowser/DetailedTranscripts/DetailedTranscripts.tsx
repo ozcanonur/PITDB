@@ -16,7 +16,12 @@ const BOX_HEIGHT = 30;
 const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
   const classes = useStyles();
 
-  const hiddenTranscriptIds = useSelector((state: RootState) => state.geneBrowserHiddenTranscripts);
+  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+  const visibleTranscripts = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
   // When the user clicks on a position on the top transcripts overview
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPositionPercent);
 
@@ -116,14 +121,14 @@ const DetailedTranscripts = ({ transcriptsData }: { transcriptsData: Transcripts
       scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
     }, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hiddenTranscriptIds]);
+  }, [transcriptVisibility]);
 
   return (
     <section className={classes.detailedTranscriptViewerContainer}>
       {/* These are the actual transcripts */}
       <div className={classes.detailedTranscripts}>
         {transcripts.map((transcript, index) =>
-          !hiddenTranscriptIds.includes(transcript.transcriptId) ? (
+          visibleTranscripts.includes(transcript.transcriptId) ? (
             <DetailedTranscript
               key={index}
               transcriptData={{

@@ -121,8 +121,8 @@ export type SetGeneBrowserTranscriptVisibility = {
   type: ACTION.SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY;
   payload: {
     transcriptId: string;
-    isHidden: boolean;
-  };
+    isVisible: boolean;
+  }[];
 };
 
 export type ClearGeneBrowserTranscriptVisibility = {

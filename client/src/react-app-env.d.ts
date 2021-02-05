@@ -35,5 +35,5 @@ interface RootState {
   geneBrowserScrollPosition: number;
   geneBrowserMouseoverPosition: number;
   geneBrowserScrollJumpPositionPercent: { scrollPosition: number };
-  geneBrowserHiddenTranscripts: string[];
+  geneBrowserTranscriptVisibility: { transcriptId: string; isVisible: boolean }[];
 }
