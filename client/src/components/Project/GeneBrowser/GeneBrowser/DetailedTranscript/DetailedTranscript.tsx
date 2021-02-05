@@ -19,10 +19,8 @@ import {
 } from './helpers';
 import { useStyles } from './styles';
 
-const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
+const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
-
-  const { transcriptData, refs, ...props } = propsa;
 
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
@@ -38,16 +36,20 @@ const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
   const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight;
 
   return (
-    <div className={classes.detailedTranscriptContainer} {...props}>
+    <div
+      className={classes.detailedTranscriptContainer}
+      {...props}
+      style={{ alignItems: boxHeight < 20 ? 'center' : 'flex-start' }}
+    >
       <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
         <div className={classes.transcriptNameContainer}>
           <div
             className={classes.transcriptLabelCondition}
             style={{
               backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2',
-              fontSize: boxHeight === 20 ? 9.33 : 14,
-              height: boxHeight === 10 ? 30 : boxHeight,
-              minWidth: boxHeight === 10 ? 30 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
+              fontSize: boxHeight === 20 ? 11.33 : 14,
+              height: boxHeight < 20 ? 30 : boxHeight,
+              minWidth: boxHeight < 20 ? 40 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
             }}
           >
             {filters.condition}
@@ -56,7 +58,7 @@ const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
             className={classes.transcriptLabelId}
             style={{
               paddingTop: boxHeight / 4,
-              fontSize: boxHeight === 20 ? 9.33 : 14,
+              fontSize: boxHeight === 20 ? 11.33 : 14,
             }}
           >
             {transcript.transcriptId}
@@ -68,7 +70,7 @@ const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
               className={classes.transcriptProperty}
               style={{
                 paddingTop: boxHeight / 4,
-                fontSize: boxHeight === 20 ? 9.33 : 14,
+                fontSize: boxHeight === 20 ? 11.33 : 14,
                 height: boxHeight,
                 display: boxHeight < 20 ? 'none' : 'block',
               }}
@@ -78,7 +80,7 @@ const DetailedTranscript = memo((propsa: DetailedTranscriptProps) => {
                 className={classes.transcriptProperty}
                 style={{
                   paddingTop: boxHeight / 4,
-                  fontSize: boxHeight === 20 ? 9.33 : 14,
+                  fontSize: boxHeight === 20 ? 11.33 : 14,
                   display: boxHeight < 20 ? 'none' : 'block',
                 }}
               >

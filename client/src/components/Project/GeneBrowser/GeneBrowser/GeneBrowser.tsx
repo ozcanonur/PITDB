@@ -33,7 +33,6 @@ const GeneBrowser = () => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  // Dispatched on project wrapper entry
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   // Initial values are set in the reducer

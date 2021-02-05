@@ -58,7 +58,6 @@ export const useStyles = makeStyles((theme) => ({
   transcriptLabelId: {
     fontSize: '1.4rem',
     color: theme.palette.primary.main,
-    // paddingTop: '0.7rem',
   },
   transcriptProperty: {
     fontSize: '1.4rem',

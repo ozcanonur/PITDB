@@ -111,6 +111,7 @@ export type RelativeMutationPositionAndType = {
   type: string;
   ref: string;
   alt?: string;
+  delLength?: number;
 };
 
 export interface DetailedNucleotideProps extends ListChildComponentProps {

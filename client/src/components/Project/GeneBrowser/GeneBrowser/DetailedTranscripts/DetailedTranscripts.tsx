@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useMemo, ChangeEvent, memo } from 'react';
+import React, { useEffect, useRef, useMemo, ChangeEvent, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
 import debounce from 'lodash/debounce';
@@ -63,43 +63,35 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
   // Debounce to not change redux state too quick
   const debounceDispatch = debounce(dispatch, 10);
 
-  const handleDragScroll = useCallback(
-    (scrollLeft: number) => {
-      // Scroll all the children transcript virtualized lists
-      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+  const handleDragScroll = (scrollLeft: number) => {
+    // Scroll all the children transcript virtualized lists
+    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
 
-      // And scroll regular bottom scroll element
-      if (!bottomScrollRef.current) return;
-      bottomScrollRef.current.scrollTo({ left: scrollLeft });
+    // And scroll regular bottom scroll element
+    if (!bottomScrollRef.current) return;
+    bottomScrollRef.current.scrollTo({ left: scrollLeft });
 
-      const transcriptWidthOnScreen = (maximumPosition - minimumPosition) * boxHeight;
-      const percentageScrolled = scrollLeft / transcriptWidthOnScreen;
+    const transcriptWidthOnScreen = (maximumPosition - minimumPosition) * boxHeight;
+    const percentageScrolled = scrollLeft / transcriptWidthOnScreen;
 
-      const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
+    const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
 
-      const currentTranscriptPosition = Math.floor(
-        minimumPosition + transcriptGenomeWidth * percentageScrolled
-      );
+    const currentTranscriptPosition = Math.floor(
+      minimumPosition + transcriptGenomeWidth * percentageScrolled
+    );
 
-      // Change the position line indicator
-      debounceDispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [boxHeight, maximumPosition, minimumPosition, virtualizedListRefsList]
-  );
+    // Change the position line indicator
+    debounceDispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
+  };
 
-  const handleRegularScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-      const scrollLeft = e.currentTarget.scrollLeft;
+  const handleRegularScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const scrollLeft = e.currentTarget.scrollLeft;
 
-      // Scroll drag scroll element
-      // All other scrolls will be done via handleDragScroll indirectly
-      if (!dragScrollRef.current) return;
-      dragScrollRef.current.scrollTo({ left: scrollLeft });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [maximumPosition, minimumPosition, virtualizedListRefsList, boxHeight]
-  );
+    // Scroll drag scroll element
+    // All other scrolls will be done via handleDragScroll indirectly
+    if (!dragScrollRef.current) return;
+    dragScrollRef.current.scrollTo({ left: scrollLeft });
+  };
 
   // Reset the position on unmount
   useEffect(() => {
@@ -163,7 +155,7 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptVisibility]);
 
-  const zoomLevelMarks = ['10', '20', '30', '40'];
+  const zoomLevelMarks = ['5', '10', '20', '30', '40'];
   const zoomLevelOnChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newBoxHeight = parseFloat(zoomLevelMarks[value]);
 

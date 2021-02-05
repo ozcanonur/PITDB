@@ -249,12 +249,14 @@ export const getRelativeMutationPositionsAndTypes = ({
 
   for (const { refPos, type, ref, alt } of mutations) {
     if (type === 'DEL' && ref.length > 1) {
-      ref.split('').forEach((nucleotide, index) => {
+      const splittedRef = ref.split('');
+      splittedRef.forEach((nucleotide, index) => {
         relativeMutationPositionsAndTypes.push({
           start: refPos - minimumPosition + index,
           end: refPos - minimumPosition + index,
           type,
           ref: nucleotide,
+          delLength: index === 0 ? splittedRef.length : undefined,
         });
       });
     } else

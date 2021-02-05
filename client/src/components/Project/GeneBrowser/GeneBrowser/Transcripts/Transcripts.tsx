@@ -14,6 +14,9 @@ const CurrentPositionLine = ({ maximumPosition, minimumPosition }: PositionLineP
   const classes = useStyles();
 
   const transcriptScrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
+  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+  if (!transcriptVisibility.find(({ isVisible }) => isVisible)) return null;
 
   const percentageScrolled =
     ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
@@ -109,25 +112,29 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
         <div className={classes.transcriptOverview} key={transcript.transcriptId}>
           <div className={classes.transcriptIdContainer}>
             {visibleTranscriptIds.includes(transcript.transcriptId) ? (
-              <IconButton
-                className={classes.hideTranscriptButton}
-                aria-label='hide transcript'
-                component='span'
-                onClick={() => hideTranscript(transcript.transcriptId)}
-                title='Hide transcript'
-              >
-                <RemoveIcon className={classes.hideTranscriptButtonIcon} />
-              </IconButton>
+              <div className={classes.hideTranscriptButtonContainer}>
+                <IconButton
+                  className={classes.hideTranscriptButton}
+                  aria-label='hide transcript'
+                  component='span'
+                  onClick={() => hideTranscript(transcript.transcriptId)}
+                  title='Hide transcript'
+                >
+                  <RemoveIcon className={classes.hideTranscriptButtonIcon} />
+                </IconButton>
+              </div>
             ) : (
-              <IconButton
-                aria-label='show transcript'
-                component='span'
-                className={classes.showTranscriptButton}
-                onClick={() => showTranscript(transcript.transcriptId)}
-                title='Show transcript'
-              >
-                <AddIcon className={classes.hideTranscriptButtonIcon} />
-              </IconButton>
+              <div className={classes.hideTranscriptButtonContainer}>
+                <IconButton
+                  aria-label='show transcript'
+                  component='span'
+                  className={classes.showTranscriptButton}
+                  onClick={() => showTranscript(transcript.transcriptId)}
+                  title='Show transcript'
+                >
+                  <AddIcon className={classes.hideTranscriptButtonIcon} />
+                </IconButton>
+              </div>
             )}
             <div
               className={classes.transcriptIdCondition}

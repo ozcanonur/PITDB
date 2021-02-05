@@ -10,12 +10,25 @@ const DelMutation = ({ index, mutation }: { index: number; mutation: RelativeMut
   const textOffsetX = index * boxHeight + boxHeight / 2;
   const textOffsetY = boxHeight / 2 + boxHeight / 4 - boxHeight / 10 + boxHeight;
 
+  // delLength will be undefined unless this is the end point of a mutation with more than 1 nucleotide
+  const { delLength, ref } = mutation;
+
   return (
     <g className={classes.delGroup}>
       <rect fill='red' x={index * boxHeight} y={boxHeight} width={boxHeight} height={boxHeight} />
       <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
-        {mutation?.ref}
+        {ref}
       </text>
+      {delLength ? (
+        <line
+          x1={index * boxHeight}
+          x2={index * boxHeight + delLength * boxHeight}
+          y1={boxHeight - boxHeight / 3}
+          y2={boxHeight - boxHeight / 3}
+          stroke='red'
+          strokeWidth={2}
+        />
+      ) : null}
     </g>
   );
 };

@@ -112,8 +112,15 @@ export const useStyles = makeStyles((theme) => ({
     marginLeft: '1rem',
     width: 'max-content',
   },
+  hideTranscriptButtonContainer: {
+    height: 32,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   hideTranscriptButton: {
     width: '2rem',
+    height: '2rem',
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
     backgroundColor: '#ff4949',
@@ -126,6 +133,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   showTranscriptButton: {
     width: '2rem',
+    height: '2rem',
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
     backgroundColor: '#19CC95',
