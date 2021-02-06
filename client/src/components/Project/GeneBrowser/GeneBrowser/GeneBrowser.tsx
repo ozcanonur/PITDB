@@ -45,7 +45,6 @@ const GeneBrowser = () => {
   });
   // Max mean TPM value for the selected filters (aside from TPM)
   const [maxTPM, setMaxTPM] = useState(0);
-
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -203,6 +202,7 @@ const GeneBrowser = () => {
               title='Hide all transcripts'
             >
               <RemoveCircleIcon className={classes.hideTranscriptButtonIcon} />
+              <span>Hide All</span>
             </IconButton>
             <IconButton
               className={classes.showAllTranscriptsButton}
@@ -212,6 +212,7 @@ const GeneBrowser = () => {
               title='Show all transcripts'
             >
               <AddCircleIcon className={classes.hideTranscriptButtonIcon} />
+              <span>Show All</span>
             </IconButton>
           </div>
           <Transcripts />

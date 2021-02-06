@@ -128,3 +128,20 @@ html {
     transform: translateY(0);
   }
 }
+
+@keyframes flash-red {
+  0% {
+    background-color: currentColor;
+    opacity: 0.5;
+  }
+
+  50% {
+    background-color: rgba(223, 125, 125, 0.9);
+    opacity: 1;
+  }
+
+  100% {
+    background-color: currentColor;
+    opacity: 0.5;
+  }
+}

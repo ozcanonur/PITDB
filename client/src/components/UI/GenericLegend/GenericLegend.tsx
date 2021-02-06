@@ -1,11 +1,21 @@
 import { useStyles } from './styles';
 import { GenericLegendProps } from './types';
 
-const GenericLegend = ({ items, colors, direction = 'vertical' }: GenericLegendProps) => {
+const GenericLegend = ({
+  items,
+  colors,
+  direction = 'vertical',
+  className,
+  ...props
+}: GenericLegendProps) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.legend} style={{ flexDirection: direction === 'vertical' ? 'column' : 'row' }}>
+    <div
+      className={`${classes.legend} ${className}`}
+      style={{ flexDirection: direction === 'vertical' ? 'column' : 'row' }}
+      {...props}
+    >
       {items.map((item, index) => (
         <div key={item}>
           <div style={{ backgroundColor: colors[index] }} />

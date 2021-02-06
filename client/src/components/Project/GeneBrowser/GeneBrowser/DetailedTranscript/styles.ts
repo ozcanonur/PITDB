@@ -14,7 +14,6 @@ export const useStyles = makeStyles((theme) => ({
   },
   rail: {
     stroke: theme.palette.primary.main,
-    strokeWidth: 2,
   },
   divider: {
     stroke: theme.palette.primary.main,
@@ -52,11 +51,9 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     borderRadius: '0.3rem',
     color: 'white',
-    fontSize: '1.4rem',
     textAlign: 'center',
   },
   transcriptLabelId: {
-    fontSize: '1.4rem',
     color: theme.palette.primary.main,
   },
   transcriptProperty: {

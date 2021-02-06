@@ -45,27 +45,21 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
       style={{ alignItems: boxHeight < 20 ? 'center' : 'flex-start' }}
     >
       <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
-        <div className={classes.transcriptNameContainer}>
+        <div
+          className={classes.transcriptNameContainer}
+          style={{ paddingTop: boxHeight / 4, fontSize: boxHeight === 20 ? 11.33 : 14 }}
+        >
           <div
             className={classes.transcriptLabelCondition}
             style={{
               backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2',
-              fontSize: boxHeight === 20 ? 11.33 : 14,
               height: boxHeight < 20 ? 30 : boxHeight,
               minWidth: boxHeight < 20 ? 40 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
             }}
           >
             {filters.condition}
           </div>
-          <p
-            className={classes.transcriptLabelId}
-            style={{
-              paddingTop: boxHeight / 4,
-              fontSize: boxHeight === 20 ? 11.33 : 14,
-            }}
-          >
-            {transcript.transcriptId}
-          </p>
+          <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
         </div>
         {transcript.cds?.map(({ strand, peptides }, index) => (
           <Fragment key={index}>

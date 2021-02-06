@@ -11,7 +11,7 @@ export const singleSelectStyles: Styles = {
     border: 'none',
     minHeight: '4rem',
     width: '22rem',
-    marginBottom: '2rem',
+    marginBottom: '1rem',
     cursor: 'pointer',
 
     '& div[class$="placeholder"]': {

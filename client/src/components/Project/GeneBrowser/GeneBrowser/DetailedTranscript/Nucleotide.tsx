@@ -36,6 +36,7 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
         x2={index * boxHeight + boxHeight}
         y1={boxHeight / 2 + boxHeight}
         y2={boxHeight / 2 + boxHeight}
+        strokeWidth={boxHeight / 15}
         className={classes.rail}
       />
     );

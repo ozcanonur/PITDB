@@ -50,7 +50,10 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     padding: '0 2rem',
-    marginTop: '1rem',
+
+    '& > div > div > div > div': {
+      marginBottom: '1rem',
+    },
 
     '& > div:not(:last-child)': {
       marginBottom: '1rem',
@@ -90,11 +93,11 @@ export const useStyles = makeStyles((theme) => ({
   },
   transcriptPositionLineContainer: {
     position: 'absolute',
-    height: '100%',
     left: '27rem',
-    top: 0,
+    bottom: 0,
     width: 'calc(100% - 29rem)',
     marginBottom: '0 !important',
+    transition: 'all .2s',
   },
   transcriptPositionLine: {
     backgroundColor: 'rgba(217, 33, 122, 0.7)',
@@ -136,7 +139,7 @@ export const useStyles = makeStyles((theme) => ({
     height: '2rem',
     padding: '0.8rem 0',
     borderRadius: '0.3rem',
-    backgroundColor: '#19CC95',
+    backgroundColor: '#64A74D',
     marginRight: '1rem',
     transition: 'all .2s',
 
@@ -146,5 +149,31 @@ export const useStyles = makeStyles((theme) => ({
   },
   hideTranscriptButtonIcon: {
     color: 'white',
+  },
+  collapseHidddenTranscriptsButton: {
+    padding: '0.8rem 0',
+    borderRadius: '0.3rem',
+    backgroundColor: 'grey',
+    marginRight: '1rem',
+    flexGrow: 1,
+    transition: 'all .2s',
+    width: '24rem',
+    marginBottom: '2rem',
+    marginLeft: '2rem',
+
+    '&:hover': {
+      backgroundColor: '#35363A',
+    },
+
+    '& > span': {
+      padding: '0 1.8rem',
+      justifyContent: 'center',
+      color: 'white',
+      fontSize: '1.4rem',
+
+      '& > span': {
+        marginRight: '1rem',
+      },
+    },
   },
 }));
