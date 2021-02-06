@@ -2,7 +2,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/types';
 
 export enum ACTION {
   SET_CONDITION_TYPES,
@@ -17,7 +17,7 @@ export enum ACTION {
   SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT,
   SELECT_TRANSCRIPT_VIEWER_TRANSCRIPT_COLOR,
   SET_GENE_BROWSER_FILTERS,
-  SELECT_GENE_BROWSER_GENE,
+  SET_GENE_BROWSER_TRANSCRIPTS_DATA,
   SET_GENE_BROWSER_SCROLL_POSITION,
   SET_GENE_BROWSER_MOUSEOVER_POSITION,
   SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
@@ -99,6 +99,11 @@ export type SelectTranscriptViewerTranscriptColorAction = {
 export type SetGeneBrowserFiltersAction = {
   type: ACTION.SET_GENE_BROWSER_FILTERS;
   payload: GeneBrowserFilters;
+};
+
+export type SetGeneBrowserTranscriptsData = {
+  type: ACTION.SET_GENE_BROWSER_TRANSCRIPTS_DATA;
+  payload: TranscriptsResponse;
 };
 
 export type SetGeneBrowserScrollPosition = {

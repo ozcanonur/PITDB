@@ -23,7 +23,13 @@ const SnpMutation = ({
 
   return (
     <g className={classes.snpGroup}>
-      <rect fill='#83502e' x={index * boxHeight} y={boxHeight} width={boxHeight} height={boxHeight} />
+      <rect
+        className={classes.snpRect}
+        x={index * boxHeight}
+        y={boxHeight}
+        width={boxHeight}
+        height={boxHeight}
+      />
       <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
         {`${mutation?.ref}>${mutation?.alt}`}
       </text>

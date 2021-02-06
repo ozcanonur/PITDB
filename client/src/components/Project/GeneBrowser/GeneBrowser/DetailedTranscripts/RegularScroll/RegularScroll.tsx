@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import Transcript from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
 
-import { RegularScrollProps, TooltipProps, TranscriptsResponse } from '../../../types';
+import { RegularScrollProps, TooltipProps, Transcript as TranscriptData } from '../../../types';
 import { useStyles } from './styles';
 
 // Making this a separate pure component to avoid re-renders on transcripts svg on position line change
-const Transcripts = memo(({ transcripts, minimumPosition, maximumPosition }: TranscriptsResponse) => {
+const Transcripts = memo(({ transcripts }: { transcripts: TranscriptData[] }) => {
   const classes = useStyles();
 
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
@@ -20,27 +20,20 @@ const Transcripts = memo(({ transcripts, minimumPosition, maximumPosition }: Tra
     <div className={classes.tooltipTranscripts}>
       {transcripts.map((transcript) =>
         visibleTranscripts.includes(transcript.transcriptId) ? (
-          <Transcript
-            key={transcript.transcriptId}
-            transcriptData={{
-              transcript: transcript,
-              minimumPosition,
-              maximumPosition,
-            }}
-            isTooltip={true}
-          />
+          <Transcript key={transcript.transcriptId} transcript={transcript} isTooltip={true} />
         ) : null
       )}
     </div>
   );
 });
 
-const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipProps) => {
+const ScrollTooltip = ({ tooltipStyles, tooltipOpen }: TooltipProps) => {
   const classes = useStyles();
 
+  const { transcripts, minimumPosition, maximumPosition } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
   const transcriptScrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
-
-  const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
 
   const percentageScrolled =
     ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
@@ -51,11 +44,7 @@ const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipP
       style={{ ...tooltipStyles, display: tooltipOpen ? 'inherit' : 'none' }}
     >
       <div className={classes.transcriptTooltipRails}>
-        <Transcripts
-          transcripts={transcripts}
-          minimumPosition={minimumPosition}
-          maximumPosition={maximumPosition}
-        />
+        <Transcripts transcripts={transcripts} />
         <div
           className={classes.transcriptPositionLine}
           style={{
@@ -70,7 +59,6 @@ const ScrollTooltip = ({ transcriptsData, tooltipStyles, tooltipOpen }: TooltipP
 const RegularScroll = forwardRef(
   (
     {
-      transcriptsData,
       handleScroll,
       width,
       tooltipStyles,
@@ -111,12 +99,7 @@ const RegularScroll = forwardRef(
           }}
         />
         {hasTooltip ? (
-          <ScrollTooltip
-            transcriptsData={transcriptsData}
-            portalTo={tooltipPortalTo}
-            tooltipStyles={tooltipStyles}
-            tooltipOpen={tooltipOpen}
-          />
+          <ScrollTooltip portalTo={tooltipPortalTo} tooltipStyles={tooltipStyles} tooltipOpen={tooltipOpen} />
         ) : null}
       </div>
     );

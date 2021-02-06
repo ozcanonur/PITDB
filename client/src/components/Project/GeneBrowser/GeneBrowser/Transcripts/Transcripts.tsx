@@ -4,15 +4,17 @@ import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 
-import { TranscriptsResponse, PositionLineProps } from '../../types';
 import { useStyles } from './styles';
 import { setGeneBrowserMouseoverScrollPosition, setGeneBrowserTranscriptVisibility } from 'actions';
 
 import Transcript from '../Transcript/Transcript';
 
-const CurrentPositionLine = ({ maximumPosition, minimumPosition }: PositionLineProps) => {
+const CurrentPositionLine = () => {
   const classes = useStyles();
 
+  const { minimumPosition, maximumPosition } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
   const transcriptScrollPosition = useSelector((state: RootState) => state.geneBrowserScrollPosition);
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
 
@@ -42,9 +44,12 @@ const CurrentPositionLine = ({ maximumPosition, minimumPosition }: PositionLineP
   );
 };
 
-const MouseoverPositionLine = ({ maximumPosition, minimumPosition }: PositionLineProps) => {
+const MouseoverPositionLine = () => {
   const classes = useStyles();
 
+  const { minimumPosition, maximumPosition } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
   const mouseoverPosition = useSelector((state: RootState) => state.geneBrowserMouseoverPosition);
 
   if (mouseoverPosition < 0) return null;
@@ -74,15 +79,13 @@ const MouseoverPositionLine = ({ maximumPosition, minimumPosition }: PositionLin
   );
 };
 
-const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const Transcripts = () => {
   const classes = useStyles();
 
+  const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
-
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
-
-  const { maximumPosition, minimumPosition } = transcriptsData;
 
   const dispatch = useDispatch();
 
@@ -145,18 +148,12 @@ const Transcripts = ({ transcriptsData }: { transcriptsData: TranscriptsResponse
             <p className={classes.transcriptId}>{transcript.transcriptId}</p>
           </div>
           {visibleTranscriptIds.includes(transcript.transcriptId) ? (
-            <Transcript
-              transcriptData={{
-                transcript: transcript,
-                minimumPosition: transcriptsData.minimumPosition,
-                maximumPosition: transcriptsData.maximumPosition,
-              }}
-            />
+            <Transcript transcript={transcript} />
           ) : null}
         </div>
       ))}
-      <CurrentPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
-      <MouseoverPositionLine maximumPosition={maximumPosition} minimumPosition={minimumPosition} />
+      <CurrentPositionLine />
+      <MouseoverPositionLine />
     </section>
   );
 };

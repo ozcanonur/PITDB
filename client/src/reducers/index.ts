@@ -15,6 +15,7 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
+  SetGeneBrowserTranscriptsData,
   SetGeneBrowserScrollPosition,
   SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPosition,
@@ -27,7 +28,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters, TranscriptsData } from 'components/Project/GeneBrowser/types';
 
 import {
   initialMutationFilters,
@@ -172,6 +173,18 @@ const geneBrowserFilters = (
   }
 };
 
+const geneBrowserTranscriptsData = (
+  state: TranscriptsData = { minimumPosition: 0, maximumPosition: 0, transcripts: [] },
+  action: SetGeneBrowserTranscriptsData
+) => {
+  switch (action.type) {
+    case ACTION.SET_GENE_BROWSER_TRANSCRIPTS_DATA:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
 const geneBrowserScrollPosition = (state = 0, action: SetGeneBrowserScrollPosition) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_POSITION:
@@ -238,6 +251,7 @@ export default combineReducers({
   selectedTranscriptViewerTranscript,
   selectedTranscriptViewerTranscriptColor,
   geneBrowserFilters,
+  geneBrowserTranscriptsData,
   geneBrowserScrollPosition,
   geneBrowserMouseoverPosition,
   geneBrowserScrollJumpPositionPercent,

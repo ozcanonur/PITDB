@@ -27,6 +27,7 @@ import {
   setGeneBrowserFilters,
   setGeneBrowserScrollPosition,
   setGeneBrowserTranscriptVisibility,
+  setGeneBrowserTranscriptsData,
 } from 'actions';
 
 const GeneBrowser = () => {
@@ -46,6 +47,8 @@ const GeneBrowser = () => {
   const [maxTPM, setMaxTPM] = useState(0);
 
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
@@ -69,6 +72,7 @@ const GeneBrowser = () => {
         isVisible: true,
       }));
 
+      dispatch(setGeneBrowserTranscriptsData(resTranscripts));
       dispatch(clearGeneBrowserTranscriptVisibility());
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
       dispatch(setGeneBrowserScrollPosition(resTranscripts.minimumPosition));
@@ -79,8 +83,6 @@ const GeneBrowser = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
-
-  const dispatch = useDispatch();
 
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
@@ -212,8 +214,8 @@ const GeneBrowser = () => {
               <AddCircleIcon className={classes.hideTranscriptButtonIcon} />
             </IconButton>
           </div>
-          <Transcripts transcriptsData={transcriptsData} />
-          <DetailedTranscripts transcriptsData={transcriptsData} />
+          <Transcripts />
+          <DetailedTranscripts />
         </>
       )}
     </ProjectItemCard>

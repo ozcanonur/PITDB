@@ -12,6 +12,7 @@ import {
   SelectTranscriptViewerTranscriptAction,
   SelectTranscriptViewerTranscriptColorAction,
   SetGeneBrowserFiltersAction,
+  SetGeneBrowserTranscriptsData,
   SetGeneBrowserScrollPosition,
   SetGeneBrowserMouseoverPosition,
   SetGeneBrowserScrollJumpPosition,
@@ -24,7 +25,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/types';
 
 export const setConditionTypes = (conditionTypes: string[]): SetConditionTypes => ({
   type: ACTION.SET_CONDITION_TYPES,
@@ -107,6 +108,13 @@ export const selectTranscriptViewerTranscriptColor = (
 export const setGeneBrowserFilters = (filters: GeneBrowserFilters): SetGeneBrowserFiltersAction => ({
   type: ACTION.SET_GENE_BROWSER_FILTERS,
   payload: filters,
+});
+
+export const setGeneBrowserTranscriptsData = (
+  transcriptsData: TranscriptsResponse
+): SetGeneBrowserTranscriptsData => ({
+  type: ACTION.SET_GENE_BROWSER_TRANSCRIPTS_DATA,
+  payload: transcriptsData,
 });
 
 export const setGeneBrowserScrollPosition = (scrollPosition: number): SetGeneBrowserScrollPosition => ({

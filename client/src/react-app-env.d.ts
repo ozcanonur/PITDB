@@ -32,6 +32,7 @@ interface RootState {
     color: string;
   };
   geneBrowserFilters: import('components/Project/GeneBrowser/types').GeneBrowserFilters;
+  geneBrowserTranscriptsData: import('components/Project/GeneBrowser/types').TranscriptsData;
   geneBrowserScrollPosition: number;
   geneBrowserMouseoverPosition: number;
   geneBrowserScrollJumpPositionPercent: { scrollPosition: number };

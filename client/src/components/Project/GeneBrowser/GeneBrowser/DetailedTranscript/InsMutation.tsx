@@ -27,7 +27,7 @@ const InsMutation = ({
 
   return (
     <>
-      <g className={classes.insRect}>
+      <g className={classes.insGroup}>
         {alt.split('').map((nucleotide, insertionIndex) => {
           const offsetX =
             index * boxHeight -
@@ -37,13 +37,12 @@ const InsMutation = ({
 
           return (
             <Fragment key={insertionIndex}>
-              <rect fill='rgba(0, 128, 0, 0.7)' x={offsetX} width={boxHeight / 2} height={boxHeight} />
+              <rect className={classes.insRect} x={offsetX} width={boxHeight / 2} height={boxHeight} />
               <text
                 x={offsetX + boxHeight / 4}
                 y={textOffsetY - boxHeight}
                 fontSize={boxHeight / 2}
-                fill='white'
-                textAnchor='middle'
+                className={classes.insText}
               >
                 {nucleotide}
               </text>
@@ -51,7 +50,7 @@ const InsMutation = ({
           );
         })}
         <rect
-          fill='rgba(0, 128, 0, 0.7)'
+          className={classes.insRect}
           x={index * boxHeight}
           y={boxHeight}
           width={boxHeight / 2}

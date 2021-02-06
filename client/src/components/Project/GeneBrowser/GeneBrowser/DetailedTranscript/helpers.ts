@@ -1,5 +1,5 @@
 import uniqBy from 'lodash/uniqBy';
-import { Transcript, TranscriptData, RelativeMutationPositionAndType } from '../../types';
+import { Transcript, RelativeMutationPositionAndType } from '../../types';
 
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   const { cds } = transcript;
@@ -23,9 +23,7 @@ export const getNucleotideColor = (nucleotide: string) => {
 };
 
 // WOOP, I have no idea, actually maybe some bit of an idea about the logic here
-export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptData) => {
-  const { transcript, minimumPosition } = transcriptData;
-
+export const getRelativeExonPositionsAndSequences = (transcript: Transcript, minimumPosition: number) => {
   let lastExonEndedAt = 0;
   const parsedExons = transcript.exons
     .sort((x, y) => x.genomeStart - y.genomeEnd)
@@ -47,7 +45,11 @@ export const getRelativeExonPositionsAndSequences = (transcriptData: TranscriptD
   return parsedExons;
 };
 
-export const getCDSStartsAndEnds = ({ transcript, minimumPosition, maximumPosition }: TranscriptData) => {
+export const getCDSStartsAndEnds = (
+  transcript: Transcript,
+  minimumPosition: number,
+  maximumPosition: number
+) => {
   const { cds, exons } = transcript;
 
   if (!cds || cds.length === 0 || !exons) return [];
@@ -241,10 +243,18 @@ export const getRelativePeptidePositionsAndSequences = (
 
 // WOOP, I have no idea about the logic here also
 // Literal copypasta from above
-export const getRelativeMutationPositionsAndTypes = ({
-  transcript: { mutations },
-  minimumPosition,
-}: TranscriptData) => {
+export const getRelativeMutationPositionsAndTypes = (
+  mutations: {
+    transcript: string;
+    refPos: number;
+    aaRef?: string;
+    aaAlt?: string;
+    type: string;
+    ref: string;
+    alt: string;
+  }[],
+  minimumPosition: number
+) => {
   const relativeMutationPositionsAndTypes: RelativeMutationPositionAndType[] = [];
 
   for (const { refPos, type, ref, alt } of mutations) {

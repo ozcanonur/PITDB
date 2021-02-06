@@ -15,7 +15,13 @@ const DelMutation = ({ index, mutation }: { index: number; mutation: RelativeMut
 
   return (
     <g className={classes.delGroup}>
-      <rect fill='red' x={index * boxHeight} y={boxHeight} width={boxHeight} height={boxHeight} />
+      <rect
+        className={classes.delRect}
+        x={index * boxHeight}
+        y={boxHeight}
+        width={boxHeight}
+        height={boxHeight}
+      />
       <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
         {ref}
       </text>
@@ -25,8 +31,7 @@ const DelMutation = ({ index, mutation }: { index: number; mutation: RelativeMut
           x2={index * boxHeight + delLength * boxHeight}
           y1={boxHeight - boxHeight / 3}
           y2={boxHeight - boxHeight / 3}
-          stroke='red'
-          strokeWidth={2}
+          className={classes.delGroupLine}
         />
       ) : null}
     </g>

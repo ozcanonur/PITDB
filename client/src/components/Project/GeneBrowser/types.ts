@@ -48,19 +48,19 @@ export type TranscriptsResponse = {
   maximumPosition: number;
 };
 
-export type TranscriptData = {
-  transcript: Transcript;
-  minimumPosition: number;
-  maximumPosition: number;
-};
+export type TranscriptsData = TranscriptsResponse;
 
-export interface TranscriptProps extends SVGAttributes<SVGElement> {
-  transcriptData: TranscriptData;
+export interface TranscriptProps extends SVGAttributes<SVGSVGElement> {
+  transcript: Transcript;
   isTooltip?: boolean;
 }
 
+export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
+  transcript: Transcript;
+  refs: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] };
+}
+
 export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
-  transcriptsData: TranscriptsResponse;
   handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   width: number;
   tooltipStyles?: CSSProperties;
@@ -70,15 +70,9 @@ export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
-  transcriptsData: TranscriptsResponse;
   portalTo?: string;
   tooltipStyles?: CSSProperties;
   tooltipOpen: boolean;
-}
-
-export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
-  transcriptData: TranscriptData;
-  refs: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] };
 }
 
 export type VirtualRef = React.RefObject<FixedSizeList>;
@@ -135,25 +129,7 @@ export interface DetailedPeptideProps extends ListChildComponentProps {
   };
 }
 
-export type DetailedTranscriptsVirtualListsProps = {
-  transcripts: Transcript[];
-  minimumPosition: number;
-  maximumPosition: number;
-  refs: {
-    exonRef: VirtualRef;
-    cdsRefs?: VirtualRef[][];
-  }[];
-};
-
-export interface PositionLineProps extends HTMLAttributes<HTMLDivElement> {
-  minimumPosition: number;
-  maximumPosition: number;
-}
-
 export interface DetailedTranscriptsVirtualListProps {
-  transcripts: Transcript[];
-  minimumPosition: number;
-  maximumPosition: number;
   virtualizedListRefsList: {
     exonRef: VirtualRef;
     cdsRefs?: VirtualRef[][] | undefined;

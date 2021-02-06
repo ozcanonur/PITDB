@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { memo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
 import max from 'lodash/max';
@@ -22,17 +22,19 @@ const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
 const MUTATION_WIDTH = 0.5;
 
-const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptProps) => {
+const Transcript = memo(({ transcript, isTooltip = false, ...props }: TranscriptProps) => {
   const classes = useStyles();
 
-  const { transcript, minimumPosition, maximumPosition } = transcriptData;
+  const { minimumPosition, maximumPosition } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
 
   const pixelPerValue = RAIL_LENGTH / (maximumPosition - minimumPosition + 1);
 
   const transcriptVisualLineCount = getTranscriptVisualLineCount(transcript);
-  const exonPositions = getRelativeExonPositionsAndSequences(transcriptData);
-  const cdsPositions = getCDSStartsAndEnds(transcriptData);
-  const mutationPositions = transcriptData.transcript.mutations.map(({ refPos }) => refPos - minimumPosition);
+  const exonPositions = getRelativeExonPositionsAndSequences(transcript, minimumPosition);
+  const cdsPositions = getCDSStartsAndEnds(transcript, minimumPosition, maximumPosition);
+  const mutationPositions = transcript.mutations.map(({ refPos }) => refPos - minimumPosition);
 
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -181,6 +183,6 @@ const Transcript = ({ transcriptData, isTooltip = false, ...props }: TranscriptP
       ))}
     </svg>
   );
-};
+});
 
 export default Transcript;

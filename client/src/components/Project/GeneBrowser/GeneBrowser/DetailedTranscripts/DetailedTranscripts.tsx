@@ -7,39 +7,44 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import RegularScroll from './RegularScroll/RegularScroll';
 
-import { DetailedTranscriptsVirtualListProps, TranscriptsResponse } from '../../types';
+import { DetailedTranscriptsVirtualListProps } from '../../types';
 import { setGeneBrowserBoxHeight, setGeneBrowserScrollPosition } from 'actions';
 import { makeVirtualizedListRefsList, scrollVirtualRefs, parseDiscreteSliderMarks } from './helpers';
 import { useStyles } from './styles';
 
 const DetailedTranscriptVirtualLists = memo(
-  ({
-    transcripts,
-    minimumPosition,
-    maximumPosition,
-    virtualizedListRefsList,
-  }: DetailedTranscriptsVirtualListProps) => {
+  ({ virtualizedListRefsList }: DetailedTranscriptsVirtualListProps) => {
+    const classes = useStyles();
+
+    const { transcripts } = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
+    const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+    const visibleTranscriptIds = transcriptVisibility
+      .filter(({ isVisible }) => isVisible)
+      .map(({ transcriptId }) => transcriptId);
+
+    const visibleTranscripts = transcripts.filter((transcript) =>
+      visibleTranscriptIds.includes(transcript.transcriptId)
+    );
+
     return (
-      <>
-        {transcripts.map((transcript, index) => (
+      <div className={classes.detailedTranscripts}>
+        {visibleTranscripts.map((transcript, index) => (
           <DetailedTranscript
             key={transcript.transcriptId}
-            transcriptData={{
-              transcript,
-              minimumPosition,
-              maximumPosition,
-            }}
+            transcript={transcript}
             refs={virtualizedListRefsList[index]}
           />
         ))}
-      </>
+      </div>
     );
   }
 );
 
-const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: TranscriptsResponse }) => {
+const DetailedTranscripts = () => {
   const classes = useStyles();
 
+  const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPositionPercent);
@@ -164,14 +169,6 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
     dispatch(setGeneBrowserBoxHeight(newBoxHeight));
   };
 
-  const visibleTranscripts = useMemo(() => {
-    const visibleTranscriptIds = transcriptVisibility
-      .filter(({ isVisible }) => isVisible)
-      .map(({ transcriptId }) => transcriptId);
-
-    return transcripts.filter((transcript) => visibleTranscriptIds.includes(transcript.transcriptId));
-  }, [transcriptVisibility, transcripts]);
-
   return (
     <section className={classes.detailedTranscriptViewerContainer}>
       <DiscreteSlider
@@ -182,14 +179,7 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
         className={classes.zoomSlider}
       />
       {/* These are the actual transcripts */}
-      <div className={classes.detailedTranscripts}>
-        <DetailedTranscriptVirtualLists
-          transcripts={visibleTranscripts}
-          minimumPosition={minimumPosition}
-          maximumPosition={maximumPosition}
-          virtualizedListRefsList={virtualizedListRefsList}
-        />
-      </div>
+      <DetailedTranscriptVirtualLists virtualizedListRefsList={virtualizedListRefsList} />
       {/* This is for drag scroll on the transcripts, scroll-container class is library req. */}
       <DragScroll
         className={`${classes.scrollDragContainer} scroll-container`}
@@ -208,7 +198,6 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
        *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
-        transcriptsData={transcriptsData}
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
         width={(maximumPosition - minimumPosition + 1) * boxHeight}
@@ -218,6 +207,6 @@ const DetailedTranscripts = memo(({ transcriptsData }: { transcriptsData: Transc
       />
     </section>
   );
-});
+};
 
 export default DetailedTranscripts;

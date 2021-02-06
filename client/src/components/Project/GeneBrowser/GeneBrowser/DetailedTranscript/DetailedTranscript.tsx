@@ -1,6 +1,5 @@
 import React, { Fragment, memo } from 'react';
 import { useSelector } from 'react-redux';
-
 import { FixedSizeList as VirtualizedList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -19,18 +18,22 @@ import {
 } from './helpers';
 import { useStyles } from './styles';
 
-const DetailedTranscript = memo(({ transcriptData, refs, ...props }: DetailedTranscriptProps) => {
+const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
 
+  const { minimumPosition, maximumPosition } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
-  const { minimumPosition, maximumPosition, transcript } = transcriptData;
-
-  const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcriptData);
-  const relativeMutationPositionsAndTypes = getRelativeMutationPositionsAndTypes(transcriptData);
-  const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcriptData);
+  const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcript, minimumPosition);
+  const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcript, minimumPosition, maximumPosition);
+  const relativeMutationPositionsAndTypes = getRelativeMutationPositionsAndTypes(
+    transcript.mutations,
+    minimumPosition
+  );
 
   // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, top part is for mutation INS & DEL
   const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight;
