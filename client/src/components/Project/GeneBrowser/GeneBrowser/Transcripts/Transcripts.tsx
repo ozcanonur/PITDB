@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ReactTooltip from 'react-tooltip';
 
 import { useStyles } from './styles';
 import { setGeneBrowserMouseoverScrollPosition, setGeneBrowserTranscriptVisibility } from 'actions';
@@ -147,6 +148,8 @@ const Transcripts = () => {
     setHiddenTranscriptsCollapsed(false);
   };
 
+  console.log(transcriptsData);
+
   return (
     <>
       {hiddenTranscriptsCollapsed ? (
@@ -158,7 +161,7 @@ const Transcripts = () => {
           title='Show hidden transcripts'
           style={{ animation: visibleTranscripts.length === 0 ? `flash-red 1s infinite` : 'none' }}
         >
-          <span>Show Hidden</span>
+          <span>{`Show Hidden (${notVisibleTranscripts.length})`}</span>
           <ExpandMoreIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       ) : (
@@ -169,7 +172,7 @@ const Transcripts = () => {
           onClick={collapseHiddenTranscripts}
           title='Collapse hidden transcripts'
         >
-          <span>Collapse Hidden</span>
+          <span>{`Collapse hidden (${notVisibleTranscripts.length})`}</span>
           <ExpandLessIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       )}
@@ -193,7 +196,14 @@ const Transcripts = () => {
                   >
                     <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
                   </IconButton>
-                  <p> {filters.condition}</p>
+                  <p
+                    data-tip={`Mean TPM: ${transcript.conditions
+                      .find(({ condition }) => condition === filters.condition)
+                      ?.mean.toFixed(3)}`}
+                  >
+                    {filters.condition}
+                  </p>
+                  <ReactTooltip />
                 </div>
                 <p className={classes.transcriptId}>{transcript.transcriptId}</p>
               </div>
@@ -219,7 +229,14 @@ const Transcripts = () => {
                   >
                     <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
                   </IconButton>
-                  <p>{filters.condition}</p>
+                  <p
+                    data-tip={`Mean TPM: ${transcript.conditions
+                      .find(({ condition }) => condition === filters.condition)
+                      ?.mean.toFixed(3)}`}
+                  >
+                    {filters.condition}
+                  </p>
+                  <ReactTooltip />
                 </div>
                 <p className={classes.transcriptId}>{transcript.transcriptId}</p>
               </div>

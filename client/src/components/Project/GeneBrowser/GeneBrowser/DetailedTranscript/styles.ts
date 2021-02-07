@@ -43,7 +43,7 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     minWidth: '23rem',
-    paddingLeft: '3rem',
+    paddingLeft: '2.2rem',
   },
   transcriptLabelCondition: {
     display: 'flex',
@@ -52,6 +52,7 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: '0.3rem',
     color: 'white',
     textAlign: 'center',
+    cursor: 'pointer',
   },
   transcriptLabelId: {
     color: theme.palette.primary.main,

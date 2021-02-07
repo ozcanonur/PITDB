@@ -1,4 +1,4 @@
-import { CSSProperties, HTMLAttributes, SVGAttributes } from 'react';
+import { HTMLAttributes, SVGAttributes } from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
@@ -63,16 +63,6 @@ export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> 
 export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
   handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   width: number;
-  tooltipStyles?: CSSProperties;
-  scrollStyles?: CSSProperties;
-  tooltipPortalTo?: string;
-  hasTooltip?: boolean;
-}
-
-export interface TooltipProps extends HTMLAttributes<HTMLDivElement> {
-  portalTo?: string;
-  tooltipStyles?: CSSProperties;
-  tooltipOpen: boolean;
 }
 
 export type VirtualRef = React.RefObject<FixedSizeList>;

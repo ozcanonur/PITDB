@@ -2,6 +2,7 @@ import React, { Fragment, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { FixedSizeList as VirtualizedList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import ReactTooltip from 'react-tooltip';
 
 import Nucleotide from './Nucleotide';
 import CDS from './CDS';
@@ -54,9 +55,13 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
               minWidth: boxHeight < 20 ? 40 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
               padding: `${boxHeight / 4}px 0`,
             }}
+            data-tip={`Mean TPM: ${transcript.conditions
+              .find(({ condition }) => condition === filters.condition)
+              ?.mean.toFixed(3)}`}
           >
             {filters.condition}
           </div>
+          <ReactTooltip />
           <p className={classes.transcriptLabelId} style={{ paddingTop: boxHeight / 4 }}>
             {transcript.transcriptId}
           </p>

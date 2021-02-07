@@ -54,10 +54,6 @@ export const useStyles = makeStyles((theme) => ({
     '& > div > div > div > div': {
       marginBottom: '1rem',
     },
-
-    '& > div:not(:last-child)': {
-      marginBottom: '1rem',
-    },
   },
   transcriptOverview: {
     display: 'flex',
@@ -94,6 +90,7 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > p': {
       padding: '0 1rem',
+      cursor: 'pointer',
     },
   },
   transcriptPositionLineContainer: {
@@ -139,7 +136,7 @@ export const useStyles = makeStyles((theme) => ({
     transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: '#008000',
+      backgroundColor: '#64A74D',
     },
   },
   hideTranscriptButtonIcon: {

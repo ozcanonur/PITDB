@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     marginTop: '0.5rem',
     transform: 'translateZ(0)',
+    minHeight: '13rem',
   },
   detailedTranscripts: {
     display: 'flex',
@@ -100,16 +101,16 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
   },
   zoomSlider: {
-    marginLeft: '4rem',
+    marginLeft: '3rem',
 
     '& > span': {
-      width: '18rem',
+      width: '19rem',
     },
   },
   transcriptIndexContainer: {
     display: 'flex',
     position: 'absolute',
-    left: '27rem',
+    left: 'calc(27rem)',
     width: 'calc(100% - 29rem)',
     overflow: 'hidden',
   },
@@ -117,7 +118,8 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   transcriptIndexText: {
-    paddingLeft: '0.5rem',
-    borderLeft: '1px solid #336',
+    textAlign: 'center',
+    borderLeft: '1px solid #222',
+    color: '#222',
   },
 }));

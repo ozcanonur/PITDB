@@ -12,6 +12,7 @@ export const useStyles = makeStyles((theme) => ({
     left: '27rem',
     overflow: 'auto',
     width: 'calc(100% - 29rem)',
+    bottom: 0,
   },
   scroll: {
     height: 1,
@@ -30,6 +31,9 @@ export const useStyles = makeStyles((theme) => ({
     zIndex: 9999,
     left: '27rem',
     width: 'max-content',
+    opacity: 0.9,
+    position: 'fixed',
+    bottom: '2.3rem',
   },
   transcriptTooltipRails: {
     display: 'flex',

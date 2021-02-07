@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, ChangeEvent, memo } from 'react';
+import React, { useEffect, useRef, useMemo, ChangeEvent, memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
 import throttle from 'lodash/throttle';
@@ -61,7 +61,7 @@ const TranscriptIndex = () => {
     >
       <AutoSizer className={classes.transcriptIndex}>
         {({ width, height }) =>
-          range(0, width / boxHeight / 3).map((index) => (
+          range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
             <p
               key={(transcriptScrollPosition + index * 3).toLocaleString()}
               className={classes.transcriptIndexText}
@@ -94,7 +94,7 @@ const DetailedTranscripts = memo(() => {
 
   /* We are going to pass down refs to the detailed transcript children virtualized lists
    * So that we can control their scroll status from this component
-   * Storing the scroll state on redux would rerender detailed transcripts
+   * Storing the scroll position 'as a state' would re-render detailed transcripts
    * Which is very performance heavy
    * First, generate the refs
    */
@@ -127,7 +127,7 @@ const DetailedTranscripts = memo(() => {
     dispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
   }, 25);
 
-  const handleRegularScroll = (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+  const handleRegularScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     // @ts-ignore
     const scrollLeft = e.target.scrollLeft;
 
@@ -135,7 +135,7 @@ const DetailedTranscripts = memo(() => {
     // All other scrolls will be done via handleDragScroll indirectly
     if (!dragScrollRef.current) return;
     dragScrollRef.current.scrollTo({ left: scrollLeft });
-  };
+  }, []);
 
   // Scroll to the current transcript position on box height change
   // Have to do this because the width etc. changes
@@ -182,7 +182,8 @@ const DetailedTranscripts = memo(() => {
 
     const { scrollLeft } = bottomScrollRef.current;
 
-    // Need to wait for them to render first
+    // Need to wait for them to render&change DOM first
+    // For some reason useLayoutEffect didn't work
     // 100 is an arbitrary number, 15 works on my machine
     // Other machines can be slower though
     setTimeout(() => {
@@ -228,15 +229,12 @@ const DetailedTranscripts = memo(() => {
         />
       </DragScroll>
       {/* This is for bottom regular scroll on the transcripts
-       *  We have to do this because hideScrollbars={false} on ScrollContainer library is buggy
+       *  We have to do this (create a new component) because hideScrollbars={false} on ScrollContainer library is buggy
        */}
       <RegularScroll
         handleScroll={handleRegularScroll}
         ref={bottomScrollRef}
         width={(maximumPosition - minimumPosition + 1) * boxHeight}
-        scrollStyles={{ bottom: 0 }}
-        hasTooltip={true}
-        tooltipStyles={{ position: 'fixed', bottom: '2.3rem' }}
       />
     </section>
   );
