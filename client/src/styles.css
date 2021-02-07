@@ -36,34 +36,22 @@ html {
 }
 
 @keyframes fadeOutNoTranslate {
-  0% {
-    opacity: 0.5;
-  }
-
   50% {
-    opacity: 1;
-  }
-
-  100% {
     opacity: 0.5;
   }
 }
 
 @keyframes bounce {
   0% {
-    transform: translateY(0);
-  }
-
-  33% {
     transform: translateY(-0.2rem);
   }
 
-  66% {
+  50% {
     transform: translateY(0.2rem);
   }
 
   100% {
-    transform: translateY(0);
+    transform: translateY(-0.2rem);
   }
 }
 

@@ -41,25 +41,25 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
   return (
     <div
       className={classes.detailedTranscriptContainer}
-      {...props}
       style={{ alignItems: boxHeight < 20 ? 'center' : 'flex-start' }}
+      {...props}
     >
       <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
-        <div
-          className={classes.transcriptNameContainer}
-          style={{ paddingTop: boxHeight / 4, fontSize: boxHeight === 20 ? 11.33 : 14 }}
-        >
+        <div className={classes.transcriptNameContainer} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
           <div
             className={classes.transcriptLabelCondition}
             style={{
               backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2',
               height: boxHeight < 20 ? 30 : boxHeight,
               minWidth: boxHeight < 20 ? 40 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
+              padding: `${boxHeight / 4}px 0`,
             }}
           >
             {filters.condition}
           </div>
-          <p className={classes.transcriptLabelId}>{transcript.transcriptId}</p>
+          <p className={classes.transcriptLabelId} style={{ paddingTop: boxHeight / 4 }}>
+            {transcript.transcriptId}
+          </p>
         </div>
         {transcript.cds?.map(({ strand, peptides }, index) => (
           <Fragment key={index}>
@@ -123,7 +123,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                 );
 
                 return (
-                  <Fragment key={index}>
+                  <Fragment key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
                     <VirtualizedList
                       height={boxHeight}
                       itemCount={maximumPosition - minimumPosition + 1}

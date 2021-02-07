@@ -52,7 +52,6 @@ export const useStyles = makeStyles((theme) => ({
   transcriptIdCondition: {
     fontSize: '1.4rem',
     color: 'white',
-    textAlign: 'center',
 
     padding: '0.8rem 1rem',
     borderRadius: '0.3rem',
@@ -82,8 +81,8 @@ export const useStyles = makeStyles((theme) => ({
   },
   scrollDragContainer: {
     position: 'absolute',
-    left: '28rem',
-    width: 'calc(100% - 30rem - 18px)',
+    left: '27rem',
+    width: 'calc(100% - 29rem)',
     top: '2rem',
     zIndex: 9999,
     height: 'calc(100% - 36px)',
@@ -106,5 +105,19 @@ export const useStyles = makeStyles((theme) => ({
     '& > span': {
       width: '18rem',
     },
+  },
+  transcriptIndexContainer: {
+    display: 'flex',
+    position: 'absolute',
+    left: '27rem',
+    width: 'calc(100% - 29rem)',
+    overflow: 'hidden',
+  },
+  transcriptIndex: {
+    display: 'flex',
+  },
+  transcriptIndexText: {
+    paddingLeft: '0.5rem',
+    borderLeft: '1px solid #336',
   },
 }));

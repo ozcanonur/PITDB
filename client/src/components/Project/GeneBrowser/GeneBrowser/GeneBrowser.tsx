@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 import IconButton from '@material-ui/core/IconButton';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
@@ -25,7 +25,6 @@ import { GeneNamesResponse, TranscriptsResponse } from '../types';
 import {
   clearGeneBrowserTranscriptVisibility,
   setGeneBrowserFilters,
-  setGeneBrowserScrollPosition,
   setGeneBrowserTranscriptVisibility,
   setGeneBrowserTranscriptsData,
 } from 'actions';
@@ -74,7 +73,6 @@ const GeneBrowser = () => {
       dispatch(setGeneBrowserTranscriptsData(resTranscripts));
       dispatch(clearGeneBrowserTranscriptVisibility());
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
-      dispatch(setGeneBrowserScrollPosition(resTranscripts.minimumPosition));
     });
 
     return () => {
@@ -201,7 +199,7 @@ const GeneBrowser = () => {
               onClick={hideAllTranscripts}
               title='Hide all transcripts'
             >
-              <RemoveCircleIcon className={classes.hideTranscriptButtonIcon} />
+              <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
               <span>Hide All</span>
             </IconButton>
             <IconButton
@@ -211,7 +209,7 @@ const GeneBrowser = () => {
               onClick={showAllTranscripts}
               title='Show all transcripts'
             >
-              <AddCircleIcon className={classes.hideTranscriptButtonIcon} />
+              <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
               <span>Show All</span>
             </IconButton>
           </div>

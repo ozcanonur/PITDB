@@ -83,13 +83,18 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: '23rem',
   },
   transcriptIdCondition: {
-    padding: '0.8rem 1rem',
     borderRadius: '0.3rem',
-    width: '4rem',
     color: 'white',
     fontSize: '1.4rem',
     textAlign: 'center',
-    marginRight: '1rem',
+    padding: 0,
+    alignItems: 'center',
+    display: 'flex',
+    marginRight: 0,
+
+    '& > p': {
+      padding: '0 1rem',
+    },
   },
   transcriptPositionLineContainer: {
     position: 'absolute',
@@ -115,36 +120,26 @@ export const useStyles = makeStyles((theme) => ({
     marginLeft: '1rem',
     width: 'max-content',
   },
-  hideTranscriptButtonContainer: {
-    height: 32,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   hideTranscriptButton: {
-    width: '2rem',
-    height: '2rem',
-    padding: '0.8rem 0',
-    borderRadius: '0.3rem',
-    backgroundColor: '#ff4949',
-    marginRight: '1rem',
+    height: '100%',
+    backgroundColor: '#808080',
+    padding: '1rem 0.4rem',
+    borderRadius: '0.3rem 0 0 0.3rem',
     transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: 'red',
+      backgroundColor: '#ff4949',
     },
   },
   showTranscriptButton: {
-    width: '2rem',
-    height: '2rem',
-    padding: '0.8rem 0',
-    borderRadius: '0.3rem',
-    backgroundColor: '#64A74D',
-    marginRight: '1rem',
+    height: '100%',
+    backgroundColor: '#808080',
+    padding: '1rem 0.4rem',
+    borderRadius: '0.3rem 0 0 0.3rem',
     transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: 'green',
+      backgroundColor: '#008000',
     },
   },
   hideTranscriptButtonIcon: {
@@ -158,7 +153,7 @@ export const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     transition: 'all .2s',
     width: '24rem',
-    marginBottom: '2rem',
+    marginBottom: '3rem',
     marginLeft: '2rem',
 
     '&:hover': {

@@ -104,13 +104,13 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
         className={classes.rail}
       />
       {/* These are the exon boxes */}
-      {transcript.exons.map(({ genomeStart, genomeEnd }, index) => {
+      {transcript.exons.map(({ genomeStart, genomeEnd }) => {
         const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
         const exonWidth = pixelPerValue * (genomeEnd - genomeStart + 1);
 
         return (
           <rect
-            key={index}
+            key={`${genomeStart}, ${genomeEnd}`}
             className={classes.exon}
             x={exonStartingPosition}
             width={exonWidth}
@@ -143,7 +143,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
         const offsetY = previousCdsHadPeptides ? index * 6 + 18 : index * 6 + 12;
 
         return (
-          <g key={index}>
+          <g key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
             <rect
               className={classes.cds}
               x={cdsStart * pixelPerValue}
