@@ -5,12 +5,20 @@ export const useStyles = makeStyles((theme) => ({
     height: 'max-content',
     marginRight: '1rem',
     flexGrow: 1,
+
+    '@media (max-width: 1850px)': {
+      flexGrow: 0,
+    },
   },
   tableContainer: {
     padding: '2rem 4rem',
     paddingBottom: '0.5rem',
     position: 'relative',
     minHeight: '57rem',
+
+    '@media (max-width: 1850px)': {
+      minHeight: 'auto',
+    },
   },
   filtersContainer: {
     position: 'relative',

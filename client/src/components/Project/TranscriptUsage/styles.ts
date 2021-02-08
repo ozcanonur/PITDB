@@ -15,6 +15,10 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: 'max-content',
     marginBottom: '2rem',
+
+    '@media (max-width: 1850px)': {
+      flexDirection: 'column',
+    },
   },
   figuresContainer: {
     display: 'flex',
@@ -26,6 +30,17 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > *:not(:last-child)': {
       marginBottom: '2rem',
+
+      '@media (max-width: 1850px)': {
+        marginBottom: 0,
+        marginRight: '2rem',
+      },
+    },
+
+    '@media (max-width: 1850px)': {
+      flexDirection: 'row',
+      width: '100%',
+      marginTop: '2rem',
     },
   },
 }));

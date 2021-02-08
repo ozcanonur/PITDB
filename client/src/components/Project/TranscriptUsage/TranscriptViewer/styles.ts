@@ -4,7 +4,11 @@ export const useStyles = makeStyles((theme) => ({
   projectItemCard: {
     position: 'relative',
     direction: 'rtl',
-    minHeight: '25rem',
+
+    '@media (max-width: 1850px)': {
+      marginTop: '2rem',
+      marginRight: '1rem',
+    },
   },
   transcriptViewerContainer: {
     maxHeight: '30rem',

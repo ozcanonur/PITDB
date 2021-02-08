@@ -8,6 +8,10 @@ export const useStyles = makeStyles((theme) => ({
     padding: '2rem',
     paddingBottom: '4rem',
     overflowX: 'hidden',
+
+    '@media (max-width: 1850px)': {
+      flexDirection: 'column',
+    },
   },
   figuresContainer: {
     display: 'flex',
@@ -19,6 +23,20 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > *:not(:last-child)': {
       marginBottom: '2rem',
+
+      '@media (max-width: 1850px)': {
+        marginBottom: 0,
+      },
+    },
+
+    '& > *:last-child': {
+      marginRight: '1rem',
+    },
+
+    '@media (max-width: 1850px)': {
+      flexDirection: 'row',
+      width: '100%',
+      marginTop: '2rem',
     },
   },
 }));

@@ -6,6 +6,12 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '35.1rem',
     position: 'relative',
+
+    '@media (max-width: 1850px)': {
+      width: 'auto',
+      minWidth: '31rem',
+      flex: '1 1',
+    },
   },
   figureContainer: {
     transition: 'all .3s ease-in-out',

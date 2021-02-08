@@ -10,21 +10,21 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > div:nth-child(1)': {
       zIndex: 4,
-      transform: 'translateX(8.1rem)',
+      transform: 'translateX(4rem)',
       '& div': {
         backgroundColor: '#8A8E9B',
       },
     },
     '& > div:nth-child(2)': {
       zIndex: 3,
-      transform: 'translateX(5.4rem)',
+      transform: 'translateX(1.5rem)',
       '& div': {
         backgroundColor: '#9999FF',
       },
     },
     '& > div:nth-child(3)': {
       zIndex: 2,
-      transform: 'translateX(2.7rem)',
+      transform: 'translateX(-1.5rem)',
       '& div': {
         backgroundColor: theme.palette.primary.light,
       },
@@ -76,7 +76,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-    transform: 'translateY(5rem)',
+    transform: 'translate(-4rem, 5rem)',
   },
   flowSquareVertical: {
     height: 'max-content',

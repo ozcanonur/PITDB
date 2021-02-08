@@ -23,5 +23,11 @@ export const useStyles = makeStyles((theme) => ({
     right: '-4rem',
     height: '57rem',
     zIndex: 999,
+
+    '@media (max-width: 1350px)': {
+      height: '45rem',
+      right: '8rem',
+      top: '7rem',
+    },
   },
 }));
