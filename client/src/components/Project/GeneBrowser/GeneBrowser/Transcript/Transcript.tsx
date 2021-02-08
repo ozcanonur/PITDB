@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
 import max from 'lodash/max';
-import debounce from 'lodash/debounce';
 
 import { TranscriptProps } from '../../types';
 import {
@@ -61,15 +60,14 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
   };
 
   // Change mouseover position line
-  // Just debouncing it a small amount for performance
-  const debounceDispatch = debounce(dispatch, 5);
   const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     if (!svgRef.current || isTooltip) return;
 
     const { x: svgXOffset, width: svgWidth } = svgRef.current.getBoundingClientRect();
-    const relativeClickPositionPercent = (e.clientX - svgXOffset) / svgWidth;
+    const relativeMouseoverPositionPercent = (e.clientX - svgXOffset) / svgWidth;
 
-    debounceDispatch(setGeneBrowserMouseoverScrollPosition(relativeClickPositionPercent * 100));
+    // This is not the transcript position, rather a % value of how much offset mouseovered from the start
+    dispatch(setGeneBrowserMouseoverScrollPosition(relativeMouseoverPositionPercent * 100));
   };
 
   // Remove the position line if not hovering

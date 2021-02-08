@@ -26,10 +26,10 @@ const CurrentPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscripts
 
   if (!transcriptVisibility.find(({ isVisible }) => isVisible)) return null;
 
+  const notVisibleTranscriptCount = transcriptVisibility.filter(({ isVisible }) => !isVisible).length;
+
   const percentageScrolled =
     ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
-
-  const notVisibleTranscriptCount = transcriptVisibility.filter(({ isVisible }) => !isVisible).length;
 
   return (
     <div
@@ -66,6 +66,7 @@ const MouseoverPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscrip
     (state: RootState) => state.geneBrowserTranscriptsData
   );
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+  // This is not the transcript position, rather a % value of how much offset mouseovered from the start
   const mouseoverPosition = useSelector((state: RootState) => state.geneBrowserMouseoverPosition);
 
   if (mouseoverPosition < 0) return null;

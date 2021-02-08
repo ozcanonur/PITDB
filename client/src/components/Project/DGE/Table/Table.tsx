@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent, MouseEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -8,11 +8,12 @@ import Table from 'components/UI/Table/Table';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 // import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
+import Category3 from 'assets/category3.svg';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
 import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
-import { setDGEFilters, selectDGE } from 'actions';
+import { setDGEFilters, selectDGE, setGeneBrowserFilters } from 'actions';
 import { DGESResponse, SymbolNamesResponse } from './types';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 
@@ -195,6 +196,30 @@ const DGETable = ({ ...props }) => {
 
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
+  // Button on the right of the row
+  // row prop will come from the table component's row
+  const RowContentRight = ({ row }: { row: string[] }) => {
+    const [symbol, , , conditions] = row;
+    const firstCondition = conditions.split(',')[0];
+
+    const history = useHistory();
+
+    const handleClick = () => {
+      dispatch(setGeneBrowserFilters({ gene: symbol, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      history.push(history.location.pathname.replace('differential-gene-expression', 'gene-browser'));
+    };
+
+    return (
+      <img
+        className={classes.goToGeneBrowserIcon}
+        src={Category3}
+        onClick={handleClick}
+        alt='See on gene browser'
+        title='See on gene browser (Will default to first condition)'
+      />
+    );
+  };
+
   return (
     <ProjectItemCard className={classes.container} name='Differential Gene Expressions' {...props}>
       <div className={classes.filtersContainer}>
@@ -241,7 +266,7 @@ const DGETable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value']}
+        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value', 'Conditions']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -253,6 +278,7 @@ const DGETable = ({ ...props }) => {
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}
+        RowContentRight={RowContentRight}
       />
     </ProjectItemCard>
   );

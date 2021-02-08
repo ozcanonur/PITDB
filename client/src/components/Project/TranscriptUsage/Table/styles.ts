@@ -6,6 +6,12 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '1rem',
     flexGrow: 1,
   },
+  tableContainer: {
+    padding: '2rem 4rem',
+    paddingBottom: '0.5rem',
+    position: 'relative',
+    minHeight: '57rem',
+  },
   filtersContainer: {
     position: 'relative',
     display: 'flex',
@@ -35,10 +41,10 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  tableContainer: {
-    padding: '2rem 4rem',
-    paddingBottom: '0.5rem',
-    position: 'relative',
-    minHeight: '57rem',
+  goToGeneBrowserIcon: {
+    width: '2rem',
+    height: '2rem',
+    verticalAlign: 'middle',
+    transition: 'all .15s',
   },
 }));

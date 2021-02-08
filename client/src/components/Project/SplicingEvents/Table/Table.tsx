@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -8,10 +8,16 @@ import Table from 'components/UI/Table/Table';
 import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
+import Category3 from 'assets/category3.svg';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
-import { setSplicingEventsFilters, selectSplicingEvent } from 'actions';
+import {
+  setSplicingEventsFilters,
+  selectSplicingEvent,
+  setGeneBrowserFilters,
+  setGeneBrowserScrollJumpPosition,
+} from 'actions';
 import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
 import { SplicingEventsResponse, SplicingEventsGeneNamesResponse } from './types';
@@ -182,6 +188,34 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
+  // Button on the right of the row
+  // row prop will come from the table component's row
+  const RowContentRight = ({ row }: { row: string[] }) => {
+    const [gene, , , start, , , , , conditions] = row;
+
+    const firstCondition = conditions.split(',')[0];
+
+    const history = useHistory();
+
+    const handleClick = () => {
+      dispatch(setGeneBrowserFilters({ gene, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      // -3 to make mutation to not be completely aligned to the left
+      // Since gene browser position is based on the left most index
+      dispatch(setGeneBrowserScrollJumpPosition(parseInt(start) - 3));
+      history.push(history.location.pathname.replace('splicing-events', 'gene-browser'));
+    };
+
+    return (
+      <img
+        className={classes.goToGeneBrowserIcon}
+        src={Category3}
+        onClick={handleClick}
+        alt='See on gene browser'
+        title='See on gene browser (Will default to first condition)'
+      />
+    );
+  };
+
   return (
     <ProjectItemCard className={classes.container} name='Splicing Events' {...props}>
       <div className={classes.filtersContainer}>
@@ -234,7 +268,17 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Strand', 'Type', 'Start', 'End', 'dPSI', 'Adj. p value', 'Peptide evidence']}
+        tableHead={[
+          'Gene',
+          'Strand',
+          'Type',
+          'Start',
+          'End',
+          'dPSI',
+          'Adj. p value',
+          'Peptide evidence',
+          'Conditions',
+        ]}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -246,6 +290,7 @@ const SplicingEventsTable = ({ ...props }) => {
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}
+        RowContentRight={RowContentRight}
       />
     </ProjectItemCard>
   );

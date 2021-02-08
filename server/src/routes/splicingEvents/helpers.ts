@@ -1,6 +1,9 @@
-import { ISplicingDPSI } from '../../db/models/splicingDPSI';
-import { ISplicingPsi } from '../../db/models/splicingPsi';
 import { omit } from 'lodash';
+// @ts-ignore
+import replaceall from 'replaceall';
+
+import { ISplicingPsi } from '../../db/models/splicingPsi';
+import { SplicingDPSIWithtranscripts } from './types';
 
 export const findMongoFieldFromTableColumn = (field: string) => {
   if (field === 'Gene') return 'geneName';
@@ -10,9 +13,9 @@ export const findMongoFieldFromTableColumn = (field: string) => {
   else if (field === 'Peptide evidence') return 'pepEvidence';
 };
 
-export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
+export const parseSplicingEvents = (splicingEvents: SplicingDPSIWithtranscripts[]) => {
   const parsedSplicingEvents = splicingEvents.map((splicingEvent) => {
-    const { geneName, event, eventType, deltaPsi, pval, pepEvidence } = splicingEvent;
+    const { geneName, event, eventType, deltaPsi, pval, pepEvidence, transcripts } = splicingEvent;
 
     const [, , leftPositions, rightPositions] = event.split(':');
     const start = leftPositions.split('-')[1];
@@ -27,6 +30,7 @@ export const parseSplicingEvents = (splicingEvents: ISplicingDPSI[]) => {
       deltaPsi,
       pval,
       pepEvidence,
+      conditions: transcripts ? replaceall(',', ', ', Object.keys(transcripts[0].TPM).toString()) : undefined,
     };
   });
 

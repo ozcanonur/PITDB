@@ -2,7 +2,7 @@ import express from 'express';
 
 import { SplicingDPSI } from '../../db/models/splicingDPSI';
 import { ExtendedRequest } from '../../types';
-import { SplicingEventsFilters, SplicingDPSIWithConditions } from './types';
+import { SplicingEventsFilters, SplicingDPSIWithConditions, SplicingDPSIWithtranscripts } from './types';
 import { findMongoFieldFromTableColumn, parseSplicingEvents, parseConditions } from './helpers';
 
 const router = express.Router();
@@ -29,10 +29,20 @@ router.get('/', async (req: ExtendedRequest, res) => {
       // @ts-ignore
       query = { ...query, geneName: gene };
 
-    const splicingEvents = await SplicingDPSI.find(query)
-      .sort({ [findMongoFieldFromTableColumn(field)]: order })
-      .skip(parseInt(skip))
-      .limit(50);
+    const splicingEvents: SplicingDPSIWithtranscripts[] = await SplicingDPSI.aggregate([
+      { $match: query },
+      { $sort: { [findMongoFieldFromTableColumn(field)]: order } },
+      { $skip: parseInt(skip) },
+      { $limit: 50 },
+      {
+        $lookup: {
+          from: 'allTranscripts',
+          localField: 'geneName',
+          foreignField: 'gene',
+          as: 'transcripts',
+        },
+      },
+    ]);
 
     if (!splicingEvents) return res.send({ splicingEvents: [], splicingEventsCount: 0 });
 

@@ -14,7 +14,13 @@ import {
   setGeneBrowserScrollJumpPosition,
   setGeneBrowserScrollPosition,
 } from 'actions';
-import { makeVirtualizedListRefsList, scrollVirtualRefs, parseDiscreteSliderMarks } from './helpers';
+import {
+  findTranscriptPositionFromScrollValue,
+  findScrollValueFromTranscriptPosition,
+  makeVirtualizedListRefsList,
+  scrollVirtualRefs,
+  parseDiscreteSliderMarks,
+} from './helpers';
 import { useStyles } from './styles';
 
 const DetailedTranscriptVirtualLists = memo(
@@ -107,8 +113,6 @@ const DetailedTranscripts = memo(() => {
 
   const dispatch = useDispatch();
 
-  // Throttle the virtual list scrolls because it's expensive
-  // Not too much though or the scroll will be 10fps
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
       // Scroll all the children transcript virtualized lists
@@ -118,20 +122,20 @@ const DetailedTranscripts = memo(() => {
       if (!bottomScrollRef.current) return;
       bottomScrollRef.current.scrollTo({ left: scrollLeft });
 
-      const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
-      const percentageScrolled = scrollLeft / totalTranscriptWidthInPixels;
-
-      const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
-
-      const currentTranscriptPosition = Math.floor(
-        minimumPosition + transcriptGenomeWidth * percentageScrolled
+      const currentTranscriptPosition = findTranscriptPositionFromScrollValue(
+        scrollLeft,
+        minimumPosition,
+        maximumPosition,
+        boxHeight
       );
 
-      // Change the position line indicator
+      // Change the position line indicator, and sync jump position
+      // Jump position syncing is required to make the scroll states persistent across mount/unmounts
       dispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
       dispatch(setGeneBrowserScrollJumpPosition(currentTranscriptPosition));
     },
-    [boxHeight, dispatch, maximumPosition, minimumPosition, virtualizedListRefsList]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boxHeight, maximumPosition, minimumPosition, virtualizedListRefsList]
   );
 
   const handleRegularScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -149,11 +153,12 @@ const DetailedTranscripts = memo(() => {
   useEffect(() => {
     if (!bottomScrollRef.current) return;
 
-    const positionOffset = transcriptScrollPosition - minimumPosition;
-    const percentageScrolled = positionOffset / (maximumPosition - minimumPosition + 1);
-
-    const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
-    const scrollLeft = percentageScrolled * totalTranscriptWidthInPixels;
+    const scrollLeft = findScrollValueFromTranscriptPosition(
+      transcriptScrollPosition,
+      minimumPosition,
+      maximumPosition,
+      boxHeight
+    );
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
     scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
@@ -162,16 +167,18 @@ const DetailedTranscripts = memo(() => {
 
   // Jump to a position whenever the user clicks on a position on top transcripts overview
   useEffect(() => {
+    // Don't run if we just 'updated' the scrollJumpPosition via the scrolls
+    // Only run if the user actually clicks a completely different position
     if (!bottomScrollRef.current || scrollJumpPosition === transcriptScrollPosition) return;
 
     dispatch(setGeneBrowserScrollPosition(scrollJumpPosition));
 
-    const transcriptPercentagePosition =
-      (scrollJumpPosition - minimumPosition) / (maximumPosition - minimumPosition + 1);
-
-    const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
-
-    const scrollLeft = totalTranscriptWidthInPixels * transcriptPercentagePosition;
+    const scrollLeft = findScrollValueFromTranscriptPosition(
+      scrollJumpPosition,
+      minimumPosition,
+      maximumPosition,
+      boxHeight
+    );
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
     // Scroll all the children transcript virtualized lists

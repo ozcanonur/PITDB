@@ -106,7 +106,7 @@ export const useStyles = makeStyles((theme) => ({
     transition: 'all .2s',
 
     '&:hover': {
-      backgroundColor: 'red',
+      backgroundColor: '#990F02',
     },
 
     '& > span': {

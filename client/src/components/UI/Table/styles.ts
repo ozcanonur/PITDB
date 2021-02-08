@@ -23,8 +23,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     fontWeight: 400,
-    paddingTop: '0 !important',
-    paddingBottom: '0 !important',
+    padding: '0 !important',
     verticalAlign: 'middle',
     fontSize: '1.4rem !important',
     color: theme.palette.primary.main,

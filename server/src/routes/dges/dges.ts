@@ -1,8 +1,10 @@
 import express from 'express';
+// @ts-ignore
+import replaceall from 'replaceall';
 
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
-import { DGEFilters } from './types';
+import { DGEFilters, DGEsWithTranscript } from './types';
 import { ExtendedRequest } from '../../types';
 
 import { parseVolcanoPlotData, convertSortFieldNameForMongoose } from './helpers';
@@ -32,17 +34,28 @@ router.get('/', async (req: ExtendedRequest, res) => {
       // @ts-ignore
       query = { ...query, symbol };
 
-    const dges = await DGE.find(query)
-      .sort({ [convertSortFieldNameForMongoose(field)]: order })
-      .skip(parseInt(skip))
-      .limit(50);
+    const dges: DGEsWithTranscript[] = await DGE.aggregate([
+      { $match: query },
+      { $sort: { [convertSortFieldNameForMongoose(field)]: order } },
+      { $skip: parseInt(skip) },
+      { $limit: 50 },
+      {
+        $lookup: {
+          from: 'allTranscripts',
+          localField: 'symbol',
+          foreignField: 'gene',
+          as: 'transcripts',
+        },
+      },
+    ]);
 
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    const parsedDges = dges.map(({ symbol, log2fc, padj }) => ({
+    const parsedDges = dges.map(({ symbol, log2fc, padj, transcripts }) => ({
       symbol,
       log2fc,
       padj,
+      conditions: transcripts ? replaceall(',', ', ', Object.keys(transcripts[0].TPM).toString()) : undefined,
     }));
 
     const dgesCount: number = await DGE.countDocuments(query);

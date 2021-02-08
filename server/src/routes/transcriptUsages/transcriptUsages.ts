@@ -1,4 +1,6 @@
 import express from 'express';
+// @ts-ignore
+import replaceall from 'replaceall';
 
 import { ExtendedRequest } from '../../types';
 import { TranscriptUsageDPSI } from '../../db/models/transcriptUsageDPSI';
@@ -37,21 +39,34 @@ router.get('/', async (req: ExtendedRequest, res) => {
       // @ts-ignore
       query = { ...query, geneName: gene };
 
-    const transcriptUsages = await TranscriptUsageDPSI.find(query)
-      .sort({ [findMongoFieldFromTableColumn(field)]: order })
-      .skip(parseInt(skip))
-      .limit(50);
+    const transcriptUsages: TranscriptUsagesWithTranscript[] = await TranscriptUsageDPSI.aggregate([
+      { $match: query },
+      { $sort: { [findMongoFieldFromTableColumn(field)]: order } },
+      { $skip: parseInt(skip) },
+      { $limit: 50 },
+      {
+        $lookup: {
+          from: 'allTranscripts',
+          localField: 'transcript',
+          foreignField: 'transcriptID',
+          as: 'transcripts',
+        },
+      },
+    ]);
 
     if (!transcriptUsages) return res.send({ transcriptUsages: [], transcriptUsagesCount: 0 });
 
     const parsedTranscriptUsages = transcriptUsages.map((transcriptUsage) => {
-      const { geneName, transcript, deltaPsi, pval } = transcriptUsage;
+      const { geneName, transcript, deltaPsi, pval, transcripts } = transcriptUsage;
 
       return {
         geneName,
         transcript,
         deltaPsi,
         pval,
+        conditions: transcripts
+          ? replaceall(',', ', ', Object.keys(transcripts[0].TPM).toString())
+          : undefined,
       };
     });
 

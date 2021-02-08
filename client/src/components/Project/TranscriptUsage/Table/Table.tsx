@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, ChangeEvent, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
+import Category3 from 'assets/category3.svg';
 
 import { useStyles } from './styles';
 import { fetchFromApi } from 'utils';
@@ -15,6 +16,7 @@ import {
   selectTranscriptUsage,
   selectTranscriptViewerTranscript,
   selectTranscriptViewerTranscriptColor,
+  setGeneBrowserFilters,
 } from 'actions';
 import { parseDiscreteSliderMarks, makeVersusConditionTypes } from './helpers';
 import { SelectOption } from 'components/UI/MultiSelect/types';
@@ -185,6 +187,30 @@ const SplicingEventsTable = ({ ...props }) => {
 
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
+  // Button on the right of the row
+  // row prop will come from the table component's row
+  const RowContentRight = ({ row }: { row: string[] }) => {
+    const [gene, , , , conditions] = row;
+    const firstCondition = conditions.split(',')[0];
+
+    const history = useHistory();
+
+    const handleClick = () => {
+      dispatch(setGeneBrowserFilters({ gene, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      history.push(history.location.pathname.replace('transcript-usage', 'gene-browser'));
+    };
+
+    return (
+      <img
+        className={classes.goToGeneBrowserIcon}
+        src={Category3}
+        onClick={handleClick}
+        alt='See on gene browser'
+        title='See on gene browser (Will default to first condition)'
+      />
+    );
+  };
+
   return (
     <ProjectItemCard className={classes.container} name='Transcript Usage' {...props}>
       <div className={classes.filtersContainer}>
@@ -213,7 +239,7 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Transcript', 'dPSI', 'Adj. p value']}
+        tableHead={['Gene', 'Transcript', 'dPSI', 'Adj. p value', 'Conditions']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}
@@ -225,6 +251,7 @@ const SplicingEventsTable = ({ ...props }) => {
         selectedRow={selectedRow}
         sortedOn={sortedOn}
         handleSort={handleSort}
+        RowContentRight={RowContentRight}
       />
     </ProjectItemCard>
   );

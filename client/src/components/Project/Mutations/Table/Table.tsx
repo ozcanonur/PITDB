@@ -194,7 +194,7 @@ const MutationsTable = ({ ...props }) => {
         src={Category3}
         onClick={handleClick}
         alt='See on gene browser'
-        title='See on gene browser'
+        title='See on gene browser (Will default to first condition)'
       />
     );
   };
