@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import partition from 'lodash/partition';
 import ReactTooltip from 'react-tooltip';
@@ -105,7 +105,7 @@ const MouseoverPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscrip
   );
 };
 
-const Transcripts = () => {
+const Transcripts = memo(() => {
   const classes = useStyles();
 
   const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
@@ -244,6 +244,6 @@ const Transcripts = () => {
       </section>
     </>
   );
-};
+});
 
 export default Transcripts;

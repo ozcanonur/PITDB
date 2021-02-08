@@ -18,7 +18,7 @@ import { SelectOption } from 'components/UI/MultiSelect/types';
 import Transcripts from './Transcripts/Transcripts';
 import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 
-import { fetchFromApi } from 'utils';
+import { fetchFromApi, usePrevious } from 'utils';
 import { useStyles } from './styles';
 // import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
@@ -27,6 +27,7 @@ import {
   setGeneBrowserFilters,
   setGeneBrowserTranscriptVisibility,
   setGeneBrowserTranscriptsData,
+  setGeneBrowserScrollJumpPosition,
 } from 'actions';
 
 const GeneBrowser = () => {
@@ -48,7 +49,19 @@ const GeneBrowser = () => {
 
   const dispatch = useDispatch();
 
+  // Just to give it some initial values
+  // So that the users will instantly see something
   useEffect(() => {
+    dispatch(setGeneBrowserFilters({ gene: 'ACAT2', minTPM: 0, minQual: 0, condition: conditionTypes[0] }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conditionTypes]);
+
+  const prevFiltersGene = usePrevious(filters.gene);
+
+  useEffect(() => {
+    // Don't try to fetch before these values are initialized
+    if (!filters.condition || !filters.gene || !project) return;
+
     let isMounted = true;
 
     setLoading(true);
@@ -73,6 +86,11 @@ const GeneBrowser = () => {
       dispatch(setGeneBrowserTranscriptsData(resTranscripts));
       dispatch(clearGeneBrowserTranscriptVisibility());
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
+
+      // Only scroll to start of the transcript if the user changed gene
+      if (filters.gene !== prevFiltersGene) {
+        dispatch(setGeneBrowserScrollJumpPosition(resTranscripts.minimumPosition));
+      }
     });
 
     return () => {
@@ -101,7 +119,7 @@ const GeneBrowser = () => {
       return;
     }
 
-    dispatch(setGeneBrowserFilters({ ...filters, gene: selectedOption.value }));
+    dispatch(setGeneBrowserFilters({ ...filters, minTPM: 0, minQual: 0, gene: selectedOption.value }));
   };
 
   // const qualityMarks = ['0', '100', '250', '500', '1000'];
@@ -168,7 +186,7 @@ const GeneBrowser = () => {
         />
         <ContinuousSlider
           name='Min. Mean TPM'
-          initialValue={0}
+          initialValue={filters.minTPM}
           min={0}
           max={Math.floor(maxTPM)}
           onChangeCommited={onMinTPMChangeCommited}

@@ -1,6 +1,4 @@
-// import { createRef } from 'react';
 import { useSelector } from 'react-redux';
-// import { Tooltip } from 'react-svg-tooltip';
 
 import ChartBase from './ChartBase';
 
@@ -22,8 +20,6 @@ const ConfidenceIntervalChartSvg = ({ data, ...props }: ConfidenceChartSvgProps)
   const { transcript: selectedTranscript } = useSelector(
     (state: RootState) => state.selectedTranscriptViewerTranscript
   );
-
-  // const ref = createRef<SVGRectElement>();
 
   return (
     <svg
@@ -64,11 +60,6 @@ const ConfidenceIntervalChartSvg = ({ data, ...props }: ConfidenceChartSvgProps)
               opacity={transcript === selectedTranscript ? 0.65 : 0.1}
               className={classes.confidencePolygon}
             />
-            {/* <Tooltip triggerRef={ref}>
-              <text transform='' fontSize={'1.1rem'} fontFamily='Poppins, sans-serif' fill='#336'>
-                5423523
-              </text>
-            </Tooltip> */}
           </g>
         );
       })}

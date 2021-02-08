@@ -30,5 +30,6 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '3rem',
     transform: 'translate(-50%, -50%)',
     transition: 'all .3s ease-in-out',
+    zIndex: -1,
   },
 }));

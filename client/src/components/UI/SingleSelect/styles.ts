@@ -24,5 +24,8 @@ export const singleSelectStyles: Styles = {
     ...styles,
     fontSize: '1.4rem',
     fontWeight: 500,
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
   }),
 };

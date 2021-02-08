@@ -253,13 +253,13 @@ const DGETable = ({ ...props }) => {
           /> */}
         <DiscreteSlider
           name='Max. p value'
-          defaultValue={filters.maxPValue}
+          defaultValue={pValueMarks.findIndex((mark) => parseFloat(mark) === filters.maxPValue)}
           marks={parseDiscreteSliderMarks(pValueMarks)}
           onChangeCommited={onPValueChangeCommited}
         />
         <DiscreteSlider
           name='Min. abs. fold change'
-          defaultValue={filters.minAbsFoldChange}
+          defaultValue={foldChangeMarks.findIndex((mark) => parseFloat(mark) === filters.minAbsFoldChange)}
           marks={parseDiscreteSliderMarks(foldChangeMarks)}
           onChangeCommited={onFoldChangeCommited}
         />

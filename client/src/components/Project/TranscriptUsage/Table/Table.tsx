@@ -232,7 +232,7 @@ const SplicingEventsTable = ({ ...props }) => {
         />
         <DiscreteSlider
           name='Max. p value'
-          defaultValue={filters.maxPValue}
+          defaultValue={pValueMarks.findIndex((mark) => parseFloat(mark) === filters.maxPValue)}
           marks={parseDiscreteSliderMarks(pValueMarks)}
           onChangeCommited={onPValueChangeCommited}
         />

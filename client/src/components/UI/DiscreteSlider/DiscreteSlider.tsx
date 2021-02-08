@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
@@ -16,7 +16,12 @@ const DiscreteSlider = ({
 }: DiscreteSliderProps) => {
   const classes = useStyles();
 
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    console.log(defaultValue);
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   const handleChange = (event: ChangeEvent<{}>, value: number | number[]) => {
     setValue(value as number);
@@ -35,7 +40,6 @@ const DiscreteSlider = ({
         marks={marks}
         value={value}
         onChange={handleChange}
-        defaultValue={defaultValue}
         aria-labelledby='discrete-slider'
         classes={{
           root: classes.root,

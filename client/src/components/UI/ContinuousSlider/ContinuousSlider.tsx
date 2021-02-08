@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
@@ -15,7 +15,12 @@ const ContinuousSlider = ({
   ...props
 }: ContinuousSliderProps) => {
   const classes = useStyles();
+
   const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   const handleChange = (_event: ChangeEvent<{}>, values: number | number[]) => {
     setValue(values as number);

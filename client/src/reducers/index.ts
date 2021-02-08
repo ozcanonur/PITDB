@@ -35,7 +35,6 @@ import {
   initialDgeFilters,
   initialSplicingEventsFilters,
   initialTranscriptUsageFilters,
-  initialGeneBrowserFilters,
 } from 'variables/initialTableFilters';
 
 const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
@@ -162,7 +161,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = initialGeneBrowserFilters,
+  state: GeneBrowserFilters = { gene: '', condition: '', minTPM: 0, minQual: 0 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {

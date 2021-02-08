@@ -7,6 +7,7 @@ import debounce from 'debounce-promise';
 
 import { SingleSelectProps } from './types';
 import { singleSelectStyles } from './styles';
+import { useEffect, useState } from 'react';
 
 const { DropdownIndicator, MenuList, Menu } = components;
 
@@ -41,6 +42,14 @@ const SingleSelect = ({
   isAsync = true,
   ...props
 }: SingleSelectProps) => {
+  const [initialValue, setInitialValue] = useState(name);
+
+  useEffect(() => {
+    if (!defaultInputValue) return;
+
+    setInitialValue(defaultInputValue);
+  }, [defaultInputValue]);
+
   // For menu close animation
   const uniqueId = 'select_' + Math.random().toFixed(5).slice(2);
   const onMenuClose = () => {
@@ -59,7 +68,7 @@ const SingleSelect = ({
     containerEl?.appendChild(clonedMenuEl!);
   };
 
-  const debouncedOptions = debounce(options, 250, { leading: true });
+  const debouncedOptions = debounce(options, 250);
 
   return (
     <div {...props}>
@@ -71,8 +80,9 @@ const SingleSelect = ({
             MenuList: CustomMenuList,
             Menu: CustomMenu,
           }}
-          cacheOptions
           loadOptions={debouncedOptions}
+          value={{ value: initialValue, label: initialValue }}
+          cacheOptions
           styles={singleSelectStyles}
           placeholder={name}
           closeMenuOnSelect={false}
@@ -94,7 +104,7 @@ const SingleSelect = ({
             MenuList: CustomMenuList,
             Menu: CustomMenu,
           }}
-          defaultValue={{ value: defaultInputValue, label: defaultInputValue }}
+          value={{ value: initialValue, label: initialValue }}
           aria-label={`${name} single-select`}
           styles={singleSelectStyles}
           options={options.map((option: string) => ({ value: option, label: option }))}
