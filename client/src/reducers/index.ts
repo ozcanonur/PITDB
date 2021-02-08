@@ -203,13 +203,10 @@ const geneBrowserMouseoverPosition = (state = -1, action: SetGeneBrowserMouseove
   }
 };
 
-const geneBrowserScrollJumpPositionPercent = (
-  state = { scrollPosition: 0 },
-  action: SetGeneBrowserScrollJumpPosition
-) => {
+const geneBrowserScrollJumpPosition = (state = 0, action: SetGeneBrowserScrollJumpPosition) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION:
-      return { ...action.payload };
+      return action.payload;
     default:
       return state;
   }
@@ -254,7 +251,7 @@ export default combineReducers({
   geneBrowserTranscriptsData,
   geneBrowserScrollPosition,
   geneBrowserMouseoverPosition,
-  geneBrowserScrollJumpPositionPercent,
+  geneBrowserScrollJumpPosition,
   geneBrowserTranscriptVisibility,
   geneBrowserBoxHeight,
 });

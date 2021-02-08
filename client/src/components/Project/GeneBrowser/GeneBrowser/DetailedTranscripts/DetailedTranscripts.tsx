@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useMemo, ChangeEvent, memo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
-import throttle from 'lodash/throttle';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import range from 'lodash/range';
 
@@ -10,7 +9,11 @@ import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import RegularScroll from './RegularScroll/RegularScroll';
 
 import { DetailedTranscriptsVirtualListProps } from '../../types';
-import { setGeneBrowserBoxHeight, setGeneBrowserScrollPosition } from 'actions';
+import {
+  setGeneBrowserBoxHeight,
+  setGeneBrowserScrollJumpPosition,
+  setGeneBrowserScrollPosition,
+} from 'actions';
 import { makeVirtualizedListRefsList, scrollVirtualRefs, parseDiscreteSliderMarks } from './helpers';
 import { useStyles } from './styles';
 
@@ -88,7 +91,7 @@ const DetailedTranscripts = memo(() => {
 
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-  const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPositionPercent);
+  const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
   const transcriptScrollPosition =
     useSelector((state: RootState) => state.geneBrowserScrollPosition) || minimumPosition;
 
@@ -106,26 +109,30 @@ const DetailedTranscripts = memo(() => {
 
   // Throttle the virtual list scrolls because it's expensive
   // Not too much though or the scroll will be 10fps
-  const handleDragScroll = throttle((scrollLeft: number) => {
-    // Scroll all the children transcript virtualized lists
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+  const handleDragScroll = useCallback(
+    (scrollLeft: number) => {
+      // Scroll all the children transcript virtualized lists
+      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
 
-    // And scroll regular bottom scroll element
-    if (!bottomScrollRef.current) return;
-    bottomScrollRef.current.scrollTo({ left: scrollLeft });
+      // And scroll regular bottom scroll element
+      if (!bottomScrollRef.current) return;
+      bottomScrollRef.current.scrollTo({ left: scrollLeft });
 
-    const transcriptWidthOnScreen = (maximumPosition - minimumPosition) * boxHeight;
-    const percentageScrolled = scrollLeft / transcriptWidthOnScreen;
+      const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
+      const percentageScrolled = scrollLeft / totalTranscriptWidthInPixels;
 
-    const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
+      const transcriptGenomeWidth = maximumPosition - minimumPosition + 1;
 
-    const currentTranscriptPosition = Math.floor(
-      minimumPosition + transcriptGenomeWidth * percentageScrolled
-    );
+      const currentTranscriptPosition = Math.floor(
+        minimumPosition + transcriptGenomeWidth * percentageScrolled
+      );
 
-    // Change the position line indicator
-    dispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
-  }, 25);
+      // Change the position line indicator
+      dispatch(setGeneBrowserScrollPosition(currentTranscriptPosition));
+      dispatch(setGeneBrowserScrollJumpPosition(currentTranscriptPosition));
+    },
+    [boxHeight, dispatch, maximumPosition, minimumPosition, virtualizedListRefsList]
+  );
 
   const handleRegularScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
     // @ts-ignore
@@ -145,36 +152,32 @@ const DetailedTranscripts = memo(() => {
     const positionOffset = transcriptScrollPosition - minimumPosition;
     const percentageScrolled = positionOffset / (maximumPosition - minimumPosition + 1);
 
-    const widthOnScreen = (maximumPosition - minimumPosition + 1) * boxHeight;
-    const scrollLeft = percentageScrolled * widthOnScreen;
+    const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
+    const scrollLeft = percentageScrolled * totalTranscriptWidthInPixels;
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
     scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxHeight]);
 
-  // WOOP
   // Jump to a position whenever the user clicks on a position on top transcripts overview
   useEffect(() => {
-    if (!bottomScrollRef.current) return;
+    if (!bottomScrollRef.current || scrollJumpPosition === transcriptScrollPosition) return;
 
-    const transcriptScrollPosition = scrollJumpPosition.scrollPosition;
-    dispatch(setGeneBrowserScrollPosition(transcriptScrollPosition));
+    dispatch(setGeneBrowserScrollPosition(scrollJumpPosition));
 
     const transcriptPercentagePosition =
-      (transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition);
+      (scrollJumpPosition - minimumPosition) / (maximumPosition - minimumPosition + 1);
 
-    const widthOnScreen = (maximumPosition - minimumPosition) * boxHeight;
+    const totalTranscriptWidthInPixels = (maximumPosition - minimumPosition + 1) * boxHeight;
 
-    const scrollLeft = widthOnScreen * transcriptPercentagePosition - boxHeight;
+    const scrollLeft = totalTranscriptWidthInPixels * transcriptPercentagePosition;
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
-
     // Scroll all the children transcript virtualized lists
     scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scrollJumpPosition]);
+  }, [minimumPosition, scrollJumpPosition]);
 
   // Scroll newly added visible transcripts to the current position
   useEffect(() => {

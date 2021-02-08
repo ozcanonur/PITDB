@@ -196,24 +196,35 @@ const getPeptidePosition = (
     modPositions.push({ type: mods[i], pos: tempMod.indexOf(mods[i]) });
   }
 
+  // if (modPositions.length > 0) {
+  //   console.log(modPositions);
+  // }
+
   let startPos = 0;
   let endPos = 0;
   let coveredSoFar = 0;
   for (const cds of relativeCdsPositionsAndSequences) {
-    // if (startPos && endPos) break;
+    // WOOP, remove for mods
+    if (startPos && endPos) break;
 
     // Peptide starts at this exon
-    if (!startPos && globalStartPos < coveredSoFar + cds.sequence.length)
+    if (!startPos && globalStartPos < coveredSoFar + cds.sequence.length) {
       startPos = cds.start + (globalStartPos - coveredSoFar) * 3;
+    }
 
     // Peptide ends at this exon
-    if (!endPos && globalEndPos < coveredSoFar + cds.sequence.length)
+    if (!endPos && globalEndPos < coveredSoFar + cds.sequence.length) {
       endPos = cds.start + (globalEndPos - coveredSoFar + 1) * 3 - 1;
+    }
 
-    // modPositions.forEach((modPosition) => {
+    // if (modPositions[1]) {
+
+    // }
+
+    // for (const modPosition of modPositions) {
     //   if (modPosition.pos > coveredSoFar + cds.sequence.length) modPosition.pos += cds.sequence.length * 3;
     //   else if (modPosition.pos < coveredSoFar + cds.sequence.length) modPosition.pos = modPosition.pos * 3;
-    // });
+    // }
 
     // Peptide is further down the exons
     coveredSoFar += cds.sequence.length;

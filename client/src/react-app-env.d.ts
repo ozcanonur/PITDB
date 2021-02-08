@@ -34,8 +34,8 @@ interface RootState {
   geneBrowserFilters: import('components/Project/GeneBrowser/types').GeneBrowserFilters;
   geneBrowserTranscriptsData: import('components/Project/GeneBrowser/types').TranscriptsData;
   geneBrowserScrollPosition: number;
+  geneBrowserScrollJumpPosition: number;
   geneBrowserMouseoverPosition: number;
-  geneBrowserScrollJumpPositionPercent: { scrollPosition: number };
   geneBrowserTranscriptVisibility: { transcriptId: string; isVisible: boolean }[];
   geneBrowserBoxHeight: number;
 }

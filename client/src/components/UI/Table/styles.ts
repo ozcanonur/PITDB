@@ -18,6 +18,7 @@ export const useStyles = makeStyles((theme) => ({
       fontWeight: 600,
       color: theme.palette.primary.main,
       maxWidth: '9rem',
+      whiteSpace: 'break-spaces',
     },
   },
   tableCell: {
@@ -29,8 +30,10 @@ export const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
     fontFamily: 'Poppins, sans-serif !important',
     borderColor: 'rgba(94, 112, 157, 0.25)',
-    maxWidth: '10ch',
-    minWidth: '10ch',
+    maxWidth: '14ch',
+    whiteSpace: 'nowrap',
+    // maxWidth: '10ch',
+    // minWidth: '10ch',
     position: 'relative',
     transform: 'translateZ(0)',
     overflow: 'auto',
@@ -47,10 +50,6 @@ export const useStyles = makeStyles((theme) => ({
     display: 'table-row',
     outline: 'none',
     verticalAlign: 'middle',
-
-    // '& > th:last-child': {
-    //   width: '2rem',
-    // },
   },
   tableBodyRow: {
     height: '4rem',
@@ -97,12 +96,12 @@ export const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
   },
   tableHeadCellRowContentRight: {
-    minWidth: '4rem',
-    maxWidth: '4rem',
+    // minWidth: '5ch',
+    // maxWidth: '5ch',
   },
   tableCellRowContentRight: {
-    minWidth: '4rem',
-    maxWidth: '4rem',
+    // minWidth: '5ch',
+    // maxWidth: '5ch',
     textAlign: 'center',
 
     '&:hover': {

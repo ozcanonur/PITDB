@@ -82,10 +82,10 @@ export const parseTranscriptsForViewer = (
         end,
       };
     })
+    // Sort by abundance
     .sort(
-      (x, y) =>
-        mean(y.conditions.map((condition) => condition.mean)) -
-        mean(x.conditions.map((condition) => condition.mean))
+      ({ conditions: x }, { conditions: y }) =>
+        mean(y.map(({ mean }) => mean)) - mean(x.map(({ mean }) => mean))
     );
 
   return { transcripts: parsedTranscripts, minimumPosition, maximumPosition };

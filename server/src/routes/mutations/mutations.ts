@@ -1,4 +1,6 @@
 import express from 'express';
+// @ts-ignore
+import replaceall from 'replaceall';
 
 import { Mutation } from '../../db/models/mutation';
 import { parseConditions, findMongoFieldFromTableColumn } from './helpers';
@@ -45,7 +47,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
     const mutationsCount = await Mutation.countDocuments(query);
 
     const parsedMutations = mutations.map(
-      ({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent }) => ({
+      ({ ref, gene, refPos, inCDS, alt, hasPeptideEvidence, type, silent, conditions }) => ({
         gene,
         refPos,
         type,
@@ -54,6 +56,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
         silent,
         inCDS,
         hasPeptideEvidence,
+        conditions: replaceall(',', ', ', Object.keys(conditions).toString()),
       })
     );
 

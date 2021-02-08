@@ -15,6 +15,7 @@ export type MutationsResponse = {
     silent: boolean;
     inCDS: string;
     hasPeptideEvidence: string;
+    conditions: string;
   }[];
   mutationsCount: number;
 };

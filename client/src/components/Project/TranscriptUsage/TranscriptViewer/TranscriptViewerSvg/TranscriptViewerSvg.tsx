@@ -17,7 +17,7 @@ const TranscriptViewerSvg = ({ transcriptData, color, ...props }: TranscriptSvgP
   const { transcript, minimumPosition, maximumPosition } = transcriptData;
   const { transcriptId, exons } = transcript;
 
-  const increment = RAIL_LENGTH / (maximumPosition - minimumPosition);
+  const pixelPerValue = RAIL_LENGTH / (maximumPosition - minimumPosition + 1);
 
   const { transcript: selectedTranscript } = useSelector(
     (state: RootState) => state.selectedTranscriptViewerTranscript
@@ -58,8 +58,8 @@ const TranscriptViewerSvg = ({ transcriptData, color, ...props }: TranscriptSvgP
         </g>
         {/* These are the exon boxes */}
         {exons?.map(({ start, end }) => {
-          const exonStartingPosition = RAIL_OFFSET + increment * (start - minimumPosition);
-          const exonWidth = increment * (end - start + 1);
+          const exonStartingPosition = RAIL_OFFSET + pixelPerValue * (start - minimumPosition);
+          const exonWidth = pixelPerValue * (end - start + 1);
 
           return (
             <g key={String(start + end)} transform='translate(0 8)'>

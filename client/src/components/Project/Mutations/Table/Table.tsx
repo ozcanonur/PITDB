@@ -24,7 +24,6 @@ const MutationsTable = ({ ...props }) => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const filters = useSelector((state: RootState) => state.mutationFilters);
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
@@ -176,14 +175,16 @@ const MutationsTable = ({ ...props }) => {
   // Button on the right of the row
   // row prop will come from the table component's row
   const RowContentRight = ({ row }: { row: string[] }) => {
-    const [gene, position] = row;
+    const [gene, position, , , , , , , conditions] = row;
+    const firstCondition = conditions.split(',')[0];
 
     const history = useHistory();
 
-    // WOOP
     const handleClick = () => {
-      dispatch(setGeneBrowserFilters({ gene, condition: conditionTypes[0], minTPM: 0, minQual: 0 }));
-      dispatch(setGeneBrowserScrollJumpPosition(parseInt(position)));
+      dispatch(setGeneBrowserFilters({ gene, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      // -3 to make mutation to not be completely aligned to the left
+      // Since gene browser position is based on the left most index
+      dispatch(setGeneBrowserScrollJumpPosition(parseInt(position) - 3));
       history.push(history.location.pathname.replace('mutations', 'gene-browser'));
     };
 
@@ -260,7 +261,17 @@ const MutationsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Position', 'Type', 'Ref', 'Alt', 'Synonymous', 'In CDS', 'Peptide evidence']}
+        tableHead={[
+          'Gene',
+          'Position',
+          'Type',
+          'Ref',
+          'Alt',
+          'Synonymous',
+          'In CDS',
+          'Peptide evidence',
+          'Conditions',
+        ]}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

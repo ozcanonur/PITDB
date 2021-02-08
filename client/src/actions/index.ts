@@ -126,9 +126,7 @@ export const setGeneBrowserScrollJumpPosition = (
   scrollPosition: number
 ): SetGeneBrowserScrollJumpPosition => ({
   type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION,
-  payload: {
-    scrollPosition,
-  },
+  payload: scrollPosition,
 });
 
 export const setGeneBrowserMouseoverScrollPosition = (

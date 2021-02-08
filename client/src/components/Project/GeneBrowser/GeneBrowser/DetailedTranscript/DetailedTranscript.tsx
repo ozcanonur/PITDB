@@ -36,7 +36,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     minimumPosition
   );
 
-  // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, top part is for mutation INS & DEL
+  // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, half of it is for mutation INS & DEL
   const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight;
 
   return (

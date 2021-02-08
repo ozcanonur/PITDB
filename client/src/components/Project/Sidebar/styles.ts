@@ -6,7 +6,6 @@ export const useStyles = makeStyles((theme) => ({
     minWidth: '28rem',
     overflow: 'auto',
     background: 'linear-gradient(to bottom, #fff 25%, #f2f4ff)',
-    height: '100%',
   },
   routesContainer: {
     display: 'flex',
