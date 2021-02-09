@@ -5,4 +5,6 @@ export interface BarChartProps {
   colors: string[];
   bottomAxisText?: string;
   leftAxisText?: string;
+  width: number;
+  height: number;
 }

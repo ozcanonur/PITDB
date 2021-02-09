@@ -19,7 +19,7 @@ const DGEWrapper = () => {
       </main>
       <div style={{ display: 'flex' }}>
         <LineChart />
-        <div style={{ minWidth: '35%' }} />
+        <div className={classes.placeholderDiv} />
       </div>
     </div>
   );

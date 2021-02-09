@@ -62,6 +62,7 @@ export const parseTranscriptsForViewer = (
           return {
             condition,
             mean: meanValue,
+            values: Object.keys(values).map((sample) => ({ sample, TPM: values[sample] })),
           };
         });
 

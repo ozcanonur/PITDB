@@ -1,10 +1,21 @@
-import { ResponsiveBar } from '@nivo/bar';
+import { Bar } from '@nivo/bar';
 
 import { BarChartProps } from './types';
 
-const BarChart = ({ data, keys, indexBy, colors, bottomAxisText, leftAxisText }: BarChartProps) => {
+const BarChart = ({
+  data,
+  keys,
+  indexBy,
+  colors,
+  bottomAxisText,
+  leftAxisText,
+  width,
+  height,
+}: BarChartProps) => {
   return (
-    <ResponsiveBar
+    <Bar
+      width={width}
+      height={height}
       enableGridX={false}
       enableGridY
       data={data}

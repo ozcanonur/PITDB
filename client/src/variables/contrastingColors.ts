@@ -1,5 +1,5 @@
 export const contrastingColors = [
-  'rgba(2,63,165)',
+  'rgba(51,51,102)',
   'rgba(224,123,145)',
   'rgba(141,213,147)',
   'rgba(156,222,214)',

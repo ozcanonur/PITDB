@@ -41,6 +41,8 @@ export const useStyles = makeStyles((theme) => ({
     boxShadow: '0 5px 10px rgba(154,160,185,.25), 0 15px 40px rgba(166,173,201,.35)',
     color: theme.palette.primary.main,
     fontSize: '1.4rem',
+    position: 'absolute',
+    width: 'max-content',
 
     '& > div:not(:last-child)': {
       marginRight: '.5rem',

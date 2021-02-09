@@ -32,6 +32,10 @@ export const useStyles = makeStyles((theme) => ({
     top: '50%',
     transform: 'translate(-50%, -50%)',
     width: 'max-content',
+
+    '& > div:first-of-type': {
+      fontSize: '2.4rem',
+    },
   },
   legend: {
     marginLeft: '2rem',
@@ -43,6 +47,10 @@ export const useStyles = makeStyles((theme) => ({
 
       '& > div': {
         borderRadius: '50% !important',
+      },
+
+      '& > p': {
+        fontWeight: 400,
       },
     },
   },

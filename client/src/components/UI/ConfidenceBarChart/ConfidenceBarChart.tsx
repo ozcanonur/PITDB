@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { ResponsiveBar } from '@nivo/bar';
+import { Bar } from '@nivo/bar';
 import mean from 'lodash/mean';
 
 import { getMaxCount, getValuesForCondition } from './helpers';
@@ -15,6 +15,8 @@ const ConfidenceBarChart = ({
   min,
   max,
   barColor,
+  width,
+  height,
 }: ConfidenceBarChartProps) => {
   const classes = useStyles();
 
@@ -95,7 +97,9 @@ const ConfidenceBarChart = ({
   );
 
   return (
-    <ResponsiveBar
+    <Bar
+      width={width}
+      height={height}
       layers={['grid', Interval, 'bars', 'axes', 'markers', Points]}
       enableGridX
       enableGridY

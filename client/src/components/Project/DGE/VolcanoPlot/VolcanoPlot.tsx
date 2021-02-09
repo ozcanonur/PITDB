@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ResponsiveScatterPlotCanvas } from '@nivo/scatterplot';
+import { ScatterPlotCanvas } from '@nivo/scatterplot';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -42,50 +43,63 @@ const VolcanoPlot = ({ ...props }) => {
   const { data, fcMax, fcMin, pMax } = volcanoPlotData;
 
   return (
-    <ProjectItemCard name='Volcano plot' className={classes.projectItemCard} {...props}>
+    <ProjectItemCard name='Gene expression' className={classes.projectItemCard} {...props}>
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-        <ResponsiveScatterPlotCanvas
-          data={data}
-          margin={{ top: 40, right: 40, bottom: 100, left: 70 }}
-          xScale={{ type: 'linear', min: fcMin, max: fcMax }}
-          yScale={{ type: 'linear', min: 0, max: pMax }}
-          useMesh={false}
-          tooltip={({ node }) => (
-            <div className={classes.volcanoTooltipContainer}>
-              <div className={classes.volcanoTooltipSquare} style={{ backgroundColor: node.style.color }} />
-              {/* @ts-ignore */}
-              <div className={classes.volcanoTooltipName}>{`${node.data.symbol}:`}</div>
-              <div className={classes.volcanoTooltipValues}>{`fc: ${node.data.x}, p: ${node.data.y}`}</div>
-            </div>
+        <AutoSizer>
+          {({ width, height }) => (
+            <ScatterPlotCanvas
+              width={width}
+              height={height}
+              data={data}
+              margin={{ top: 40, right: 40, bottom: 100, left: 70 }}
+              xScale={{ type: 'linear', min: fcMin, max: fcMax }}
+              yScale={{ type: 'linear', min: 0, max: pMax }}
+              useMesh={false}
+              tooltip={({ node }) => {
+                const { x, data, style } = node;
+                return (
+                  <div
+                    className={classes.volcanoTooltipContainer}
+                    style={{
+                      right: x > 250 ? 0 : 'unset',
+                      left: x < 250 ? 0 : 'unset',
+                    }}
+                  >
+                    <div className={classes.volcanoTooltipSquare} style={{ backgroundColor: style.color }} />
+                    {/* @ts-ignore */}
+                    <div className={classes.volcanoTooltipName}>{`${data.symbol}:`}</div>
+                    <div className={classes.volcanoTooltipValues}>{`fc: ${data.x}, p: ${data.y}`}</div>
+                  </div>
+                );
+              }}
+              blendMode='normal'
+              colors={['rgba(65, 15, 94, 0.5)', 'rgba(44, 85, 122, 0.4)']}
+              axisBottom={{
+                orient: 'bottom',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'Fold change',
+                legendPosition: 'middle',
+                legendOffset: 36,
+              }}
+              axisLeft={{
+                orient: 'left',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: '-Log10 p value',
+                legendPosition: 'middle',
+                legendOffset: -50,
+              }}
+              theme={{
+                fontFamily: 'Poppins, sans-serif',
+                textColor: 'rgb(51,51,102)',
+              }}
+            />
           )}
-          blendMode='normal'
-          axisTop={null}
-          colors={['rgba(65, 15, 94, 0.5)', 'rgba(44, 85, 122, 0.4)']}
-          axisRight={null}
-          axisBottom={{
-            orient: 'bottom',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'Fold change',
-            legendPosition: 'middle',
-            legendOffset: 36,
-          }}
-          axisLeft={{
-            orient: 'left',
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: '-Log10 p value',
-            legendPosition: 'middle',
-            legendOffset: -50,
-          }}
-          theme={{
-            fontFamily: 'Poppins, sans-serif',
-            textColor: 'rgb(51,51,102)',
-          }}
-        />
+        </AutoSizer>
       </div>
     </ProjectItemCard>
   );

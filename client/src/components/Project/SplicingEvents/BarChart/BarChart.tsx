@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -49,14 +50,20 @@ const BarChart = ({ ...props }) => {
     >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-        <ConfidenceBarChart
-          barChartData={conditionsData}
-          axisBottomLabel='psi'
-          axisLeftLabel='Condition'
-          labelFormat='.3f'
-          min={0}
-          max={1}
-        />
+        <AutoSizer>
+          {({ width, height }) => (
+            <ConfidenceBarChart
+              barChartData={conditionsData}
+              axisBottomLabel='psi'
+              axisLeftLabel='Condition'
+              labelFormat='.3f'
+              min={0}
+              max={1}
+              width={width}
+              height={height}
+            />
+          )}
+        </AutoSizer>
       </div>
     </ProjectItemCard>
   );

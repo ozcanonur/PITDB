@@ -9,6 +9,7 @@ export const useStyles = makeStyles((theme) => ({
   subContainer: {
     display: 'flex',
     marginBottom: '2rem',
+    flexGrow: 1,
 
     '@media (max-width: 1850px)': {
       flexDirection: 'column',
@@ -39,6 +40,13 @@ export const useStyles = makeStyles((theme) => ({
       '& > *': {
         minHeight: '35rem',
       },
+    },
+  },
+  placeholderDiv: {
+    minWidth: '35%',
+
+    '@media (max-width: 1850px)': {
+      minWidth: '50%',
     },
   },
 }));

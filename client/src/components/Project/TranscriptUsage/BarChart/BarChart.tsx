@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import tinyColor from 'tinycolor2';
 
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -54,13 +55,19 @@ const BarChart = ({ ...props }) => {
     >
       <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
       <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-        <ConfidenceBarChart
-          barChartData={transcriptReadCounts}
-          axisBottomLabel='Normalised read count'
-          axisLeftLabel='Condition'
-          labelFormat='.2f'
-          barColor={[barChartColor]}
-        />
+        <AutoSizer>
+          {({ width, height }) => (
+            <ConfidenceBarChart
+              barChartData={transcriptReadCounts}
+              axisBottomLabel='Normalised read count'
+              axisLeftLabel='Condition'
+              labelFormat='.2f'
+              barColor={[barChartColor]}
+              width={width}
+              height={height}
+            />
+          )}
+        </AutoSizer>
       </div>
     </ProjectItemCard>
   );

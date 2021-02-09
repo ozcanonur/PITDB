@@ -33,4 +33,6 @@ export interface ConfidenceBarChartProps {
   min?: number;
   max?: number;
   barColor?: string[];
+  width: number;
+  height: number;
 }

@@ -36,6 +36,7 @@ export type Transcript = {
   conditions: {
     condition: string;
     mean: number;
+    values: { sample: string; TPM: number }[];
   }[];
   seq: string;
   start: number;

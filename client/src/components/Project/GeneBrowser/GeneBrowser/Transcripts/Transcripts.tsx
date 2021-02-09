@@ -181,9 +181,20 @@ const Transcripts = memo(() => {
             const { transcriptId, conditions } = transcript;
 
             const backgroundColor = filters.condition === conditionTypes[0] ? '#336' : '#6B88A2';
-            const meanTPM = conditions
-              .find(({ condition }) => condition === filters.condition)
-              ?.mean.toFixed(3);
+
+            const currentConditionsTPM = conditions.find(({ condition }) => condition === filters.condition);
+
+            let meanTPM = '0';
+            let TPMValues: { sample: string; TPM: number }[] = [];
+            if (currentConditionsTPM) {
+              meanTPM = currentConditionsTPM.mean.toFixed(3);
+              TPMValues = currentConditionsTPM.values;
+            }
+
+            let tooltipText = `Mean TPM: ${meanTPM}`;
+            TPMValues.forEach(({ sample, TPM }) => {
+              tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
+            });
 
             return (
               <div className={classes.transcriptOverview} key={transcriptId}>
@@ -198,8 +209,8 @@ const Transcripts = memo(() => {
                     >
                       <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
                     </IconButton>
-                    <p data-tip={`Mean TPM: ${meanTPM}`}>{filters.condition}</p>
-                    <ReactTooltip />
+                    <p data-tip={tooltipText}>{filters.condition}</p>
+                    <ReactTooltip multiline />
                   </div>
                   <p className={classes.transcriptId}>{transcriptId}</p>
                 </div>
@@ -211,9 +222,20 @@ const Transcripts = memo(() => {
           const { transcriptId, conditions } = transcript;
 
           const backgroundColor = filters.condition === conditionTypes[0] ? '#336' : '#6B88A2';
-          const meanTPM = conditions
-            .find(({ condition }) => condition === filters.condition)
-            ?.mean.toFixed(3);
+
+          const currentConditionsTPM = conditions.find(({ condition }) => condition === filters.condition);
+
+          let meanTPM = '0';
+          let TPMValues: { sample: string; TPM: number }[] = [];
+          if (currentConditionsTPM) {
+            meanTPM = currentConditionsTPM.mean.toFixed(3);
+            TPMValues = currentConditionsTPM.values;
+          }
+
+          let tooltipText = `Mean TPM: ${meanTPM}`;
+          TPMValues.forEach(({ sample, TPM }) => {
+            tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
+          });
 
           return (
             <div key={transcriptId}>
@@ -229,8 +251,8 @@ const Transcripts = memo(() => {
                     >
                       <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
                     </IconButton>
-                    <p data-tip={`Mean TPM: ${meanTPM}`}>{filters.condition}</p>
-                    <ReactTooltip />
+                    <p data-tip={tooltipText}>{filters.condition}</p>
+                    <ReactTooltip multiline />
                   </div>
                   <p className={classes.transcriptId}>{transcriptId}</p>
                 </div>

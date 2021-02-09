@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
@@ -57,14 +58,20 @@ const BarCharts = () => {
       >
         <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
         <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-          <BarChart
-            data={qualityData}
-            keys={['qual']}
-            indexBy='sample'
-            colors={['rgba(107, 107, 179, 0.65)']}
-            bottomAxisText='Quality'
-            leftAxisText='Sample'
-          />
+          <AutoSizer>
+            {({ width, height }) => (
+              <BarChart
+                data={qualityData}
+                keys={['qual']}
+                indexBy='sample'
+                colors={['rgba(107, 107, 179, 0.65)']}
+                bottomAxisText='Quality'
+                leftAxisText='Sample'
+                width={width}
+                height={height}
+              />
+            )}
+          </AutoSizer>
         </div>
       </ProjectItemCard>
       <ProjectItemCard
@@ -73,14 +80,20 @@ const BarCharts = () => {
       >
         <Loading className={classes.loading} style={{ opacity: loading ? 1 : 0 }} />
         <div className={classes.figureContainer} style={{ opacity: loading ? 0 : 1 }}>
-          <BarChart
-            data={alleleFrequencyData}
-            keys={['AF']}
-            indexBy='sample'
-            colors={['rgba(44, 85, 122, 0.7)']}
-            bottomAxisText='Allele Frequency'
-            leftAxisText='Sample'
-          />
+          <AutoSizer>
+            {({ width, height }) => (
+              <BarChart
+                data={alleleFrequencyData}
+                keys={['AF']}
+                indexBy='sample'
+                colors={['rgba(44, 85, 122, 0.7)']}
+                bottomAxisText='Allele Frequency'
+                leftAxisText='Sample'
+                width={width}
+                height={height}
+              />
+            )}
+          </AutoSizer>
         </div>
       </ProjectItemCard>
     </>
