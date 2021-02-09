@@ -101,10 +101,15 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
   },
   zoomSlider: {
-    marginLeft: '3rem',
+    marginLeft: '2.4rem',
 
     '& > span': {
-      width: '19rem',
+      width: '20rem',
+    },
+
+    '& > p': {
+      transform: 'translate(3rem, -0.5rem)',
+      textAlign: 'right',
     },
   },
   transcriptIndexContainer: {

@@ -50,7 +50,7 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
           className={classes.divider}
         />
       ) : // Put the aminoacid text if this is the middle index
-      (index - start) % 3 === 1 ? (
+      (index - start) % 3 === 1 && boxHeight > 5 ? (
         <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.aminoacid}>
           {aminoacid}
         </text>

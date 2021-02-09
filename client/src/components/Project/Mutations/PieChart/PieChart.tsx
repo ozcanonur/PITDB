@@ -23,7 +23,7 @@ const PieChart = () => {
 
     setLoading(true);
 
-    fetchFromApi('/api/mutations/types', { project, filters: filters as any }).then((res: TypesResponse) => {
+    fetchFromApi('/api/mutations/types', { project, filters }).then((res: TypesResponse) => {
       if (!isMounted || !res) return;
 
       setData(res);

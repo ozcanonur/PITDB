@@ -10,7 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     '@media (max-width: 1850px)': {
       width: 'auto',
       minWidth: '31rem',
-      flex: '1 1',
+      flex: '1 1 50%',
     },
   },
   figureContainer: {

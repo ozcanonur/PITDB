@@ -18,7 +18,7 @@ const GenericLegend = ({
     >
       {items.map((item, index) => (
         <div key={item}>
-          <div style={{ backgroundColor: colors[index] }} />
+          <div style={{ backgroundColor: colors[index % items.length] }} />
           <p>{item}</p>
         </div>
       ))}

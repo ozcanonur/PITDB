@@ -67,8 +67,8 @@ const GeneBrowser = () => {
     setLoading(true);
 
     Promise.all([
-      fetchFromApi('/api/gene-browser/transcripts', { project, filters: filters as any }),
-      fetchFromApi('/api/gene-browser/max-tpm', { project, filters: filters as any }),
+      fetchFromApi('/api/gene-browser/transcripts', { project, filters }),
+      fetchFromApi('/api/gene-browser/max-tpm', { project, filters }),
     ]).then(([resTranscripts, resMaxTpm]: [TranscriptsResponse, { maxTPM: number }]) => {
       if (!resTranscripts || !isMounted) return;
       setTranscriptsData(resTranscripts);

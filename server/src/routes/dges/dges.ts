@@ -4,6 +4,7 @@ import replaceall from 'replaceall';
 
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
+import { GenesPeptide } from '../../db/models/genesPeptide';
 import { DGEFilters, DGEsWithTranscript } from './types';
 import { ExtendedRequest } from '../../types';
 
@@ -131,6 +132,22 @@ router.get('/volcano-plot', async (req: ExtendedRequest, res) => {
     const { data, fcMin, fcMax, pMax } = parseVolcanoPlotData(dges);
 
     res.send({ data, fcMin, fcMax, pMax });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
+/*
+ * Route for getting peptide intensity line chart data
+ */
+router.get('/peptide-intensity', async (req: ExtendedRequest, res) => {
+  const { project, symbol } = req.query;
+
+  try {
+    const peptideIntensity = await GenesPeptide.findOne({ project, symbol });
+
+    res.send(peptideIntensity);
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

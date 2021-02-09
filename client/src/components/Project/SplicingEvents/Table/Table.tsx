@@ -70,8 +70,8 @@ const SplicingEventsTable = ({ ...props }) => {
     fetchFromApi('/api/splicing-events', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: SplicingEventsResponse) => {
       if (!isMounted || !res) return;
 
@@ -101,8 +101,8 @@ const SplicingEventsTable = ({ ...props }) => {
     fetchFromApi('/api/splicing-events', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: SplicingEventsResponse) => {
       if (!isMounted || !res) return;
 
@@ -134,8 +134,8 @@ const SplicingEventsTable = ({ ...props }) => {
     const { splicingEvents }: SplicingEventsResponse = await fetchFromApi('/api/splicing-events', {
       project,
       skip,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     });
 
     setTableData([...tableData, ...splicingEvents.map(Object.values)]);

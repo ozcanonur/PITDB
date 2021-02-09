@@ -6,14 +6,19 @@ import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import { CustomPaginationActionsProps } from './types';
 import { useStyles } from './styles';
 
-const CustomPaginationActions = ({ count, page, rowsPerPage, onChangePage }: CustomPaginationActionsProps) => {
+const CustomPaginationActions = ({
+  count,
+  page,
+  rowsPerPage,
+  onChangePage,
+}: CustomPaginationActionsProps) => {
   const classes = useStyles();
 
-  const handleBackButtonClick = (event: any) => {
+  const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     onChangePage(event, page - 1);
   };
 
-  const handleNextButtonClick = (event: any) => {
+  const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     onChangePage(event, page + 1);
   };
 

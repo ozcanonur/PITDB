@@ -19,7 +19,6 @@ const DiscreteSlider = ({
   const [value, setValue] = useState(0);
 
   useEffect(() => {
-    console.log(defaultValue);
     setValue(defaultValue);
   }, [defaultValue]);
 

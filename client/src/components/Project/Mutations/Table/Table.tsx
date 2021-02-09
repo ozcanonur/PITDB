@@ -66,8 +66,8 @@ const MutationsTable = ({ ...props }) => {
     fetchFromApi('/api/mutations', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: MutationsResponse) => {
       if (!isMounted || !res) return;
 
@@ -96,8 +96,8 @@ const MutationsTable = ({ ...props }) => {
     fetchFromApi('/api/mutations', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: MutationsResponse) => {
       if (!isMounted || !res) return;
 
@@ -129,8 +129,8 @@ const MutationsTable = ({ ...props }) => {
     const { mutations }: MutationsResponse = await fetchFromApi('/api/mutations', {
       project,
       skip,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     });
 
     setLoading(false);

@@ -57,9 +57,9 @@ export const scrollVirtualRefs = (
     cdsRefs?: VirtualRef[][] | undefined;
   }[]
 ) => {
-  const flattenedRefs: any = virtualizedListRefsList
+  const flattenedRefs = virtualizedListRefsList
     .map((e) => Object.values(flatten(e, { maxDepth: 1 })))
-    .flat();
+    .flat() as (VirtualRef | VirtualRef[])[];
 
   // Scroll all the children transcript virtualized lists
   // Won't be scrolled in the cycle between drag and regular scroll

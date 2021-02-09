@@ -25,7 +25,7 @@ const VolcanoPlot = ({ ...props }) => {
 
     fetchFromApi('/api/dges/volcano-plot', {
       project,
-      filters: filters as any,
+      filters,
     }).then((res: VolcanoPlotResponse) => {
       if (!isMounted || !res) return;
 

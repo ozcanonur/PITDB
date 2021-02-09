@@ -64,8 +64,8 @@ const DGETable = ({ ...props }) => {
     fetchFromApi('/api/dges', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: DGESResponse) => {
       if (!isMounted || !res) return;
 
@@ -95,8 +95,8 @@ const DGETable = ({ ...props }) => {
     fetchFromApi('/api/dges', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: DGESResponse) => {
       if (!isMounted || !res) return;
 
@@ -128,8 +128,8 @@ const DGETable = ({ ...props }) => {
     const { dges }: DGESResponse = await fetchFromApi('/api/dges', {
       project,
       skip,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     });
 
     setLoading(false);
@@ -221,7 +221,7 @@ const DGETable = ({ ...props }) => {
   };
 
   return (
-    <ProjectItemCard className={classes.container} name='Differential Gene Expressions' {...props}>
+    <ProjectItemCard className={classes.container} name='Differential gene expressions' {...props}>
       <div className={classes.filtersContainer}>
         <SingleSelect
           name='Search symbol'

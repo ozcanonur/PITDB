@@ -72,8 +72,8 @@ const SplicingEventsTable = ({ ...props }) => {
     fetchFromApi('/api/transcript-usages', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: TranscriptUsagesResponse) => {
       if (!isMounted || !res) return;
 
@@ -103,8 +103,8 @@ const SplicingEventsTable = ({ ...props }) => {
     fetchFromApi('/api/transcript-usages', {
       project,
       skip: 0,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     }).then((res: TranscriptUsagesResponse) => {
       if (!isMounted || !res) return;
 
@@ -136,8 +136,8 @@ const SplicingEventsTable = ({ ...props }) => {
     const { transcriptUsages }: TranscriptUsagesResponse = await fetchFromApi('/api/transcript-usages', {
       project,
       skip,
-      filters: filters as any,
-      sortedOn: sortedOn as any,
+      filters,
+      sortedOn,
     });
 
     setTableData([...tableData, ...transcriptUsages.map(Object.values)]);

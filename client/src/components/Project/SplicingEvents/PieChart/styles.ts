@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme) => ({
       marginLeft: 0,
       width: 'auto',
       minWidth: '31rem',
-      flex: '1 1',
+      flex: '1 1 0',
     },
   },
   figureContainer: {

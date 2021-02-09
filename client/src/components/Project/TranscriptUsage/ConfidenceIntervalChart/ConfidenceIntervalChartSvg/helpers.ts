@@ -28,7 +28,7 @@ export const makeChartValues = (data: ConditionsByGeneNameResponse) => {
     const value: ChartValue = { transcript, conditions: [] };
 
     Object.keys(data[transcript]).forEach((conditionName) => {
-      const conditionValue: any = { conditionName, avg: 0, ci: 0 };
+      const conditionValue = { conditionName, avg: 0, ci: 0 };
       const conditionAvg = getAvg(data[transcript][conditionName]);
       const conditionCi = getCi(data[transcript][conditionName]);
       conditionValue.avg = conditionAvg;

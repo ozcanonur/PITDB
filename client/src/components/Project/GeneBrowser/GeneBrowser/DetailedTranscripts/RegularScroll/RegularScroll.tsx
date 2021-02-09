@@ -56,7 +56,7 @@ const ScrollTooltip = ({ tooltipOpen }: { tooltipOpen: boolean }) => {
   );
 };
 
-const RegularScroll = forwardRef(({ handleScroll, width }: RegularScrollProps, ref: any) => {
+const RegularScroll = forwardRef<HTMLDivElement, RegularScrollProps>(({ handleScroll, width }, ref) => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const classes = useStyles();

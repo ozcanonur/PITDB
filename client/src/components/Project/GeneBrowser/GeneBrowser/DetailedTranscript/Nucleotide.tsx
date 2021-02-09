@@ -72,9 +72,11 @@ const Nucleotide = memo(({ index, style, data }: DetailedNucleotideProps) => {
             width={boxHeight}
             height={boxHeight}
           />
-          <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
-            {nucleotide}
-          </text>
+          {boxHeight > 5 ? (
+            <text x={textOffsetX} y={textOffsetY} fontSize={boxHeight / 2} className={classes.nucleotide}>
+              {nucleotide}
+            </text>
+          ) : null}
         </>
       )}
     </g>

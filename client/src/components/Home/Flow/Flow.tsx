@@ -4,6 +4,7 @@ import { ReactComponent as UniProt } from 'assets/uniprot_icon.svg';
 import { ReactComponent as PITDBCylinder } from 'assets/cylinder.svg';
 import { useStyles } from './styles';
 import { FlowShapeProps } from './types';
+import { HTMLAttributes } from 'react';
 
 const FlowShape = ({ children }: FlowShapeProps) => {
   const classes = useStyles();
@@ -27,7 +28,7 @@ const FlowShapeVertical = ({ children }: FlowShapeProps) => {
   );
 };
 
-const Flow = ({ ...props }: any) => {
+const Flow = ({ ...props }: HTMLAttributes<HTMLDivElement>) => {
   const classes = useStyles();
 
   const flowItems = [

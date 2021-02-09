@@ -14,6 +14,6 @@ export const useStyles = makeStyles((theme) => ({
   subHeading: {
     fontSize: '1.6rem',
     color: theme.palette.primary.light,
-    marginTop: '1rem',
+    marginTop: '2rem',
   },
 }));

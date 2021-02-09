@@ -23,14 +23,12 @@ const PieChart = ({ ...props }) => {
 
     setLoading(true);
 
-    fetchFromApi('/api/splicing-events/types', { project, filters: filters as any }).then(
-      (res: TypesResponse) => {
-        if (!isMounted || !res) return;
+    fetchFromApi('/api/splicing-events/types', { project, filters }).then((res: TypesResponse) => {
+      if (!isMounted || !res) return;
 
-        setTypesData(res);
-        setLoading(false);
-      }
-    );
+      setTypesData(res);
+      setLoading(false);
+    });
 
     return () => {
       isMounted = false;

@@ -1,13 +1,23 @@
 import { HTMLAttributes } from 'react';
 import { useStyles } from './styles';
 
-const NoResults = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
+interface Props extends HTMLAttributes<HTMLDivElement> {
+  heading?: string;
+  subHeading?: string;
+}
+
+const NoResults = ({
+  heading = 'No results found.',
+  subHeading = 'Try changing the filters',
+  className,
+  ...props
+}: Props) => {
   const classes = useStyles();
 
   return (
     <div className={`${classes.container} ${className}`} {...props}>
-      <div className={classes.heading}>No results found.</div>
-      <div className={classes.subHeading}>Try changing the filters above.</div>
+      <div className={classes.heading}>{heading}</div>
+      <div className={classes.subHeading}>{subHeading}</div>
     </div>
   );
 };
