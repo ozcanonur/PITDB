@@ -9,6 +9,8 @@ export type DGESResponse = {
     symbol: string;
     log2fc: number;
     padj: number;
+    hasPeptideIntensity: boolean;
+    conditions?: string;
   }[];
   dgesCount: number;
 };

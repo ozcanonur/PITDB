@@ -8,7 +8,6 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     maxHeight: '40rem',
     minHeight: '35rem',
-    // WOOP, tooltip are hidden on the right if this happens
     overflow: 'hidden',
 
     '@media (max-width: 1850px)': {

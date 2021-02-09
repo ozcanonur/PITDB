@@ -95,13 +95,13 @@ const LineChart = ({ ...props }) => {
                       height={68}
                     >
                       <circle cx={8} cy={10} r={8} fill={point.borderColor} />
-                      <text x={30} y={13} className={classes.tooltipText} fontWeight={500}>
+                      <text x={30} y={14} className={classes.tooltipText} fontWeight={500}>
                         {point.serieId}
                       </text>
-                      <text x={30} y={30} className={classes.tooltipText}>
+                      <text x={30} y={31} className={classes.tooltipText}>
                         {`Intensity: ${point.data.y.toLocaleString()}`}
                       </text>
-                      <text x={30} y={47} className={classes.tooltipText}>
+                      <text x={30} y={48} className={classes.tooltipText}>
                         {`Condition: ${point.data.x}`}
                       </text>
                     </svg>

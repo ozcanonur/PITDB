@@ -183,7 +183,7 @@ const DGETable = ({ ...props }) => {
     dispatch(setDGEFilters({ ...filters, symbol }));
   };
 
-  // // WOOP, Hard coded peptide evidence on multiselect
+  // Hard coded peptide evidence on multiselect
   // const multiSelectOnChange = (
   //   selectedOptions: SelectOption[],
   //   _actionMeta: ActionMeta<any>,
@@ -199,7 +199,7 @@ const DGETable = ({ ...props }) => {
   // Button on the right of the row
   // row prop will come from the table component's row
   const RowContentRight = ({ row }: { row: string[] }) => {
-    const [symbol, , , conditions] = row;
+    const [symbol, , , , conditions] = row;
     const firstCondition = conditions.split(',')[0];
 
     const history = useHistory();
@@ -266,7 +266,7 @@ const DGETable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value', 'Conditions']}
+        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value', 'Peptide Intensity', 'Conditions']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

@@ -35,6 +35,10 @@ export const useStyles = makeStyles((theme) => ({
 
     '& > div:first-of-type': {
       fontSize: '2.4rem',
+
+      '@media (max-width: 1850px)': {
+        fontSize: '2rem',
+      },
     },
   },
   legend: {
@@ -47,6 +51,7 @@ export const useStyles = makeStyles((theme) => ({
 
       '& > div': {
         borderRadius: '50% !important',
+        marginRight: '0.5rem !important',
       },
 
       '& > p': {

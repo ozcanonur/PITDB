@@ -5,7 +5,7 @@ import replaceall from 'replaceall';
 import { DGE } from '../../db/models/dge';
 import { ReadCount } from '../../db/models/readCount';
 import { GenesPeptide } from '../../db/models/genesPeptide';
-import { DGEFilters, DGEsWithTranscript } from './types';
+import { DGEFilters, DGEsWithTranscriptAndPeptides } from './types';
 import { ExtendedRequest } from '../../types';
 
 import { parseVolcanoPlotData, convertSortFieldNameForMongoose } from './helpers';
@@ -35,7 +35,7 @@ router.get('/', async (req: ExtendedRequest, res) => {
       // @ts-ignore
       query = { ...query, symbol };
 
-    const dges: DGEsWithTranscript[] = await DGE.aggregate([
+    const dges: DGEsWithTranscriptAndPeptides[] = await DGE.aggregate([
       { $match: query },
       { $sort: { [convertSortFieldNameForMongoose(field)]: order } },
       { $skip: parseInt(skip) },
@@ -48,14 +48,23 @@ router.get('/', async (req: ExtendedRequest, res) => {
           as: 'transcripts',
         },
       },
+      {
+        $lookup: {
+          from: 'genesPeptides',
+          localField: 'symbol',
+          foreignField: 'symbol',
+          as: 'peptides',
+        },
+      },
     ]);
 
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    const parsedDges = dges.map(({ symbol, log2fc, padj, transcripts }) => ({
+    const parsedDges = dges.map(({ symbol, log2fc, padj, transcripts, peptides }) => ({
       symbol,
       log2fc,
       padj,
+      hasPeptideIntensity: Boolean(peptides[0]),
       conditions: transcripts ? replaceall(',', ', ', Object.keys(transcripts[0].TPM).toString()) : undefined,
     }));
 
