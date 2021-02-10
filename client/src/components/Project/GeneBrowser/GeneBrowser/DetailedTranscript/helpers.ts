@@ -180,6 +180,7 @@ export const getRelativeCdsPositionsAndSequences = (
   return relativeCdsPositionsAndSequences;
 };
 
+// WOOP, please cleanup this mess
 export const getRelativePeptidePositionsAndSequences = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   cdsSequence: string,
@@ -201,7 +202,11 @@ export const getRelativePeptidePositionsAndSequences = (
       let tempMod = mod;
       for (let i = 0; i < mods.length; i++) {
         tempMod = tempMod.replace(mods[i - 1], '');
-        modPositions.push({ type: mods[i], posInPeptide: tempMod.indexOf(mods[i]) });
+        modPositions.push({
+          // Remove outer most parantheses
+          type: mods[i].substring(1, mods[i].length - 1),
+          posInPeptide: tempMod.indexOf(mods[i]),
+        });
       }
 
       let startPos = 0;
@@ -233,7 +238,6 @@ export const getRelativeModPositionsAndTypes = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[]
 ) => {
-  console.log(relativePeptidePositionsAndSequences);
   const relativeModPositionsAndTypes = [];
   for (const relativePeptidePositionAndSequence of relativePeptidePositionsAndSequences) {
     if (relativePeptidePositionAndSequence.mods.length === 0) continue;

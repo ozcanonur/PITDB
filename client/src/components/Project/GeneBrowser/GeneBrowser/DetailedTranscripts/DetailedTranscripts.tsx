@@ -69,35 +69,50 @@ const TranscriptIndex = () => {
       }}
     >
       <AutoSizer className={classes.transcriptIndex}>
-        {({ width, height }) =>
-          range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
-            <div
-              key={(transcriptScrollPosition + index * 3).toLocaleString()}
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
+        {
+          ({ width, height }) =>
+            range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
               <p
+                key={(transcriptScrollPosition + index * 3).toLocaleString()}
                 className={classes.transcriptIndexText}
                 style={{
                   minWidth: boxHeight * 3,
                   fontSize: boxHeight / 2 - 1,
-                  height: height / 2,
+                  height: height,
                 }}
               >
                 {(transcriptScrollPosition + index * 3).toLocaleString()}
               </p>
-              <p
-                className={classes.transcriptIndexText}
-                style={{
-                  minWidth: boxHeight * 3,
-                  fontSize: boxHeight / 2 - 1,
-                  height: height / 2,
-                  textAlign: 'start',
-                }}
-              >
-                &nbsp;&nbsp;{transcriptScrollPosition + index * 3 - minimumPosition}
-              </p>
-            </div>
-          ))
+            ))
+          // This is the relative index for testing
+          // range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
+          //   <div
+          //     key={(transcriptScrollPosition + index * 3).toLocaleString()}
+          //     style={{ display: 'flex', flexDirection: 'column' }}
+          //   >
+          //     <p
+          //       className={classes.transcriptIndexText}
+          //       style={{
+          //         minWidth: boxHeight * 3,
+          //         fontSize: boxHeight / 2 - 1,
+          //         height: height / 2,
+          //       }}
+          //     >
+          //       {(transcriptScrollPosition + index * 3).toLocaleString()}
+          //     </p>
+          //     <p
+          //       className={classes.transcriptIndexText}
+          //       style={{
+          //         minWidth: boxHeight * 3,
+          //         fontSize: boxHeight / 2 - 1,
+          //         height: height / 2,
+          //         textAlign: 'start',
+          //       }}
+          //     >
+          //       &nbsp;&nbsp;{transcriptScrollPosition + index * 3 - minimumPosition}
+          //     </p>
+          //   </div>
+          // ))
         }
       </AutoSizer>
     </div>
@@ -225,6 +240,36 @@ const DetailedTranscripts = memo(() => {
 
     dispatch(setGeneBrowserBoxHeight(newBoxHeight));
   };
+
+  /* This is to trigger mouseover tooltip on mods
+   * Reason for this 'hack' is that we have the drag scroll container all over the browser
+   * Which blocks all events for the elements 'under' it
+   * Here we check what is the SECOND element at the current mouse (x,y) coordinates
+   * And dispatch a mousemove event if it's a polygon(mod) to trigger the tooltip
+   * Or dispatch a mouseout event if the previous element was a polygon(mod) to untrigger to tooltip
+   * Events will be caught by the polygon and trigger their own functions
+   * Which are implemented at DetailedTranscript/Mod.tsx
+   */
+  useEffect(() => {
+    let prevBox: Element;
+
+    dragScrollRef.current?.addEventListener('mousemove', (e) => {
+      const { x, y } = e;
+      const elements = document.elementsFromPoint(x, y);
+      const box = elements[1];
+      const event = document.createEvent('SVGEvents');
+      if (box.nodeName === 'polygon') {
+        event.initEvent('mousemove', true, true);
+        box.dispatchEvent(event);
+        prevBox = box;
+      } else {
+        if (!prevBox) return;
+
+        event.initEvent('mouseout', true, true);
+        prevBox.dispatchEvent(event);
+      }
+    });
+  }, []);
 
   return (
     <section className={classes.detailedTranscriptViewerContainer}>

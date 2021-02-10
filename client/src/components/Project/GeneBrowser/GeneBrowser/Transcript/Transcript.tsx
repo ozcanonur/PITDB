@@ -11,6 +11,7 @@ import {
   getRelativeCdsPositionsAndSequences,
   getRelativeExonPositionsAndSequences,
   getCDSStartsAndEnds,
+  getRelativeModPositionsAndTypes,
 } from '../DetailedTranscript/helpers';
 import { useStyles } from './styles';
 import { setGeneBrowserScrollJumpPosition, setGeneBrowserMouseoverScrollPosition } from 'actions';
@@ -135,6 +136,11 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
           transcript.cds[index].peptides
         );
 
+        const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
+          relativeCdsPositionsAndSequences,
+          relativePeptidePositionsAndSequences
+        );
+
         // Need to move by 6 more if previous Cds had a peptide line
         // @ts-ignore
         const previousCdsHadPeptides = index === 0 ? false : Boolean(transcript.cds[index - 1].peptides);
@@ -162,6 +168,22 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
                 height={CDS_HEIGHT}
               >
                 <title>Peptide</title>
+              </rect>
+            ))}
+            {/* These are the mods
+             *  Currently it is put INSIDE the peptide line
+             *  WOOP, maybe change
+             */}
+            {relativeModPositionsAndTypes.map(({ pos, type }, index) => (
+              <rect
+                key={index}
+                className={classes.mod}
+                x={pos * pixelPerValue}
+                y={CDS_HEIGHT + offsetY + 2}
+                width={MUTATION_WIDTH}
+                height={CDS_HEIGHT}
+              >
+                <title>{type}</title>
               </rect>
             ))}
           </g>

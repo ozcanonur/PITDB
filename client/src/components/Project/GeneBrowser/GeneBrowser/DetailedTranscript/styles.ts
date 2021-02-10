@@ -99,4 +99,11 @@ export const useStyles = makeStyles((theme) => ({
   snpRect: {
     fill: '#83502e',
   },
+  tooltipText: {
+    fill: theme.palette.primary.main,
+  },
+  tooltipRect: {
+    fill: '#eceef7',
+    rx: 4,
+  },
 }));
