@@ -21,11 +21,18 @@ const CDS = memo(({ index, style, data }: DetailedCdsProps) => {
     ({ start, end }) => index >= start && index <= end
   );
 
-  // Only put yellow box if CDS exists but no aminoacid
+  // Only put yellow line if CDS exists but no aminoacid
   if (!indexBelongsTo)
     return (
       <g style={style}>
-        <rect className={classes.cdsBackground} x={index * boxHeight} width={boxHeight} height={boxHeight} />
+        <line
+          x1={index * boxHeight}
+          x2={index * boxHeight + boxHeight}
+          y1={boxHeight / 2}
+          y2={boxHeight / 2}
+          className={classes.cdsIntronLine}
+          strokeWidth={boxHeight / 5}
+        />
       </g>
     );
 

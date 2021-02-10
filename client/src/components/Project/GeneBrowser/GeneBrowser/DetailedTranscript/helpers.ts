@@ -1,5 +1,10 @@
 import uniqBy from 'lodash/uniqBy';
-import { Transcript, RelativeMutationPositionAndType } from '../../types';
+import {
+  Transcript,
+  RelativeMutationPositionAndType,
+  RelativeCdsPositionAndSequence,
+  RelativePeptidePositionAndSequence,
+} from '../../types';
 
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   const { cds } = transcript;
@@ -175,69 +180,8 @@ export const getRelativeCdsPositionsAndSequences = (
   return relativeCdsPositionsAndSequences;
 };
 
-const getPeptidePosition = (
-  { sequence: peptideSequence, mod }: { sequence: string; mod: string },
-  cdsSequence: string,
-  relativeCdsPositionsAndSequences: {
-    start: number;
-    sequence: string;
-  }[]
-) => {
-  const globalStartPos = cdsSequence.indexOf(peptideSequence);
-  const globalEndPos = cdsSequence.indexOf(peptideSequence) + peptideSequence.length - 1;
-
-  mod = mod.replaceAll('_', '');
-  const mods = mod.match(/\((.*?)\)\)/g) || [];
-
-  const modPositions: { type: string; pos: number }[] = [];
-  let tempMod = mod;
-  for (let i = 0; i < mods.length; i++) {
-    tempMod = tempMod.replace(mods[i - 1], '');
-    modPositions.push({ type: mods[i], pos: tempMod.indexOf(mods[i]) });
-  }
-
-  // if (modPositions.length > 0) {
-  //   console.log(modPositions);
-  // }
-
-  let startPos = 0;
-  let endPos = 0;
-  let coveredSoFar = 0;
-  for (const cds of relativeCdsPositionsAndSequences) {
-    // WOOP, remove for mods
-    if (startPos && endPos) break;
-
-    // Peptide starts at this exon
-    if (!startPos && globalStartPos < coveredSoFar + cds.sequence.length) {
-      startPos = cds.start + (globalStartPos - coveredSoFar) * 3;
-    }
-
-    // Peptide ends at this exon
-    if (!endPos && globalEndPos < coveredSoFar + cds.sequence.length) {
-      endPos = cds.start + (globalEndPos - coveredSoFar + 1) * 3 - 1;
-    }
-
-    // if (modPositions[1]) {
-
-    // }
-
-    // for (const modPosition of modPositions) {
-    //   if (modPosition.pos > coveredSoFar + cds.sequence.length) modPosition.pos += cds.sequence.length * 3;
-    //   else if (modPosition.pos < coveredSoFar + cds.sequence.length) modPosition.pos = modPosition.pos * 3;
-    // }
-
-    // Peptide is further down the exons
-    coveredSoFar += cds.sequence.length;
-  }
-
-  return { start: startPos, end: endPos, mods: modPositions };
-};
-
 export const getRelativePeptidePositionsAndSequences = (
-  relativeCdsPositionsAndSequences: {
-    start: number;
-    sequence: string;
-  }[],
+  relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   cdsSequence: string,
   peptides: { sequence: string; mod: string }[]
 ) => {
@@ -245,15 +189,84 @@ export const getRelativePeptidePositionsAndSequences = (
 
   peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
 
-  const relativePeptidePositionsAndSequences = peptides.map((peptide) =>
-    getPeptidePosition(peptide, cdsSequence, relativeCdsPositionsAndSequences)
-  );
+  const relativePeptidePositionsAndSequences = peptides
+    .map(({ sequence: peptideSequence, mod }) => {
+      const peptideStartPosInCds = cdsSequence.indexOf(peptideSequence);
+      const peptideEndPosInCds = cdsSequence.indexOf(peptideSequence) + peptideSequence.length - 1;
+
+      mod = mod.replaceAll('_', '');
+      const mods = mod.match(/\((.*?)\)\)/g) || [];
+
+      const modPositions: { type: string; posInPeptide: number }[] = [];
+      let tempMod = mod;
+      for (let i = 0; i < mods.length; i++) {
+        tempMod = tempMod.replace(mods[i - 1], '');
+        modPositions.push({ type: mods[i], posInPeptide: tempMod.indexOf(mods[i]) });
+      }
+
+      let startPos = 0;
+      let endPos = 0;
+      let coveredSoFar = 0;
+      for (const cds of relativeCdsPositionsAndSequences) {
+        if (startPos && endPos) break;
+
+        // Peptide starts at this exon
+        if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length)
+          startPos = cds.start + (peptideStartPosInCds - coveredSoFar) * 3;
+
+        // Peptide ends at this exon
+        if (!endPos && peptideEndPosInCds < coveredSoFar + cds.sequence.length)
+          endPos = cds.start + (peptideEndPosInCds - coveredSoFar + 1) * 3 - 1;
+
+        // Peptide is further down the exons
+        coveredSoFar += cds.sequence.length;
+      }
+
+      return { start: startPos, end: endPos, mods: modPositions };
+    })
+    .sort((x, y) => x.start - y.start);
 
   return relativePeptidePositionsAndSequences;
 };
 
-// WOOP, I have no idea about the logic here also
-// Literal copypasta from above
+export const getRelativeModPositionsAndTypes = (
+  relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
+  relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[]
+) => {
+  console.log(relativePeptidePositionsAndSequences);
+  const relativeModPositionsAndTypes = [];
+  for (const relativePeptidePositionAndSequence of relativePeptidePositionsAndSequences) {
+    if (relativePeptidePositionAndSequence.mods.length === 0) continue;
+
+    // if (relativePeptidePositionAndSequence.start !== 88) continue;
+
+    const mods = relativePeptidePositionAndSequence.mods;
+
+    for (const mod of mods) {
+      let realPos = relativePeptidePositionAndSequence.start;
+      let totalPut = 0;
+
+      for (let i = 0; i < relativeCdsPositionsAndSequences.length; i++) {
+        const currCds = relativeCdsPositionsAndSequences[i];
+
+        if (currCds.end < relativePeptidePositionAndSequence.start) continue;
+
+        if (currCds.end > realPos + mod.posInPeptide * 3 - totalPut) {
+          realPos += mod.posInPeptide * 3 - totalPut;
+          break;
+        } else {
+          const nextCds = relativeCdsPositionsAndSequences[i + 1];
+          totalPut = currCds.end - realPos;
+          realPos = nextCds.start;
+        }
+      }
+      relativeModPositionsAndTypes.push({ pos: realPos, type: mod.type });
+    }
+  }
+
+  return relativeModPositionsAndTypes;
+};
+
 export const getRelativeMutationPositionsAndTypes = (
   mutations: {
     transcript: string;

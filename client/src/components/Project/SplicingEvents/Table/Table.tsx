@@ -277,7 +277,7 @@ const SplicingEventsTable = ({ ...props }) => {
           'dPSI',
           'Adj. p value',
           'Peptide evidence',
-          'Conditions',
+          'Transcripts',
         ]}
         currentPage={currentPage}
         rowCount={rowCount}

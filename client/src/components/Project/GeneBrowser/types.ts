@@ -86,7 +86,7 @@ export type RelativePeptidePositionAndSequence = {
   end: number;
   mods: {
     type: string;
-    pos: number;
+    posInPeptide: number;
   }[];
 };
 
@@ -97,6 +97,11 @@ export type RelativeMutationPositionAndType = {
   ref: string;
   alt?: string;
   delLength?: number;
+};
+
+export type RelativeModPositionAndType = {
+  pos: number;
+  type: string;
 };
 
 export interface DetailedNucleotideProps extends ListChildComponentProps {
@@ -117,6 +122,13 @@ export interface DetailedCdsProps extends ListChildComponentProps {
 export interface DetailedPeptideProps extends ListChildComponentProps {
   data: {
     relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[];
+    relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[];
+  };
+}
+
+export interface DetailedModProps extends ListChildComponentProps {
+  data: {
+    relativeModPositionsAndTypes: RelativeModPositionAndType[];
   };
 }
 

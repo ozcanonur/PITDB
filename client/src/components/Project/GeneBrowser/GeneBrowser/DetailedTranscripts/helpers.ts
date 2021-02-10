@@ -42,7 +42,11 @@ export const makeVirtualizedListRefsList = (transcripts: Transcript[]) =>
     baseCase.cdsRefs = cds.map((e) => {
       const baseCase = [createRef<FixedSizeList>()];
 
-      if (e.peptides) baseCase.push(createRef<FixedSizeList>());
+      // One for peptide and one more for mods
+      if (e.peptides) {
+        baseCase.push(createRef<FixedSizeList>());
+        baseCase.push(createRef<FixedSizeList>());
+      }
 
       return baseCase;
     });

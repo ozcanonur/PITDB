@@ -32,8 +32,7 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
     // @ts-ignore
     const filteredMutations = mutations.filter(({ conditions }) => conditions[condition]);
 
-    const parsedMutations = parseMutations(filteredMutations);
-
+    const parsedMutations = parseMutations(filteredMutations, minQual);
     const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations, condition);
 
     res.send(parsedTranscripts);

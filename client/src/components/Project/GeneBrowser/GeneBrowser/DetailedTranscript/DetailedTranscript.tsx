@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 import Nucleotide from './Nucleotide';
 import CDS from './CDS';
 import Peptide from './Peptide';
+import Mod from './Mod';
 
 import { DetailedTranscriptProps } from '../../types';
 import {
@@ -16,6 +17,7 @@ import {
   getRelativeCdsPositionsAndSequences,
   getRelativePeptidePositionsAndSequences,
   getRelativeMutationPositionsAndTypes,
+  getRelativeModPositionsAndTypes,
 } from './helpers';
 import { useStyles } from './styles';
 
@@ -36,8 +38,11 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     minimumPosition
   );
 
+  // WOOP, fix this
   // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, half of it is for mutation INS & DEL
-  const detailedTranscriptTotalHeight = getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight;
+  // + One more BOX_HEIGHT because mods
+  const detailedTranscriptTotalHeight =
+    getTranscriptVisualLineCount(transcript) * boxHeight + boxHeight + boxHeight;
 
   return (
     <div
@@ -127,6 +132,11 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   transcript.cds[index].peptides
                 );
 
+                const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
+                  relativeCdsPositionsAndSequences,
+                  relativePeptidePositionsAndSequences
+                );
+
                 return (
                   <Fragment key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
                     <VirtualizedList
@@ -154,7 +164,11 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         layout='horizontal'
                         width={width}
                         innerElementType='svg'
-                        itemData={{ relativePeptidePositionsAndSequences }}
+                        itemData={{
+                          relativePeptidePositionsAndSequences,
+                          relativeCdsPositionsAndSequences,
+                          relativeModPositionsAndTypes,
+                        }}
                         style={{ overflow: 'hidden' }}
                         ref={
                           refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 1
@@ -163,6 +177,29 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         }
                       >
                         {Peptide}
+                      </VirtualizedList>
+                    ) : null}
+                    {relativeModPositionsAndTypes.length > 0 ? (
+                      <VirtualizedList
+                        height={boxHeight}
+                        itemCount={maximumPosition - minimumPosition + 1}
+                        itemSize={boxHeight}
+                        layout='horizontal'
+                        width={width}
+                        innerElementType='svg'
+                        itemData={{
+                          relativePeptidePositionsAndSequences,
+                          relativeCdsPositionsAndSequences,
+                          relativeModPositionsAndTypes,
+                        }}
+                        style={{ overflow: 'hidden' }}
+                        ref={
+                          refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 2
+                            ? refs.cdsRefs[index][2]
+                            : undefined
+                        }
+                      >
+                        {Mod}
                       </VirtualizedList>
                     ) : null}
                   </Fragment>

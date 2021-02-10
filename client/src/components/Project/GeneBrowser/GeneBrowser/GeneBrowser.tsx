@@ -10,7 +10,7 @@ import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import ContinuousSlider from 'components/UI/ContinuousSlider/ContinuousSlider';
-// import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
+import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import GenericLegend from 'components/UI/GenericLegend/GenericLegend';
 import { SelectOption } from 'components/UI/MultiSelect/types';
@@ -20,7 +20,7 @@ import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 
 import { fetchFromApi, usePrevious } from 'utils';
 import { useStyles } from './styles';
-// import { parseDiscreteSliderMarks } from './helpers';
+import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
 import {
   clearGeneBrowserTranscriptVisibility,
@@ -122,15 +122,15 @@ const GeneBrowser = () => {
     dispatch(setGeneBrowserFilters({ ...filters, minTPM: 0, minQual: 0, gene: selectedOption.value }));
   };
 
-  // const qualityMarks = ['0', '100', '250', '500', '1000'];
+  const qualityMarks = ['0', '100', '250', '500', '1000'];
 
-  // const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-  //   const newMinQualValue = parseFloat(qualityMarks[value]);
+  const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
+    const newMinQualValue = parseFloat(qualityMarks[value]);
 
-  //   if (newMinQualValue === filters.minQual) return;
+    if (newMinQualValue === filters.minQual) return;
 
-  //   dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
-  // };
+    dispatch(setGeneBrowserFilters({ ...filters, minQual: newMinQualValue }));
+  };
 
   const onMinTPMChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     if (value === filters.minTPM) return;
@@ -191,12 +191,12 @@ const GeneBrowser = () => {
           max={Math.floor(maxTPM)}
           onChangeCommited={onMinTPMChangeCommited}
         />
-        {/* <DiscreteSlider
+        <DiscreteSlider
           name='Min. Quality'
-          defaultValue={filters.minQual}
+          defaultValue={qualityMarks.indexOf(filters.minQual.toString())}
           marks={parseDiscreteSliderMarks(qualityMarks)}
           onChangeCommited={onMinQualityChangeCommited}
-        /> */}
+        />
         <GenericLegend
           items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
           colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', 'rgba(40, 82, 56, 0.7)']}

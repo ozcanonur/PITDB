@@ -12,6 +12,9 @@ export const useStyles = makeStyles((theme) => ({
   cdsBackground: {
     fill: theme.palette.secondary.light,
   },
+  cdsIntronLine: {
+    stroke: theme.palette.secondary.light,
+  },
   rail: {
     stroke: theme.palette.primary.main,
   },
@@ -22,9 +25,11 @@ export const useStyles = makeStyles((theme) => ({
   peptide: {
     fill: 'rgba(200, 85, 61, 0.7)',
   },
+  peptideInIntron: {
+    stroke: 'rgba(200, 85, 61, 0.7)',
+  },
   mod: {
     fill: 'rgba(40, 82, 56, 0.7)',
-    cursor: 'pointer',
   },
   detailedTranscriptContainer: {
     display: 'flex',

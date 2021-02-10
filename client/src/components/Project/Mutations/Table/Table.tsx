@@ -270,7 +270,7 @@ const MutationsTable = ({ ...props }) => {
           'Synonymous',
           'In CDS',
           'Peptide evidence',
-          'Conditions',
+          'Transcripts',
         ]}
         currentPage={currentPage}
         rowCount={rowCount}

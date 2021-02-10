@@ -266,7 +266,7 @@ const DGETable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value', 'Peptide Intensity', 'Conditions']}
+        tableHead={['Symbol', 'Log2 fold change', 'Adj. p value', 'Peptide Intensity', 'Transcripts']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

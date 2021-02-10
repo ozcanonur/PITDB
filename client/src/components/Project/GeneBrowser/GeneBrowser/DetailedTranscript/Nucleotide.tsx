@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
-import { max, min } from 'lodash';
+import max from 'lodash/max';
+import min from 'lodash/min';
 import { areEqual } from 'react-window';
 
 import SnpMutation from './SnpMutation';

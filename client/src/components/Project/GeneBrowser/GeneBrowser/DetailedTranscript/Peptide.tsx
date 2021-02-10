@@ -1,4 +1,4 @@
-import React, { memo, Fragment } from 'react';
+import { memo, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
@@ -10,7 +10,7 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
 
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
-  const { relativePeptidePositionsAndSequences } = data;
+  const { relativePeptidePositionsAndSequences, relativeCdsPositionsAndSequences } = data;
 
   // Find which peptide the current index belongs to
   const indexBelongsTo = relativePeptidePositionsAndSequences.filter(
@@ -20,20 +20,35 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
   // Put nothing if no peptide in this index at all
   if (!indexBelongsTo) return null;
 
+  const isInCds = relativeCdsPositionsAndSequences.find(({ start, end }) => index >= start && index <= end);
+
   return (
     <g style={style}>
       {indexBelongsTo.map(({ start, end }, iterateIndex) => (
         <Fragment key={iterateIndex}>
-          <rect className={classes.peptide} x={index * boxHeight} width={boxHeight} height={boxHeight} />
-          {index === start || index === end + 1 ? (
+          {isInCds ? (
+            <>
+              <rect className={classes.peptide} x={index * boxHeight} width={boxHeight} height={boxHeight} />
+              {index === start || index === end + 1 ? (
+                <line
+                  className={classes.divider}
+                  x1={index * boxHeight + 0.5}
+                  x2={index * boxHeight + 0.5}
+                  y1={0}
+                  y2={boxHeight}
+                />
+              ) : null}
+            </>
+          ) : (
             <line
-              className={classes.divider}
-              x1={index * boxHeight + 0.5}
-              x2={index * boxHeight + 0.5}
-              y1={0}
-              y2={boxHeight}
+              x1={index * boxHeight}
+              x2={index * boxHeight + boxHeight}
+              y1={boxHeight / 2}
+              y2={boxHeight / 2}
+              className={classes.peptideInIntron}
+              strokeWidth={boxHeight / 5}
             />
-          ) : null}
+          )}
         </Fragment>
       ))}
     </g>

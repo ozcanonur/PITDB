@@ -239,7 +239,7 @@ const SplicingEventsTable = ({ ...props }) => {
       </div>
       <Table
         tableData={tableData}
-        tableHead={['Gene', 'Transcript', 'dPSI', 'Adj. p value', 'Conditions']}
+        tableHead={['Gene', 'Transcript', 'dPSI', 'Adj. p value', 'Transcripts']}
         currentPage={currentPage}
         rowCount={rowCount}
         rowsPerPage={rowsPerPage}

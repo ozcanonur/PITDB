@@ -6,7 +6,7 @@ import { IAllTranscript } from 'db/models/allTranscript';
 import { IMutation } from 'db/models/mutation';
 import { ParsedMutation } from './types';
 
-export const parseMutations = (mutations: IMutation[]) => {
+export const parseMutations = (mutations: IMutation[], minQual: number) => {
   const parsedMutations: {
     transcript: string;
     refPos: number;
@@ -15,22 +15,31 @@ export const parseMutations = (mutations: IMutation[]) => {
     type: string;
   }[] = [];
 
-  for (const mutation of mutations) {
-    const { refPos } = mutation;
-    Object.keys(mutation.transcriptsPos).forEach((transcript) => {
-      const { aaRef, aaAlt } = mutation.transcriptsPos[transcript];
+  for (const { refPos, transcriptsPos, type, ref, alt, conditions } of mutations) {
+    const mutationQualities = Object.values(conditions)
+      .map((e) => Object.values(e))
+      .flat()
+      // @ts-ignore
+      .map((e) => e.qual);
 
-      const parsedMutation = {
-        transcript,
-        refPos,
-        aaRef,
-        aaAlt,
-        type: mutation.type,
-        ref: mutation.ref,
-        alt: mutation.alt,
-      };
-      parsedMutations.push(parsedMutation);
-    });
+    // If at least one sample's mutation quality is higher than the min. qual filter
+    // WOOP, do we want to check mean instead?
+    if (mutationQualities.some((e) => e >= minQual)) {
+      Object.keys(transcriptsPos).forEach((transcript) => {
+        const { aaRef, aaAlt } = transcriptsPos[transcript];
+
+        const parsedMutation = {
+          transcript,
+          refPos,
+          aaRef,
+          aaAlt,
+          type,
+          ref,
+          alt,
+        };
+        parsedMutations.push(parsedMutation);
+      });
+    }
   }
 
   return parsedMutations;
