@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     stroke: 'rgba(200, 85, 61, 0.7)',
   },
   mod: {
-    fill: 'rgba(40, 82, 56, 0.7)',
+    fill: '#798478',
   },
   detailedTranscriptContainer: {
     display: 'flex',
@@ -48,16 +48,6 @@ export const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     minWidth: '23rem',
-    paddingLeft: '2.2rem',
-  },
-  transcriptLabelCondition: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '0.3rem',
-    color: 'white',
-    textAlign: 'center',
-    cursor: 'pointer',
   },
   transcriptLabelId: {
     color: theme.palette.primary.main,
@@ -105,5 +95,33 @@ export const useStyles = makeStyles((theme) => ({
   tooltipRect: {
     fill: '#eceef7',
     rx: 4,
+  },
+  conditions: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    '& > div:first-of-type': {
+      borderTopLeftRadius: '0.3rem',
+      borderBottomLeftRadius: '0.3rem',
+    },
+
+    '& > div:last-of-type': {
+      borderTopRightRadius: '0.3rem',
+      borderBottomRightRadius: '0.3rem',
+    },
+  },
+  condition: {
+    width: '3rem',
+    height: '3rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+  },
+  conditionText: {
+    color: 'white',
+    fontSize: '1.4rem',
+    textAlign: 'end',
   },
 }));

@@ -175,13 +175,12 @@ const MutationsTable = ({ ...props }) => {
   // Button on the right of the row
   // row prop will come from the table component's row
   const RowContentRight = ({ row }: { row: string[] }) => {
-    const [gene, position, , , , , , , conditions] = row;
-    const firstCondition = conditions.split(',')[0];
+    const [gene, position] = row;
 
     const history = useHistory();
 
     const handleClick = () => {
-      dispatch(setGeneBrowserFilters({ gene, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      dispatch(setGeneBrowserFilters({ gene, minTPM: 0, minQual: 0 }));
       // -3 to make mutation to not be completely aligned to the left
       // Since gene browser position is based on the left most index
       dispatch(setGeneBrowserScrollJumpPosition(parseInt(position) - 3));
@@ -194,7 +193,7 @@ const MutationsTable = ({ ...props }) => {
         src={Category3}
         onClick={handleClick}
         alt='See on gene browser'
-        title='See on gene browser (Will default to first condition)'
+        title='See on gene browser'
       />
     );
   };

@@ -52,7 +52,7 @@ const GeneBrowser = () => {
   // Just to give it some initial values
   // So that the users will instantly see something
   useEffect(() => {
-    dispatch(setGeneBrowserFilters({ gene: 'ACAT2', minTPM: 0, minQual: 0, condition: conditionTypes[0] }));
+    dispatch(setGeneBrowserFilters({ gene: 'ACAT2', minTPM: 0, minQual: 0 }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionTypes]);
 
@@ -60,7 +60,7 @@ const GeneBrowser = () => {
 
   useEffect(() => {
     // Don't try to fetch before these values are initialized
-    if (!filters.condition || !filters.gene || !project) return;
+    if (!filters.gene || !project) return;
 
     let isMounted = true;
 
@@ -138,11 +138,11 @@ const GeneBrowser = () => {
     dispatch(setGeneBrowserFilters({ ...filters, minTPM: value }));
   };
 
-  const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    if (selectedOption.value === filters.condition) return;
+  // const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
+  //   if (selectedOption.value === filters.condition) return;
 
-    dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
-  };
+  //   dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
+  // };
 
   const hideAllTranscripts = () => {
     const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
@@ -176,14 +176,6 @@ const GeneBrowser = () => {
           defaultInputValue={filters.gene}
           className={classes.singleSelect}
         />
-        <SingleSelect
-          name='Condition'
-          onChange={conditionFilterOnChange}
-          className={classes.singleSelect}
-          isAsync={false}
-          options={conditionTypes}
-          defaultInputValue={filters.condition}
-        />
         <ContinuousSlider
           name='Min. Mean TPM'
           initialValue={filters.minTPM}
@@ -199,7 +191,7 @@ const GeneBrowser = () => {
         />
         <GenericLegend
           items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
-          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', 'rgba(40, 82, 56, 0.7)']}
+          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', '#798478']}
           direction='vertical'
         />
       </div>

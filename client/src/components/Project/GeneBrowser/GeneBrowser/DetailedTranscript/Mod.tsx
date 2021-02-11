@@ -14,7 +14,7 @@ const Mod = memo(({ index, style, data }: DetailedModProps) => {
 
   const { relativeModPositionsAndTypes } = data;
 
-  // WOOP, not sure about this actually
+  // WOOP, not sure about this actually, definitely wrong actually
   // They will always be 2 indexes behind
   const indexBelongsTo = relativeModPositionsAndTypes.find(({ pos }) => pos - 2 === index);
 
@@ -48,9 +48,9 @@ const Mod = memo(({ index, style, data }: DetailedModProps) => {
             className={classes.tooltipRect}
           />
           <text
-            x={index * boxHeight - indexBelongsTo.type.length * ((boxHeight * 4) / 15) - boxHeight / 2}
-            y={boxHeight / 2 + boxHeight / 4 - 1}
-            fontSize={boxHeight / 2}
+            x={index * boxHeight - indexBelongsTo.type.length * ((boxHeight * 4) / 15) - boxHeight / 2.5}
+            y={boxHeight / 2 + boxHeight / 4 - boxHeight / 15}
+            fontSize={boxHeight / 2.05}
             className={classes.tooltipText}
           >
             {indexBelongsTo.type}

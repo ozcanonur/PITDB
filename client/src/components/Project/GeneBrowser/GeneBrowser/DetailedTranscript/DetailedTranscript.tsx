@@ -28,7 +28,6 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     (state: RootState) => state.geneBrowserTranscriptsData
   );
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-  const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcript, minimumPosition);
@@ -52,21 +51,34 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     >
       <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
         <div className={classes.transcriptNameContainer} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
-          <div
-            className={classes.transcriptLabelCondition}
-            style={{
-              backgroundColor: filters.condition === conditionTypes[0] ? '#336' : '#6B88A2',
-              height: boxHeight < 20 ? 30 : boxHeight,
-              minWidth: boxHeight < 20 ? 40 : boxHeight === 40 ? 40 : boxHeight * (4 / 3),
-              padding: `${boxHeight / 4}px 0`,
-            }}
-            data-tip={`Mean TPM: ${transcript.conditions
-              .find(({ condition }) => condition === filters.condition)
-              ?.mean.toFixed(3)}`}
-          >
-            {filters.condition}
+          <div className={classes.conditions}>
+            {transcript.conditions.map(({ condition }) => {
+              const { mean: meanTPM, values: TPMValues } = transcript.conditions.find(
+                (e) => condition === e.condition
+              ) || {
+                mean: 0,
+                values: [],
+              };
+
+              let tooltipText = `Mean TPM: ${meanTPM.toFixed(3)}`;
+              TPMValues.forEach(({ sample, TPM }) => {
+                tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
+              });
+
+              return (
+                <Fragment key={condition}>
+                  <div
+                    data-tip={tooltipText}
+                    className={classes.condition}
+                    style={{ backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
+                  >
+                    <p className={classes.conditionText}>{condition}</p>
+                  </div>
+                  <ReactTooltip multiline />
+                </Fragment>
+              );
+            })}
           </div>
-          <ReactTooltip />
           <p className={classes.transcriptLabelId} style={{ paddingTop: boxHeight / 4 }}>
             {transcript.transcriptId}
           </p>
@@ -89,9 +101,23 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   paddingTop: boxHeight / 4,
                   fontSize: boxHeight === 20 ? 11.33 : 14,
                   display: boxHeight < 20 ? 'none' : 'block',
+                  height: boxHeight,
                 }}
               >
                 Peptides
+              </p>
+            ) : null}
+            {peptides && peptides.some(({ mod }) => mod.includes('(')) ? (
+              <p
+                className={classes.transcriptProperty}
+                style={{
+                  paddingTop: boxHeight / 4,
+                  fontSize: boxHeight === 20 ? 11.33 : 14,
+                  display: boxHeight < 20 ? 'none' : 'block',
+                  height: boxHeight,
+                }}
+              >
+                Mods
               </p>
             ) : null}
           </Fragment>
@@ -129,7 +155,8 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   relativeCdsPositionsAndSequences,
                   sequence,
                   // @ts-ignore
-                  transcript.cds[index].peptides
+                  transcript.cds[index].peptides,
+                  isReverse
                 );
 
                 const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
@@ -167,7 +194,6 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         itemData={{
                           relativePeptidePositionsAndSequences,
                           relativeCdsPositionsAndSequences,
-                          relativeModPositionsAndTypes,
                         }}
                         style={{ overflow: 'hidden' }}
                         ref={
@@ -187,11 +213,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         layout='horizontal'
                         width={width}
                         innerElementType='svg'
-                        itemData={{
-                          relativePeptidePositionsAndSequences,
-                          relativeCdsPositionsAndSequences,
-                          relativeModPositionsAndTypes,
-                        }}
+                        itemData={{ relativeModPositionsAndTypes }}
                         style={{ overflow: 'hidden' }}
                         ref={
                           refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 2

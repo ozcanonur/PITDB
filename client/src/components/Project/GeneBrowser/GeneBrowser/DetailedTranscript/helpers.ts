@@ -184,17 +184,13 @@ export const getRelativeCdsPositionsAndSequences = (
 export const getRelativePeptidePositionsAndSequences = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   cdsSequence: string,
-  peptides: { sequence: string; mod: string }[]
+  peptides: { sequence: string; mod: string }[],
+  isReverse: boolean
 ) => {
-  relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
-
   peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
 
   const relativePeptidePositionsAndSequences = peptides
     .map(({ sequence: peptideSequence, mod }) => {
-      const peptideStartPosInCds = cdsSequence.indexOf(peptideSequence);
-      const peptideEndPosInCds = cdsSequence.indexOf(peptideSequence) + peptideSequence.length - 1;
-
       mod = mod.replaceAll('_', '');
       const mods = mod.match(/\((.*?)\)\)/g) || [];
 
@@ -211,17 +207,49 @@ export const getRelativePeptidePositionsAndSequences = (
 
       let startPos = 0;
       let endPos = 0;
+      // // WOOP
+      // if (false) {
+      //   relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => y.start - x.start);
+
+      //   const reversedCdsSequence = cdsSequence.split('').reverse().join();
+      //   const reversedPeptideSequence = peptideSequence.split('').reverse().join();
+
+      //   const peptideStartPosInCds = reversedCdsSequence.indexOf(reversedPeptideSequence);
+      //   const peptideEndPosInCds = peptideStartPosInCds + peptideSequence.length - 1;
+
+      //   let coveredSoFar = 0;
+      //   for (const cds of relativeCdsPositionsAndSequences) {
+      //     if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length) {
+      //       startPos = cds.end - (peptideStartPosInCds + coveredSoFar) * 3;
+      //     }
+
+      //     if (!endPos && peptideEndPosInCds) {
+      //     }
+
+      //     coveredSoFar += cds.sequence.length;
+      //   }
+      // } else {
+
+      // }
+
+      relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
+
+      const peptideStartPosInCds = cdsSequence.indexOf(peptideSequence);
+      const peptideEndPosInCds = peptideStartPosInCds + peptideSequence.length - 1;
+
       let coveredSoFar = 0;
       for (const cds of relativeCdsPositionsAndSequences) {
         if (startPos && endPos) break;
 
         // Peptide starts at this exon
-        if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length)
+        if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length) {
           startPos = cds.start + (peptideStartPosInCds - coveredSoFar) * 3;
+        }
 
         // Peptide ends at this exon
-        if (!endPos && peptideEndPosInCds < coveredSoFar + cds.sequence.length)
+        if (!endPos && peptideEndPosInCds < coveredSoFar + cds.sequence.length) {
           endPos = cds.start + (peptideEndPosInCds - coveredSoFar + 1) * 3 - 1;
+        }
 
         // Peptide is further down the exons
         coveredSoFar += cds.sequence.length;
@@ -234,6 +262,7 @@ export const getRelativePeptidePositionsAndSequences = (
   return relativePeptidePositionsAndSequences;
 };
 
+// WOOP, and this mess
 export const getRelativeModPositionsAndTypes = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[]
@@ -242,12 +271,10 @@ export const getRelativeModPositionsAndTypes = (
   for (const relativePeptidePositionAndSequence of relativePeptidePositionsAndSequences) {
     if (relativePeptidePositionAndSequence.mods.length === 0) continue;
 
-    // if (relativePeptidePositionAndSequence.start !== 88) continue;
-
     const mods = relativePeptidePositionAndSequence.mods;
 
     for (const mod of mods) {
-      let realPos = relativePeptidePositionAndSequence.start;
+      let relativePos = relativePeptidePositionAndSequence.start;
       let totalPut = 0;
 
       for (let i = 0; i < relativeCdsPositionsAndSequences.length; i++) {
@@ -255,16 +282,16 @@ export const getRelativeModPositionsAndTypes = (
 
         if (currCds.end < relativePeptidePositionAndSequence.start) continue;
 
-        if (currCds.end > realPos + mod.posInPeptide * 3 - totalPut) {
-          realPos += mod.posInPeptide * 3 - totalPut;
+        if (currCds.end > relativePos + mod.posInPeptide * 3 - totalPut) {
+          relativePos += mod.posInPeptide * 3 - totalPut;
           break;
         } else {
           const nextCds = relativeCdsPositionsAndSequences[i + 1];
-          totalPut = currCds.end - realPos;
-          realPos = nextCds.start;
+          totalPut = currCds.end - relativePos;
+          relativePos = nextCds.start;
         }
       }
-      relativeModPositionsAndTypes.push({ pos: realPos, type: mod.type });
+      relativeModPositionsAndTypes.push({ pos: relativePos, type: mod.type });
     }
   }
 
@@ -285,7 +312,7 @@ export const getRelativeMutationPositionsAndTypes = (
 ) => {
   const relativeMutationPositionsAndTypes: RelativeMutationPositionAndType[] = [];
 
-  for (const { refPos, type, ref, alt } of mutations) {
+  mutations.forEach(({ refPos, type, ref, alt }) => {
     if (type === 'DEL' && ref.length > 1) {
       const splittedRef = ref.split('');
       splittedRef.forEach((nucleotide, index) => {
@@ -305,7 +332,7 @@ export const getRelativeMutationPositionsAndTypes = (
         ref,
         alt,
       });
-  }
+  });
 
   return relativeMutationPositionsAndTypes;
 };

@@ -50,10 +50,6 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     padding: '0 2rem',
-
-    '& > div > div > div > div': {
-      marginBottom: '1rem',
-    },
   },
   transcriptOverview: {
     display: 'flex',
@@ -77,6 +73,7 @@ export const useStyles = makeStyles((theme) => ({
     marginRight: '2rem',
     alignItems: 'flex-start',
     minWidth: '23rem',
+    paddingBottom: '1rem',
   },
   transcriptIdCondition: {
     borderRadius: '0.3rem',
@@ -87,11 +84,15 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     marginRight: 0,
-
-    '& > p': {
-      padding: '0 1rem',
-      cursor: 'pointer',
-    },
+    height: '3rem',
+  },
+  tooltipContainer: {
+    width: '3rem',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
   },
   transcriptPositionLineContainer: {
     position: 'absolute',

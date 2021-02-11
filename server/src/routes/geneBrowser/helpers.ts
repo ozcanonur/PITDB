@@ -47,8 +47,7 @@ export const parseMutations = (mutations: IMutation[], minQual: number) => {
 
 export const parseTranscriptsForViewer = (
   transcripts: IAllTranscript[],
-  parsedMutations: ParsedMutation[],
-  condition: string
+  parsedMutations: ParsedMutation[]
 ) => {
   let minimumPosition = Number.MAX_VALUE;
   let maximumPosition = 0;
@@ -65,7 +64,7 @@ export const parseTranscriptsForViewer = (
       );
 
       const parsedConditions = Object.entries(TPM)
-        .filter(([thisCondition]) => thisCondition === condition)
+        // .filter(([thisCondition]) => thisCondition === condition)
         .map(([condition, values]) => {
           const meanValue = mean(Object.values(values));
           return {

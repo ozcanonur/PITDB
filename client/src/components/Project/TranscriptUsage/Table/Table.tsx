@@ -190,13 +190,12 @@ const SplicingEventsTable = ({ ...props }) => {
   // Button on the right of the row
   // row prop will come from the table component's row
   const RowContentRight = ({ row }: { row: string[] }) => {
-    const [gene, , , , conditions] = row;
-    const firstCondition = conditions.split(',')[0];
+    const [gene] = row;
 
     const history = useHistory();
 
     const handleClick = () => {
-      dispatch(setGeneBrowserFilters({ gene, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      dispatch(setGeneBrowserFilters({ gene, minTPM: 0, minQual: 0 }));
       history.push(history.location.pathname.replace('transcript-usage', 'gene-browser'));
     };
 
@@ -206,7 +205,7 @@ const SplicingEventsTable = ({ ...props }) => {
         src={Category3}
         onClick={handleClick}
         alt='See on gene browser'
-        title='See on gene browser (Will default to first condition)'
+        title='See on gene browser'
       />
     );
   };

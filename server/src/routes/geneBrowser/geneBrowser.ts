@@ -1,5 +1,4 @@
 import express from 'express';
-import flatten from 'flat';
 import { max, mean } from 'lodash';
 
 import { AllTranscript } from '../../db/models/allTranscript';
@@ -18,22 +17,20 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   const parsedFilters = JSON.parse(filters) as GeneBrowserFilters;
-  const { gene, condition, minTPM, minQual } = parsedFilters;
+  const { gene, minTPM, minQual } = parsedFilters;
 
   try {
     const transcripts = await AllTranscript.find({ project, gene });
 
-    // Filter by selected conditions and min TPM
-    const filteredTranscripts = transcripts.filter(
-      ({ TPM }) => TPM[condition] && mean(Object.values(TPM[condition])) >= minTPM
-    );
+    const filteredTranscripts = transcripts.filter(({ TPM }) => {
+      const meanTPMs = Object.keys(TPM).map((condition) => mean(Object.values(TPM[condition])));
+      return meanTPMs.some((e) => e >= minTPM);
+    });
 
     const mutations = await Mutation.find({ gene });
-    // @ts-ignore
-    const filteredMutations = mutations.filter(({ conditions }) => conditions[condition]);
 
-    const parsedMutations = parseMutations(filteredMutations, minQual);
-    const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations, condition);
+    const parsedMutations = parseMutations(mutations, minQual);
+    const parsedTranscripts = parseTranscriptsForViewer(filteredTranscripts, parsedMutations);
 
     res.send(parsedTranscripts);
   } catch (error) {
@@ -72,19 +69,16 @@ router.get('/max-tpm', async (req: ExtendedRequest, res) => {
   const { project, filters } = req.query;
 
   const parsedFilters = JSON.parse(filters) as GeneBrowserFilters;
-  const { gene, condition } = parsedFilters;
+  const { gene } = parsedFilters;
 
   try {
     const transcripts = await AllTranscript.find({ project, gene });
 
-    // Filter by selected conditions
-    const filteredTranscripts = transcripts.filter(({ TPM }) => Object.keys(TPM).includes(condition));
+    const meanTPMs = transcripts
+      .map(({ TPM }) => Object.keys(TPM).map((condition) => mean(Object.values(TPM[condition]))))
+      .flat();
 
-    const meanSelectedConditionTPMvalues = filteredTranscripts.map(({ TPM }) =>
-      mean(Object.values(TPM[condition]))
-    );
-
-    res.send({ maxTPM: max(meanSelectedConditionTPMvalues) });
+    res.send({ maxTPM: max(meanTPMs) });
   } catch (error) {
     console.error(error);
     res.status(500).send(error);

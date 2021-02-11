@@ -26,19 +26,25 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
     <g style={style}>
       {indexBelongsTo.map(({ start, end }, iterateIndex) => (
         <Fragment key={iterateIndex}>
+          {index === start ? (
+            <line
+              className={classes.divider}
+              x1={index * boxHeight + 0.5}
+              x2={index * boxHeight + 0.5}
+              y1={0}
+              y2={boxHeight}
+            />
+          ) : index === end ? (
+            <line
+              className={classes.divider}
+              x1={index * boxHeight + boxHeight + 0.5}
+              x2={index * boxHeight + boxHeight + 0.5}
+              y1={0}
+              y2={boxHeight}
+            />
+          ) : null}
           {isInCds ? (
-            <>
-              <rect className={classes.peptide} x={index * boxHeight} width={boxHeight} height={boxHeight} />
-              {index === start || index === end + 1 ? (
-                <line
-                  className={classes.divider}
-                  x1={index * boxHeight + 0.5}
-                  x2={index * boxHeight + 0.5}
-                  y1={0}
-                  y2={boxHeight}
-                />
-              ) : null}
-            </>
+            <rect className={classes.peptide} x={index * boxHeight} width={boxHeight} height={boxHeight} />
           ) : (
             <line
               x1={index * boxHeight}

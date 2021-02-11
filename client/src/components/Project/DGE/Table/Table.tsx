@@ -6,7 +6,6 @@ import { ActionMeta } from 'react-select';
 import ProjectItemCard from 'components/UI/ProjectItemCard/ProjectItemCard';
 import Table from 'components/UI/Table/Table';
 import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
-// import MultiSelect from 'components/UI/MultiSelect/MultiSelect';
 import SingleSelect from 'components/UI/SingleSelect/SingleSelect';
 import Category3 from 'assets/category3.svg';
 
@@ -183,29 +182,17 @@ const DGETable = ({ ...props }) => {
     dispatch(setDGEFilters({ ...filters, symbol }));
   };
 
-  // Hard coded peptide evidence on multiselect
-  // const multiSelectOnChange = (
-  //   selectedOptions: SelectOption[],
-  //   _actionMeta: ActionMeta<any>,
-  //   name: string
-  // ) => {
-  //   const newSelectedValues = (selectedOptions || []).map((option) => option.value);
-
-  //   dispatch(setDGEFilters({ ...filters, [name]: newSelectedValues }));
-  // };
-
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
   // Button on the right of the row
   // row prop will come from the table component's row
   const RowContentRight = ({ row }: { row: string[] }) => {
-    const [symbol, , , , conditions] = row;
-    const firstCondition = conditions.split(',')[0];
+    const [symbol] = row;
 
     const history = useHistory();
 
     const handleClick = () => {
-      dispatch(setGeneBrowserFilters({ gene: symbol, condition: firstCondition, minTPM: 0, minQual: 0 }));
+      dispatch(setGeneBrowserFilters({ gene: symbol, minTPM: 0, minQual: 0 }));
       history.push(history.location.pathname.replace('differential-gene-expression', 'gene-browser'));
     };
 
@@ -215,7 +202,7 @@ const DGETable = ({ ...props }) => {
         src={Category3}
         onClick={handleClick}
         alt='See on gene browser'
-        title='See on gene browser (Will default to first condition)'
+        title='See on gene browser'
       />
     );
   };
@@ -239,18 +226,6 @@ const DGETable = ({ ...props }) => {
           onChange={() => {}}
           className={classes.singleSelect}
         />
-        {/* <MultiSelect
-            name='Peptide evidence'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['false']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'inCDS')
-            }
-            className={classes.multiSelect}
-          /> */}
         <DiscreteSlider
           name='Max. p value'
           defaultValue={pValueMarks.findIndex((mark) => parseFloat(mark) === filters.maxPValue)}

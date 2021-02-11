@@ -1,11 +1,10 @@
-import { useState, useCallback, useEffect, memo } from 'react';
+import React, { useState, useCallback, useEffect, memo, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import partition from 'lodash/partition';
 import ReactTooltip from 'react-tooltip';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import Collapse from '@material-ui/core/Collapse';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
@@ -14,7 +13,7 @@ import Transcript from '../Transcript/Transcript';
 import { setGeneBrowserMouseoverScrollPosition, setGeneBrowserTranscriptVisibility } from 'actions';
 import { useStyles } from './styles';
 
-const CurrentPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscriptsCollapsed: boolean }) => {
+const CurrentPositionLine = () => {
   const classes = useStyles();
 
   const { minimumPosition, maximumPosition } = useSelector(
@@ -26,8 +25,6 @@ const CurrentPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscripts
 
   if (!transcriptVisibility.find(({ isVisible }) => isVisible)) return null;
 
-  const notVisibleTranscriptCount = transcriptVisibility.filter(({ isVisible }) => !isVisible).length;
-
   const percentageScrolled =
     ((transcriptScrollPosition - minimumPosition) / (maximumPosition - minimumPosition + 1)) * 100;
 
@@ -35,9 +32,7 @@ const CurrentPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscripts
     <div
       className={classes.transcriptPositionLineContainer}
       style={{
-        height: hiddenTranscriptsCollapsed
-          ? 'calc(100% + 1rem)'
-          : `calc(100% - ${notVisibleTranscriptCount * 32 + (notVisibleTranscriptCount - 1) * 10}px)`,
+        height: 'calc(100% + 1rem)',
       }}
     >
       <div
@@ -59,13 +54,12 @@ const CurrentPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscripts
   );
 };
 
-const MouseoverPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscriptsCollapsed: boolean }) => {
+const MouseoverPositionLine = () => {
   const classes = useStyles();
 
   const { minimumPosition, maximumPosition } = useSelector(
     (state: RootState) => state.geneBrowserTranscriptsData
   );
-  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   // This is not the transcript position, rather a % value of how much offset mouseovered from the start
   const mouseoverPosition = useSelector((state: RootState) => state.geneBrowserMouseoverPosition);
 
@@ -74,15 +68,11 @@ const MouseoverPositionLine = ({ hiddenTranscriptsCollapsed }: { hiddenTranscrip
   const maxTranscriptWidth = maximumPosition - minimumPosition + 1;
   const currentGenomePosition = Math.floor(minimumPosition + (maxTranscriptWidth * mouseoverPosition) / 100);
 
-  const notVisibleTranscriptCount = transcriptVisibility.filter(({ isVisible }) => !isVisible).length;
-
   return (
     <div
       className={classes.transcriptPositionLineContainer}
       style={{
-        height: hiddenTranscriptsCollapsed
-          ? 'calc(100% + 3rem)'
-          : `calc(100% - ${notVisibleTranscriptCount * 32 + (notVisibleTranscriptCount - 1) * 10}px + 2rem)`,
+        height: 'calc(100% + 3rem)',
       }}
     >
       <div
@@ -109,7 +99,6 @@ const Transcripts = memo(() => {
   const classes = useStyles();
 
   const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
-  const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const [hiddenTranscriptsCollapsed, setHiddenTranscriptsCollapsed] = useState(false);
@@ -136,10 +125,9 @@ const Transcripts = memo(() => {
     .filter(({ isVisible }) => isVisible)
     .map(({ transcriptId }) => transcriptId);
 
-  const [visibleTranscripts, notVisibleTranscripts] = partition(
-    transcriptsData.transcripts,
-    ({ transcriptId }) => visibleTranscriptIds.includes(transcriptId)
-  );
+  const notvisibleTranscriptIds = transcriptVisibility
+    .filter(({ isVisible }) => !isVisible)
+    .map(({ transcriptId }) => transcriptId);
 
   const collapseHiddenTranscripts = () => {
     setHiddenTranscriptsCollapsed(true);
@@ -158,9 +146,9 @@ const Transcripts = memo(() => {
           component='span'
           onClick={showHiddenTranscripts}
           title='Show hidden transcripts'
-          style={{ animation: visibleTranscripts.length === 0 ? `flash-red 1s infinite` : 'none' }}
+          style={{ animation: visibleTranscriptIds.length === 0 ? `flash-red 1s infinite` : 'none' }}
         >
-          <span>{`Show Hidden (${notVisibleTranscripts.length})`}</span>
+          <span>{`Show Hidden (${notvisibleTranscriptIds.length})`}</span>
           <ExpandMoreIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       ) : (
@@ -171,98 +159,83 @@ const Transcripts = memo(() => {
           onClick={collapseHiddenTranscripts}
           title='Collapse hidden transcripts'
         >
-          <span>{`Collapse hidden (${notVisibleTranscripts.length})`}</span>
+          <span>{`Collapse hidden (${notvisibleTranscriptIds.length})`}</span>
           <ExpandLessIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       )}
       <section className={classes.transcriptsOverviewContainer}>
-        <Collapse in={!hiddenTranscriptsCollapsed} mountOnEnter unmountOnExit style={{ marginBottom: 0 }}>
-          {notVisibleTranscripts.map((transcript) => {
+        <div>
+          {transcriptsData.transcripts.map((transcript) => {
             const { transcriptId, conditions } = transcript;
 
-            const backgroundColor = filters.condition === conditionTypes[0] ? '#336' : '#6B88A2';
-
-            const currentConditionsTPM = conditions.find(({ condition }) => condition === filters.condition);
-
-            let meanTPM = '0';
-            let TPMValues: { sample: string; TPM: number }[] = [];
-            if (currentConditionsTPM) {
-              meanTPM = currentConditionsTPM.mean.toFixed(3);
-              TPMValues = currentConditionsTPM.values;
-            }
-
-            let tooltipText = `Mean TPM: ${meanTPM}`;
-            TPMValues.forEach(({ sample, TPM }) => {
-              tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
-            });
+            const isVisible = visibleTranscriptIds.includes(transcriptId);
 
             return (
-              <div className={classes.transcriptOverview} key={transcriptId}>
-                <div className={classes.transcriptIdContainer}>
-                  <div className={classes.transcriptIdCondition} style={{ backgroundColor }}>
-                    <IconButton
-                      aria-label='show transcript'
-                      component='span'
-                      className={classes.showTranscriptButton}
-                      onClick={() => showTranscript(transcriptId)}
-                      title='Show transcript'
-                    >
-                      <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
-                    </IconButton>
-                    <p data-tip={tooltipText}>{filters.condition}</p>
-                    <ReactTooltip multiline />
+              <Collapse
+                key={transcriptId}
+                in={!hiddenTranscriptsCollapsed || isVisible}
+                mountOnEnter
+                unmountOnExit
+              >
+                <div className={classes.transcriptOverview}>
+                  <div className={classes.transcriptIdContainer}>
+                    <div className={classes.transcriptIdCondition}>
+                      <IconButton
+                        aria-label={isVisible ? 'Hide transcript' : 'Show transcript'}
+                        component='span'
+                        className={classes.showTranscriptButton}
+                        onClick={
+                          isVisible ? () => hideTranscript(transcriptId) : () => showTranscript(transcriptId)
+                        }
+                        title={isVisible ? 'Hide transcript' : 'Show transcript'}
+                      >
+                        {isVisible ? (
+                          <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
+                        ) : (
+                          <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
+                        )}
+                      </IconButton>
+                      {conditions.map(({ condition }) => {
+                        const currentConditionsTPM = conditions.find((e) => e.condition === condition);
+
+                        let meanTPM = '0';
+                        let TPMValues: { sample: string; TPM: number }[] = [];
+                        if (currentConditionsTPM) {
+                          meanTPM = currentConditionsTPM.mean.toFixed(3);
+                          TPMValues = currentConditionsTPM.values;
+                        }
+
+                        let tooltipText = `Mean TPM: ${meanTPM}`;
+                        TPMValues.forEach(({ sample, TPM }) => {
+                          tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
+                        });
+
+                        return (
+                          <Fragment key={condition}>
+                            <div
+                              data-tip={tooltipText}
+                              className={classes.tooltipContainer}
+                              style={{
+                                backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2',
+                              }}
+                            >
+                              <p>{condition}</p>
+                            </div>
+                            <ReactTooltip multiline />
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                    <p className={classes.transcriptId}>{transcriptId}</p>
                   </div>
-                  <p className={classes.transcriptId}>{transcriptId}</p>
+                  {isVisible ? <Transcript transcript={transcript} /> : null}
                 </div>
-              </div>
+              </Collapse>
             );
           })}
-        </Collapse>
-        {visibleTranscripts.map((transcript) => {
-          const { transcriptId, conditions } = transcript;
-
-          const backgroundColor = filters.condition === conditionTypes[0] ? '#336' : '#6B88A2';
-
-          const currentConditionsTPM = conditions.find(({ condition }) => condition === filters.condition);
-
-          let meanTPM = '0';
-          let TPMValues: { sample: string; TPM: number }[] = [];
-          if (currentConditionsTPM) {
-            meanTPM = currentConditionsTPM.mean.toFixed(3);
-            TPMValues = currentConditionsTPM.values;
-          }
-
-          let tooltipText = `Mean TPM: ${meanTPM}`;
-          TPMValues.forEach(({ sample, TPM }) => {
-            tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
-          });
-
-          return (
-            <div key={transcriptId}>
-              <div className={classes.transcriptOverview}>
-                <div className={classes.transcriptIdContainer}>
-                  <div className={classes.transcriptIdCondition} style={{ backgroundColor }}>
-                    <IconButton
-                      className={classes.hideTranscriptButton}
-                      aria-label='hide transcript'
-                      component='span'
-                      onClick={() => hideTranscript(transcriptId)}
-                      title='Hide transcript'
-                    >
-                      <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
-                    </IconButton>
-                    <p data-tip={tooltipText}>{filters.condition}</p>
-                    <ReactTooltip multiline />
-                  </div>
-                  <p className={classes.transcriptId}>{transcriptId}</p>
-                </div>
-                <Transcript transcript={transcript} />
-              </div>
-            </div>
-          );
-        })}
-        <CurrentPositionLine hiddenTranscriptsCollapsed={hiddenTranscriptsCollapsed} />
-        <MouseoverPositionLine hiddenTranscriptsCollapsed={hiddenTranscriptsCollapsed} />
+        </div>
+        <CurrentPositionLine />
+        <MouseoverPositionLine />
       </section>
     </>
   );

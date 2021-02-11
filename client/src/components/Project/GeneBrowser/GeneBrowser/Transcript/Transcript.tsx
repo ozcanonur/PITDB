@@ -133,7 +133,8 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
           relativeCdsPositionsAndSequences,
           sequence,
           // @ts-ignore
-          transcript.cds[index].peptides
+          transcript.cds[index].peptides,
+          isReverse
         );
 
         const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
@@ -179,9 +180,9 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
                 key={index}
                 className={classes.mod}
                 x={pos * pixelPerValue}
-                y={CDS_HEIGHT + offsetY + 2}
-                width={MUTATION_WIDTH}
-                height={CDS_HEIGHT}
+                y={CDS_HEIGHT + offsetY + CDS_HEIGHT + CDS_HEIGHT / 2}
+                width={MUTATION_WIDTH * 2}
+                height={CDS_HEIGHT / 2}
               >
                 <title>{type}</title>
               </rect>

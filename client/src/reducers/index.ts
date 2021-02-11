@@ -161,7 +161,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { gene: '', condition: '', minTPM: 0, minQual: 0 },
+  state: GeneBrowserFilters = { gene: '', minTPM: 0, minQual: 0 },
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {
@@ -225,7 +225,7 @@ const geneBrowserTranscriptVisibility = (
   }
 };
 
-const geneBrowserBoxHeight = (state = 30, action: SetGeneBrowserBoxHeight) => {
+const geneBrowserBoxHeight = (state = 20, action: SetGeneBrowserBoxHeight) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_BOX_HEIGHT:
       return action.payload;

@@ -64,7 +64,7 @@ const TranscriptIndex = () => {
     <div
       className={classes.transcriptIndexContainer}
       style={{
-        height: boxHeight + 15,
+        height: (boxHeight * 3) / 2,
         transform: `translateY(${-boxHeight / 2}px)`,
       }}
     >
@@ -248,7 +248,7 @@ const DetailedTranscripts = memo(() => {
    * And dispatch a mousemove event if it's a polygon(mod) to trigger the tooltip
    * Or dispatch a mouseout event if the previous element was a polygon(mod) to untrigger to tooltip
    * Events will be caught by the polygon and trigger their own functions
-   * Which are implemented at DetailedTranscript/Mod.tsx
+   * Which are at DetailedTranscript/Mod.tsx
    */
   useEffect(() => {
     let prevBox: Element;

@@ -5,7 +5,6 @@ export type GeneNamesResponse = { _id: string }[];
 
 export type GeneBrowserFilters = {
   gene: string;
-  condition: string;
   minTPM: number;
   minQual: number;
 };
