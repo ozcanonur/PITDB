@@ -9,6 +9,7 @@ import { DGEFilters, DGEsWithTranscriptAndPeptides } from './types';
 import { ExtendedRequest } from '../../types';
 
 import { parseVolcanoPlotData, convertSortFieldNameForMongoose } from './helpers';
+import flatten from 'flat';
 
 const router = express.Router();
 
@@ -60,10 +61,11 @@ router.get('/', async (req: ExtendedRequest, res) => {
 
     if (!dges) return res.send({ dges: [], dgesCount: 0 });
 
-    const parsedDges = dges.map(({ symbol, log2fc, padj, transcripts, peptides }) => ({
+    const parsedDges = dges.map(({ symbol, log2fc, padj, transcripts, peptides, ms }) => ({
       symbol,
       log2fc,
       padj,
+      pLog2fc: ms ? Object.values(flatten(ms)) : false,
       hasPeptideIntensity: Boolean(peptides[0]),
       conditions: transcripts ? replaceall(',', ', ', Object.keys(transcripts[0].TPM).toString()) : undefined,
     }));

@@ -70,9 +70,14 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   <div
                     data-tip={tooltipText}
                     className={classes.condition}
-                    style={{ backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2' }}
+                    style={{
+                      backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2',
+                      height: boxHeight,
+                    }}
                   >
-                    <p className={classes.conditionText}>{condition}</p>
+                    <p className={classes.conditionText} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
+                      {condition}
+                    </p>
                   </div>
                   <ReactTooltip multiline place='right' />
                 </Fragment>

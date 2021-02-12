@@ -69,50 +69,20 @@ const TranscriptIndex = () => {
       }}
     >
       <AutoSizer className={classes.transcriptIndex}>
-        {
-          ({ width, height }) =>
-            range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
-              <p
-                key={(transcriptScrollPosition + index * 3).toLocaleString()}
-                className={classes.transcriptIndexText}
-                style={{
-                  minWidth: boxHeight * 3,
-                  fontSize: boxHeight / 2 - 1,
-                  height: height,
-                }}
-              >
-                {(transcriptScrollPosition + index * 3).toLocaleString()}
-              </p>
-            ))
-          // This is the relative index for testing
-          // range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
-          //   <div
-          //     key={(transcriptScrollPosition + index * 3).toLocaleString()}
-          //     style={{ display: 'flex', flexDirection: 'column' }}
-          //   >
-          //     <p
-          //       className={classes.transcriptIndexText}
-          //       style={{
-          //         minWidth: boxHeight * 3,
-          //         fontSize: boxHeight / 2 - 1,
-          //         height: height / 2,
-          //       }}
-          //     >
-          //       {(transcriptScrollPosition + index * 3).toLocaleString()}
-          //     </p>
-          //     <p
-          //       className={classes.transcriptIndexText}
-          //       style={{
-          //         minWidth: boxHeight * 3,
-          //         fontSize: boxHeight / 2 - 1,
-          //         height: height / 2,
-          //         textAlign: 'start',
-          //       }}
-          //     >
-          //       &nbsp;&nbsp;{transcriptScrollPosition + index * 3 - minimumPosition}
-          //     </p>
-          //   </div>
-          // ))
+        {({ width, height }) =>
+          range(0, Math.ceil(width / boxHeight / 3)).map((index) => (
+            <p
+              key={(transcriptScrollPosition + index * 3).toLocaleString()}
+              className={classes.transcriptIndexText}
+              style={{
+                minWidth: boxHeight * 3,
+                fontSize: boxHeight / 2 - 1,
+                height: height,
+              }}
+            >
+              {(transcriptScrollPosition + index * 3).toLocaleString()}
+            </p>
+          ))
         }
       </AutoSizer>
     </div>

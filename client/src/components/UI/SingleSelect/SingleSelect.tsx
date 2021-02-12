@@ -81,12 +81,15 @@ const SingleSelect = ({
             Menu: CustomMenu,
           }}
           loadOptions={debouncedOptions}
-          value={{ value: initialValue, label: initialValue }}
+          value={initialValue ? { value: initialValue, label: initialValue } : null}
           cacheOptions
           styles={singleSelectStyles}
           placeholder={name}
           closeMenuOnSelect={false}
-          onChange={onChange}
+          onChange={(value, action) => {
+            if (!value) setInitialValue('');
+            onChange(value, action);
+          }}
           escapeClearsValue
           isClearable
           blurInputOnSelect

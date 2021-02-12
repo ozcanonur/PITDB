@@ -57,7 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
 
     '& > svg': {
-      paddingBottom: '2rem',
+      paddingBottom: '1rem',
     },
   },
   transcriptId: {

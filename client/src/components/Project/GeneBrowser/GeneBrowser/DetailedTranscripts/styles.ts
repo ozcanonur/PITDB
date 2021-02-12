@@ -15,10 +15,6 @@ export const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: 'max-content',
     position: 'relative',
-
-    '& > div:not(:last-child)': {
-      marginBottom: '2rem',
-    },
   },
   transcriptsInfoContainer: {
     marginRight: '2rem',

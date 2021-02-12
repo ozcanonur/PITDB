@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 export const useStyles = makeStyles((theme) => ({
   legend: {
     display: 'flex',
-    maxHeight: '10rem',
+    maxHeight: '7rem',
     flexWrap: 'wrap',
 
     fontSize: '1.4rem',
@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme) => ({
     '& > div': {
       display: 'flex',
       alignItems: 'center',
-      marginRight: '1rem',
+      marginRight: '1.5rem',
 
       '&:not(:last-child)': {
         marginBottom: '1.5rem',

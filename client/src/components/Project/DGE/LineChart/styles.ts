@@ -6,6 +6,7 @@ export const useStyles = makeStyles((theme) => ({
     position: 'relative',
     marginRight: '2rem',
     minHeight: '35rem',
+    paddingBottom: '1rem',
 
     '@media (max-width: 1850px)': {
       marginLeft: 0,
