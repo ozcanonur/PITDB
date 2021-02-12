@@ -24,6 +24,7 @@ export enum ACTION {
   SET_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
   CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
   SET_GENE_BROWSER_BOX_HEIGHT,
+  SORT_GENE_BROWSER_TRANSCRIPTS,
 }
 
 export type SetConditionTypes = {
@@ -136,4 +137,9 @@ export type ClearGeneBrowserTranscriptVisibility = {
 export type SetGeneBrowserBoxHeight = {
   type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT;
   payload: number;
+};
+
+export type SortGeneBrowserTranscripts = {
+  type: ACTION.SORT_GENE_BROWSER_TRANSCRIPTS;
+  payload: string;
 };

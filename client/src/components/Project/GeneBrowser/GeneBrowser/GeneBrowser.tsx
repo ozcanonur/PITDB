@@ -2,9 +2,6 @@ import { useState, useEffect, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
-import IconButton from '@material-ui/core/IconButton';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 import NoResults from 'components/UI/NoResults/NoResults';
 import Loading from 'components/UI/Loading/Loading';
@@ -38,11 +35,7 @@ const GeneBrowser = () => {
 
   // Initial values are set in the reducer
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
-  const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
-    transcripts: [],
-    maximumPosition: 0,
-    minimumPosition: 0,
-  });
+  const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
   // Max mean TPM value for the selected filters (aside from TPM)
   const [maxTPM, setMaxTPM] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -71,7 +64,6 @@ const GeneBrowser = () => {
       fetchFromApi('/api/gene-browser/max-tpm', { project, filters }),
     ]).then(([resTranscripts, resMaxTpm]: [TranscriptsResponse, { maxTPM: number }]) => {
       if (!resTranscripts || !isMounted) return;
-      setTranscriptsData(resTranscripts);
 
       setLoading(false);
 
@@ -111,11 +103,6 @@ const GeneBrowser = () => {
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
     if (!selectedOption) {
-      setTranscriptsData({
-        transcripts: [],
-        maximumPosition: 0,
-        minimumPosition: 0,
-      });
       return;
     }
 
@@ -136,30 +123,6 @@ const GeneBrowser = () => {
     if (value === filters.minTPM) return;
 
     dispatch(setGeneBrowserFilters({ ...filters, minTPM: value }));
-  };
-
-  // const conditionFilterOnChange = (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-  //   if (selectedOption.value === filters.condition) return;
-
-  //   dispatch(setGeneBrowserFilters({ ...filters, condition: selectedOption.value }));
-  // };
-
-  const hideAllTranscripts = () => {
-    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
-      transcriptId,
-      isVisible: false,
-    }));
-
-    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
-  };
-
-  const showAllTranscripts = () => {
-    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
-      transcriptId,
-      isVisible: true,
-    }));
-
-    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
   };
 
   return (
@@ -201,28 +164,6 @@ const GeneBrowser = () => {
         <NoResults className={classes.noResults} />
       ) : (
         <>
-          <div className={classes.hideShowTranscriptsButtonsContainer}>
-            <IconButton
-              className={classes.hideAllTranscriptsButton}
-              aria-label='hide all transcripts'
-              component='span'
-              onClick={hideAllTranscripts}
-              title='Hide all transcripts'
-            >
-              <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
-              <span>Hide All</span>
-            </IconButton>
-            <IconButton
-              className={classes.showAllTranscriptsButton}
-              aria-label='show all transcripts'
-              component='span'
-              onClick={showAllTranscripts}
-              title='Show all transcripts'
-            >
-              <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
-              <span>Show All</span>
-            </IconButton>
-          </div>
           <Transcripts />
           <DetailedTranscripts />
         </>

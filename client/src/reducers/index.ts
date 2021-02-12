@@ -22,6 +22,7 @@ import {
   SetGeneBrowserTranscriptVisibility,
   ClearGeneBrowserTranscriptVisibility,
   SetGeneBrowserBoxHeight,
+  SortGeneBrowserTranscripts,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -174,11 +175,20 @@ const geneBrowserFilters = (
 
 const geneBrowserTranscriptsData = (
   state: TranscriptsData = { minimumPosition: 0, maximumPosition: 0, transcripts: [] },
-  action: SetGeneBrowserTranscriptsData
+  action: SetGeneBrowserTranscriptsData | SortGeneBrowserTranscripts
 ) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_TRANSCRIPTS_DATA:
       return { ...action.payload };
+    case ACTION.SORT_GENE_BROWSER_TRANSCRIPTS:
+      const sortedTranscripts = state.transcripts.sort((x, y) => {
+        const yMeans = y.conditions.find((e) => e.condition === action.payload)?.mean || 0;
+        const xMeans = x.conditions.find((e) => e.condition === action.payload)?.mean || 0;
+
+        return yMeans - xMeans;
+      });
+
+      return { ...state, transcripts: sortedTranscripts };
     default:
       return state;
   }

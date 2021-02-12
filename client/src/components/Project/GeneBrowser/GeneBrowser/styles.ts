@@ -88,53 +88,6 @@ export const useStyles = makeStyles((theme) => ({
     top: '-2rem',
     marginLeft: '1rem',
   },
-  hideShowTranscriptsButtonsContainer: {
-    padding: '0 2rem',
-    marginBottom: '1rem',
-    paddingLeft: '2rem',
-    paddingRight: '1rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '27rem',
-  },
-  hideAllTranscriptsButton: {
-    padding: '0.8rem 0',
-    borderRadius: '0.3rem',
-    backgroundColor: '#ff4949',
-    marginRight: '1rem',
-    flexGrow: 1,
-    transition: 'all .2s',
-
-    '&:hover': {
-      backgroundColor: '#990F02',
-    },
-
-    '& > span': {
-      padding: '0 1rem',
-      justifyContent: 'space-around',
-      color: 'white',
-      fontSize: '1.4rem',
-    },
-  },
-  showAllTranscriptsButton: {
-    padding: '0.8rem 0',
-    borderRadius: '0.3rem',
-    backgroundColor: '#64A74D',
-    flexGrow: 1,
-    transition: 'all .2s',
-
-    '&:hover': {
-      backgroundColor: 'green',
-    },
-
-    '& > span': {
-      padding: '0 1rem',
-      justifyContent: 'space-around',
-      color: 'white',
-      fontSize: '1.4rem',
-    },
-  },
-
   hideTranscriptButtonIcon: {
     color: 'white',
   },

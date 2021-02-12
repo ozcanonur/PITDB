@@ -19,6 +19,7 @@ import {
   SetGeneBrowserTranscriptVisibility,
   ClearGeneBrowserTranscriptVisibility,
   SetGeneBrowserBoxHeight,
+  SortGeneBrowserTranscripts,
 } from './types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -150,4 +151,9 @@ export const clearGeneBrowserTranscriptVisibility = (): ClearGeneBrowserTranscri
 export const setGeneBrowserBoxHeight = (boxHeight: number): SetGeneBrowserBoxHeight => ({
   type: ACTION.SET_GENE_BROWSER_BOX_HEIGHT,
   payload: boxHeight,
+});
+
+export const sortGeneBrowserTranscripts = (condition: string): SortGeneBrowserTranscripts => ({
+  type: ACTION.SORT_GENE_BROWSER_TRANSCRIPTS,
+  payload: condition,
 });

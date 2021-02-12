@@ -169,4 +169,94 @@ export const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  hideShowTranscriptsButtonsContainer: {
+    padding: '0 2rem',
+    marginBottom: '1rem',
+    paddingLeft: '2rem',
+    paddingRight: '1rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '27rem',
+  },
+  hideAllTranscriptsButton: {
+    padding: '0.8rem 0',
+    borderRadius: '0.3rem',
+    backgroundColor: '#ff4949',
+    marginRight: '1rem',
+    flexGrow: 1,
+    transition: 'all .2s',
+
+    '&:hover': {
+      backgroundColor: '#990F02',
+    },
+
+    '& > span': {
+      padding: '0 1rem',
+      justifyContent: 'space-around',
+      color: 'white',
+      fontSize: '1.4rem',
+    },
+  },
+  showAllTranscriptsButton: {
+    padding: '0.8rem 0',
+    borderRadius: '0.3rem',
+    backgroundColor: '#64A74D',
+    flexGrow: 1,
+    transition: 'all .2s',
+
+    '&:hover': {
+      backgroundColor: 'green',
+    },
+
+    '& > span': {
+      padding: '0 1rem',
+      justifyContent: 'space-around',
+      color: 'white',
+      fontSize: '1.4rem',
+    },
+  },
+  sortButtonsContainer: {
+    paddingLeft: '2rem',
+    width: '27rem',
+  },
+  sortButtonsTitle: {
+    fontSize: '1.4rem',
+    color: '#336',
+    marginBottom: '1rem',
+    textAlign: 'center',
+  },
+  sortButtons: {
+    marginBottom: '1rem',
+    paddingRight: '1rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+
+    '& > span:first-of-type': {
+      maxWidth: '11.3rem',
+    },
+
+    '& > span:last-of-type': {
+      maxWidth: '11.8rem',
+    },
+  },
+  sortButton: {
+    padding: '0.8rem 0',
+    borderRadius: '0.3rem',
+    backgroundColor: '#ff4949',
+    flexGrow: 1,
+    transition: 'all .2s',
+    maxWidth: '11.3rem',
+    border: '2px solid',
+
+    '&:hover': {
+      backgroundColor: '#990F02',
+    },
+
+    '& > span': {
+      padding: '0 1rem',
+      justifyContent: 'space-around',
+      color: 'white',
+      fontSize: '1.4rem',
+    },
+  },
 }));

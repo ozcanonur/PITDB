@@ -10,7 +10,11 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 import Transcript from '../Transcript/Transcript';
 
-import { setGeneBrowserMouseoverScrollPosition, setGeneBrowserTranscriptVisibility } from 'actions';
+import {
+  setGeneBrowserMouseoverScrollPosition,
+  setGeneBrowserTranscriptVisibility,
+  sortGeneBrowserTranscripts,
+} from 'actions';
 import { useStyles } from './styles';
 
 const CurrentPositionLine = () => {
@@ -102,6 +106,13 @@ const Transcripts = memo(() => {
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const [hiddenTranscriptsCollapsed, setHiddenTranscriptsCollapsed] = useState(false);
+  const [sortedBy, setSortedBy] = useState('');
+
+  useEffect(() => {
+    setSortedBy(conditionTypes[0]);
+    dispatch(sortGeneBrowserTranscripts(conditionTypes[0]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conditionTypes]);
 
   const dispatch = useDispatch();
 
@@ -110,6 +121,24 @@ const Transcripts = memo(() => {
     dispatch(setGeneBrowserMouseoverScrollPosition(-1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData]);
+
+  const hideAllTranscripts = () => {
+    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
+      transcriptId,
+      isVisible: false,
+    }));
+
+    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
+  };
+
+  const showAllTranscripts = () => {
+    const transcripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
+      transcriptId,
+      isVisible: true,
+    }));
+
+    dispatch(setGeneBrowserTranscriptVisibility(transcripts));
+  };
 
   const hideTranscript = useCallback((transcriptId: string) => {
     dispatch(setGeneBrowserTranscriptVisibility([{ transcriptId, isVisible: false }]));
@@ -121,14 +150,6 @@ const Transcripts = memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const visibleTranscriptIds = transcriptVisibility
-    .filter(({ isVisible }) => isVisible)
-    .map(({ transcriptId }) => transcriptId);
-
-  const notvisibleTranscriptIds = transcriptVisibility
-    .filter(({ isVisible }) => !isVisible)
-    .map(({ transcriptId }) => transcriptId);
-
   const collapseHiddenTranscripts = () => {
     setHiddenTranscriptsCollapsed(true);
   };
@@ -137,8 +158,67 @@ const Transcripts = memo(() => {
     setHiddenTranscriptsCollapsed(false);
   };
 
+  const visibleTranscriptIds = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
+  const notvisibleTranscriptIds = transcriptVisibility
+    .filter(({ isVisible }) => !isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
+  const handleSortChange = (condition: string) => {
+    setSortedBy(condition);
+    dispatch(sortGeneBrowserTranscripts(condition));
+  };
+
   return (
     <>
+      <div className={classes.sortButtonsContainer}>
+        <p className={classes.sortButtonsTitle}>Sort by mean TPM</p>
+        <div className={classes.sortButtons}>
+          {conditionTypes.map((condition) => {
+            const backgroundColor = condition === conditionTypes[0] ? '#336' : '#6B88A2';
+            return (
+              <IconButton
+                key={condition}
+                className={classes.sortButton}
+                aria-label={`Sort by ${condition} TPM`}
+                component='span'
+                onClick={() => handleSortChange(condition)}
+                title={`Sort by ${condition} TPM`}
+                style={{
+                  backgroundColor: condition === sortedBy ? backgroundColor : 'transparent',
+                  borderColor: backgroundColor,
+                }}
+              >
+                <span style={{ color: condition === sortedBy ? 'white' : '#336' }}>{condition}</span>
+              </IconButton>
+            );
+          })}
+        </div>
+      </div>
+      <div className={classes.hideShowTranscriptsButtonsContainer}>
+        <IconButton
+          className={classes.hideAllTranscriptsButton}
+          aria-label='hide all transcripts'
+          component='span'
+          onClick={hideAllTranscripts}
+          title='Hide all transcripts'
+        >
+          <VisibilityOffIcon className={classes.hideTranscriptButtonIcon} />
+          <span>Hide All</span>
+        </IconButton>
+        <IconButton
+          className={classes.showAllTranscriptsButton}
+          aria-label='show all transcripts'
+          component='span'
+          onClick={showAllTranscripts}
+          title='Show all transcripts'
+        >
+          <VisibilityIcon className={classes.hideTranscriptButtonIcon} />
+          <span>Show All</span>
+        </IconButton>
+      </div>
       {hiddenTranscriptsCollapsed ? (
         <IconButton
           className={classes.collapseHidddenTranscriptsButton}
