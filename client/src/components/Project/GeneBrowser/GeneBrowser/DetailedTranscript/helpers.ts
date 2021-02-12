@@ -3,7 +3,7 @@ import {
   Transcript,
   RelativeMutationPositionAndType,
   RelativeCdsPositionAndSequence,
-  RelativePeptidePositionAndSequence,
+  RelativePeptidePosition,
 } from '../../types';
 
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
@@ -181,7 +181,7 @@ export const getRelativeCdsPositionsAndSequences = (
 };
 
 // WOOP, please cleanup this mess
-export const getRelativePeptidePositionsAndSequences = (
+export const getRelativePeptidePositions = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
   cdsSequence: string,
   peptides: { sequence: string; mod: string }[],
@@ -189,7 +189,7 @@ export const getRelativePeptidePositionsAndSequences = (
 ) => {
   peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
 
-  const relativePeptidePositionsAndSequences = peptides
+  const relativePeptidePositions = peptides
     .map(({ sequence: peptideSequence, mod }) => {
       mod = mod.replaceAll('_', '');
       const mods = mod.match(/\((.*?)\)\)/g) || [];
@@ -259,28 +259,28 @@ export const getRelativePeptidePositionsAndSequences = (
     })
     .sort((x, y) => x.start - y.start);
 
-  return relativePeptidePositionsAndSequences;
+  return relativePeptidePositions;
 };
 
 // WOOP, and this mess
 export const getRelativeModPositionsAndTypes = (
   relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[],
-  relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[]
+  relativePeptidePositions: RelativePeptidePosition[]
 ) => {
   const relativeModPositionsAndTypes = [];
-  for (const relativePeptidePositionAndSequence of relativePeptidePositionsAndSequences) {
-    if (relativePeptidePositionAndSequence.mods.length === 0) continue;
+  for (const relativePeptidePosition of relativePeptidePositions) {
+    if (relativePeptidePosition.mods.length === 0) continue;
 
-    const mods = relativePeptidePositionAndSequence.mods;
+    const mods = relativePeptidePosition.mods;
 
     for (const mod of mods) {
-      let relativePos = relativePeptidePositionAndSequence.start;
+      let relativePos = relativePeptidePosition.start;
       let totalPut = 0;
 
       for (let i = 0; i < relativeCdsPositionsAndSequences.length; i++) {
         const currCds = relativeCdsPositionsAndSequences[i];
 
-        if (currCds.end < relativePeptidePositionAndSequence.start) continue;
+        if (currCds.end < relativePeptidePosition.start) continue;
 
         if (currCds.end > relativePos + mod.posInPeptide * 3 - totalPut) {
           relativePos += mod.posInPeptide * 3 - totalPut;

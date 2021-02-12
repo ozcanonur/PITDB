@@ -101,7 +101,7 @@ export const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
   },
   zoomSlider: {
-    marginLeft: '2.4rem',
+    marginLeft: '1.2rem',
 
     '& > span': {
       width: '20rem',

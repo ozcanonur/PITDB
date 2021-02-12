@@ -60,7 +60,7 @@ const GeneBrowser = () => {
 
   useEffect(() => {
     // Don't try to fetch before these values are initialized
-    if (!filters.gene || !project) return;
+    if (conditionTypes.length === 0 || !filters.gene || !project) return;
 
     let isMounted = true;
 

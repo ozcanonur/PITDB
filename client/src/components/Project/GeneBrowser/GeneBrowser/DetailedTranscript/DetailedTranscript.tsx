@@ -15,7 +15,7 @@ import {
   getRelativeExonPositionsAndSequences,
   getCDSStartsAndEnds,
   getRelativeCdsPositionsAndSequences,
-  getRelativePeptidePositionsAndSequences,
+  getRelativePeptidePositions,
   getRelativeMutationPositionsAndTypes,
   getRelativeModPositionsAndTypes,
 } from './helpers';
@@ -60,7 +60,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                 values: [],
               };
 
-              let tooltipText = `Mean TPM: ${meanTPM.toFixed(3)}`;
+              let tooltipText = `${condition}<br />Mean TPM: ${meanTPM.toFixed(3)}`;
               TPMValues.forEach(({ sample, TPM }) => {
                 tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
               });
@@ -74,7 +74,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   >
                     <p className={classes.conditionText}>{condition}</p>
                   </div>
-                  <ReactTooltip multiline />
+                  <ReactTooltip multiline place='right' />
                 </Fragment>
               );
             })}
@@ -151,7 +151,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                   isReverse
                 );
 
-                const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
+                const relativePeptidePositions = getRelativePeptidePositions(
                   relativeCdsPositionsAndSequences,
                   sequence,
                   // @ts-ignore
@@ -161,7 +161,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
 
                 const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
                   relativeCdsPositionsAndSequences,
-                  relativePeptidePositionsAndSequences
+                  relativePeptidePositions
                 );
 
                 return (
@@ -183,7 +183,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                     >
                       {CDS}
                     </VirtualizedList>
-                    {relativePeptidePositionsAndSequences.length > 0 ? (
+                    {relativePeptidePositions.length > 0 ? (
                       <VirtualizedList
                         height={boxHeight}
                         itemCount={maximumPosition - minimumPosition + 1}
@@ -192,7 +192,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         width={width}
                         innerElementType='svg'
                         itemData={{
-                          relativePeptidePositionsAndSequences,
+                          relativePeptidePositions,
                           relativeCdsPositionsAndSequences,
                         }}
                         style={{ overflow: 'hidden' }}

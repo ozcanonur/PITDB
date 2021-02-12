@@ -10,12 +10,10 @@ const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
 
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
 
-  const { relativePeptidePositionsAndSequences, relativeCdsPositionsAndSequences } = data;
+  const { relativePeptidePositions, relativeCdsPositionsAndSequences } = data;
 
   // Find which peptide the current index belongs to
-  const indexBelongsTo = relativePeptidePositionsAndSequences.filter(
-    ({ start, end }) => index >= start && index <= end
-  );
+  const indexBelongsTo = relativePeptidePositions.filter(({ start, end }) => index >= start && index <= end);
 
   // Put nothing if no peptide in this index at all
   if (!indexBelongsTo) return null;

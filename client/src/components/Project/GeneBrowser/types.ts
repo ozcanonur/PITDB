@@ -80,7 +80,7 @@ export type RelativeCdsPositionAndSequence = {
   sequence: string;
 };
 
-export type RelativePeptidePositionAndSequence = {
+export type RelativePeptidePosition = {
   start: number;
   end: number;
   mods: {
@@ -120,7 +120,7 @@ export interface DetailedCdsProps extends ListChildComponentProps {
 
 export interface DetailedPeptideProps extends ListChildComponentProps {
   data: {
-    relativePeptidePositionsAndSequences: RelativePeptidePositionAndSequence[];
+    relativePeptidePositions: RelativePeptidePosition[];
     relativeCdsPositionsAndSequences: RelativeCdsPositionAndSequence[];
   };
 }

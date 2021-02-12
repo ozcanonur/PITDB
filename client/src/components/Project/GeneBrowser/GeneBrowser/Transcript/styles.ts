@@ -26,17 +26,25 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: 'Poppins, sans-serif',
     fill: theme.palette.primary.main,
   },
-  cds: {
+  cdsLine: {
+    stroke: '#FFDE4D',
+    strokeWidth: 1,
+  },
+  cdsRect: {
     fill: '#FFDE4D',
   },
   mutation: {
     fill: '#ED0909',
     zIndex: 9999,
   },
+  peptideLine: {
+    stroke: 'rgba(200, 85, 61, 0.6)',
+    strokeWidth: 1,
+  },
   peptide: {
     fill: 'rgba(200, 85, 61, 0.6)',
   },
   mod: {
-    fill: 'rgba(40, 82, 56)',
+    fill: 'rgba(40, 82, 56, 0.8)',
   },
 }));

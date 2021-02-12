@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
@@ -7,7 +7,7 @@ import max from 'lodash/max';
 import { TranscriptProps } from '../../types';
 import {
   getTranscriptVisualLineCount,
-  getRelativePeptidePositionsAndSequences,
+  getRelativePeptidePositions,
   getRelativeCdsPositionsAndSequences,
   getRelativeExonPositionsAndSequences,
   getCDSStartsAndEnds,
@@ -21,6 +21,7 @@ const EXON_HEIGHT = 10;
 const CDS_HEIGHT = 4;
 const MUTATION_HEIGHT = 10;
 const MUTATION_WIDTH = 0.5;
+const MOD_WIDTH = 3;
 
 const Transcript = memo(({ transcript, isTooltip = false, ...props }: TranscriptProps) => {
   const classes = useStyles();
@@ -41,8 +42,12 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
   const dispatch = useDispatch();
 
   // There are 2 px space between 'lines' hence transcriptVisualLineCount * 2
+  // + CDS_HEIGHT / 2 because of mods
   const svgVerticalViewbox =
-    EXON_HEIGHT + (transcriptVisualLineCount - 1) * CDS_HEIGHT + transcriptVisualLineCount * 2;
+    EXON_HEIGHT +
+    (transcriptVisualLineCount - 1) * CDS_HEIGHT +
+    transcriptVisualLineCount * 2 +
+    CDS_HEIGHT / 2;
 
   // Make detailed browser scroll to the clicked position instantly
   const handleClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
@@ -129,7 +134,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
           isReverse
         );
 
-        const relativePeptidePositionsAndSequences = getRelativePeptidePositionsAndSequences(
+        const relativePeptidePositions = getRelativePeptidePositions(
           relativeCdsPositionsAndSequences,
           sequence,
           // @ts-ignore
@@ -139,7 +144,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
 
         const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
           relativeCdsPositionsAndSequences,
-          relativePeptidePositionsAndSequences
+          relativePeptidePositions
         );
 
         // Need to move by 6 more if previous Cds had a peptide line
@@ -149,44 +154,86 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
 
         return (
           <g key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
-            <rect
-              className={classes.cds}
-              x={cdsStart * pixelPerValue}
-              y={offsetY}
-              width={(cdsEnd - cdsStart + 1) * pixelPerValue}
-              height={CDS_HEIGHT}
+            <line
+              x1={cdsStart * pixelPerValue}
+              x2={cdsStart * pixelPerValue + (cdsEnd - cdsStart + 1) * pixelPerValue}
+              y1={offsetY + CDS_HEIGHT / 2}
+              y2={offsetY + CDS_HEIGHT / 2}
+              className={classes.cdsLine}
             >
-              <title>CDS</title>
-            </rect>
-            {/* These are the peptides */}
-            {relativePeptidePositionsAndSequences.map(({ start, end }, index) => (
+              CDS
+            </line>
+            {relativeCdsPositionsAndSequences.map(({ start, end }, index) => (
               <rect
                 key={index}
-                className={classes.peptide}
+                className={classes.cdsRect}
                 x={start * pixelPerValue}
-                y={CDS_HEIGHT + offsetY + 2}
+                y={offsetY}
                 width={(end - start + 1) * pixelPerValue}
                 height={CDS_HEIGHT}
               >
-                <title>Peptide</title>
+                CDS
               </rect>
             ))}
-            {/* These are the mods
-             *  Currently it is put INSIDE the peptide line
-             *  WOOP, maybe change
-             */}
-            {relativeModPositionsAndTypes.map(({ pos, type }, index) => (
-              <rect
-                key={index}
-                className={classes.mod}
-                x={pos * pixelPerValue}
-                y={CDS_HEIGHT + offsetY + CDS_HEIGHT + CDS_HEIGHT / 2}
-                width={MUTATION_WIDTH * 2}
-                height={CDS_HEIGHT / 2}
-              >
-                <title>{type}</title>
-              </rect>
-            ))}
+            {/* These are the peptides */}
+            {relativePeptidePositions.map(({ start, end }, index) => {
+              // const startsAtCds = relativeCdsPositionsAndSequences.find((cds) => cds.start <= start);
+              // let drawUntil = 0;
+              // if (startsAtCds) {
+              //   drawUntil = end <= startsAtCds.end ? end : startsAtCds.end;
+              // }
+
+              // return (
+              //   <Fragment key={index}>
+              //     <line
+              //       x1={start * pixelPerValue}
+              //       x2={start * pixelPerValue + (end - start + 1) * pixelPerValue}
+              //       y1={CDS_HEIGHT + offsetY + 2}
+              //       y2={CDS_HEIGHT + offsetY + 2}
+              //       className={classes.peptideLine}
+              //     >
+              //       Peptide
+              //     </line>
+              //     {startsAtCds ? (
+              //       <rect
+              //         x={startsAtCds.start * pixelPerValue}
+              //         y={CDS_HEIGHT + offsetY + 2}
+              //         width={10}
+              //         height={CDS_HEIGHT}
+              //       >
+              //         Peptide
+              //       </rect>
+              //     ) : null}
+              //   </Fragment>
+              // );
+              return (
+                <rect
+                  key={index}
+                  className={classes.peptide}
+                  x={start * pixelPerValue}
+                  y={CDS_HEIGHT + offsetY + 2}
+                  width={(end - start + 1) * pixelPerValue}
+                  height={CDS_HEIGHT}
+                >
+                  <title>Peptide</title>
+                </rect>
+              );
+            })}
+            {/* These are the mods */}
+            {relativeModPositionsAndTypes.map(({ pos, type }, index) => {
+              const bottomLeft = `${pos * pixelPerValue - MOD_WIDTH / 2},${
+                CDS_HEIGHT + offsetY + CDS_HEIGHT * 2 + CDS_HEIGHT / 2
+              }`;
+              const top = `${pos * pixelPerValue},${CDS_HEIGHT + offsetY + CDS_HEIGHT + CDS_HEIGHT / 2}`;
+              const bottomRight = `${pos * pixelPerValue + MOD_WIDTH / 2},${
+                CDS_HEIGHT + offsetY + CDS_HEIGHT * 2 + CDS_HEIGHT / 2
+              }`;
+              return (
+                <polygon key={index} points={`${bottomLeft} ${top} ${bottomRight}`} className={classes.mod}>
+                  {type}
+                </polygon>
+              );
+            })}
           </g>
         );
       })}

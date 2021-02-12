@@ -205,7 +205,7 @@ const Transcripts = memo(() => {
                           TPMValues = currentConditionsTPM.values;
                         }
 
-                        let tooltipText = `Mean TPM: ${meanTPM}`;
+                        let tooltipText = `${condition}<br />Mean TPM: ${meanTPM}`;
                         TPMValues.forEach(({ sample, TPM }) => {
                           tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
                         });
@@ -221,7 +221,7 @@ const Transcripts = memo(() => {
                             >
                               <p>{condition}</p>
                             </div>
-                            <ReactTooltip multiline />
+                            <ReactTooltip multiline place='right' />
                           </Fragment>
                         );
                       })}
