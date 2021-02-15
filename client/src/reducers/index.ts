@@ -36,6 +36,7 @@ import {
   initialDgeFilters,
   initialSplicingEventsFilters,
   initialTranscriptUsageFilters,
+  initialGeneBrowserFilters,
 } from 'variables/initialTableFilters';
 
 const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
@@ -162,7 +163,7 @@ const selectedTranscriptViewerTranscriptColor = (
 };
 
 const geneBrowserFilters = (
-  state: GeneBrowserFilters = { gene: '', minTPM: 0, minQual: 0 },
+  state: GeneBrowserFilters = initialGeneBrowserFilters,
   action: SetGeneBrowserFiltersAction
 ) => {
   switch (action.type) {
@@ -235,7 +236,7 @@ const geneBrowserTranscriptVisibility = (
   }
 };
 
-const geneBrowserBoxHeight = (state = 20, action: SetGeneBrowserBoxHeight) => {
+const geneBrowserBoxHeight = (state = 30, action: SetGeneBrowserBoxHeight) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_BOX_HEIGHT:
       return action.payload;

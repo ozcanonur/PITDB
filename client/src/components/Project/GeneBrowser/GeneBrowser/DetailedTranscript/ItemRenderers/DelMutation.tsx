@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { RelativeMutationPositionAndType } from '../../types';
-import { useStyles } from './styles';
+import { RelativeMutationPositionAndType } from '../../../types';
+import { useStyles } from '../styles';
 
 const DelMutation = ({ index, mutation }: { index: number; mutation: RelativeMutationPositionAndType }) => {
   const classes = useStyles();

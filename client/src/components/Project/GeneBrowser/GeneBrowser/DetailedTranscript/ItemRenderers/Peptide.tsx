@@ -2,8 +2,8 @@ import { memo, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
-import { DetailedPeptideProps } from '../../types';
-import { useStyles } from './styles';
+import { DetailedPeptideProps } from '../../../types';
+import { useStyles } from '../styles';
 
 const Peptide = memo(({ index, style, data }: DetailedPeptideProps) => {
   const classes = useStyles();

@@ -181,8 +181,16 @@ const DetailedTranscripts = memo(() => {
     );
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
-    // Scroll all the children transcript virtualized lists
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+
+    // Need to wait for them to render&change DOM first
+    // For some reason useLayoutEffect didn't work
+    // 100 is an arbitrary number, 15 works on my machine
+    // Other machines can be slower though
+    // WOOP, possible bug source
+    setTimeout(() => {
+      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+    }, 100);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minimumPosition, scrollJumpPosition]);
 
@@ -196,6 +204,7 @@ const DetailedTranscripts = memo(() => {
     // For some reason useLayoutEffect didn't work
     // 100 is an arbitrary number, 15 works on my machine
     // Other machines can be slower though
+    // WOOP, possible bug source
     setTimeout(() => {
       scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
     }, 100);

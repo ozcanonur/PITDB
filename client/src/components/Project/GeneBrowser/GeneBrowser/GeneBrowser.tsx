@@ -31,7 +31,6 @@ const GeneBrowser = () => {
   const classes = useStyles();
 
   const { project } = useParams<{ project: string }>();
-  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   // Initial values are set in the reducer
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
@@ -42,18 +41,11 @@ const GeneBrowser = () => {
 
   const dispatch = useDispatch();
 
-  // Just to give it some initial values
-  // So that the users will instantly see something
-  useEffect(() => {
-    dispatch(setGeneBrowserFilters({ gene: 'ACAT2', minTPM: 0, minQual: 0 }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conditionTypes]);
-
   const prevFiltersGene = usePrevious(filters.gene);
 
   useEffect(() => {
     // Don't try to fetch before these values are initialized
-    if (conditionTypes.length === 0 || !filters.gene || !project) return;
+    if (!filters.gene || !project) return;
 
     let isMounted = true;
 
@@ -80,9 +72,8 @@ const GeneBrowser = () => {
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
 
       // Only scroll to start of the transcript if the user changed gene
-      if (filters.gene !== prevFiltersGene) {
+      if (filters.gene !== prevFiltersGene)
         dispatch(setGeneBrowserScrollJumpPosition(resTranscripts.minimumPosition));
-      }
     });
 
     return () => {
@@ -102,7 +93,7 @@ const GeneBrowser = () => {
   };
 
   const singleSelectOnChange = async (selectedOption: SelectOption, _actionMeta: ActionMeta<any>) => {
-    if (!selectedOption) {
+    if (!selectedOption || selectedOption.value === filters.gene) {
       return;
     }
 
@@ -147,7 +138,7 @@ const GeneBrowser = () => {
           onChangeCommited={onMinTPMChangeCommited}
         />
         <DiscreteSlider
-          name='Min. Quality'
+          name='Min. Mutation Quality'
           defaultValue={qualityMarks.indexOf(filters.minQual.toString())}
           marks={parseDiscreteSliderMarks(qualityMarks)}
           onChangeCommited={onMinQualityChangeCommited}

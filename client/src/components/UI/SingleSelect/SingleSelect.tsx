@@ -82,7 +82,6 @@ const SingleSelect = ({
           }}
           loadOptions={debouncedOptions}
           value={initialValue ? { value: initialValue, label: initialValue } : null}
-          cacheOptions
           styles={singleSelectStyles}
           placeholder={name}
           closeMenuOnSelect={false}

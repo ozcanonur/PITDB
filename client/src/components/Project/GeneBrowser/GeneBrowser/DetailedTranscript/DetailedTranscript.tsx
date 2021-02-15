@@ -4,12 +4,12 @@ import { FixedSizeList as VirtualizedList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import ReactTooltip from 'react-tooltip';
 
-import Nucleotide from './Nucleotide';
-import CDS from './CDS';
-import Peptide from './Peptide';
-import Mod from './Mod';
+import Nucleotide from './ItemRenderers/Nucleotide';
+import CDS from './ItemRenderers/CDS';
+import Peptide from './ItemRenderers/Peptide';
+import Mod from './ItemRenderers/Mod';
 
-import { DetailedTranscriptProps } from '../../types';
+import { DetailedTranscriptProps, Transcript } from '../../types';
 import {
   getTranscriptVisualLineCount,
   getRelativeExonPositionsAndSequences,
@@ -21,6 +21,95 @@ import {
 } from './helpers';
 import { useStyles } from './styles';
 
+const DetailedTranscriptLabels = ({ transcript }: { transcript: Transcript }) => {
+  const classes = useStyles();
+
+  const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
+  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
+  return (
+    <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
+      <div className={classes.transcriptNameContainer} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
+        <div className={classes.conditions}>
+          {transcript.conditions.map(({ condition }) => {
+            const { mean: meanTPM, values: TPMValues } = transcript.conditions.find(
+              (e) => condition === e.condition
+            ) || {
+              mean: 0,
+              values: [],
+            };
+
+            let tooltipText = `${condition}<br />Mean TPM: ${meanTPM.toFixed(3)}`;
+            TPMValues.forEach(({ sample, TPM }) => {
+              tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
+            });
+
+            return (
+              <Fragment key={condition}>
+                <div
+                  data-tip={tooltipText}
+                  className={classes.condition}
+                  style={{
+                    backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2',
+                    height: boxHeight < 20 ? 30 : boxHeight,
+                  }}
+                >
+                  <p className={classes.conditionText} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
+                    {condition}
+                  </p>
+                </div>
+                <ReactTooltip multiline place='right' />
+              </Fragment>
+            );
+          })}
+        </div>
+        <p className={classes.transcriptLabelId} style={{ paddingTop: boxHeight / 4 }}>
+          {transcript.transcriptId}
+        </p>
+      </div>
+      {transcript.cds?.map(({ strand, peptides }, index) => (
+        <Fragment key={index}>
+          <p
+            className={classes.transcriptProperty}
+            style={{
+              paddingTop: boxHeight / 4,
+              fontSize: boxHeight === 20 ? 11.33 : 14,
+              height: boxHeight,
+              display: boxHeight < 20 ? 'none' : 'block',
+            }}
+          >{`CDS, ${strand === '-' ? 'reverse' : 'forward'} strand`}</p>
+          {peptides ? (
+            <p
+              className={classes.transcriptProperty}
+              style={{
+                paddingTop: boxHeight / 4,
+                fontSize: boxHeight === 20 ? 11.33 : 14,
+                display: boxHeight < 20 ? 'none' : 'block',
+                height: boxHeight,
+              }}
+            >
+              Peptides
+            </p>
+          ) : null}
+          {peptides && peptides.some(({ mod }) => mod.includes('(')) ? (
+            <p
+              className={classes.transcriptProperty}
+              style={{
+                paddingTop: boxHeight / 4,
+                fontSize: boxHeight === 20 ? 11.33 : 14,
+                display: boxHeight < 20 ? 'none' : 'block',
+                height: boxHeight,
+              }}
+            >
+              Mods
+            </p>
+          ) : null}
+        </Fragment>
+      ))}
+    </div>
+  );
+};
+
 const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
 
@@ -28,7 +117,6 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     (state: RootState) => state.geneBrowserTranscriptsData
   );
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-  const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
   const relativeExonPositionsAndSequences = getRelativeExonPositionsAndSequences(transcript, minimumPosition);
   const cdsStartAndEndsAndSequences = getCDSStartsAndEnds(transcript, minimumPosition, maximumPosition);
@@ -49,85 +137,7 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
       style={{ alignItems: boxHeight < 20 ? 'center' : 'flex-start' }}
       {...props}
     >
-      <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
-        <div className={classes.transcriptNameContainer} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
-          <div className={classes.conditions}>
-            {transcript.conditions.map(({ condition }) => {
-              const { mean: meanTPM, values: TPMValues } = transcript.conditions.find(
-                (e) => condition === e.condition
-              ) || {
-                mean: 0,
-                values: [],
-              };
-
-              let tooltipText = `${condition}<br />Mean TPM: ${meanTPM.toFixed(3)}`;
-              TPMValues.forEach(({ sample, TPM }) => {
-                tooltipText += `<br />Sample ${sample}: ${TPM.toFixed(3)}`;
-              });
-
-              return (
-                <Fragment key={condition}>
-                  <div
-                    data-tip={tooltipText}
-                    className={classes.condition}
-                    style={{
-                      backgroundColor: condition === conditionTypes[0] ? '#336' : '#6B88A2',
-                      height: boxHeight,
-                    }}
-                  >
-                    <p className={classes.conditionText} style={{ fontSize: boxHeight === 20 ? 11.33 : 14 }}>
-                      {condition}
-                    </p>
-                  </div>
-                  <ReactTooltip multiline place='right' />
-                </Fragment>
-              );
-            })}
-          </div>
-          <p className={classes.transcriptLabelId} style={{ paddingTop: boxHeight / 4 }}>
-            {transcript.transcriptId}
-          </p>
-        </div>
-        {transcript.cds?.map(({ strand, peptides }, index) => (
-          <Fragment key={index}>
-            <p
-              className={classes.transcriptProperty}
-              style={{
-                paddingTop: boxHeight / 4,
-                fontSize: boxHeight === 20 ? 11.33 : 14,
-                height: boxHeight,
-                display: boxHeight < 20 ? 'none' : 'block',
-              }}
-            >{`CDS, ${strand === '-' ? 'reverse' : 'forward'} strand`}</p>
-            {peptides ? (
-              <p
-                className={classes.transcriptProperty}
-                style={{
-                  paddingTop: boxHeight / 4,
-                  fontSize: boxHeight === 20 ? 11.33 : 14,
-                  display: boxHeight < 20 ? 'none' : 'block',
-                  height: boxHeight,
-                }}
-              >
-                Peptides
-              </p>
-            ) : null}
-            {peptides && peptides.some(({ mod }) => mod.includes('(')) ? (
-              <p
-                className={classes.transcriptProperty}
-                style={{
-                  paddingTop: boxHeight / 4,
-                  fontSize: boxHeight === 20 ? 11.33 : 14,
-                  display: boxHeight < 20 ? 'none' : 'block',
-                  height: boxHeight,
-                }}
-              >
-                Mods
-              </p>
-            ) : null}
-          </Fragment>
-        ))}
-      </div>
+      <DetailedTranscriptLabels transcript={transcript} />
       <div className={classes.detailedTranscript} style={{ height: detailedTranscriptTotalHeight }}>
         <AutoSizer>
           {({ width }) => (

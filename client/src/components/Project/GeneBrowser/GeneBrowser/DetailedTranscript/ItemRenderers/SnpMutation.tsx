@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useStyles } from './styles';
+import { useStyles } from '../styles';
 
 const SnpMutation = ({
   index,

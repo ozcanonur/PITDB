@@ -2,8 +2,8 @@ import { useState, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
-import { DetailedModProps } from '../../types';
-import { useStyles } from './styles';
+import { DetailedModProps } from '../../../types';
+import { useStyles } from '../styles';
 
 const Mod = memo(({ index, style, data }: DetailedModProps) => {
   const classes = useStyles();

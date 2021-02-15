@@ -44,7 +44,7 @@ const BarChart = ({ ...props }) => {
 
   return (
     <ProjectItemCard
-      name={`Conditions for ${gene} with ${dPSI.toLocaleString()}`}
+      name={`SplicingPsi for ${gene} with ${dPSI.toLocaleString()}`}
       className={classes.projectItemCard}
       {...props}
     >
