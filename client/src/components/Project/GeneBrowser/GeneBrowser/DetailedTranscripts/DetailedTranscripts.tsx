@@ -92,9 +92,9 @@ const TranscriptIndex = () => {
 const DetailedTranscripts = memo(() => {
   const classes = useStyles();
 
-  const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
-  const { minimumPosition, maximumPosition, transcripts } = transcriptsData;
-
+  const { minimumPosition, maximumPosition, transcripts } = useSelector(
+    (state: RootState) => state.geneBrowserTranscriptsData
+  );
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
@@ -108,6 +108,7 @@ const DetailedTranscripts = memo(() => {
    * First, generate the refs
    */
   const virtualizedListRefsList = useMemo(() => makeVirtualizedListRefsList(transcripts), [transcripts]);
+
   const dragScrollRef = useRef<HTMLDivElement>(null);
   const bottomScrollRef = useRef<HTMLDivElement>(null);
 

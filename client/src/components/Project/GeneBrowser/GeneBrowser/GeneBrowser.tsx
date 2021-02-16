@@ -15,7 +15,7 @@ import { SelectOption } from 'components/UI/MultiSelect/types';
 import Transcripts from './Transcripts/Transcripts';
 import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 
-import { fetchFromApi, usePrevious } from 'utils';
+import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 import { parseDiscreteSliderMarks } from './helpers';
 import { GeneNamesResponse, TranscriptsResponse } from '../types';
@@ -40,8 +40,6 @@ const GeneBrowser = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
-
-  const prevFiltersGene = usePrevious(filters.gene);
 
   useEffect(() => {
     // Don't try to fetch before these values are initialized
@@ -71,8 +69,8 @@ const GeneBrowser = () => {
       dispatch(clearGeneBrowserTranscriptVisibility());
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
 
-      // Only scroll to start of the transcript if the user changed gene
-      if (filters.gene !== prevFiltersGene)
+      // Only scroll to the start if it's a different gene
+      if (resTranscripts.minimumPosition !== transcriptsData.minimumPosition)
         dispatch(setGeneBrowserScrollJumpPosition(resTranscripts.minimumPosition));
     });
 
