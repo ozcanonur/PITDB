@@ -1,5 +1,5 @@
-import React, { Fragment, memo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { Fragment, memo, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FixedSizeList as VirtualizedList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import ReactTooltip from 'react-tooltip';
@@ -20,12 +20,17 @@ import {
   getRelativeModPositionsAndTypes,
 } from './helpers';
 import { useStyles } from './styles';
+import { addGeneBrowserVirtualRef, removeGeneBrowserVirtualRefsForTranscript } from 'actions';
 
 const DetailedTranscriptLabels = ({ transcript }: { transcript: Transcript }) => {
   const classes = useStyles();
 
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+
+  const fontSize = boxHeight === 20 ? 11.33 : 14;
+  const display = boxHeight < 20 ? 'none' : 'block';
+  const paddingTop = boxHeight / 4;
 
   return (
     <div className={classes.transcriptLabelContainer} style={{ marginTop: boxHeight }}>
@@ -72,19 +77,19 @@ const DetailedTranscriptLabels = ({ transcript }: { transcript: Transcript }) =>
           <p
             className={classes.transcriptProperty}
             style={{
-              paddingTop: boxHeight / 4,
-              fontSize: boxHeight === 20 ? 11.33 : 14,
+              paddingTop,
+              fontSize,
               height: boxHeight,
-              display: boxHeight < 20 ? 'none' : 'block',
+              display,
             }}
           >{`CDS, ${strand === '-' ? 'reverse' : 'forward'} strand`}</p>
           {peptides ? (
             <p
               className={classes.transcriptProperty}
               style={{
-                paddingTop: boxHeight / 4,
-                fontSize: boxHeight === 20 ? 11.33 : 14,
-                display: boxHeight < 20 ? 'none' : 'block',
+                paddingTop,
+                fontSize,
+                display,
                 height: boxHeight,
               }}
             >
@@ -95,10 +100,10 @@ const DetailedTranscriptLabels = ({ transcript }: { transcript: Transcript }) =>
             <p
               className={classes.transcriptProperty}
               style={{
-                paddingTop: boxHeight / 4,
-                fontSize: boxHeight === 20 ? 11.33 : 14,
-                display: boxHeight < 20 ? 'none' : 'block',
+                paddingTop,
+                fontSize,
                 height: boxHeight,
+                display,
               }}
             >
               Mods
@@ -110,7 +115,7 @@ const DetailedTranscriptLabels = ({ transcript }: { transcript: Transcript }) =>
   );
 };
 
-const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscriptProps) => {
+const DetailedTranscript = memo(({ transcript, ...props }: DetailedTranscriptProps) => {
   const classes = useStyles();
 
   const { minimumPosition, maximumPosition } = useSelector(
@@ -124,6 +129,16 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
     transcript.mutations,
     minimumPosition
   );
+
+  const dispatch = useDispatch();
+
+  // Cleanup the refs on unmount
+  useEffect(() => {
+    return () => {
+      dispatch(removeGeneBrowserVirtualRefsForTranscript(transcript.transcriptId));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // WOOP, fix this
   // + BOX_HEIGHT because exon line is BOX_HEIGHT * 2, half of it is for mutation INS & DEL
@@ -152,7 +167,9 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                 innerElementType='svg'
                 itemData={{ relativeExonPositionsAndSequences, relativeMutationPositionsAndTypes }}
                 style={{ overflow: 'hidden' }}
-                ref={refs.exonRef}
+                ref={(ref) =>
+                  dispatch(addGeneBrowserVirtualRef({ id: `${transcript.transcriptId}_exon`, ref }))
+                }
               >
                 {Nucleotide}
               </VirtualizedList>
@@ -190,15 +207,15 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                       innerElementType='svg'
                       itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
                       style={{ overflow: 'hidden' }}
-                      ref={
-                        refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 0
-                          ? refs.cdsRefs[index][0]
-                          : undefined
+                      ref={(ref) =>
+                        dispatch(
+                          addGeneBrowserVirtualRef({ id: `${transcript.transcriptId}_cds_${index}`, ref })
+                        )
                       }
                     >
                       {CDS}
                     </VirtualizedList>
-                    {relativePeptidePositions.length > 0 ? (
+                    {relativePeptidePositions.length !== 0 ? (
                       <VirtualizedList
                         height={boxHeight}
                         itemCount={maximumPosition - minimumPosition + 1}
@@ -211,16 +228,19 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                           relativeCdsPositionsAndSequences,
                         }}
                         style={{ overflow: 'hidden' }}
-                        ref={
-                          refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 1
-                            ? refs.cdsRefs[index][1]
-                            : undefined
+                        ref={(ref) =>
+                          dispatch(
+                            addGeneBrowserVirtualRef({
+                              id: `${transcript.transcriptId}_peptides_${index}`,
+                              ref,
+                            })
+                          )
                         }
                       >
                         {Peptide}
                       </VirtualizedList>
                     ) : null}
-                    {relativeModPositionsAndTypes.length > 0 ? (
+                    {relativeModPositionsAndTypes.length !== 0 ? (
                       <VirtualizedList
                         height={boxHeight}
                         itemCount={maximumPosition - minimumPosition + 1}
@@ -230,10 +250,13 @@ const DetailedTranscript = memo(({ transcript, refs, ...props }: DetailedTranscr
                         innerElementType='svg'
                         itemData={{ relativeModPositionsAndTypes }}
                         style={{ overflow: 'hidden' }}
-                        ref={
-                          refs.cdsRefs && refs.cdsRefs[index] && refs.cdsRefs[index].length > 2
-                            ? refs.cdsRefs[index][2]
-                            : undefined
+                        ref={(ref) =>
+                          dispatch(
+                            addGeneBrowserVirtualRef({
+                              id: `${transcript.transcriptId}_mods_${index}`,
+                              ref,
+                            })
+                          )
                         }
                       >
                         {Mod}

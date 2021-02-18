@@ -3,6 +3,7 @@ import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
 import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/types';
+import { FixedSizeList } from 'react-window';
 
 export enum ACTION {
   SET_CONDITION_TYPES,
@@ -25,6 +26,8 @@ export enum ACTION {
   CLEAR_GENE_BROWSER_TRANSCRIPT_VISIBILITY,
   SET_GENE_BROWSER_BOX_HEIGHT,
   SORT_GENE_BROWSER_TRANSCRIPTS,
+  ADD_GENE_BROWSER_VIRTUAL_REF,
+  REMOVE_GENE_BROWSER_VIRTUAL_REFS_FOR_TRANSCRIPT,
 }
 
 export type SetConditionTypes = {
@@ -141,5 +144,15 @@ export type SetGeneBrowserBoxHeight = {
 
 export type SortGeneBrowserTranscripts = {
   type: ACTION.SORT_GENE_BROWSER_TRANSCRIPTS;
+  payload: string;
+};
+
+export type AddGeneBrowserVirtualRef = {
+  type: ACTION.ADD_GENE_BROWSER_VIRTUAL_REF;
+  payload: { id: string; ref: FixedSizeList | null };
+};
+
+export type RemoveGeneBrowserVirtualRefsForTranscript = {
+  type: ACTION.REMOVE_GENE_BROWSER_VIRTUAL_REFS_FOR_TRANSCRIPT;
   payload: string;
 };

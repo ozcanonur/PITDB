@@ -20,6 +20,8 @@ import {
   ClearGeneBrowserTranscriptVisibility,
   SetGeneBrowserBoxHeight,
   SortGeneBrowserTranscripts,
+  AddGeneBrowserVirtualRef,
+  RemoveGeneBrowserVirtualRefsForTranscript,
 } from './types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -27,6 +29,7 @@ import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
 import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/types';
+import { FixedSizeList } from 'react-window';
 
 export const setConditionTypes = (conditionTypes: string[]): SetConditionTypes => ({
   type: ACTION.SET_CONDITION_TYPES,
@@ -156,4 +159,19 @@ export const setGeneBrowserBoxHeight = (boxHeight: number): SetGeneBrowserBoxHei
 export const sortGeneBrowserTranscripts = (condition: string): SortGeneBrowserTranscripts => ({
   type: ACTION.SORT_GENE_BROWSER_TRANSCRIPTS,
   payload: condition,
+});
+
+export const addGeneBrowserVirtualRef = (ref: {
+  id: string;
+  ref: FixedSizeList | null;
+}): AddGeneBrowserVirtualRef => ({
+  type: ACTION.ADD_GENE_BROWSER_VIRTUAL_REF,
+  payload: ref,
+});
+
+export const removeGeneBrowserVirtualRefsForTranscript = (
+  transcriptId: string
+): RemoveGeneBrowserVirtualRefsForTranscript => ({
+  type: ACTION.REMOVE_GENE_BROWSER_VIRTUAL_REFS_FOR_TRANSCRIPT,
+  payload: transcriptId,
 });

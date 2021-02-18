@@ -1,5 +1,5 @@
 import { HTMLAttributes, SVGAttributes } from 'react';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import { ListChildComponentProps } from 'react-window';
 
 export type GeneNamesResponse = { _id: string }[];
 
@@ -57,15 +57,12 @@ export interface TranscriptProps extends SVGAttributes<SVGSVGElement> {
 
 export interface DetailedTranscriptProps extends HTMLAttributes<HTMLDivElement> {
   transcript: Transcript;
-  refs: { exonRef: VirtualRef; cdsRefs?: VirtualRef[][] };
 }
 
 export interface RegularScrollProps extends HTMLAttributes<HTMLDivElement> {
   handleScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
   width: number;
 }
-
-export type VirtualRef = React.RefObject<FixedSizeList>;
 
 export type RelativeExonPositionAndSequence = {
   sequence: string;
@@ -129,11 +126,4 @@ export interface DetailedModProps extends ListChildComponentProps {
   data: {
     relativeModPositionsAndTypes: RelativeModPositionAndType[];
   };
-}
-
-export interface DetailedTranscriptsVirtualListProps {
-  virtualizedListRefsList: {
-    exonRef: VirtualRef;
-    cdsRefs?: VirtualRef[][] | undefined;
-  }[];
 }

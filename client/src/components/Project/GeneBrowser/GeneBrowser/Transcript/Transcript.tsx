@@ -106,7 +106,9 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
         y1={5}
         y2={5}
         className={classes.rail}
-      />
+      >
+        <title>Intron</title>
+      </line>
       {/* These are the exon boxes */}
       {transcript.exons.map(({ genomeStart, genomeEnd }) => {
         const exonStartingPosition = pixelPerValue * (genomeStart - minimumPosition);
@@ -161,7 +163,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
               y2={offsetY + CDS_HEIGHT / 2}
               className={classes.cdsLine}
             >
-              CDS
+              <title>CDS</title>
             </line>
             {relativeCdsPositionsAndSequences.map(({ start, end }, index) => (
               <rect
@@ -172,7 +174,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
                 width={(end - start + 1) * pixelPerValue}
                 height={CDS_HEIGHT}
               >
-                CDS
+                <title>CDS</title>
               </rect>
             ))}
             {/* These are the peptides */}
@@ -230,7 +232,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
               }`;
               return (
                 <polygon key={index} points={`${bottomLeft} ${top} ${bottomRight}`} className={classes.mod}>
-                  {type}
+                  <title>{`Mod: ${type}`}</title>
                 </polygon>
               );
             })}

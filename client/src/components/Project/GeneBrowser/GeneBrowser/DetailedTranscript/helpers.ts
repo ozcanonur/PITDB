@@ -121,13 +121,13 @@ export const getRelativeCdsPositionsAndSequences = (
       if (cdsStart > exon.start) {
         relativeCdsPositionsAndSequences.push({
           start: cdsStart - leftoverNucleotideCount,
-          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
+          end: cdsEnd,
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       } else {
         relativeCdsPositionsAndSequences.push({
           start: exon.start - leftoverNucleotideCount,
-          end: cdsEnd - (3 - (leftoverNucleotideCount || 3)),
+          end: cdsEnd,
           sequence: sequence.slice(aasProcessed, aasProcessed + Math.floor(cdsInThisExonLength / 3)),
         });
       }
@@ -207,30 +207,6 @@ export const getRelativePeptidePositions = (
 
       let startPos = 0;
       let endPos = 0;
-      // // WOOP
-      // if (false) {
-      //   relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => y.start - x.start);
-
-      //   const reversedCdsSequence = cdsSequence.split('').reverse().join();
-      //   const reversedPeptideSequence = peptideSequence.split('').reverse().join();
-
-      //   const peptideStartPosInCds = reversedCdsSequence.indexOf(reversedPeptideSequence);
-      //   const peptideEndPosInCds = peptideStartPosInCds + peptideSequence.length - 1;
-
-      //   let coveredSoFar = 0;
-      //   for (const cds of relativeCdsPositionsAndSequences) {
-      //     if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length) {
-      //       startPos = cds.end - (peptideStartPosInCds + coveredSoFar) * 3;
-      //     }
-
-      //     if (!endPos && peptideEndPosInCds) {
-      //     }
-
-      //     coveredSoFar += cds.sequence.length;
-      //   }
-      // } else {
-
-      // }
 
       relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
 

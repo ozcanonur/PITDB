@@ -23,6 +23,8 @@ import {
   ClearGeneBrowserTranscriptVisibility,
   SetGeneBrowserBoxHeight,
   SortGeneBrowserTranscripts,
+  AddGeneBrowserVirtualRef,
+  RemoveGeneBrowserVirtualRefsForTranscript,
 } from 'actions/types';
 
 import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
@@ -38,6 +40,7 @@ import {
   initialTranscriptUsageFilters,
   initialGeneBrowserFilters,
 } from 'variables/initialTableFilters';
+import { FixedSizeList } from 'react-window';
 
 const conditionTypes = (state: string[] = [], action: SetConditionTypes) => {
   switch (action.type) {
@@ -245,6 +248,20 @@ const geneBrowserBoxHeight = (state = 30, action: SetGeneBrowserBoxHeight) => {
   }
 };
 
+const geneBrowserVirtualRefs = (
+  state: { id: string; ref: FixedSizeList }[] = [],
+  action: AddGeneBrowserVirtualRef | RemoveGeneBrowserVirtualRefsForTranscript
+) => {
+  switch (action.type) {
+    case ACTION.ADD_GENE_BROWSER_VIRTUAL_REF:
+      return uniqBy([...state, action.payload], 'id');
+    case ACTION.REMOVE_GENE_BROWSER_VIRTUAL_REFS_FOR_TRANSCRIPT:
+      return state.filter(({ id }) => !id.startsWith(action.payload));
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
   conditionTypes,
   mutationFilters,
@@ -264,4 +281,5 @@ export default combineReducers({
   geneBrowserScrollJumpPosition,
   geneBrowserTranscriptVisibility,
   geneBrowserBoxHeight,
+  geneBrowserVirtualRefs,
 });

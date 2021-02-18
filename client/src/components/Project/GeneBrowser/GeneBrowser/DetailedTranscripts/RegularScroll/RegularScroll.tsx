@@ -56,40 +56,42 @@ const ScrollTooltip = ({ tooltipOpen }: { tooltipOpen: boolean }) => {
   );
 };
 
-const RegularScroll = forwardRef<HTMLDivElement, RegularScrollProps>(({ handleScroll, width }, ref) => {
-  const [tooltipOpen, setTooltipOpen] = useState(false);
+const RegularScroll = memo(
+  forwardRef<HTMLDivElement, RegularScrollProps>(({ handleScroll, width }, ref) => {
+    const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const classes = useStyles();
+    const classes = useStyles();
 
-  let timeout = useRef<NodeJS.Timeout>();
+    let timeout = useRef<NodeJS.Timeout>();
 
-  const onScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
-      handleScroll(e);
+    const onScroll = useCallback(
+      (e: React.UIEvent<HTMLDivElement, UIEvent>) => {
+        handleScroll(e);
 
-      // @ts-ignore
-      clearTimeout(timeout.current);
+        // @ts-ignore
+        clearTimeout(timeout.current);
 
-      setTooltipOpen(true);
+        setTooltipOpen(true);
 
-      timeout.current = setTimeout(() => {
-        setTooltipOpen(false);
-      }, 500);
-    },
-    [handleScroll]
-  );
+        timeout.current = setTimeout(() => {
+          setTooltipOpen(false);
+        }, 500);
+      },
+      [handleScroll]
+    );
 
-  return (
-    <div className={classes.scrollContainer} onScroll={onScroll} ref={ref}>
-      <div
-        className={classes.scroll}
-        style={{
-          width,
-        }}
-      />
-      <ScrollTooltip tooltipOpen={tooltipOpen} />
-    </div>
-  );
-});
+    return (
+      <div className={classes.scrollContainer} onScroll={onScroll} ref={ref}>
+        <div
+          className={classes.scroll}
+          style={{
+            width,
+          }}
+        />
+        <ScrollTooltip tooltipOpen={tooltipOpen} />
+      </div>
+    );
+  })
+);
 
 export default RegularScroll;

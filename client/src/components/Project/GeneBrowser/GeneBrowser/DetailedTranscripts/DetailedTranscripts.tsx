@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, ChangeEvent, memo, useCallback } from 'react';
+import React, { useEffect, useRef, ChangeEvent, memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DragScroll from 'react-indiana-drag-scroll';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -8,7 +8,6 @@ import DiscreteSlider from 'components/UI/DiscreteSlider/DiscreteSlider';
 import DetailedTranscript from '../DetailedTranscript/DetailedTranscript';
 import RegularScroll from './RegularScroll/RegularScroll';
 
-import { DetailedTranscriptsVirtualListProps } from '../../types';
 import {
   setGeneBrowserBoxHeight,
   setGeneBrowserScrollJumpPosition,
@@ -17,42 +16,11 @@ import {
 import {
   findTranscriptPositionFromScrollValue,
   findScrollValueFromTranscriptPosition,
-  makeVirtualizedListRefsList,
-  scrollVirtualRefs,
   parseDiscreteSliderMarks,
 } from './helpers';
 import { useStyles } from './styles';
 
-const DetailedTranscriptVirtualLists = memo(
-  ({ virtualizedListRefsList }: DetailedTranscriptsVirtualListProps) => {
-    const classes = useStyles();
-
-    const { transcripts } = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
-    const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
-
-    const visibleTranscriptIds = transcriptVisibility
-      .filter(({ isVisible }) => isVisible)
-      .map(({ transcriptId }) => transcriptId);
-
-    const visibleTranscripts = transcripts.filter((transcript) =>
-      visibleTranscriptIds.includes(transcript.transcriptId)
-    );
-
-    return (
-      <div className={classes.detailedTranscripts}>
-        {visibleTranscripts.map((transcript, index) => (
-          <DetailedTranscript
-            key={transcript.transcriptId}
-            transcript={transcript}
-            refs={virtualizedListRefsList[index]}
-          />
-        ))}
-      </div>
-    );
-  }
-);
-
-const TranscriptIndex = () => {
+const TranscriptIndex = memo(() => {
   const classes = useStyles();
 
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
@@ -87,12 +55,35 @@ const TranscriptIndex = () => {
       </AutoSizer>
     </div>
   );
-};
+});
+
+const DetailedTranscriptVirtualLists = memo(() => {
+  const classes = useStyles();
+
+  const { transcripts } = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
+  const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+
+  const visibleTranscriptIds = transcriptVisibility
+    .filter(({ isVisible }) => isVisible)
+    .map(({ transcriptId }) => transcriptId);
+
+  const visibleTranscripts = transcripts.filter((transcript) =>
+    visibleTranscriptIds.includes(transcript.transcriptId)
+  );
+
+  return (
+    <div className={classes.detailedTranscripts}>
+      {visibleTranscripts.map((transcript) => (
+        <DetailedTranscript key={transcript.transcriptId} transcript={transcript} />
+      ))}
+    </div>
+  );
+});
 
 const DetailedTranscripts = memo(() => {
   const classes = useStyles();
 
-  const { minimumPosition, maximumPosition, transcripts } = useSelector(
+  const { minimumPosition, maximumPosition } = useSelector(
     (state: RootState) => state.geneBrowserTranscriptsData
   );
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
@@ -100,14 +91,7 @@ const DetailedTranscripts = memo(() => {
   const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
   const transcriptScrollPosition =
     useSelector((state: RootState) => state.geneBrowserScrollPosition) || minimumPosition;
-
-  /* We are going to pass down refs to the detailed transcript children virtualized lists
-   * So that we can control their scroll status from this component
-   * Storing the scroll position 'as a state' would re-render detailed transcripts
-   * Which is very performance heavy
-   * First, generate the refs
-   */
-  const virtualizedListRefsList = useMemo(() => makeVirtualizedListRefsList(transcripts), [transcripts]);
+  const geneBrowserVirtualRefs = useSelector((state: RootState) => state.geneBrowserVirtualRefs);
 
   const dragScrollRef = useRef<HTMLDivElement>(null);
   const bottomScrollRef = useRef<HTMLDivElement>(null);
@@ -117,7 +101,11 @@ const DetailedTranscripts = memo(() => {
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
       // Scroll all the children transcript virtualized lists
-      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
+      geneBrowserVirtualRefs.forEach(({ ref }) => {
+        if (ref) {
+          ref.scrollTo(scrollLeft);
+        }
+      });
 
       // And scroll regular bottom scroll element
       if (!bottomScrollRef.current) return;
@@ -136,7 +124,7 @@ const DetailedTranscripts = memo(() => {
       dispatch(setGeneBrowserScrollJumpPosition(currentTranscriptPosition));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [boxHeight, maximumPosition, minimumPosition, virtualizedListRefsList]
+    [boxHeight, minimumPosition, geneBrowserVirtualRefs]
   );
 
   const handleRegularScroll = useCallback((e: React.UIEvent<HTMLDivElement, UIEvent>) => {
@@ -162,9 +150,8 @@ const DetailedTranscripts = memo(() => {
     );
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
-    scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boxHeight]);
+  }, [boxHeight, geneBrowserVirtualRefs]);
 
   // Jump to a position whenever the user clicks on a position on top transcripts overview
   useEffect(() => {
@@ -183,14 +170,12 @@ const DetailedTranscripts = memo(() => {
 
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
 
-    // Need to wait for them to render&change DOM first
-    // For some reason useLayoutEffect didn't work
-    // 100 is an arbitrary number, 15 works on my machine
-    // Other machines can be slower though
-    // WOOP, possible bug source
-    setTimeout(() => {
-      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
-    }, 100);
+    // Scroll all the children transcript virtualized lists
+    geneBrowserVirtualRefs.forEach(({ ref }) => {
+      if (ref) {
+        ref.scrollTo(scrollLeft);
+      }
+    });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minimumPosition, scrollJumpPosition]);
@@ -201,58 +186,76 @@ const DetailedTranscripts = memo(() => {
 
     const { scrollLeft } = bottomScrollRef.current;
 
-    // Need to wait for them to render&change DOM first
-    // For some reason useLayoutEffect didn't work
-    // 100 is an arbitrary number, 15 works on my machine
-    // Other machines can be slower though
-    // WOOP, possible bug source
-    setTimeout(() => {
-      scrollVirtualRefs(scrollLeft, virtualizedListRefsList);
-    }, 100);
+    // Scroll all the children transcript virtualized lists
+    geneBrowserVirtualRefs.forEach(({ ref }) => {
+      if (ref) {
+        ref.scrollTo(scrollLeft);
+      }
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transcriptVisibility]);
+  }, [transcriptVisibility, geneBrowserVirtualRefs]);
 
-  const zoomLevelMarks = ['5', '10', '20', '30', '40'];
-  const zoomLevelOnChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
-    const newBoxHeight = parseFloat(zoomLevelMarks[value]);
+  const zoomLevelMarks = useMemo(() => ['5', '10', '20', '30', '40'], []);
+  const zoomLevelOnChangeCommited = useCallback(
+    (_event: ChangeEvent<{}>, value: number) => {
+      const newBoxHeight = parseFloat(zoomLevelMarks[value]);
 
-    if (newBoxHeight === boxHeight) return;
+      if (newBoxHeight === boxHeight) return;
 
-    dispatch(setGeneBrowserBoxHeight(newBoxHeight));
-  };
+      dispatch(setGeneBrowserBoxHeight(newBoxHeight));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boxHeight, zoomLevelMarks]
+  );
 
   /* This is to trigger mouseover tooltip on mods
    * Reason for this 'hack' is that we have the drag scroll container all over the browser
    * Which blocks all events for the elements 'under' it
    * Here we check what is the SECOND element at the current mouse (x,y) coordinates
-   * And dispatch a mousemove event if it's a polygon(mod) to trigger the tooltip
+   * And dispatch a mousemove event if it's a polygon(mod/triangle) to trigger the tooltip
    * Or dispatch a mouseout event if the previous element was a polygon(mod) to untrigger to tooltip
-   * Events will be caught by the polygon and trigger their own functions
+   * Events will be caught by the Mod component and trigger their own functions
    * Which are at DetailedTranscript/Mod.tsx
    */
   useEffect(() => {
-    let prevBox: Element;
+    let prevBox: Element | null = null;
 
-    dragScrollRef.current?.addEventListener('mousemove', (e) => {
+    const dragScroll = dragScrollRef.current;
+
+    if (!dragScroll) return;
+
+    const dispatchMouseEvent = (e: MouseEvent) => {
       const { x, y } = e;
       const elements = document.elementsFromPoint(x, y);
       const box = elements[1];
-      const event = document.createEvent('SVGEvents');
+
+      if (!box) return;
+
       if (box.nodeName === 'polygon') {
+        const event = document.createEvent('SVGEvents');
         event.initEvent('mousemove', true, true);
         box.dispatchEvent(event);
         prevBox = box;
-      } else {
-        if (!prevBox) return;
-
+      } else if (prevBox) {
+        const event = document.createEvent('SVGEvents');
         event.initEvent('mouseout', true, true);
         prevBox.dispatchEvent(event);
+        prevBox = null;
       }
-    });
+    };
+
+    dragScroll.addEventListener('mousemove', dispatchMouseEvent);
+
+    return () => {
+      dragScroll.removeEventListener('mousemove', dispatchMouseEvent);
+    };
   }, []);
 
   return (
     <section className={classes.detailedTranscriptViewerContainer}>
+      {/* Zoom slider */}
       <DiscreteSlider
         onChangeCommited={zoomLevelOnChangeCommited}
         name='Zoom Level'
@@ -263,7 +266,7 @@ const DetailedTranscripts = memo(() => {
       {/* This is the current transcript position index on top */}
       <TranscriptIndex />
       {/* These are the actual transcripts */}
-      <DetailedTranscriptVirtualLists virtualizedListRefsList={virtualizedListRefsList} />
+      <DetailedTranscriptVirtualLists />
       {/* This is for drag scroll on the transcripts, scroll-container class is library req. */}
       <DragScroll
         className={`${classes.scrollDragContainer} scroll-container`}

@@ -38,4 +38,5 @@ interface RootState {
   geneBrowserMouseoverPosition: number;
   geneBrowserTranscriptVisibility: { transcriptId: string; isVisible: boolean }[];
   geneBrowserBoxHeight: number;
+  geneBrowserVirtualRefs: { id: string; ref: import('react-window').FixedSizeList }[];
 }
