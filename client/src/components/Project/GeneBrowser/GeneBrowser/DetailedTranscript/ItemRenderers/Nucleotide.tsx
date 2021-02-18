@@ -8,7 +8,7 @@ import SnpMutation from './SnpMutation';
 import InsMutation from './InsMutation';
 import DelMutation from './DelMutation';
 
-import { DetailedNucleotideProps } from '../../../types';
+import { DetailedNucleotideProps } from '../../types';
 import { getNucleotideColor } from '../helpers';
 import { useStyles } from '../styles';
 

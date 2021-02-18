@@ -4,7 +4,7 @@ import flatten from 'flat';
 import min from 'lodash/min';
 import max from 'lodash/max';
 
-import { TranscriptProps } from '../../types';
+import { TranscriptProps } from '../types';
 import {
   getTranscriptVisualLineCount,
   getRelativePeptidePositions,

@@ -31,7 +31,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters, TranscriptsData } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters, TranscriptsData } from 'components/Project/GeneBrowser/GeneBrowser/types';
 
 import {
   initialMutationFilters,
@@ -216,7 +216,10 @@ const geneBrowserMouseoverPosition = (state = -1, action: SetGeneBrowserMouseove
   }
 };
 
-const geneBrowserScrollJumpPosition = (state = 0, action: SetGeneBrowserScrollJumpPosition) => {
+const geneBrowserScrollJumpPosition = (
+  state = { pos: 0, fromTables: false },
+  action: SetGeneBrowserScrollJumpPosition
+) => {
   switch (action.type) {
     case ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION:
       return action.payload;

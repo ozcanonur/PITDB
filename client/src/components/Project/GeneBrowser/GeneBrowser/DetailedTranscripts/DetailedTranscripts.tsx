@@ -13,11 +13,8 @@ import {
   setGeneBrowserScrollJumpPosition,
   setGeneBrowserScrollPosition,
 } from 'actions';
-import {
-  findTranscriptPositionFromScrollValue,
-  findScrollValueFromTranscriptPosition,
-  parseDiscreteSliderMarks,
-} from './helpers';
+import { findTranscriptPositionFromScrollValue, findScrollValueFromTranscriptPosition } from './helpers';
+import { parseDiscreteSliderMarks } from '../helpers';
 import { useStyles } from './styles';
 
 const TranscriptIndex = memo(() => {
@@ -88,7 +85,7 @@ const DetailedTranscripts = memo(() => {
   );
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
   const boxHeight = useSelector((state: RootState) => state.geneBrowserBoxHeight);
-  const scrollJumpPosition = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
+  const { pos: scrollJumpPosition } = useSelector((state: RootState) => state.geneBrowserScrollJumpPosition);
   const transcriptScrollPosition =
     useSelector((state: RootState) => state.geneBrowserScrollPosition) || minimumPosition;
   const geneBrowserVirtualRefs = useSelector((state: RootState) => state.geneBrowserVirtualRefs);

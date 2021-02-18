@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import Transcript from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
 
-import { RegularScrollProps } from '../../../types';
+import { RegularScrollProps } from '../../types';
 import { useStyles } from './styles';
 
 const Transcripts = memo(() => {

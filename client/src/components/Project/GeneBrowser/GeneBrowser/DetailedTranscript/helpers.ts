@@ -4,7 +4,7 @@ import {
   RelativeMutationPositionAndType,
   RelativeCdsPositionAndSequence,
   RelativePeptidePosition,
-} from '../../types';
+} from '../types';
 
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   const { cds } = transcript;

@@ -2,7 +2,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters } from 'components/Project/GeneBrowser/GeneBrowser/types';
 
 export const initialMutationFilters: MutationTableFilters = {
   gene: '',

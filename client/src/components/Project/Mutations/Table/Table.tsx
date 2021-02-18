@@ -183,7 +183,7 @@ const MutationsTable = ({ ...props }) => {
       dispatch(setGeneBrowserFilters({ gene, minTPM: 0, minQual: 0 }));
       // -3 to make mutation to not be completely aligned to the left
       // Since gene browser position is based on the left most index
-      dispatch(setGeneBrowserScrollJumpPosition(parseInt(position) - 3));
+      dispatch(setGeneBrowserScrollJumpPosition(parseInt(position) - 3, true));
       history.push(history.location.pathname.replace('mutations', 'gene-browser'));
     };
 

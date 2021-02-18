@@ -9,7 +9,7 @@ import CDS from './ItemRenderers/CDS';
 import Peptide from './ItemRenderers/Peptide';
 import Mod from './ItemRenderers/Mod';
 
-import { DetailedTranscriptProps, Transcript } from '../../types';
+import { DetailedTranscriptProps, Transcript } from '../types';
 import {
   getTranscriptVisualLineCount,
   getRelativeExonPositionsAndSequences,

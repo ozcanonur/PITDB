@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RelativeMutationPositionAndType } from '../../../types';
+import { RelativeMutationPositionAndType } from '../../types';
 import { getNucleotideColor } from '../helpers';
 import { useStyles } from '../styles';
 

@@ -2,7 +2,7 @@ import { MutationTableFilters } from 'components/Project/Mutations/Table/types';
 import { DGETableFilters } from 'components/Project/DGE/Table/types';
 import { SplicingEventsTableFilters } from 'components/Project/SplicingEvents/Table/types';
 import { TranscriptUsageTableFilters } from 'components/Project/TranscriptUsage/Table/types';
-import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/types';
+import { GeneBrowserFilters, TranscriptsResponse } from 'components/Project/GeneBrowser/GeneBrowser/types';
 import { FixedSizeList } from 'react-window';
 
 export enum ACTION {
@@ -117,7 +117,7 @@ export type SetGeneBrowserScrollPosition = {
 
 export type SetGeneBrowserScrollJumpPosition = {
   type: ACTION.SET_GENE_BROWSER_SCROLL_JUMP_POSITION;
-  payload: number;
+  payload: { pos: number; redirectFromTables?: boolean };
 };
 
 export type SetGeneBrowserMouseoverPosition = {

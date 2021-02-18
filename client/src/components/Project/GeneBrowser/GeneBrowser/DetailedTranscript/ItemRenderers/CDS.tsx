@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
-import { DetailedCdsProps } from '../../../types';
+import { DetailedCdsProps } from '../../types';
 import { useStyles } from '../styles';
 
 const CDS = memo(({ index, style, data }: DetailedCdsProps) => {

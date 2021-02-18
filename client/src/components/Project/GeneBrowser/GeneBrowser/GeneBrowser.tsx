@@ -1,5 +1,5 @@
 import { useState, useEffect, ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, useStore } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
 
@@ -18,7 +18,7 @@ import DetailedTranscripts from './DetailedTranscripts/DetailedTranscripts';
 import { fetchFromApi } from 'utils';
 import { useStyles } from './styles';
 import { parseDiscreteSliderMarks } from './helpers';
-import { GeneNamesResponse, TranscriptsResponse } from '../types';
+import { GeneNamesResponse, TranscriptsResponse } from './types';
 import {
   clearGeneBrowserTranscriptVisibility,
   setGeneBrowserFilters,
@@ -40,6 +40,8 @@ const GeneBrowser = () => {
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+
+  const store = useStore();
 
   useEffect(() => {
     // Don't try to fetch before these values are initialized
@@ -70,8 +72,11 @@ const GeneBrowser = () => {
       dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
 
       // Only scroll to the start if it's a different gene
-      if (resTranscripts.minimumPosition !== transcriptsData.minimumPosition)
-        dispatch(setGeneBrowserScrollJumpPosition(resTranscripts.minimumPosition));
+      // And it wasn't a redirect from tables (right most button in other tab's tables)
+      const { redirectFromTables } = store.getState().geneBrowserScrollJumpPosition;
+      if (redirectFromTables || resTranscripts.minimumPosition === transcriptsData.minimumPosition) return;
+
+      dispatch(setGeneBrowserScrollJumpPosition(resTranscripts.minimumPosition, false));
     });
 
     return () => {
