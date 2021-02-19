@@ -13,7 +13,11 @@ import {
   setGeneBrowserScrollJumpPosition,
   setGeneBrowserScrollPosition,
 } from 'actions';
-import { findTranscriptPositionFromScrollValue, findScrollValueFromTranscriptPosition } from './helpers';
+import {
+  findTranscriptPositionFromScrollValue,
+  findScrollValueFromTranscriptPosition,
+  scrollVirtualRefs,
+} from './helpers';
 import { parseDiscreteSliderMarks } from '../helpers';
 import { useStyles } from './styles';
 
@@ -98,11 +102,7 @@ const DetailedTranscripts = memo(() => {
   const handleDragScroll = useCallback(
     (scrollLeft: number) => {
       // Scroll all the children transcript virtualized lists
-      geneBrowserVirtualRefs.forEach(({ ref }) => {
-        if (ref) {
-          ref.scrollTo(scrollLeft);
-        }
-      });
+      scrollVirtualRefs(geneBrowserVirtualRefs, scrollLeft);
 
       // And scroll regular bottom scroll element
       if (!bottomScrollRef.current) return;
@@ -168,11 +168,7 @@ const DetailedTranscripts = memo(() => {
     bottomScrollRef.current.scrollTo({ left: scrollLeft });
 
     // Scroll all the children transcript virtualized lists
-    geneBrowserVirtualRefs.forEach(({ ref }) => {
-      if (ref) {
-        ref.scrollTo(scrollLeft);
-      }
-    });
+    scrollVirtualRefs(geneBrowserVirtualRefs, scrollLeft);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minimumPosition, scrollJumpPosition]);
@@ -184,11 +180,7 @@ const DetailedTranscripts = memo(() => {
     const { scrollLeft } = bottomScrollRef.current;
 
     // Scroll all the children transcript virtualized lists
-    geneBrowserVirtualRefs.forEach(({ ref }) => {
-      if (ref) {
-        ref.scrollTo(scrollLeft);
-      }
-    });
+    scrollVirtualRefs(geneBrowserVirtualRefs, scrollLeft);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptVisibility, geneBrowserVirtualRefs]);

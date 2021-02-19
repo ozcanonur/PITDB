@@ -1,3 +1,5 @@
+import { FixedSizeList } from 'react-window';
+
 export const findTranscriptPositionFromScrollValue = (
   scrollLeft: number,
   minimumPosition: number,
@@ -24,4 +26,18 @@ export const findScrollValueFromTranscriptPosition = (
   const scrollLeft = percentageScrolled * totalTranscriptWidthInPixels;
 
   return scrollLeft;
+};
+
+export const scrollVirtualRefs = (
+  refs: {
+    id: string;
+    ref: FixedSizeList;
+  }[],
+  scrollLeft: number
+) => {
+  refs.forEach(({ ref }) => {
+    if (ref) {
+      ref.scrollTo(scrollLeft);
+    }
+  });
 };

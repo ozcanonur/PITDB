@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { useSelector, useDispatch, useStore } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ActionMeta } from 'react-select';
@@ -44,7 +44,6 @@ const GeneBrowser = () => {
   const store = useStore();
 
   useEffect(() => {
-    // Don't try to fetch before these values are initialized
     if (!filters.gene || !project) return;
 
     let isMounted = true;
@@ -62,15 +61,9 @@ const GeneBrowser = () => {
       if (!resMaxTpm) return;
       setMaxTPM(resMaxTpm.maxTPM);
 
-      const visibleTranscripts = resTranscripts.transcripts.map(({ transcriptId }) => ({
-        transcriptId,
-        isVisible: true,
-      }));
-
       dispatch(setGeneBrowserTranscriptsData(resTranscripts));
-      dispatch(clearGeneBrowserTranscriptVisibility());
-      dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
 
+      // useStore is just like useSelector but it doesn't trigger rerenders on update
       // Only scroll to the start if it's a different gene
       // And it wasn't a redirect from tables (right most button in other tab's tables)
       const { redirectFromTables } = store.getState().geneBrowserScrollJumpPosition;
@@ -84,6 +77,25 @@ const GeneBrowser = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
+
+  // Only clear and show all transcripts if it's a different gene, and not on the first mount
+  // This is to persist visibility across mounts
+  const isFirstRun = useRef(true);
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+
+    dispatch(clearGeneBrowserTranscriptVisibility());
+
+    const visibleTranscripts = transcriptsData.transcripts.map(({ transcriptId }) => ({
+      transcriptId,
+      isVisible: true,
+    }));
+    dispatch(setGeneBrowserTranscriptVisibility(visibleTranscripts));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transcriptsData.minimumPosition]);
 
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
