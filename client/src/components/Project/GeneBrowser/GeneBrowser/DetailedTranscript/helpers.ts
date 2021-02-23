@@ -116,8 +116,8 @@ export const getRelativeCdsPositionsAndSequences = (
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;
 
+    // We are at the end
     if (exon.end > cdsEnd) {
-      // We are at the end
       const cdsInThisExonLength = cdsEnd - cdsStart + 1 - (3 - (leftoverNucleotideCount || 3));
 
       if (cdsStart > exon.start) {

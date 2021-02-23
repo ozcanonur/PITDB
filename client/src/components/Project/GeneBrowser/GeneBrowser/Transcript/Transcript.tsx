@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import React, { Fragment, memo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import flatten from 'flat';
 import min from 'lodash/min';
@@ -154,6 +154,9 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
         const previousCdsHadPeptides = index === 0 ? false : Boolean(transcript.cds[index - 1].peptides);
         const offsetY = previousCdsHadPeptides ? index * 6 + 18 : index * 6 + 12;
 
+        console.log(relativeCdsPositionsAndSequences);
+        console.log(relativePeptidePositions);
+
         return (
           <g key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
             <line
@@ -178,48 +181,54 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
               </rect>
             ))}
             {/* These are the peptides */}
-            {relativePeptidePositions.map(({ start, end }, index) => {
-              // const startsAtCds = relativeCdsPositionsAndSequences.find((cds) => cds.start <= start);
-              // let drawUntil = 0;
-              // if (startsAtCds) {
-              //   drawUntil = end <= startsAtCds.end ? end : startsAtCds.end;
-              // }
+            {relativePeptidePositions.map(({ start: peptideStart, end: peptideEnd }, index) => {
+              const peptideRegionsOnCds = [];
+              for (const cds of relativeCdsPositionsAndSequences) {
+                if (peptideStart > cds.end || peptideEnd < cds.start) continue;
 
-              // return (
-              //   <Fragment key={index}>
-              //     <line
-              //       x1={start * pixelPerValue}
-              //       x2={start * pixelPerValue + (end - start + 1) * pixelPerValue}
-              //       y1={CDS_HEIGHT + offsetY + 2}
-              //       y2={CDS_HEIGHT + offsetY + 2}
-              //       className={classes.peptideLine}
-              //     >
-              //       Peptide
-              //     </line>
-              //     {startsAtCds ? (
-              //       <rect
-              //         x={startsAtCds.start * pixelPerValue}
-              //         y={CDS_HEIGHT + offsetY + 2}
-              //         width={10}
-              //         height={CDS_HEIGHT}
-              //       >
-              //         Peptide
-              //       </rect>
-              //     ) : null}
-              //   </Fragment>
-              // );
+                if (peptideStart > cds.start && peptideEnd > cds.end)
+                  peptideRegionsOnCds.push({ start: peptideStart, end: cds.end });
+                else if (peptideStart < cds.start && peptideEnd < cds.end)
+                  peptideRegionsOnCds.push({ start: cds.start, end: peptideEnd });
+              }
+
               return (
-                <rect
-                  key={index}
-                  className={classes.peptide}
-                  x={start * pixelPerValue}
-                  y={CDS_HEIGHT + offsetY + 2}
-                  width={(end - start + 1) * pixelPerValue}
-                  height={CDS_HEIGHT}
-                >
-                  <title>Peptide</title>
-                </rect>
+                <Fragment key={index}>
+                  <line
+                    x1={peptideStart * pixelPerValue}
+                    x2={peptideStart * pixelPerValue + (peptideEnd - peptideStart + 1) * pixelPerValue}
+                    y1={CDS_HEIGHT + offsetY + 4}
+                    y2={CDS_HEIGHT + offsetY + 4}
+                    className={classes.peptideLine}
+                  >
+                    <title>Peptide</title>
+                  </line>
+                  {peptideRegionsOnCds.map(({ start, end }, index) => (
+                    <rect
+                      key={index}
+                      className={classes.peptide}
+                      x={start * pixelPerValue}
+                      y={CDS_HEIGHT + offsetY + 2}
+                      width={(end - start + 1) * pixelPerValue}
+                      height={CDS_HEIGHT}
+                    >
+                      <title>Peptide</title>
+                    </rect>
+                  ))}
+                </Fragment>
               );
+              // return (
+              //   <rect
+              //     key={index}
+              //     className={classes.peptide}
+              //     x={start * pixelPerValue}
+              //     y={CDS_HEIGHT + offsetY + 2}
+              //     width={(end - start + 1) * pixelPerValue}
+              //     height={CDS_HEIGHT}
+              //   >
+              //     <title>Peptide</title>
+              //   </rect>
+              // );
             })}
             {/* These are the mods */}
             {relativeModPositionsAndTypes.map(({ pos, type }, index) => {

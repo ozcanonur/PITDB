@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
     stroke: 'rgba(200, 85, 61, 0.7)',
   },
   mod: {
-    fill: '#798478',
+    fill: 'rgba(40, 82, 56, 0.7)',
   },
   detailedTranscriptContainer: {
     display: 'flex',
