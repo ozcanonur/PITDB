@@ -23,11 +23,9 @@ const Transcripts = memo(() => {
 
   return (
     <div className={classes.tooltipTranscripts}>
-      {visibleTranscripts.map((transcript, index) => {
-        if (index > 0) return null;
-
-        return <Transcript key={transcript.transcriptId} transcript={transcript} isTooltip={true} />;
-      })}
+      {visibleTranscripts.map((transcript) => (
+        <Transcript key={transcript.transcriptId} transcript={transcript} isTooltip={true} />
+      ))}
     </div>
   );
 });

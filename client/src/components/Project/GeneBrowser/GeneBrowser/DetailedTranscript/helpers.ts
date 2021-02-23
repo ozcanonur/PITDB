@@ -189,23 +189,29 @@ export const getRelativePeptidePositions = (
   peptides: { sequence: string; mod: string }[],
   isReverse: boolean
 ) => {
-  peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
+  // Remove duplicate peptides, keep the one with the mods
+  const sortedPeptides = peptides.sort(
+    ({ mod: modX }, { mod: modY }) => modY.indexOf('(') - modX.indexOf('(')
+  );
+  const uniqPeptides = uniqBy(sortedPeptides, 'sequence');
 
   relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
 
-  const relativePeptidePositions = peptides
+  const relativePeptidePositions = uniqPeptides
     .map(({ sequence: peptideSequence, mod }) => {
-      mod = mod.replaceAll('_', '');
-      const mods = mod.match(/\((.*?)\)\)/g) || [];
+      let modString = mod.replaceAll('_', '');
+      const mods = modString.match(/\((.*?)\)\)/g) || [];
 
       const modPositions: { type: string; posInPeptide: number }[] = [];
-      let tempMod = mod;
       for (let i = 0; i < mods.length; i++) {
-        tempMod = tempMod.replace(mods[i - 1], '');
+        // Remove previous mod from the string
+        modString = modString.replace(mods[i - 1], '');
         modPositions.push({
           // Remove outer most parantheses
           type: mods[i].substring(1, mods[i].length - 1),
-          posInPeptide: tempMod.indexOf(mods[i]),
+          posInPeptide: isReverse
+            ? modString.length - modString.indexOf(mods[i]) - mods[i].length + 1
+            : modString.indexOf(mods[i]),
         });
       }
 
@@ -229,6 +235,7 @@ export const getRelativePeptidePositions = (
         if (!endPos && peptideEndPosInCds < coveredSoFar + cds.sequence.length) {
           endPos = cds.start + (peptideEndPosInCds - coveredSoFar + 1) * 3 - 1;
         }
+
         // Peptide is further down the exons
         coveredSoFar += cds.sequence.length;
       }
@@ -247,9 +254,9 @@ export const getRelativeModPositionsAndTypes = (
 ) => {
   const relativeModPositionsAndTypes = [];
   for (const relativePeptidePosition of relativePeptidePositions) {
-    if (relativePeptidePosition.mods.length === 0) continue;
-
     const mods = relativePeptidePosition.mods;
+
+    if (mods.length === 0) continue;
 
     for (const mod of mods) {
       let relativePos = relativePeptidePosition.start;
@@ -266,7 +273,7 @@ export const getRelativeModPositionsAndTypes = (
         } else {
           const nextCds = relativeCdsPositionsAndSequences[i + 1];
           totalPut = currCds.end - relativePos;
-          relativePos = nextCds.start;
+          relativePos = nextCds.start + 1;
         }
       }
       relativeModPositionsAndTypes.push({ pos: relativePos, type: mod.type });

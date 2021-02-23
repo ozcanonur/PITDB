@@ -245,9 +245,7 @@ const Transcripts = memo(() => {
       )}
       <section className={classes.transcriptsOverviewContainer}>
         <div>
-          {transcriptsData.transcripts.map((transcript, index) => {
-            if (index > 0) return null;
-
+          {transcriptsData.transcripts.map((transcript) => {
             const { transcriptId, conditions } = transcript;
 
             const isVisible = visibleTranscriptIds.includes(transcriptId);

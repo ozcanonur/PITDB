@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { areEqual } from 'react-window';
 
@@ -14,24 +14,23 @@ const Mod = memo(({ index, style, data }: DetailedModProps) => {
 
   const { relativeModPositionsAndTypes } = data;
 
-  // WOOP, not sure about this actually, definitely wrong actually
-  // They will always be 2 indexes behind
+  // They will always be 1 aminoacid behind = 3 indexes. 3-1 = 2 to center the triangle
   const indexBelongsTo = relativeModPositionsAndTypes.find(({ pos }) => pos - 2 === index);
 
-  if (!indexBelongsTo) return null;
-
-  const handleMove = () => {
+  const handleMove = useCallback(() => {
     setTooltipOpen(true);
-  };
+  }, []);
 
-  const handleLeave = () => {
+  const handleLeave = useCallback(() => {
     setTooltipOpen(false);
-  };
+  }, []);
+
+  if (!indexBelongsTo) return null;
 
   return (
     <g style={style}>
       <polygon
-        points={`${index * boxHeight},${boxHeight} ${index * boxHeight + boxHeight / 2}, 0 ${
+        points={`${index * boxHeight}, ${boxHeight} ${index * boxHeight + boxHeight / 2}, 0 ${
           index * boxHeight + boxHeight
         },${boxHeight}`}
         className={classes.mod}
