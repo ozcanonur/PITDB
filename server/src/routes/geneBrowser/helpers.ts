@@ -62,16 +62,14 @@ export const parseTranscriptsForViewer = (
       (mutation) => replaceall('_', '.', mutation.transcript) === transcriptID
     );
 
-    const parsedConditions = Object.entries(TPM)
-      // .filter(([thisCondition]) => thisCondition === condition)
-      .map(([condition, values]) => {
-        const meanValue = mean(Object.values(values));
-        return {
-          condition,
-          mean: meanValue,
-          values: Object.keys(values).map((sample) => ({ sample, TPM: values[sample] })),
-        };
-      });
+    const parsedConditions = Object.entries(TPM).map(([condition, values]) => {
+      const meanValue = mean(Object.values(values));
+      return {
+        condition,
+        mean: meanValue,
+        values: Object.keys(values).map((sample) => ({ sample, TPM: values[sample] })),
+      };
+    });
 
     const parsedCds = CDS
       ? Object.keys(CDS)

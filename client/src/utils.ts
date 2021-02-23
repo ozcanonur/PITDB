@@ -43,6 +43,8 @@ export const usePrevious = (value: any) => {
   return ref.current;
 };
 
+export const reverseString = (str: string) => str.split('').reverse().join('');
+
 export function useWhyDidYouUpdate(name, props) {
   // Get a mutable ref object where we can store props ...
   // ... for comparison next time this hook runs.

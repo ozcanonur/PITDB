@@ -10,8 +10,8 @@
     "client": "cd ../client && yarn start",
     "dev": "concurrently --kill-others-on-fail \"yarn:start:*\" \"yarn client\"",
     "build:deploy": "tsc --outDir ../deployment",
-    "sloc": "sloc src/ --format cli-table",
-    "deploy": "cd ../deployment && yarn deploy"
+    "deploy": "cd ../deployment && yarn deploy",
+    "sloc": "sloc src/ --format cli-table"
   },
   "dependencies": {
     "@types/body-parser": "^1.19.0",

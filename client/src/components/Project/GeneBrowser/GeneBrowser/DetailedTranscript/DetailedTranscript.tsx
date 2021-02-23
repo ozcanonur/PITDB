@@ -174,48 +174,31 @@ const DetailedTranscript = memo(({ transcript, ...props }: DetailedTranscriptPro
                 {Nucleotide}
               </VirtualizedList>
               {/* These are the CDSs */}
-              {cdsStartAndEndsAndSequences.map(({ cdsStart, cdsEnd, sequence, isReverse }, index) => {
-                const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
-                  relativeExonPositionsAndSequences,
-                  cdsStart,
-                  cdsEnd,
-                  sequence,
-                  isReverse
-                );
+              {cdsStartAndEndsAndSequences.map(
+                ({ cdsStart, cdsEnd, sequence: cdsSequence, isReverse }, index) => {
+                  const relativeCdsPositionsAndSequences = getRelativeCdsPositionsAndSequences(
+                    relativeExonPositionsAndSequences,
+                    cdsStart,
+                    cdsEnd,
+                    cdsSequence,
+                    isReverse
+                  );
 
-                const relativePeptidePositions = getRelativePeptidePositions(
-                  relativeCdsPositionsAndSequences,
-                  sequence,
-                  // @ts-ignore
-                  transcript.cds[index].peptides,
-                  isReverse
-                );
+                  const relativePeptidePositions = getRelativePeptidePositions(
+                    relativeCdsPositionsAndSequences,
+                    cdsSequence,
+                    // @ts-ignore
+                    transcript.cds[index].peptides,
+                    isReverse
+                  );
 
-                const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
-                  relativeCdsPositionsAndSequences,
-                  relativePeptidePositions
-                );
+                  const relativeModPositionsAndTypes = getRelativeModPositionsAndTypes(
+                    relativeCdsPositionsAndSequences,
+                    relativePeptidePositions
+                  );
 
-                return (
-                  <Fragment key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
-                    <VirtualizedList
-                      height={boxHeight}
-                      itemCount={maximumPosition - minimumPosition + 1}
-                      itemSize={boxHeight}
-                      layout='horizontal'
-                      width={width}
-                      innerElementType='svg'
-                      itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
-                      style={{ overflow: 'hidden' }}
-                      ref={(ref) =>
-                        dispatch(
-                          addGeneBrowserVirtualRef({ id: `${transcript.transcriptId}_cds_${index}`, ref })
-                        )
-                      }
-                    >
-                      {CDS}
-                    </VirtualizedList>
-                    {relativePeptidePositions.length !== 0 ? (
+                  return (
+                    <Fragment key={`${cdsStart}, ${cdsEnd}, ${cdsSequence}`}>
                       <VirtualizedList
                         height={boxHeight}
                         itemCount={maximumPosition - minimumPosition + 1}
@@ -223,48 +206,67 @@ const DetailedTranscript = memo(({ transcript, ...props }: DetailedTranscriptPro
                         layout='horizontal'
                         width={width}
                         innerElementType='svg'
-                        itemData={{
-                          relativePeptidePositions,
-                          relativeCdsPositionsAndSequences,
-                        }}
+                        itemData={{ relativeCdsPositionsAndSequences, cdsStart, cdsEnd }}
                         style={{ overflow: 'hidden' }}
                         ref={(ref) =>
                           dispatch(
-                            addGeneBrowserVirtualRef({
-                              id: `${transcript.transcriptId}_peptides_${index}`,
-                              ref,
-                            })
+                            addGeneBrowserVirtualRef({ id: `${transcript.transcriptId}_cds_${index}`, ref })
                           )
                         }
                       >
-                        {Peptide}
+                        {CDS}
                       </VirtualizedList>
-                    ) : null}
-                    {relativeModPositionsAndTypes.length !== 0 ? (
-                      <VirtualizedList
-                        height={boxHeight}
-                        itemCount={maximumPosition - minimumPosition + 1}
-                        itemSize={boxHeight}
-                        layout='horizontal'
-                        width={width}
-                        innerElementType='svg'
-                        itemData={{ relativeModPositionsAndTypes }}
-                        style={{ overflow: 'hidden' }}
-                        ref={(ref) =>
-                          dispatch(
-                            addGeneBrowserVirtualRef({
-                              id: `${transcript.transcriptId}_mods_${index}`,
-                              ref,
-                            })
-                          )
-                        }
-                      >
-                        {Mod}
-                      </VirtualizedList>
-                    ) : null}
-                  </Fragment>
-                );
-              })}
+                      {relativePeptidePositions.length !== 0 ? (
+                        <VirtualizedList
+                          height={boxHeight}
+                          itemCount={maximumPosition - minimumPosition + 1}
+                          itemSize={boxHeight}
+                          layout='horizontal'
+                          width={width}
+                          innerElementType='svg'
+                          itemData={{
+                            relativePeptidePositions,
+                            relativeCdsPositionsAndSequences,
+                          }}
+                          style={{ overflow: 'hidden' }}
+                          ref={(ref) =>
+                            dispatch(
+                              addGeneBrowserVirtualRef({
+                                id: `${transcript.transcriptId}_peptides_${index}`,
+                                ref,
+                              })
+                            )
+                          }
+                        >
+                          {Peptide}
+                        </VirtualizedList>
+                      ) : null}
+                      {relativeModPositionsAndTypes.length !== 0 ? (
+                        <VirtualizedList
+                          height={boxHeight}
+                          itemCount={maximumPosition - minimumPosition + 1}
+                          itemSize={boxHeight}
+                          layout='horizontal'
+                          width={width}
+                          innerElementType='svg'
+                          itemData={{ relativeModPositionsAndTypes }}
+                          style={{ overflow: 'hidden' }}
+                          ref={(ref) =>
+                            dispatch(
+                              addGeneBrowserVirtualRef({
+                                id: `${transcript.transcriptId}_mods_${index}`,
+                                ref,
+                              })
+                            )
+                          }
+                        >
+                          {Mod}
+                        </VirtualizedList>
+                      ) : null}
+                    </Fragment>
+                  );
+                }
+              )}
             </>
           )}
         </AutoSizer>

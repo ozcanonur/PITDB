@@ -74,9 +74,10 @@ const DetailedTranscriptVirtualLists = memo(() => {
 
   return (
     <div className={classes.detailedTranscripts}>
-      {visibleTranscripts.map((transcript) => (
-        <DetailedTranscript key={transcript.transcriptId} transcript={transcript} />
-      ))}
+      {visibleTranscripts.map((transcript, index) => {
+        if (index > 0) return null;
+        return <DetailedTranscript key={transcript.transcriptId} transcript={transcript} />;
+      })}
     </div>
   );
 });

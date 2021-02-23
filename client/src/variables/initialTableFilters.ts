@@ -29,7 +29,7 @@ export const initialTranscriptUsageFilters: TranscriptUsageTableFilters = {
 };
 
 export const initialGeneBrowserFilters: GeneBrowserFilters = {
-  gene: 'ACAT2',
+  gene: 'AGR2',
   minQual: 0,
   minTPM: 0,
 };

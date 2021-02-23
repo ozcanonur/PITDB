@@ -6,6 +6,8 @@ import {
   RelativePeptidePosition,
 } from '../types';
 
+import { reverseString } from 'utils';
+
 export const getTranscriptVisualLineCount = (transcript: Transcript) => {
   const { cds } = transcript;
 
@@ -109,7 +111,7 @@ export const getRelativeCdsPositionsAndSequences = (
   let leftoverNucleotideCount = 0;
   const relativeCdsPositionsAndSequences = [];
 
-  if (isReverse) sequence = sequence.split('').reverse().join('');
+  if (isReverse) sequence = reverseString(sequence);
 
   for (const exon of exons) {
     if (exon.end < cdsStart) continue;
@@ -189,6 +191,8 @@ export const getRelativePeptidePositions = (
 ) => {
   peptides = uniqBy(peptides, 'mod').map(({ sequence, mod }) => ({ sequence, mod }));
 
+  relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
+
   const relativePeptidePositions = peptides
     .map(({ sequence: peptideSequence, mod }) => {
       mod = mod.replaceAll('_', '');
@@ -208,25 +212,23 @@ export const getRelativePeptidePositions = (
       let startPos = 0;
       let endPos = 0;
 
-      relativeCdsPositionsAndSequences = relativeCdsPositionsAndSequences.sort((x, y) => x.start - y.start);
-
-      const peptideStartPosInCds = cdsSequence.indexOf(peptideSequence);
+      const peptideStartPosInCds = isReverse
+        ? reverseString(cdsSequence).indexOf(reverseString(peptideSequence))
+        : cdsSequence.indexOf(peptideSequence);
       const peptideEndPosInCds = peptideStartPosInCds + peptideSequence.length - 1;
 
       let coveredSoFar = 0;
       for (const cds of relativeCdsPositionsAndSequences) {
-        if (startPos && endPos) break;
+        if (startPos & endPos) break;
 
         // Peptide starts at this exon
         if (!startPos && peptideStartPosInCds < coveredSoFar + cds.sequence.length) {
           startPos = cds.start + (peptideStartPosInCds - coveredSoFar) * 3;
         }
-
         // Peptide ends at this exon
         if (!endPos && peptideEndPosInCds < coveredSoFar + cds.sequence.length) {
           endPos = cds.start + (peptideEndPosInCds - coveredSoFar + 1) * 3 - 1;
         }
-
         // Peptide is further down the exons
         coveredSoFar += cds.sequence.length;
       }
