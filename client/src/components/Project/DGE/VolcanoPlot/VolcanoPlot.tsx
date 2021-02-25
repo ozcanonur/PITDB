@@ -13,12 +13,15 @@ import { useStyles } from './styles';
 const VolcanoPlot = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Filters for the table
   const filters = useSelector((state: RootState) => state.DGEFilters);
 
   const [volcanoPlotData, setVolcanoPlotData] = useState<VolcanoPlotResponse>({ data: [] });
   const [loading, setLoading] = useState(false);
 
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -56,6 +59,7 @@ const VolcanoPlot = ({ ...props }) => {
               xScale={{ type: 'linear', min: fcMin, max: fcMax }}
               yScale={{ type: 'linear', min: 0, max: pMax }}
               useMesh={false}
+              // Custom tooltip
               tooltip={({ node }) => {
                 const { x, data, style } = node;
                 return (

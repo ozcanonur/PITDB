@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// Make page scroll to top on every route/url change
 const ScrollToTop = () => {
   const { pathname } = useLocation();
 

@@ -38,13 +38,12 @@ const Experiments = ({ ...props }) => {
       max: 74400,
       defaultValues: [10000, 55000],
     },
-    // {
-    //   type: 'SingleSelect',
-    //   onIndex: 3,
-    //   name: 'Search',
-    // },
   ];
 
+  // Extended table is a component for Table + filters combined
+  // Later on I redecided not to use it
+  // So feel free to remove this and use the regular Table component
+  // With custom filter callback functions
   return (
     <ExtendedTable
       data-aos='fade-in'

@@ -30,6 +30,7 @@ const ConfidenceIntervalChartSvg = ({ data, ...props }: ConfidenceChartSvgProps)
       className={classes.svg}
       {...props}
     >
+      {/* Generic chart base for ticks, axes etc. */}
       <ChartBase conditionNames={getConditionNames(data)} />
       {chartValues.map(({ transcript, conditions }, index) => {
         const [lineStart, lineEnd] = conditions.map(({ avg }) => CHART_HEIGHT - avg * CHART_HEIGHT);

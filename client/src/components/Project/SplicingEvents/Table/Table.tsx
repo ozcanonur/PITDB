@@ -25,10 +25,14 @@ import { SplicingEventsResponse, SplicingEventsGeneNamesResponse } from './types
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Condition types for this current project
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  // Filters for the table
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
+  // Sort state for the table
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
@@ -61,7 +65,7 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectSplicingEvent(gene, parseFloat(dPSI)));
   };
 
-  // Refetch on filters change
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -85,7 +89,7 @@ const SplicingEventsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Refetch on sort
+  // Refetch and update on sort
   // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -121,6 +125,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
   };
 
+  // Fetch more if needed on page change
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
 
@@ -163,6 +168,7 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setSplicingEventsFilters({ ...filters, [name]: newSelectedValues }));
   };
 
+  // Search filter
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: SplicingEventsGeneNamesResponse = await fetchFromApi('/api/splicing-events/gene-names', {
       project,
@@ -176,8 +182,8 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setSplicingEventsFilters({ ...filters, gene }));
   };
 
+  // P value filter
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
-
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
 
@@ -186,6 +192,7 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setSplicingEventsFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 
+  // Converts condition types into ['cond1-cond2', 'cond3-cond4'] etc.
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
   // Button on the right of the row
@@ -233,18 +240,6 @@ const SplicingEventsTable = ({ ...props }) => {
           onChange={() => {}}
           className={classes.singleSelect}
         />
-        {/* <MultiSelect
-          name='Strand'
-          options={[
-            { value: '-', label: '-' },
-            { value: '+', label: '+' },
-          ]}
-          defaultValues={['-', '+']}
-          onChange={(selectedOptions, _actionMeta) =>
-            multiSelectOnChange(selectedOptions, _actionMeta, 'strand')
-          }
-          className={classes.multiSelect}
-        /> */}
         <MultiSelect
           name='Peptide evidence'
           options={[

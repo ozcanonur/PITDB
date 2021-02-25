@@ -19,6 +19,7 @@ const TranscriptViewerSvg = ({ transcriptData, color, ...props }: TranscriptSvgP
 
   const pixelPerValue = RAIL_LENGTH / (maximumPosition - minimumPosition + 1);
 
+  // Currently selected transcript
   const { transcript: selectedTranscript } = useSelector(
     (state: RootState) => state.selectedTranscriptViewerTranscript
   );

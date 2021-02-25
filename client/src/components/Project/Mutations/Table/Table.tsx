@@ -23,9 +23,12 @@ import { SelectOption } from 'components/UI/MultiSelect/types';
 const MutationsTable = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
 
+  // Filters for the table
   const filters = useSelector((state: RootState) => state.mutationFilters);
+  // Sort state for the table
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
@@ -58,7 +61,7 @@ const MutationsTable = ({ ...props }) => {
     dispatch(selectMutation(gene, position));
   };
 
-  // Refetch on filters change
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -81,7 +84,7 @@ const MutationsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Refetch on sort
+  // Refetch and update on sort
   // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -116,6 +119,7 @@ const MutationsTable = ({ ...props }) => {
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
   };
 
+  // Fetch more if needed on page change
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
 
@@ -173,7 +177,7 @@ const MutationsTable = ({ ...props }) => {
   };
 
   // Button on the right of the row
-  // row prop will come from the table component's row
+  // row prop will come from the table component's row and it's the values for that roww
   const RowContentRight = ({ row }: { row: string[] }) => {
     const [gene, position] = row;
 
@@ -208,18 +212,6 @@ const MutationsTable = ({ ...props }) => {
           className={classes.singleSelect}
           defaultInputValue={filters.gene}
         />
-        {/* <MultiSelect
-            name='Synonymous'
-            options={[
-              { value: 'true', label: 'true' },
-              { value: 'false', label: 'false' },
-            ]}
-            defaultValues={['true', 'false']}
-            onChange={(selectedOptions, _actionMeta) =>
-              multiSelectOnChange(selectedOptions, _actionMeta, 'isSynonymous')
-            }
-            className={classes.multiSelect}
-          /> */}
         <MultiSelect
           name='Type'
           options={[

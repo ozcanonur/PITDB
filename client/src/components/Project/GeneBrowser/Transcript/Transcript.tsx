@@ -49,7 +49,7 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
     transcriptVisualLineCount * 2 +
     CDS_HEIGHT / 2;
 
-  // Make detailed browser scroll to the clicked position instantly
+  // Make detailed browser scroll to the clicked position
   const handleClick = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     if (!svgRef.current || isTooltip) return;
 
@@ -84,7 +84,6 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
     dispatch(setGeneBrowserMouseoverScrollPosition(-1));
   };
 
-  // For the rail
   const minExonStart: number = min(Object.values(flatten(transcript.exons))) || 0;
   const maxExonStart: number = max(Object.values(flatten(transcript.exons))) || 0;
 
@@ -154,9 +153,6 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
         const previousCdsHadPeptides = index === 0 ? false : Boolean(transcript.cds[index - 1].peptides);
         const offsetY = previousCdsHadPeptides ? index * 6 + 18 : index * 6 + 12;
 
-        console.log(relativeCdsPositionsAndSequences);
-        console.log(relativePeptidePositions);
-
         return (
           <g key={`${cdsStart}, ${cdsEnd}, ${sequence}`}>
             <line
@@ -182,13 +178,19 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
             ))}
             {/* These are the peptides */}
             {relativePeptidePositions.map(({ start: peptideStart, end: peptideEnd }, index) => {
+              // Show rectangle if peptide is aligned with the exon
               const peptideRegionsOnCds = [];
               for (const cds of relativeCdsPositionsAndSequences) {
                 if (peptideStart > cds.end || peptideEnd < cds.start) continue;
 
-                if (peptideStart > cds.start && peptideEnd > cds.end)
+                // If peptide starts at this cds but ends at another
+                if (peptideStart >= cds.start && peptideEnd >= cds.end)
                   peptideRegionsOnCds.push({ start: peptideStart, end: cds.end });
-                else if (peptideStart < cds.start && peptideEnd < cds.end)
+                // If peptide starts and ends at this cds
+                else if (peptideStart >= cds.start && peptideEnd <= cds.end)
+                  peptideRegionsOnCds.push({ start: peptideStart, end: peptideEnd });
+                // If peptide ends at this cds but started before
+                else if (peptideStart <= cds.start && peptideEnd <= cds.end)
                   peptideRegionsOnCds.push({ start: cds.start, end: peptideEnd });
               }
 
@@ -217,21 +219,10 @@ const Transcript = memo(({ transcript, isTooltip = false, ...props }: Transcript
                   ))}
                 </Fragment>
               );
-              // return (
-              //   <rect
-              //     key={index}
-              //     className={classes.peptide}
-              //     x={start * pixelPerValue}
-              //     y={CDS_HEIGHT + offsetY + 2}
-              //     width={(end - start + 1) * pixelPerValue}
-              //     height={CDS_HEIGHT}
-              //   >
-              //     <title>Peptide</title>
-              //   </rect>
-              // );
             })}
             {/* These are the mods */}
             {relativeModPositionsAndTypes.map(({ pos, type }, index) => {
+              // These are the points of the triangle
               const bottomLeft = `${pos * pixelPerValue - MOD_WIDTH / 2},${
                 CDS_HEIGHT + offsetY + CDS_HEIGHT * 2 + CDS_HEIGHT / 2
               }`;

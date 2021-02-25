@@ -30,19 +30,22 @@ import {
 const GeneBrowser = () => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
 
   // Initial values are set in the reducer
   const filters = useSelector((state: RootState) => state.geneBrowserFilters);
   const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
-  // Max mean TPM value for the selected filters (aside from TPM)
+  // Max mean TPM value for the selected filters (aside from the TPM filter obv.)
   const [maxTPM, setMaxTPM] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
+  // useStore is just like useSelector but it doesn't trigger rerenders on update
   const store = useStore();
 
+  // Refetch on filters change
   useEffect(() => {
     if (!filters.gene || !project) return;
 
@@ -63,7 +66,6 @@ const GeneBrowser = () => {
 
       dispatch(setGeneBrowserTranscriptsData(resTranscripts));
 
-      // useStore is just like useSelector but it doesn't trigger rerenders on update
       // Only scroll to the start if it's a different gene
       // And it wasn't a redirect from tables (right most button in other tab's tables)
       const { redirectFromTables } = store.getState().geneBrowserScrollJumpPosition;
@@ -97,6 +99,7 @@ const GeneBrowser = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transcriptsData.minimumPosition]);
 
+  // Search filter
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: GeneNamesResponse = await fetchFromApi('/api/gene-browser/gene-names', {
       project,
@@ -115,8 +118,8 @@ const GeneBrowser = () => {
     dispatch(setGeneBrowserFilters({ ...filters, minTPM: 0, minQual: 0, gene: selectedOption.value }));
   };
 
+  // Mutation quality filter
   const qualityMarks = ['0', '100', '250', '500', '1000'];
-
   const onMinQualityChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMinQualValue = parseFloat(qualityMarks[value]);
 
@@ -132,49 +135,51 @@ const GeneBrowser = () => {
   };
 
   return (
-    <ProjectItemCard
-      name={`Gene browser for ${filters.gene}`}
-      className={classes.projectItemCard}
-      style={{ minHeight: loading || transcriptsData.transcripts.length === 0 ? '75vh' : 'auto' }}
-    >
-      <div className={classes.filtersContainer}>
-        <SingleSelect
-          name='Search gene'
-          options={fetchSingleSelectOptions}
-          onChange={singleSelectOnChange}
-          defaultInputValue={filters.gene}
-          className={classes.singleSelect}
-        />
-        <ContinuousSlider
-          name='Min. Mean TPM'
-          initialValue={filters.minTPM}
-          min={0}
-          max={Math.floor(maxTPM)}
-          onChangeCommited={onMinTPMChangeCommited}
-        />
-        <DiscreteSlider
-          name='Min. Mutation Quality'
-          defaultValue={qualityMarks.indexOf(filters.minQual.toString())}
-          marks={parseDiscreteSliderMarks(qualityMarks)}
-          onChangeCommited={onMinQualityChangeCommited}
-        />
-        <GenericLegend
-          items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
-          colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', '#798478']}
-          direction='vertical'
-        />
-      </div>
-      {loading ? (
-        <Loading className={classes.loading} />
-      ) : transcriptsData.transcripts.length === 0 ? (
-        <NoResults className={classes.noResults} />
-      ) : (
-        <>
-          <Transcripts />
-          <DetailedTranscripts />
-        </>
-      )}
-    </ProjectItemCard>
+    <main className={classes.geneBrowserContainer}>
+      <ProjectItemCard
+        name={`Gene browser for ${filters.gene}`}
+        className={classes.projectItemCard}
+        style={{ minHeight: loading || transcriptsData.transcripts.length === 0 ? '75vh' : 'auto' }}
+      >
+        <div className={classes.filtersContainer}>
+          <SingleSelect
+            name='Search gene'
+            options={fetchSingleSelectOptions}
+            onChange={singleSelectOnChange}
+            defaultInputValue={filters.gene}
+            className={classes.singleSelect}
+          />
+          <ContinuousSlider
+            name='Min. Mean TPM'
+            initialValue={filters.minTPM}
+            min={0}
+            max={Math.floor(maxTPM)}
+            onChangeCommited={onMinTPMChangeCommited}
+          />
+          <DiscreteSlider
+            name='Min. Mutation Quality'
+            defaultValue={qualityMarks.indexOf(filters.minQual.toString())}
+            marks={parseDiscreteSliderMarks(qualityMarks)}
+            onChangeCommited={onMinQualityChangeCommited}
+          />
+          <GenericLegend
+            items={['Exon', 'CDS', 'Peptide', 'Mutation', 'Mod']}
+            colors={['#336', '#F8E58E', 'rgba(200, 85, 61, 0.6)', '#ED0909', '#798478']}
+            direction='vertical'
+          />
+        </div>
+        {loading ? (
+          <Loading className={classes.loading} />
+        ) : transcriptsData.transcripts.length === 0 ? (
+          <NoResults className={classes.noResults} />
+        ) : (
+          <>
+            <Transcripts />
+            <DetailedTranscripts />
+          </>
+        )}
+      </ProjectItemCard>
+    </main>
   );
 };
 

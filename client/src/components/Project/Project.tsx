@@ -7,8 +7,8 @@ import MutationsWrapper from './Mutations/Wrapper';
 import DGEWrapper from './DGE/Wrapper';
 import SplicingEventsWrapper from './SplicingEvents/Wrapper';
 import TranscriptUsageWrapper from './TranscriptUsage/Wrapper';
-import GeneBrowserWrapper from './GeneBrowser/Wrapper';
 import PeptideMapsWrapper from './PeptideMaps/Wrapper';
+import GeneBrowserWrapper from './GeneBrowser/GeneBrowser';
 
 import { fetchFromApi } from 'utils';
 import { setConditionTypes } from 'actions';
@@ -18,14 +18,13 @@ import { useStyles } from './styles';
 const Project = () => {
   const classes = useStyles();
 
-  const { path, params } = useRouteMatch();
+  const { path, params } = useRouteMatch<{ project: string }>();
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
 
-    // @ts-ignore
     fetchFromApi('/api/misc/condition-types', { project: params.project }).then((res) => {
       if (!res || !isMounted) return;
 

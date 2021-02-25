@@ -14,12 +14,15 @@ import { ConditionsResponse } from './types';
 const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected gene and dPSI from the table, using gene, dPSI as the unique identifier (maybe change to start pos?)
   const { gene, dPSI } = useSelector((state: RootState) => state.selectedSplicingEvent);
 
   const [conditionsData, setConditionsData] = useState<ConditionsResponse>([]);
   const [loading, setLoading] = useState(false);
 
+  // Refetch and update on gene or dPSI change
   useEffect(() => {
     let isMounted = true;
 

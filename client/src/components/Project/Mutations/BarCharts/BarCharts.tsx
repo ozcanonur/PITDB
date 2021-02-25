@@ -13,12 +13,15 @@ import { ConditionsResponse } from './types';
 const BarCharts = () => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected gene and position from the table
   const { gene, position } = useSelector((state: RootState) => state.selectedMutation);
 
   const [conditionsData, setConditionsData] = useState<ConditionsResponse>({});
   const [loading, setLoading] = useState(false);
 
+  // Refetch on selected gene or position change
   useEffect(() => {
     let isMounted = true;
 
@@ -39,7 +42,7 @@ const BarCharts = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gene, position, project]);
 
-  // Bar chart wants data in this format
+  // Bar charts want data in this format
   const qualityData = Object.keys(conditionsData).map((conditionName) => ({
     sample: conditionName,
     qual: conditionsData[conditionName].qual,

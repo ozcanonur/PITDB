@@ -5,6 +5,8 @@ const ExonSkippingSvg = ({ eventData, ...props }: ExonSkippingSvgProps) => {
 
   const [pos1, pos2, pos3, pos4] = positions;
 
+  // Just created this on Adobe Illustrator, so the units are all over the place
+  // But it works.
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
@@ -35,10 +37,6 @@ const ExonSkippingSvg = ({ eventData, ...props }: ExonSkippingSvgProps) => {
           y2={146.84}
           gradientUnits='userSpaceOnUse'
         >
-          {/* <stop offset={0} stopColor='#336' stopOpacity={1} />
-          <stop offset={0.23} stopColor='#336' stopOpacity={0.25} />
-          <stop offset={0.52} stopColor='#336' stopOpacity={0.5} />
-          <stop offset={0.79} stopColor='#336' stopOpacity={0.65} /> */}
           <stop offset={1} stopColor='#336' stopOpacity={0.7} />
         </linearGradient>
         <linearGradient

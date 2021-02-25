@@ -14,7 +14,9 @@ import { useStyles } from './styles';
 const TranscriptViewer = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected gene from the table
   const { gene } = useSelector((state: RootState) => state.selectedTranscriptUsage);
 
   const [transcriptsData, setTranscriptsData] = useState<TranscriptsResponse>({
@@ -24,6 +26,7 @@ const TranscriptViewer = ({ ...props }) => {
   });
   const [loading, setLoading] = useState(false);
 
+  // Refetch on gene change
   useEffect(() => {
     let isMounted = true;
 

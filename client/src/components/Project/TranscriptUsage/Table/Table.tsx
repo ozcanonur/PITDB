@@ -26,10 +26,14 @@ import { COLORS } from 'variables/transcriptViewerColors';
 const SplicingEventsTable = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Condition types for this current project
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  // Filters for the table
   const filters = useSelector((state: RootState) => state.transcriptUsageFilters);
+  // Sort state for the table
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Gene',
     order: 1,
@@ -63,7 +67,7 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectTranscriptViewerTranscript(transcript));
   };
 
-  // Refetch on filters change
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -87,7 +91,7 @@ const SplicingEventsTable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Refetch on sort
+  // Refetch and update on sort
   // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -123,6 +127,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
   };
 
+  // Fetch more if needed on page change
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
 
@@ -150,6 +155,7 @@ const SplicingEventsTable = ({ ...props }) => {
     setRowsPerPage(newRowsPerPage);
   };
 
+  // Dispatching color also to match colors to other charts
   const selectTranscriptUsageOnClick = (row: string[]) => {
     setSelectedRow(row);
     const [gene, transcript] = row;
@@ -158,6 +164,7 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(selectTranscriptViewerTranscriptColor(COLORS[0]));
   };
 
+  // Search filter
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const geneNames: TranscriptUsageGeneNamesResponse = await fetchFromApi(
       '/api/transcript-usages/gene-names',
@@ -175,8 +182,8 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setTranscriptUsageFilters({ ...filters, gene }));
   };
 
+  // P value filter
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
-
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValueFilterValue = parseFloat(pValueMarks[value]);
 
@@ -185,10 +192,11 @@ const SplicingEventsTable = ({ ...props }) => {
     dispatch(setTranscriptUsageFilters({ ...filters, maxPValue: newMaxPValueFilterValue }));
   };
 
+  // Converts condition types into ['cond1-cond2', 'cond3-cond4'] etc.
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
   // Button on the right of the row
-  // row prop will come from the table component's row
+  // row prop will come from the table component's row and it's the values for that roww
   const RowContentRight = ({ row }: { row: string[] }) => {
     const [gene] = row;
 

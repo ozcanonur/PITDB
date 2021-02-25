@@ -1,7 +1,7 @@
 import { forwardRef, memo, useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import Transcript from 'components/Project/GeneBrowser/GeneBrowser/Transcript/Transcript';
+import Transcript from 'components/Project/GeneBrowser/Transcript/Transcript';
 
 import { RegularScrollProps } from '../../types';
 import { useStyles } from './styles';

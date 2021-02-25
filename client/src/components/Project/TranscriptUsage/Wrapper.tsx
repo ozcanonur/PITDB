@@ -11,6 +11,7 @@ import { useStyles } from './styles';
 const TranscriptUsageWrapper = () => {
   const classes = useStyles();
 
+  // For responsive
   const screenIsBelow1850 = useMediaQuery({ maxWidth: 1850 });
 
   return (

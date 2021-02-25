@@ -19,10 +19,14 @@ import { SelectOption } from 'components/UI/MultiSelect/types';
 const DGETable = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Condition types for this current project
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
 
+  // Filters for the table
   const filters = useSelector((state: RootState) => state.DGEFilters);
+  // Sort state for the table
   const [sortedOn, setSortedOn] = useState<{ field: string; order: -1 | 1 }>({
     field: 'Symbol',
     order: 1,
@@ -32,8 +36,8 @@ const DGETable = ({ ...props }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [rowCount, setRowCount] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -54,7 +58,7 @@ const DGETable = ({ ...props }) => {
     dispatch(selectDGE(symbol));
   };
 
-  // Refetch on filters change
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -78,7 +82,7 @@ const DGETable = ({ ...props }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
-  // Refetch on sort
+  // Refetch and update on sort
   // Don't run on first render, avoids double fetching
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -114,6 +118,7 @@ const DGETable = ({ ...props }) => {
     setSortedOn({ field, order: newSortOrder as -1 | 1 });
   };
 
+  // Fetch more if needed on page change
   const handlePageChange = async (_event: MouseEvent<HTMLButtonElement> | null, page: number) => {
     setCurrentPage(page);
 
@@ -147,8 +152,8 @@ const DGETable = ({ ...props }) => {
     dispatch(selectDGE(symbolName));
   };
 
+  // P value filter
   const pValueMarks = ['0.001', '0.01', '0.05', '0.1', '1'];
-
   const onPValueChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMaxPValue = parseFloat(pValueMarks[value]);
 
@@ -157,8 +162,8 @@ const DGETable = ({ ...props }) => {
     dispatch(setDGEFilters({ ...filters, maxPValue: newMaxPValue }));
   };
 
+  // Fold change filter
   const foldChangeMarks = ['0', '0.5', '1', '5', '10'];
-
   const onFoldChangeCommited = (_event: ChangeEvent<{}>, value: number) => {
     const newMinAbsFoldChange = parseFloat(foldChangeMarks[value]);
 
@@ -167,6 +172,7 @@ const DGETable = ({ ...props }) => {
     dispatch(setDGEFilters({ ...filters, minAbsFoldChange: newMinAbsFoldChange }));
   };
 
+  // Search filter
   const fetchSingleSelectOptions = async (inputValue: string) => {
     const symbolNames: SymbolNamesResponse = await fetchFromApi('/api/dges/symbol-names', {
       project,
@@ -182,10 +188,11 @@ const DGETable = ({ ...props }) => {
     dispatch(setDGEFilters({ ...filters, symbol }));
   };
 
+  // Converts condition types into ['cond1-cond2', 'cond3-cond4'] etc.
   const versusConditionTypes = makeVersusConditionTypes(conditionTypes);
 
   // Button on the right of the row
-  // row prop will come from the table component's row
+  // row prop will come from the table component's row and it's the values for that roww
   const RowContentRight = ({ row }: { row: string[] }) => {
     const [symbol] = row;
 

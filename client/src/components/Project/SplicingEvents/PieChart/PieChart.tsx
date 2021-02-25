@@ -13,12 +13,15 @@ import { TypesResponse } from './types';
 const PieChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Filters from the table
   const filters = useSelector((state: RootState) => state.splicingEventsFilters);
 
   const [typesData, setTypesData] = useState<TypesResponse>({});
   const [loading, setLoading] = useState(false);
 
+  // Refetch and update on filters change
   useEffect(() => {
     let isMounted = true;
 

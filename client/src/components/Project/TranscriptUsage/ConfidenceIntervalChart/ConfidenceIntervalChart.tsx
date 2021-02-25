@@ -13,13 +13,17 @@ import { useStyles } from './styles';
 const ConfidenceChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected gene from the table
   const { gene } = useSelector((state: RootState) => state.selectedTranscriptUsage);
+  // Currently selected transcript from the transcript visual list
   const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
 
   const [conditionsData, setConditionsData] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Refetch on gene chaange
   useEffect(() => {
     let isMounted = true;
 

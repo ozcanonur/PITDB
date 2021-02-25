@@ -13,12 +13,15 @@ import { useStyles } from './styles';
 const PieChart = () => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Filters from the table
   const filters = useSelector((state: RootState) => state.mutationFilters);
 
   const [data, setData] = useState<TypesResponse>({ SNP: 0, DEL: 0, INS: 0 });
   const [loading, setLoading] = useState(false);
 
+  // Refetch on filters change
   useEffect(() => {
     let isMounted = true;
 
@@ -37,6 +40,7 @@ const PieChart = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, filters]);
 
+  // PieChart wants data in this format
   const typeDistributionData: { id: string; label: string; value: number }[] = [];
   for (const type of Object.keys(data)) {
     // @ts-ignore

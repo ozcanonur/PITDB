@@ -31,8 +31,8 @@ interface RootState {
   selectedTranscriptViewerTranscriptColor: {
     color: string;
   };
-  geneBrowserFilters: import('components/Project/GeneBrowser/GeneBrowser/types').GeneBrowserFilters;
-  geneBrowserTranscriptsData: import('components/Project/GeneBrowser/GeneBrowser/types').TranscriptsData;
+  geneBrowserFilters: import('components/Project/GeneBrowser/types').GeneBrowserFilters;
+  geneBrowserTranscriptsData: import('components/Project/GeneBrowser/types').TranscriptsData;
   geneBrowserScrollPosition: number;
   geneBrowserScrollJumpPosition: { pos: number; fromTables: boolean };
   geneBrowserMouseoverPosition: number;

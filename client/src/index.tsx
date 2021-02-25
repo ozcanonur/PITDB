@@ -16,6 +16,9 @@ import 'aos/dist/aos.css';
 
 const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)));
 
+/* ThemeProvider is to provide style standards for material UI components such as colors
+ * Provider is redux store
+ */
 ReactDOM.render(
   <ThemeProvider theme={theme}>
     <Provider store={store}>

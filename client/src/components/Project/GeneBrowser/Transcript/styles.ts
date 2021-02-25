@@ -27,7 +27,7 @@ export const useStyles = makeStyles((theme) => ({
     fill: theme.palette.primary.main,
   },
   cdsLine: {
-    stroke: '#FFDE4D',
+    stroke: 'rgba(255, 222, 77, 0.7)',
     strokeWidth: 1,
   },
   cdsRect: {
@@ -38,11 +38,11 @@ export const useStyles = makeStyles((theme) => ({
     zIndex: 9999,
   },
   peptideLine: {
-    stroke: 'rgba(200, 85, 61, 0.6)',
+    stroke: 'rgba(200, 85, 61, 0.7)',
     strokeWidth: 1,
   },
   peptide: {
-    fill: 'rgba(200, 85, 61, 0.6)',
+    fill: 'rgba(200, 85, 61)',
   },
   mod: {
     fill: 'rgba(40, 82, 56, 0.7)',

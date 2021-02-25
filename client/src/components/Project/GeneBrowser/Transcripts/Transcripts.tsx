@@ -17,6 +17,7 @@ import {
 } from 'actions';
 import { useStyles } from './styles';
 
+// Visual line to show current genomic position
 const CurrentPositionLine = () => {
   const classes = useStyles();
 
@@ -58,6 +59,7 @@ const CurrentPositionLine = () => {
   );
 };
 
+// Visual line to show mouseover genomic position
 const MouseoverPositionLine = () => {
   const classes = useStyles();
 
@@ -103,20 +105,25 @@ const Transcripts = memo(() => {
   const classes = useStyles();
 
   const transcriptsData = useSelector((state: RootState) => state.geneBrowserTranscriptsData);
+  // Condition types for this current project
   const conditionTypes = useSelector((state: RootState) => state.conditionTypes);
+  // Which transcripts are visible or not
   const transcriptVisibility = useSelector((state: RootState) => state.geneBrowserTranscriptVisibility);
+  // Are hidden transcripts collapsed or not
   const [hiddenTranscriptsCollapsed, setHiddenTranscriptsCollapsed] = useState(false);
+  // Sorted by which condition's TPM
   const [sortedBy, setSortedBy] = useState('');
 
+  const dispatch = useDispatch();
+
+  // Update condition types on change
   useEffect(() => {
     setSortedBy(conditionTypes[0]);
     dispatch(sortGeneBrowserTranscripts(conditionTypes[0]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conditionTypes]);
 
-  const dispatch = useDispatch();
-
-  // Reset positions on entry
+  // Reset positions on transcripts data change
   useEffect(() => {
     dispatch(setGeneBrowserMouseoverScrollPosition(-1));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -162,7 +169,7 @@ const Transcripts = memo(() => {
     .filter(({ isVisible }) => isVisible)
     .map(({ transcriptId }) => transcriptId);
 
-  const notvisibleTranscriptIds = transcriptVisibility
+  const notVisibleTranscriptIds = transcriptVisibility
     .filter(({ isVisible }) => !isVisible)
     .map(({ transcriptId }) => transcriptId);
 
@@ -228,7 +235,7 @@ const Transcripts = memo(() => {
           title='Show hidden transcripts'
           style={{ animation: visibleTranscriptIds.length === 0 ? `flash-red 1s infinite` : 'none' }}
         >
-          <span>{`Show Hidden (${notvisibleTranscriptIds.length})`}</span>
+          <span>{`Show Hidden (${notVisibleTranscriptIds.length})`}</span>
           <ExpandMoreIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       ) : (
@@ -239,7 +246,7 @@ const Transcripts = memo(() => {
           onClick={collapseHiddenTranscripts}
           title='Collapse hidden transcripts'
         >
-          <span>{`Collapse hidden (${notvisibleTranscriptIds.length})`}</span>
+          <span>{`Collapse hidden (${notVisibleTranscriptIds.length})`}</span>
           <ExpandLessIcon className={classes.hideTranscriptButtonIcon} />
         </IconButton>
       )}

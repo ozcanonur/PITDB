@@ -18,7 +18,9 @@ import { contrastingColors } from 'variables/contrastingColors';
 const LineChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected symbol on the table
   const { symbol } = useSelector((state: RootState) => state.selectedDGE);
 
   const [peptideIntensities, setPeptideIntensities] = useState<PeptideIntensityResponse>({
@@ -28,6 +30,7 @@ const LineChart = ({ ...props }) => {
   });
   const [loading, setLoading] = useState(false);
 
+  // Refetch on selected symbol change
   useEffect(() => {
     let isMounted = true;
 

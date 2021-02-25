@@ -14,12 +14,15 @@ import ConfidenceBarChart from 'components/UI/ConfidenceBarChart/ConfidenceBarCh
 const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected symbol on the table
   const { symbol } = useSelector((state: RootState) => state.selectedDGE);
 
   const [barChartData, setBarChartData] = useState<BarChartData>([]);
   const [loading, setLoading] = useState(false);
 
+  // Refetch on selected symbol change
   useEffect(() => {
     let isMounted = true;
 

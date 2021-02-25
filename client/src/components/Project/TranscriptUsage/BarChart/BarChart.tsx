@@ -15,14 +15,18 @@ import { useStyles } from './styles';
 const BarChart = ({ ...props }) => {
   const classes = useStyles();
 
+  // Project ID of the current route
   const { project } = useParams<{ project: string }>();
+  // Currently selected transcript from the table
   const { transcript } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscript);
+  // Currently selected transcript's color to match colors of charts
   const { color } = useSelector((state: RootState) => state.selectedTranscriptViewerTranscriptColor);
 
   const [transcriptReadCounts, setTranscriptReadCounts] = useState<TranscriptReadCountsResponse>([]);
   const [barChartColor, setBarChartColor] = useState('#336');
   const [loading, setLoading] = useState(false);
 
+  // Refetch on transcript change
   useEffect(() => {
     let isMounted = true;
 
