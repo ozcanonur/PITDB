@@ -22,6 +22,7 @@ router.get('/transcripts', async (req: ExtendedRequest, res) => {
   try {
     const transcripts = await AllTranscript.find({ project, gene });
 
+    // Maybe do this client side?
     const filteredTranscripts = transcripts.filter(({ TPM }) => {
       const meanTPMs = Object.keys(TPM).map((condition) => mean(Object.values(TPM[condition])));
       return meanTPMs.some((e) => e >= minTPM);

@@ -13,6 +13,8 @@ import splicingEventsRouter from './routes/splicingEvents/splicingEvents';
 import transcriptUsagesRouter from './routes/transcriptUsages/transcriptUsages';
 import geneBrowserRouter from './routes/geneBrowser/geneBrowser';
 
+// Setup environment variables
+// E.g. client build path for deployment and the mongoDB server IP
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
@@ -44,7 +46,7 @@ app.use('/api/gene-browser', geneBrowserRouter);
 
 // Catch all for deploy
 app.get('/*', (_req, res) => {
-  // Cache static assets such as JS, images etc.
+  // Cache static assets such as client-side JS, images etc.
   res.set('Cache-control', 'public, max-age=31536000');
 
   res.sendFile(clientBuildPath + '/index.html', (err) => {

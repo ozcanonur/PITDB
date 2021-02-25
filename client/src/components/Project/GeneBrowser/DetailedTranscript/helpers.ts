@@ -189,6 +189,10 @@ export const getRelativePeptidePositions = (
   peptides: { sequence: string; mod: string }[],
   isReverse: boolean
 ) => {
+  // Hotfix to fix redirect from tables giving undefined peptides
+  // No idea why this happens
+  if (!peptides) return [];
+
   // Remove duplicate peptides, keep the one with the mods
   const sortedPeptides = peptides.sort(
     ({ mod: modX }, { mod: modY }) => modY.indexOf('(') - modX.indexOf('(')
