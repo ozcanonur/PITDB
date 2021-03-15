@@ -13,4 +13,6 @@
 - In the server directory, do yarn install (command line)
 - In the server directory, create a .env file, Put DB='mongodb://127.0.0.1:27017/pitdb' inside the .env file (the address might be different for you, but it should be the same since this is the default address) Also put CLIENT_BUILD_PATH='../../client/build'
 
+- In the server directory, do yarn dev, this should start the server and open up a new browser tab with the website
+
 I'm not sure if I forgot something but hit me up if you have any problems.
