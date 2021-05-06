@@ -64,6 +64,15 @@ const GeneBrowser = () => {
       if (!resMaxTpm) return;
       setMaxTPM(resMaxTpm.maxTPM);
 
+      const [cond1, cond2] = store.getState().conditionTypes;
+
+      resTranscripts.transcripts = resTranscripts.transcripts.sort((x, y) => {
+        const yMeans = y.conditions.find((e) => e.condition === cond1)?.mean || 0;
+        const xMeans = x.conditions.find((e) => e.condition === cond2)?.mean || 0;
+
+        return yMeans - xMeans;
+      });
+
       dispatch(setGeneBrowserTranscriptsData(resTranscripts));
 
       // Only scroll to the start if it's a different gene
